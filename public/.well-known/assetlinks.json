@@ -1,0 +1,25 @@
+[
+  {
+    "relation": ["delegate_permission/common.handle_all_urls"],
+    "target": {
+      "namespace": "android_app",
+      "package_name": "com.cabkn.app",
+      "sha256_cert_fingerprints": [
+        "FA:C6:17:45:DC:09:03:78:6F:B9:ED:E6:2A:96:2B:39:9F:73:48:F0:BB:6F:89:9B:83:32:66:75:91:03:3B:9C",
+        "00:A6:02:28:A8:BB:EE:A1:AE:E1:31:64:0E:EF:1F:C8:91:8A:D8:9B:B5:33:3B:D6:22:7E:FD:E6:4D:5A:0B:B8",
+        "EA:11:E0:20:25:B4:5E:4D:C9:60:37:A4:5A:EF:EB:B3:DA:03:32:8A:35:B8:E8:A0:E7:80:D1:FC:61:FE:E4:66"
+      ]
+    }
+  },
+  {
+    "relation": ["delegate_permission/common.handle_all_urls"],
+    "target": {
+      "namespace": "android_app",
+      "package_name": "com.cabkndriver.app",
+      "sha256_cert_fingerprints": [
+        "FA:C6:17:45:DC:09:03:78:6F:B9:ED:E6:2A:96:2B:39:9F:73:48:F0:BB:6F:89:9B:83:32:66:75:91:03:3B:9C",
+        "5B:2D:13:40:0B:28:36:57:0A:8D:CE:F6:18:EE:57:38:11:6B:7B:C9:64:EB:E4:AF:6B:CC:AB:0A:A3:BF:D6:D3"
+      ]
+    }
+  }
+]

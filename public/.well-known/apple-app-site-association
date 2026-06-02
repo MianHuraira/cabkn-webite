@@ -1,0 +1,15 @@
+{
+  "applinks": {
+    "apps": [],
+    "details": [
+      {
+      "appID": "YJKRSMHZ4S.com.cabkn.app",
+      "paths": ["*"]
+     },
+      {
+        "appID": "YJKRSMHZ4S.com.cabkndriver.app",
+        "paths": ["*"]
+      }
+    ]
+  }
+}
