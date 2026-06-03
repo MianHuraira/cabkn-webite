@@ -2,7 +2,6 @@
 /* eslint-disable no-unused-vars */
 "use client";
 import { React, useEffect, useState } from "react";
-import { Col, Form, Row, Spinner } from "react-bootstrap";
 import { Formik } from "formik";
 import * as Yup from "yup";
 import { useDispatch } from "react-redux";
@@ -16,6 +15,14 @@ import ApiFile from "@/components/ApiFunction/ApiFile";
 import ApiFunction from "@/components/ApiFunction/ApiFunction";
 import { setAuthenticated, setUser } from "@/components/Redux/Slices/AuthSlice";
 import { useRouter } from "next/navigation";
+import {
+  AuthDivider,
+  AuthInlineLink,
+  AuthPrimaryButton,
+  AuthSecondaryButton,
+  AuthShell,
+  AuthTextField,
+} from "@/components/auth/AuthShell";
 
 const page = () => {
   const [inputType, setInputType] = useState("password");
@@ -109,7 +116,6 @@ const page = () => {
   };
 
   const handleSubmit = (values) => {
-    // setLoading(true);
     const apiData = {
       email: values?.email,
       password: values?.password,
@@ -119,179 +125,97 @@ const page = () => {
 
     const encodedData = encodeURIComponent(JSON.stringify(apiData));
     router.push(`/auth/signup?data=${encodedData}`);
-
-    //  const queryParams = queryString.stringify({
-    //       data: JSON.stringify(apiData),
-    //     });
-
-    //     navigate(`${"/Signup"}?${queryParams}`);
   };
 
   return (
-    <>
-      <Row>
-        <Col lg="6" md="6" className="d-none d-sm-block">
-          <Image
-            style={{ objectFit: "cover", height: "100vh", width: "100%" }}
-            src={LoginImg}
-            alt="Login Cover"
-          />
-        </Col>
-        <Col lg="6" md="6">
-          <div
-            style={{ width: "90%", height: "100vh", marginLeft: "5%" }}
-            className="d-flex justify-content-center algin-items-center flex-column"
-          >
-            <Formik
-              initialValues={initialValues}
-              validationSchema={validationSchema}
-              onSubmit={(values, { setSubmitting }) => {
-                handleSubmit(values);
-              }}
+    <AuthShell
+      title="Create your account"
+      subtitle="Start with your email and a secure password."
+      imageSrc={LoginImg}
+      imageAlt="Sign up cover"
+      imageHeadline="A smarter way to get around"
+      imageSubheadline="Create an account to book rides, manage trips, and track everything in one place."
+      footer={
+        <span>
+          Already have an account?{" "}
+          <AuthInlineLink href="/auth/login">Login</AuthInlineLink>
+        </span>
+      }
+    >
+      <Formik
+        initialValues={initialValues}
+        validationSchema={validationSchema}
+        onSubmit={(values) => handleSubmit(values)}
+      >
+        {({ values, errors, touched, handleChange, handleBlur, handleSubmit }) => (
+          <form onSubmit={handleSubmit} className="space-y-5">
+            <AuthTextField
+              id="email"
+              name="email"
+              type="email"
+              label="Email address"
+              placeholder="name@company.com"
+              value={values.email}
+              onChange={handleChange}
+              onBlur={handleBlur}
+              autoComplete="email"
+              error={touched.email ? errors.email : ""}
+            />
+
+            <AuthTextField
+              id="password"
+              name="password"
+              type={inputType}
+              label="Password"
+              placeholder="Create a password"
+              value={values.password}
+              onChange={handleChange}
+              onBlur={handleBlur}
+              autoComplete="new-password"
+              error={touched.password ? errors.password : ""}
+              rightAdornment={
+                <button
+                  type="button"
+                  onClick={togglePasswordVisibility}
+                  className="rounded-lg p-2 text-slate-500 transition hover:text-slate-800 focus:outline-none focus-visible:ring-4 focus-visible:ring-brand-200"
+                  aria-label={passwordVisible ? "Hide password" : "Show password"}
+                >
+                  <Image
+                    src={passwordVisible ? Eye : EyeOff}
+                    alt=""
+                    className="h-5 w-5"
+                  />
+                </button>
+              }
+            />
+
+            <div className="flex items-center justify-end">
+              <AuthInlineLink
+                href="/auth/forgotpss"
+                className="text-sm font-semibold text-slate-700 hover:text-brand-700"
+              >
+                Forgot password?
+              </AuthInlineLink>
+            </div>
+
+            <AuthPrimaryButton type="submit" loading={loading}>
+              Continue
+            </AuthPrimaryButton>
+
+            <AuthDivider label="or continue with" />
+
+            <AuthSecondaryButton
+              type="button"
+              onClick={googlLogin}
+              disabled={GoogleLoading}
             >
-              {({
-                values,
-                errors,
-                touched,
-                handleChange,
-                handleBlur,
-                handleSubmit,
-              }) => (
-                <>
-                  <Form onSubmit={handleSubmit}>
-                    <h5 className="loginHead mt-4 mb-4">Create your account</h5>
-                    <section>
-                      <Form.Group
-                        className="mb-2 hideFocus2"
-                        controlId="formGroupEmail"
-                      >
-                        <Form.Label className="lableHead">
-                          Email address
-                        </Form.Label>
-                        <Form.Control
-                          className="radius_12"
-                          type="email"
-                          placeholder="Enter email"
-                          name="email"
-                          value={values.email}
-                          onChange={handleChange}
-                        />
-                        {touched.email && errors.email && (
-                          <div className="errorMsg">{errors.email}</div>
-                        )}
-                      </Form.Group>
-                      <Form.Group
-                        className="mb-2 hideFocus2"
-                        controlId="formGroupPassword"
-                      >
-                        <Form.Label className="lableHead">Password</Form.Label>
-                        <div className="d-flex align-items-center position-relative">
-                          <Form.Control
-                            className="radius_12"
-                            type={inputType}
-                            placeholder="Password"
-                            value={values.password}
-                            onChange={handleChange}
-                            name="password"
-                          />
-                          <Image
-                            className="pass_img"
-                            src={passwordVisible ? Eye : EyeOff}
-                            alt=""
-                            onClick={togglePasswordVisibility}
-                          />
-                        </div>
-                        {touched.password && errors.password && (
-                          <div className="errorMsg">{errors.password}</div>
-                        )}
-                      </Form.Group>
-                      <div className="d-flex flex-column">
-                        <Link
-                          href={"/forgetPass"}
-                          className="text-end cursorP mt-3 forgettetx"
-                        >
-                          Forgot Password?
-                        </Link>
-                        <button
-                          disabled={loading}
-                          className={`loginBtn mt-3 ${
-                            loading ? "disbalebtn" : ""
-                          }`}
-                        >
-                          {loading ? (
-                            <Spinner
-                              style={{
-                                width: "18px",
-                                height: "18px",
-                                marginTop: "3px",
-                                borderWidth: "0.15em",
-                              }}
-                              animation="border"
-                              role="status"
-                            >
-                              <span className="visually-hidden">
-                                Loading...
-                              </span>
-                            </Spinner>
-                          ) : (
-                            "Continue"
-                          )}
-                        </button>
-
-                        <Link
-                          href={"/forgetPass"}
-                          className="text-center cursorP mt-3 forgettetx"
-                        >
-                          Or login with
-                        </Link>
-                      </div>
-                    </section>
-                  </Form>
-
-                  <button
-                    onClick={googlLogin}
-                    disabled={GoogleLoading}
-                    className={`loginBtnGoogle mt-3`}
-                  >
-                    {GoogleLoading ? (
-                      <Spinner
-                        style={{
-                          width: "18px",
-                          height: "18px",
-                          marginTop: "3px",
-                          borderWidth: "0.15em",
-                        }}
-                        animation="border"
-                        role="status"
-                      >
-                        <span className="visually-hidden">Loading...</span>
-                      </Spinner>
-                    ) : (
-                      <>
-                        <Image
-                          src={Google}
-                          style={{ height: 30, width: 30, marginRight: 10 }}
-                          alt=""
-                        />
-                        <span>Login with Google</span>
-                      </>
-                    )}
-                  </button>
-                </>
-              )}
-            </Formik>
-
-            <Link
-              href={"/auth/login"}
-              className="text-center cursorP mt-3 forgettetx"
-            >
-              Already have an Account?
-              <span style={{ marginLeft: 5, color: "#004A70" }}>Login</span>
-            </Link>
-          </div>
-        </Col>
-      </Row>
-    </>
+              <Image src={Google} alt="" className="h-6 w-6" />
+              {GoogleLoading ? "Signing in..." : "Google"}
+            </AuthSecondaryButton>
+          </form>
+        )}
+      </Formik>
+    </AuthShell>
   );
 };
 

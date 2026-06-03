@@ -1,9 +1,8 @@
 /* eslint-disable no-empty-pattern */
 /* eslint-disable no-unused-vars */
-"use client"
+"use client";
 
 import { React, useEffect, useState } from "react";
-import { Col, Form, Row, Spinner } from "react-bootstrap";
 import { Formik } from "formik";
 import * as Yup from "yup";
 import { useDispatch } from "react-redux";
@@ -14,6 +13,12 @@ import ApiFile from "@/components/ApiFunction/ApiFile";
 import { forgotpass } from "@/components/assets/Images";
 import Image from "next/image";
 import { useRouter } from "next/navigation";
+import {
+  AuthInlineLink,
+  AuthPrimaryButton,
+  AuthShell,
+  AuthTextField,
+} from "@/components/auth/AuthShell";
 
 const page = () => {
   const [loading, setLoading] = useState(false); 
@@ -59,100 +64,46 @@ const page = () => {
      }
    };
   return (
-    <>
-      <Row>
-        <Col lg="6" md="6" className="d-none d-sm-block">
-          <Image
-            style={{ objectFit: "cover", height: "100vh", width: "100%" }}
-            src={forgotpass}
-            alt="Login Cover"
-          />
-        </Col>
-        <Col lg="6" md="6">
-          <div
-            style={{ width: "90%", height: "100vh", marginLeft: "5%" }}
-            className="d-flex justify-content-center algin-items-center flex-column"
-          >
-            <Formik
-              initialValues={initialValues}
-              validationSchema={validationSchema}
-              onSubmit={(values, { setSubmitting }) => {
-                handleSubmit(values);
-              }}
-            >
-              {({
-                values,
-                errors,
-                touched,
-                handleChange,
-                handleBlur,
-                handleSubmit,
-              }) => (
-                <>
-                  <Form onSubmit={handleSubmit}>
-                    <h5 className="loginHead mt-4 mb-4">Forgot Password</h5>
-                    <h5 className="loginsbHead mb-3">Send otp to you emai!</h5>
-                    <section>
-                      <Form.Group
-                        className="mb-2 hideFocus2"
-                        controlId="formGroupEmail"
-                      >
-                        <Form.Label className="lableHead">
-                          Email address
-                        </Form.Label>
-                        <Form.Control
-                          className="radius_12"
-                          type="email"
-                          placeholder="Enter email"
-                          name="email"
-                          value={values.email}
-                          onChange={handleChange}
-                        />
-                        {touched.email && errors.email && (
-                          <div className="errorMsg">{errors.email}</div>
-                        )}
-                      </Form.Group>
-                     
-                      <div className="d-flex flex-column">
-                  
-                        <button
-                          disabled={loading}
-                          className={`loginBtn mt-3 ${
-                            loading ? "disbalebtn" : ""
-                          }`}
-                        >
-                          {loading ? (
-                            <Spinner
-                              style={{
-                                width: "18px",
-                                height: "18px",
-                                marginTop: "3px",
-                                borderWidth: "0.15em",
-                              }}
-                              animation="border"
-                              role="status"
-                            >
-                              <span className="visually-hidden">
-                                Loading...
-                              </span>
-                            </Spinner>
-                          ) : (
-                            "Send"
-                          )}
-                        </button>
-                      </div>
-                    </section>
-                  </Form>
+    <AuthShell
+      title="Forgot password?"
+      subtitle="Enter your email and we’ll send a verification code to reset your password."
+      imageSrc={forgotpass}
+      imageAlt="Forgot password cover"
+      imageHeadline="Secure account recovery"
+      imageSubheadline="We’ll guide you through a quick, secure reset flow."
+      footer={
+        <span>
+          Remembered it? <AuthInlineLink href="/auth/login">Back to login</AuthInlineLink>
+        </span>
+      }
+    >
+      <Formik
+        initialValues={initialValues}
+        validationSchema={validationSchema}
+        onSubmit={(values) => handleSubmit(values)}
+      >
+        {({ values, errors, touched, handleChange, handleBlur, handleSubmit }) => (
+          <form onSubmit={handleSubmit} className="space-y-5">
+            <AuthTextField
+              id="email"
+              name="email"
+              type="email"
+              label="Email address"
+              placeholder="name@company.com"
+              value={values.email}
+              onChange={handleChange}
+              onBlur={handleBlur}
+              autoComplete="email"
+              error={touched.email ? errors.email : ""}
+            />
 
-                </>
-              )}
-            </Formik>
-
-        
-          </div>
-        </Col>
-      </Row>
-    </>
+            <AuthPrimaryButton type="submit" loading={loading}>
+              Send code
+            </AuthPrimaryButton>
+          </form>
+        )}
+      </Formik>
+    </AuthShell>
   );
 };
 

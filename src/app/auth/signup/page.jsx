@@ -3,18 +3,23 @@
 "use client";
 
 import { React, Suspense, useEffect, useState } from "react";
-import { Col, Form, Row, Spinner } from "react-bootstrap";
 import { Formik } from "formik";
 import * as Yup from "yup";
 
 import { useDispatch } from "react-redux";
-import { DatePicker, message } from "antd";
+import { message } from "antd";
 
 import ApiFile from "@/components/ApiFunction/ApiFile";
 import ApiFunction from "@/components/ApiFunction/ApiFunction";
 import { useRouter, useSearchParams } from "next/navigation";
 import Image from "next/image";
 import { Image1, LoginImg } from "@/components/assets/Images";
+import {
+  AuthInlineLink,
+  AuthPrimaryButton,
+  AuthShell,
+  AuthTextField,
+} from "@/components/auth/AuthShell";
 
 const Signup = () => {
   const searchParams = useSearchParams();
@@ -30,10 +35,6 @@ const Signup = () => {
   const [Rowdata, setRowdata] = useState([]);
 
   const router = useRouter();
-
-  const handleDateChange = (date, dateString) => {
-    setFieldValue("date", dateString);
-  };
 
   const handleImageUpload = (e) => {
     const selectedFile = e.target.files[0];
@@ -58,10 +59,6 @@ const Signup = () => {
   const dispatch = useDispatch();
   const api = ApiFunction();
   const { loginApi } = ApiFile;
-  const togglePasswordVisibility = () => {
-    setPasswordVisible(!passwordVisible);
-    setInputType(passwordVisible ? "password" : "text");
-  };
 
   const initialValues = {
     fullname: "",
@@ -118,228 +115,143 @@ const Signup = () => {
   };
 
   return (
-    <>
-      <Row>
-        <Col lg="6" md="6" className="d-none d-sm-block">
-          <Image
-            style={{ objectFit: "cover", height: "100vh", width: "100%" }}
-            src={LoginImg}
-            alt="Login Cover"
-          />
-        </Col>
-        <Col lg="6" md="6">
-          <div
-            style={{ width: "90%", height: "100vh", marginLeft: "5%" }}
-            className="d-flex justify-content-center algin-items-center flex-column"
-          >
-            <Formik
-              initialValues={initialValues}
-              validationSchema={validationSchema}
-              onSubmit={(values, { setSubmitting }) => {
-                handleSubmit(values);
-              }}
-            >
-              {({
-                values,
-                errors,
-                touched,
-                handleChange,
-                handleBlur,
-                handleSubmit,
-                setFieldValue,
-              }) => (
-                <>
-                  <Form onSubmit={handleSubmit}>
-                    <h5 className="loginHead mt-4 mb-4">Sign Up</h5>
-                    <h5 className="loginsbHead mb-3">Create your account</h5>
-
-                    <div className="mt-2 flex flex-col md:flex-row gap-6 mb-2">
-                      <div className="flex-shrink-0">
-                        <Image
-                          src={image || Image1}
-                          alt="Profile"
-                          width={20}
-                          height={20}
-                          className="w-20 h-20 rounded-full border mx-auto md:mx-0 object-cover cursor-pointer"
-                          onClick={() =>
-                            document.getElementById("file-upload").click()
-                          }
-                        />
-                        <input
-                          type="file"
-                          accept="image/*"
-                          onChange={handleImageUpload}
-                          className="hidden"
-                          id="file-upload"
-                        />
-                      </div>
-                    </div>
-
-                    <section>
-                      <div className="flex items-center justify-between gap-3">
-                        <Form.Group
-                          className="mb-2 hideFocus2"
-                          style={{ width: "90%" }}
-                        >
-                          <Form.Label className="labelHead">
-                            Full Name
-                          </Form.Label>
-                          <Form.Control
-                            className="radius_12 w-full"
-                            placeholder="Enter your full name"
-                            name="fullname"
-                            value={values.fullname}
-                            onChange={handleChange}
-                            onBlur={handleBlur}
-                          />
-                          {touched.fullname && errors.fullname && (
-                            <div className="errorMsg">{errors.fullname}</div>
-                          )}
-                        </Form.Group>
-
-                        {/* Date of Birth */}
-                        <Form.Group
-                          className="mb-2 hideFocus2"
-                          style={{ width: "90%" }}
-                        >
-                          <Form.Label className="labelHead">
-                            Date of Birth
-                          </Form.Label>
-                          <DatePicker
-                            style={{ width: "100%" }}
-                            className="radius_12 w-full"
-                            onChange={(date, dateString) =>
-                              setFieldValue("date", dateString)
-                            }
-                            placeholder="Select your date of birth"
-                            format="YYYY-MM-DD"
-                          />
-                          {touched.date && errors.date && (
-                            <div className="errorMsg">{errors.date}</div>
-                          )}
-                        </Form.Group>
-                      </div>
-                      {/* Full Name */}
-
-                      {/* Address */}
-                      <Form.Group className="mb-2 hideFocus2">
-                        <Form.Label className="labelHead">Address</Form.Label>
-                        <Form.Control
-                          className="radius_12"
-                          placeholder="Enter your address"
-                          name="address"
-                          value={values.address}
-                          onChange={handleChange}
-                          onBlur={handleBlur}
-                        />
-                        {touched.address && errors.address && (
-                          <div className="errorMsg">{errors.address}</div>
-                        )}
-                      </Form.Group>
-
-                      {/* Phone */}
-                      <Form.Group className="mb-2 hideFocus2">
-                        <Form.Label className="labelHead">Phone</Form.Label>
-                        <Form.Control
-                          className="radius_12"
-                          placeholder="Enter your phone number"
-                          name="phone"
-                          value={values.phone}
-                          onChange={handleChange}
-                          onBlur={handleBlur}
-                        />
-                        {touched.phone && errors.phone && (
-                          <div className="errorMsg">{errors.phone}</div>
-                        )}
-                      </Form.Group>
-
-                      <Form.Group className="mb-2 hideFocus2">
-                        <Form.Label className="labelHead">
-                          Referral Code
-                        </Form.Label>
-                        <Form.Control
-                          className="radius_12"
-                          placeholder="(Optional)"
-                          name="code"
-                          value={values.code}
-                          onChange={handleChange}
-                          onBlur={handleBlur}
-                        />
-                      </Form.Group>
-
-                      <div className="d-flex flex-column">
-                        <button
-                          type="submit"
-                          disabled={loading}
-                          className={`loginBtn mt-3 ${
-                            loading ? "disablbtn" : ""
-                          }`}
-                        >
-                          {loading ? (
-                            <Spinner
-                              animation="border"
-                              size="sm"
-                              className="me-2"
-                              style={{ width: "1.2rem", height: "1.2rem" }}
-                            />
-                          ) : (
-                            "Sign Up"
-                          )}
-                        </button>
-                      </div>
-                    </section>
-                  </Form>
-                </>
-              )}
-            </Formik>
-
-            {/* <button
-              onClick={googlLogin}
-              // disabled={loading}
-              className={`loginBtnGoogle mt-3`}
-            >
-              {GoogleLoading ? (
-                <Spinner
-                  style={{
-                    width: "18px",
-                    height: "18px",
-                    marginTop: "3px",
-                    borderWidth: "0.15em",
-                  }}
-                  animation="border"
-                  role="status"
+    <AuthShell
+      title="Complete your profile"
+      subtitle="A few details to personalize your CabKn experience."
+      imageSrc={LoginImg}
+      imageAlt="Sign up cover"
+      imageHeadline="Premium ride booking, built for comfort"
+      imageSubheadline="Complete your profile to finish creating your account."
+      footer={
+        <span>
+          Prefer to sign in? <AuthInlineLink href="/auth/login">Go to login</AuthInlineLink>
+        </span>
+      }
+    >
+      <Formik
+        initialValues={initialValues}
+        validationSchema={validationSchema}
+        onSubmit={(values) => handleSubmit(values)}
+      >
+        {({ values, errors, touched, handleChange, handleBlur, handleSubmit }) => (
+          <form onSubmit={handleSubmit} className="space-y-5">
+            <div className="flex items-center gap-4">
+              <div className="relative">
+                <Image
+                  src={image || Image1}
+                  alt="Profile"
+                  width={72}
+                  height={72}
+                  className="h-[72px] w-[72px] rounded-2xl border border-slate-200 object-cover shadow-sm"
+                />
+                <label
+                  htmlFor="file-upload"
+                  className="absolute -bottom-2 -right-2 inline-flex cursor-pointer items-center justify-center rounded-xl border border-slate-200 bg-white px-2.5 py-1.5 text-xs font-semibold text-slate-700 shadow-sm transition hover:bg-slate-50 focus:outline-none focus-visible:ring-4 focus-visible:ring-brand-200"
                 >
-                  <span className="visually-hidden">Loading...</span>
-                </Spinner>
-              ) : (
-                <>
-                  <img
-                    src={Google}
-                    style={{ height: 30, width: 30, marginRight: 10 }}
-                    alt=""
-                  />
-                  <span>Login with Google</span>
-                </>
-              )}
-            </button> */}
+                  Upload
+                </label>
+                <input
+                  id="file-upload"
+                  type="file"
+                  accept="image/*"
+                  onChange={handleImageUpload}
+                  className="hidden"
+                />
+              </div>
+              <div className="min-w-0">
+                <p className="text-sm font-semibold text-slate-900">
+                  Profile photo (optional)
+                </p>
+                <p className="mt-1 text-sm text-slate-600">
+                  Add a photo to make your account feel more personal.
+                </p>
+              </div>
+            </div>
 
-            {/* <NavLink
-              href={"/auth/login"}
-              className="text-center cursorP mt-3 forgettetx"
-            >
-              Already have an Account?
-              <span style={{ marginLeft: 5, color: "#004A70" }}>Sign in</span>
-            </NavLink> */}
-          </div>
-        </Col>
-      </Row>
-    </>
+            <div className="grid grid-cols-1 gap-4 sm:grid-cols-2">
+              <AuthTextField
+                id="fullname"
+                name="fullname"
+                type="text"
+                label="Full name"
+                placeholder="Enter your full name"
+                value={values.fullname}
+                onChange={handleChange}
+                onBlur={handleBlur}
+                autoComplete="name"
+                error={touched.fullname ? errors.fullname : ""}
+              />
+              <AuthTextField
+                id="date"
+                name="date"
+                type="date"
+                label="Date of birth"
+                value={values.date}
+                onChange={handleChange}
+                onBlur={handleBlur}
+                autoComplete="bday"
+                error={touched.date ? errors.date : ""}
+              />
+            </div>
+
+            <AuthTextField
+              id="address"
+              name="address"
+              type="text"
+              label="Address"
+              placeholder="Enter your address"
+              value={values.address}
+              onChange={handleChange}
+              onBlur={handleBlur}
+              autoComplete="street-address"
+              error={touched.address ? errors.address : ""}
+            />
+
+            <AuthTextField
+              id="phone"
+              name="phone"
+              type="tel"
+              label="Phone"
+              placeholder="Enter your phone number"
+              value={values.phone}
+              onChange={handleChange}
+              onBlur={handleBlur}
+              autoComplete="tel"
+              inputMode="tel"
+              error={touched.phone ? errors.phone : ""}
+            />
+
+            <AuthTextField
+              id="code"
+              name="code"
+              type="text"
+              label="Referral code"
+              placeholder="Optional"
+              value={values.code}
+              onChange={handleChange}
+              onBlur={handleBlur}
+              autoComplete="off"
+            />
+
+            <AuthPrimaryButton type="submit" loading={loading}>
+              Continue
+            </AuthPrimaryButton>
+          </form>
+        )}
+      </Formik>
+    </AuthShell>
   );
 };
 
 const page = () => {
   return (
-    <Suspense fallback={<Spinner animation="border" />}>
+    <Suspense
+      fallback={
+        <div className="grid min-h-screen place-items-center bg-white">
+          <div className="h-10 w-10 animate-spin rounded-full border-2 border-slate-200 border-t-brand-600" />
+        </div>
+      }
+    >
       <Signup />
     </Suspense>
   );

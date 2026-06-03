@@ -3,11 +3,14 @@
 import React, { Suspense, useEffect, useState } from "react";
 import { useDispatch } from "react-redux";
 import { message } from "antd";
-import { Spinner } from "react-bootstrap";
 import ApiFunction from "@/components/ApiFunction/ApiFunction";
 import { otpImage } from "@/components/assets/Images";
 import { setAuthenticated, setUser } from "@/components/Redux/Slices/AuthSlice";
 import { useRouter, useSearchParams } from "next/navigation";
+import {
+  AuthPrimaryButton,
+  AuthShell,
+} from "@/components/auth/AuthShell";
 
 const Otp =() =>{
 
@@ -26,13 +29,32 @@ const Otp =() =>{
   const [Alldata, setAlldata] = useState([]);
 
   const handleInputChange = (index, value) => {
-    if (value.length <= 1) {
-      const newCode = [...code];
-      newCode[index] = value;
-      setCode(newCode);
-      if (value && index < 3) {
-        document.getElementById(`input-${index + 1}`).focus();
-      }
+    const next = value.replace(/\D/g, "").slice(0, 1);
+    const newCode = [...code];
+    newCode[index] = next;
+    setCode(newCode);
+    if (next && index < 3) {
+      document.getElementById(`otp-${index + 1}`)?.focus();
+    }
+  };
+
+  const handleKeyDown = (index, e) => {
+    if (e.key === "Backspace" && !code[index] && index > 0) {
+      document.getElementById(`otp-${index - 1}`)?.focus();
+    }
+  };
+
+  const handlePaste = (e) => {
+    const pasted = e.clipboardData.getData("text").replace(/\D/g, "");
+    if (!pasted) return;
+    e.preventDefault();
+    const next = pasted.slice(0, 4).split("");
+    const newCode = ["", "", "", ""];
+    for (let i = 0; i < 4; i += 1) newCode[i] = next[i] || "";
+    setCode(newCode);
+    const lastIndex = Math.min(next.length, 4) - 1;
+    if (lastIndex >= 0) {
+      document.getElementById(`otp-${lastIndex}`)?.focus();
     }
   };
 
@@ -140,84 +162,64 @@ const Otp =() =>{
   };
 
   return (
-      <div className="flex min-h-screen">
-      {/* Left Section */}
-      <div
-        className="flex-1 bg-cover bg-center d-none d-sm-block"
-        style={{
-          backgroundImage: `url(${otpImage})`,
-          backgroundSize: "cover",
-          backgroundRepeat: "no-repeat",
-        }}
-      >
-        <div className="bg-black bg-opacity-50 text-white flex items-center justify-center h-full">
-          <div className="text-center max-w-md">
-            <h1 className="text-3xl font-bold mb-4">
-              Track your ride in real-time for a smooth journey
-            </h1>
-            <p className="text-lg">We Give Better Services To You.</p>
-          </div>
+    <AuthShell
+      title="Verification code"
+      subtitle="Enter the 4‑digit code we sent you to continue."
+      imageSrc={otpImage}
+      imageAlt="OTP cover"
+      imageHeadline="Track your ride in real-time"
+      imageSubheadline="A smooth journey starts with a secure account."
+    >
+      <div className="space-y-5">
+        <div
+          className="grid grid-cols-4 gap-3"
+          onPaste={handlePaste}
+          role="group"
+          aria-label="One-time password"
+        >
+          {code.map((digit, index) => (
+            <input
+              key={index}
+              id={`otp-${index}`}
+              type="text"
+              inputMode="numeric"
+              autoComplete={index === 0 ? "one-time-code" : "off"}
+              maxLength={1}
+              value={digit}
+              onChange={(e) => handleInputChange(index, e.target.value)}
+              onKeyDown={(e) => handleKeyDown(index, e)}
+              className="h-14 w-full rounded-2xl border border-slate-200 bg-white text-center text-xl font-semibold text-slate-900 shadow-sm outline-none transition focus:border-brand-500 focus:ring-4 focus:ring-brand-100"
+              aria-label={`Digit ${index + 1}`}
+              autoFocus={index === 0}
+            />
+          ))}
         </div>
+
+        <AuthPrimaryButton type="button" onClick={handlePass} loading={Loading}>
+          {rowdata?.isForgot == "true" ? "Verify & reset" : "Verify & sign up"}
+        </AuthPrimaryButton>
+
+        <p className="text-sm text-slate-600">
+          Didn’t get a code?{" "}
+          <span className="font-semibold text-brand-700">{`Resend in 0:${timer
+            .toString()
+            .padStart(2, "0")}`}</span>
+        </p>
       </div>
-
-      {/* Right Section */}
-      <div className="flex-1 bg-white flex items-center justify-center">
-        <div className="max-w-sm w-full px-6">
-          <h2 className="text-2xl font-Bold mb-4 ">Verification code</h2>
-          <p className="text-sm text-gray-500 mb-6 font-medium">
-            We just sent you a verification code to your phone. Check your inbox
-            to get it.
-          </p>
-
-          {/* Input Boxes */}
-          <div className="flex justify-between mb-6 mt-6">
-            {code.map((digit, index) => (
-              <input
-                key={index}
-                id={`input-${index}`}
-                type="text"
-                maxLength="1"
-                value={digit}
-                onChange={(e) => handleInputChange(index, e.target.value)}
-                className="w-14 h-14 border-2 border-gray-300 rounded-md text-center text-xl focus:outline-none focus:border-blue-500"
-              />
-            ))}
-          </div>
-
-          <button
-            type="submit"
-            onClick={handlePass}
-            disabled={Loading}
-            className={`w-full loginBtn mt-3 ${Loading ? "disablbtn" : ""}`}
-          >
-            {Loading ? (
-              <Spinner
-                animation="border"
-                size="sm"
-                className="me-2"
-                style={{ width: "1.2rem", height: "1.2rem" }}
-              />
-            ) : (
-              <>{rowdata?.isForgot == "true" ? "Reset" : "Sign Up"}</>
-            )}
-          </button>
-
-          <p className="text-sm font-Regular text-gray-500 mt-4">
-            Re-send code in{" "}
-            <span className="text-blue-500  font-Regular">{`0:${timer
-              .toString()
-              .padStart(2, "0")}`}</span>
-          </p>
-        </div>
-      </div>
-    </div>
+    </AuthShell>
   );
 }
 
 
 const page = () =>{
    return (
-    <Suspense fallback={<Spinner animation="border" />}>
+    <Suspense
+      fallback={
+        <div className="grid min-h-screen place-items-center bg-white">
+          <div className="h-10 w-10 animate-spin rounded-full border-2 border-slate-200 border-t-brand-600" />
+        </div>
+      }
+    >
         <Otp/>
       </Suspense>
    )
