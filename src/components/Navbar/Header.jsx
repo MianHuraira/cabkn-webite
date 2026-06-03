@@ -84,7 +84,7 @@ const Header = () => {
   return (
     <>
       <header
-        className={`fixed top-0 left-0 right-0 z-[1000] transition-all duration-300 bg-[rgba(10,31,46,0.85)] backdrop-blur-xl border-b border-white/10 ${isScrolled
+        className={`absolute top-0 left-0 right-0 z-[1000] transition-all duration-300 ${isScrolled
           ? "shadow-lg py-2"
           : "py-4"
           }`}
@@ -113,7 +113,7 @@ const Header = () => {
                 <span className="relative inline-block pb-0.5">
                   {link.label}
                   <span
-                    className={`absolute -bottom-[2px] left-0 h-[2px] bg-gradient-to-r from-amber-400 to-orange-500 rounded-full transition-all duration-300 ease-out ${activeLink === link.id
+                    className={`absolute -bottom-[2px] left-0 h-[2px] bg-gradient-to-r from-brand-400 to-brand-500 rounded-full transition-all duration-300 ease-out ${activeLink === link.id
                       ? "w-full"
                       : "w-0 group-hover:w-full"
                       }`}
@@ -133,13 +133,13 @@ const Header = () => {
             </Link>
             <Link
               href="/auth/stepOne"
-              className="px-5 xl:px-7 py-2 xl:py-2.5 rounded-full text-[13px] xl:text-sm font-semibold text-[#0a1f2e] bg-white shadow-[0_4px_20px_rgba(255,255,255,0.15)] hover:shadow-[0_8px_30px_rgba(255,255,255,0.25)] hover:-translate-y-0.5 transition-all duration-300"
+              className="px-4 xl:px-5 py-2 xl:py-2.5 rounded-full text-[13px] xl:text-sm font-semibold text-[#0a1f2e] bg-white shadow-[0_4px_20px_rgba(255,255,255,0.15)] hover:shadow-[0_8px_30px_rgba(255,255,255,0.25)] hover:-translate-y-0.5 transition-all duration-300"
             >
               Sign Up
             </Link>
             <button
               onClick={() => SetdriverModal(true)}
-              className="px-4 xl:px-5 py-2 xl:py-2.5 rounded-full text-[13px] xl:text-sm font-semibold text-white bg-gradient-to-r from-amber-500 to-orange-600 shadow-lg shadow-orange-600/25 hover:shadow-xl hover:from-amber-400 hover:to-orange-500 hover:-translate-y-0.5 transition-all duration-300 whitespace-nowrap"
+              className="px-4 xl:px-5 py-2 xl:py-2.5 rounded-full text-[13px] xl:text-sm font-semibold text-[#0a1f2e] bg-white shadow-[0_4px_20px_rgba(255,255,255,0.15)] hover:shadow-[0_8px_30px_rgba(255,255,255,0.25)] hover:-translate-y-0.5 transition-all duration-300"
             >
               Driver Sign Up
             </button>
@@ -195,7 +195,7 @@ const Header = () => {
                   : "text-white/60 hover:text-white hover:bg-white/[0.04]"
                   }`}
               >
-                <span className={`w-1 h-1 rounded-full transition-all duration-300 ${activeLink === link.id ? "bg-amber-500 scale-150" : "bg-white/20"
+                <span className={`w-1 h-1 rounded-full transition-all duration-300 ${activeLink === link.id ? "bg-brand-500 scale-150" : "bg-white/20"
                   }`} />
                 {link.label}
               </button>
@@ -223,7 +223,7 @@ const Header = () => {
                 SetdriverModal(true);
                 handleClose();
               }}
-              className="w-full py-3.5 rounded-xl text-sm font-semibold text-center text-white bg-gradient-to-r from-amber-500 to-orange-600 shadow-lg shadow-orange-600/25 hover:shadow-xl hover:from-amber-400 hover:to-orange-500 transition-all duration-300"
+              className="w-full py-3.5 rounded-xl text-sm font-semibold text-center text-white bg-gradient-to-r from-brand-500 to-brand-600 shadow-lg shadow-brand-600/25 hover:shadow-xl hover:from-brand-400 hover:to-brand-500 transition-all duration-300"
             >
               Sign Up as Driver
             </button>
@@ -242,8 +242,8 @@ const Header = () => {
       >
         <div className="relative bg-white rounded-[28px] shadow-[0_25px_80px_rgba(0,0,0,0.25)] overflow-hidden max-w-[420px] mx-auto">
           <div className="relative bg-[#0a1f2e] px-8 pt-10 pb-14 text-center overflow-hidden">
-            <div className="absolute top-0 left-0 right-0 h-px bg-gradient-to-r from-transparent via-amber-400/40 to-transparent" />
-            <div className="absolute -top-20 -right-20 w-40 h-40 bg-amber-500/5 rounded-full blur-3xl" />
+            <div className="absolute top-0 left-0 right-0 h-px bg-gradient-to-r from-transparent via-brand-400/40 to-transparent" />
+            <div className="absolute -top-20 -right-20 w-40 h-40 bg-brand-500/5 rounded-full blur-3xl" />
             <div className="absolute -bottom-10 -left-10 w-32 h-32 bg-blue-500/5 rounded-full blur-3xl" />
             <button
               onClick={handleClosedriver}
@@ -252,7 +252,7 @@ const Header = () => {
               <IoClose size={16} />
             </button>
             <div className="relative z-10">
-              <div className="w-14 h-14 mx-auto mb-4 rounded-2xl bg-gradient-to-br from-amber-400 to-orange-500 shadow-lg shadow-amber-500/30 flex items-center justify-center">
+              <div className="w-14 h-14 mx-auto mb-4 rounded-2xl bg-gradient-to-br from-brand-400 to-brand-500 shadow-lg shadow-brand-500/30 flex items-center justify-center">
                 <svg className="w-7 h-7 text-white" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth={1.5}>
                   <path strokeLinecap="round" strokeLinejoin="round" d="M8.25 18.75a1.5 1.5 0 0 1-3 0m3 0a1.5 1.5 0 0 0-3 0m3 0h6m-9 0H3.375a1.125 1.125 0 0 1-1.125-1.125V14.25m17.25 4.5a1.5 1.5 0 0 1-3 0m3 0a1.5 1.5 0 0 0-3 0m3 0h1.125c.621 0 1.129-.504 1.09-1.124a17.902 17.902 0 0 0-3.213-9.193 2.056 2.056 0 0 0-1.58-.86H14.25M16.5 18.75h-2.25m0-11.177v-.958c0-.568-.422-1.048-.987-1.106a48.554 48.554 0 0 0-10.026 0 1.106 1.106 0 0 0-.987 1.106v7.635m12-6.677v6.677m0 4.5v-4.5m0 0h-12" />
                 </svg>
@@ -264,8 +264,8 @@ const Header = () => {
 
           <div className="relative -mt-6 mx-4 bg-white rounded-2xl shadow-[0_8px_30px_rgba(0,0,0,0.06)] border border-gray-100 px-6 py-6 z-10">
             <div className="flex items-center gap-3 mb-5">
-              <div className="w-9 h-9 rounded-xl bg-gradient-to-br from-amber-50 to-orange-50 border border-amber-100 flex items-center justify-center flex-shrink-0">
-                <svg className="w-4.5 h-4.5 text-amber-600" viewBox="0 0 20 20" fill="currentColor">
+              <div className="w-9 h-9 rounded-xl bg-gradient-to-br from-brand-50 to-brand-100 border border-brand-100 flex items-center justify-center flex-shrink-0">
+                <svg className="w-4.5 h-4.5 text-brand-600" viewBox="0 0 20 20" fill="currentColor">
                   <path d="M10.362 1.093a.75.75 0 0 0-.724 0L2.523 5.018 10 9.143l7.477-4.125-7.115-3.925ZM18 6.443l-7.25 4v8.25l6.862-3.786A.75.75 0 0 0 18 14.25V6.443ZM9.25 18.693v-8.25l-7.25-4v7.807a.75.75 0 0 0 .388.657l6.862 3.786Z" />
                 </svg>
               </div>
