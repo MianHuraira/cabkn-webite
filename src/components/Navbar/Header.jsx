@@ -84,11 +84,10 @@ const Header = () => {
   return (
     <>
       <header
-        className={`fixed top-0 left-0 right-0 z-[1000] transition-all duration-300 ${
-          isScrolled
-            ? "bg-[rgba(10,31,46,0.95)] backdrop-blur-xl shadow-[0_4px_30px_rgba(0,0,0,0.3)] py-2 sm:py-2.5 border-b border-white/10"
-            : "bg-transparent py-3 sm:py-4"
-        }`}
+        className={`fixed top-0 left-0 right-0 z-[1000] transition-all duration-300 bg-[rgba(10,31,46,0.85)] backdrop-blur-xl border-b border-white/10 ${isScrolled
+          ? "shadow-lg py-2"
+          : "py-4"
+          }`}
       >
         <div className="max-w-[1320px] mx-auto px-4 sm:px-6 lg:px-8 flex items-center justify-between gap-3 sm:gap-6 lg:gap-8">
           {/* Logo */}
@@ -114,11 +113,10 @@ const Header = () => {
                 <span className="relative inline-block pb-0.5">
                   {link.label}
                   <span
-                    className={`absolute -bottom-[2px] left-0 h-[2px] bg-gradient-to-r from-amber-400 to-orange-500 rounded-full transition-all duration-300 ease-out ${
-                      activeLink === link.id
-                        ? "w-full"
-                        : "w-0 group-hover:w-full"
-                    }`}
+                    className={`absolute -bottom-[2px] left-0 h-[2px] bg-gradient-to-r from-amber-400 to-orange-500 rounded-full transition-all duration-300 ease-out ${activeLink === link.id
+                      ? "w-full"
+                      : "w-0 group-hover:w-full"
+                      }`}
                   />
                 </span>
               </button>
@@ -159,16 +157,14 @@ const Header = () => {
       </header>
 
       <div
-        className={`fixed inset-0 bg-black/60 backdrop-blur-md z-[1001] transition-all duration-300 ${
-          show ? "opacity-100 pointer-events-auto" : "opacity-0 pointer-events-none"
-        }`}
+        className={`fixed inset-0 bg-black/60 backdrop-blur-md z-[1001] transition-all duration-300 ${show ? "opacity-100 pointer-events-auto" : "opacity-0 pointer-events-none"
+          }`}
         onClick={handleClose}
       />
 
       <div
-        className={`fixed top-0 right-0 w-[320px] max-w-[85vw] h-full bg-gradient-to-b from-[#0d2538] to-[#0a1f2e] z-[1002] shadow-[-20px_0_60px_rgba(0,0,0,0.4)] overflow-y-auto transition-all duration-300 ease-out ${
-          show ? "translate-x-0" : "translate-x-full"
-        }`}
+        className={`fixed top-0 right-0 w-[320px] max-w-[85vw] h-full bg-gradient-to-b from-[#0d2538] to-[#0a1f2e] z-[1002] shadow-[-20px_0_60px_rgba(0,0,0,0.4)] overflow-y-auto transition-all duration-300 ease-out ${show ? "translate-x-0" : "translate-x-full"
+          }`}
       >
         <div className="sticky top-0 z-10 flex items-center justify-between px-6 py-5 border-b border-white/[0.06] bg-[#0a1f2e]/80 backdrop-blur-xl">
           <Image
@@ -194,15 +190,13 @@ const Header = () => {
               <button
                 key={link.id}
                 onClick={() => handleScroll(link.id)}
-                className={`relative flex items-center gap-3 w-full text-left px-4 py-3.5 text-[15px] rounded-xl transition-all duration-300 cursor-pointer bg-transparent border-none ${
-                  activeLink === link.id
-                    ? "text-white bg-white/10 font-medium"
-                    : "text-white/60 hover:text-white hover:bg-white/[0.04]"
-                }`}
+                className={`relative flex items-center gap-3 w-full text-left px-4 py-3.5 text-[15px] rounded-xl transition-all duration-300 cursor-pointer bg-transparent border-none ${activeLink === link.id
+                  ? "text-white bg-white/10 font-medium"
+                  : "text-white/60 hover:text-white hover:bg-white/[0.04]"
+                  }`}
               >
-                <span className={`w-1 h-1 rounded-full transition-all duration-300 ${
-                  activeLink === link.id ? "bg-amber-500 scale-150" : "bg-white/20"
-                }`} />
+                <span className={`w-1 h-1 rounded-full transition-all duration-300 ${activeLink === link.id ? "bg-amber-500 scale-150" : "bg-white/20"
+                  }`} />
                 {link.label}
               </button>
             ))}
