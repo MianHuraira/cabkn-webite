@@ -62,7 +62,7 @@ const MainLayout = ({ children }) => {
           </Provider>
         </SocketProvider>
       </GoogleOAuthProvider>
-      <Toaster />
+      <Toaster position="top-right" />
     </>
   );
 };

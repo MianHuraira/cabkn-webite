@@ -62,15 +62,15 @@ export function AuthShell({
                 src={logoBlue}
                 alt="CabKn"
                 priority
-                className="h-10 w-auto drop-shadow-sm sm:h-11"
+                className="h-[4rem] w-auto drop-shadow-sm sm:h-[4rem]"
               />
             </Link>
           </div>
 
-          <div className="flex flex-1 items-center justify-center px-6 py-10 lg:px-12">
+          <div className="flex flex-1 items-center justify-center px-6 py-8 lg:px-12 lg:py-10">
             <div className="w-full max-w-md animate-auth-in motion-reduce:animate-none">
               <div className="rounded-3xl border border-slate-200/70 bg-white/80 p-6 shadow-[0_20px_60px_-40px_rgba(2,6,23,0.45)] backdrop-blur sm:p-8">
-                <div className="mb-6">
+                <div className="mb-3">
                   <h1 className="text-2xl font-semibold tracking-tight text-slate-900">
                     {title}
                   </h1>
@@ -82,7 +82,7 @@ export function AuthShell({
                 </div>
                 {children}
                 {footer ? (
-                  <div className=" mt-4 text-center text-sm text-slate-600">
+                  <div className="mt-3 border-t border-slate-200/70 pt-4 text-center text-sm text-slate-600">
                     {footer}
                   </div>
                 ) : null}
@@ -186,7 +186,7 @@ export function AuthSecondaryButton({ children, className, ...props }) {
 
 export function AuthDivider({ label = "or" }) {
   return (
-    <div className="my-6 flex items-center gap-3">
+    <div className="my-3 flex items-center gap-3">
       <div className="h-px flex-1 bg-slate-200" />
       <span className="text-xs font-medium uppercase tracking-wide text-slate-500">
         {label}

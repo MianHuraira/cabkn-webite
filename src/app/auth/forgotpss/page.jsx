@@ -6,13 +6,13 @@ import { React, useEffect, useState } from "react";
 import { Formik } from "formik";
 import * as Yup from "yup";
 import { useDispatch } from "react-redux";
-import { message } from "antd";
 import axios from "axios";
 import ApiFunction from "@/components/ApiFunction/ApiFunction";
 import ApiFile from "@/components/ApiFunction/ApiFile";
 import { forgotpass } from "@/components/assets/Images";
 import Image from "next/image";
 import { useRouter } from "next/navigation";
+import toast from "react-hot-toast";
 import {
   AuthInlineLink,
   AuthPrimaryButton,
@@ -57,7 +57,7 @@ const page = () => {
        setLoading(false);
      } catch (error) {
        setLoading(false);
-       message.error(error?.response?.data?.message);
+      toast.error(error?.response?.data?.message);
        console.log("==========error: ", error?.response?.data?.message);
      } finally {
        setLoading(false);
@@ -83,7 +83,7 @@ const page = () => {
         onSubmit={(values) => handleSubmit(values)}
       >
         {({ values, errors, touched, handleChange, handleBlur, handleSubmit }) => (
-          <form onSubmit={handleSubmit} className="space-y-5">
+          <form onSubmit={handleSubmit} className="space-y-4">
             <AuthTextField
               id="email"
               name="email"
