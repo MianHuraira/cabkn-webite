@@ -236,44 +236,98 @@ const Header = () => {
         backdrop="static"
         show={driverModal}
         onHide={handleClosedriver}
-        className="driver-modal"
+        className="bg-transparent border-0"
+        dialogClassName="bg-transparent mx-auto my-auto min-w-0"
+        contentClassName="!bg-transparent !border-0 !shadow-none"
       >
-        <Modal.Header closeButton>
-          <Modal.Title>To Use Our Driver App</Modal.Title>
-        </Modal.Header>
-        <Modal.Body>
-          <h1 className="text-[#004a70] text-3xl font-bold">Download our</h1>
-          <h1 className="text-2xl font-semibold mt-2">Mobile app</h1>
-          <p className="mt-2 text-gray-600">
-            Download the Cabkn driver app for easy transportation access!
-          </p>
-          <div className="mt-5 flex gap-3">
-            <Image
-              src={GooglePlay}
-              className="cursor-pointer object-contain h-[50px] w-[170px]"
-              alt="Google Play"
-              onClick={() =>
-                window.open(
-                  "https://play.google.com/store/apps/details?id=com.cabkndriver.app&hl=en",
-                  "_blank",
-                  "noopener,noreferrer"
-                )
-              }
-            />
-            <Image
-              className="cursor-pointer object-contain h-[50px] w-[170px]"
-              src={AppStore}
-              alt="App Store"
-              onClick={() =>
-                window.open(
-                  "https://apps.apple.com/pk/app/cabkn-driver/id6740235396",
-                  "_blank",
-                  "noopener,noreferrer"
-                )
-              }
-            />
+        <div className="relative bg-white rounded-[28px] shadow-[0_25px_80px_rgba(0,0,0,0.25)] overflow-hidden max-w-[420px] mx-auto">
+          <div className="relative bg-[#0a1f2e] px-8 pt-10 pb-14 text-center overflow-hidden">
+            <div className="absolute top-0 left-0 right-0 h-px bg-gradient-to-r from-transparent via-amber-400/40 to-transparent" />
+            <div className="absolute -top-20 -right-20 w-40 h-40 bg-amber-500/5 rounded-full blur-3xl" />
+            <div className="absolute -bottom-10 -left-10 w-32 h-32 bg-blue-500/5 rounded-full blur-3xl" />
+            <button
+              onClick={handleClosedriver}
+              className="absolute top-4 right-4 w-8 h-8 flex items-center justify-center rounded-full bg-white/5 hover:bg-white/15 text-white/40 hover:text-white transition-all duration-300 cursor-pointer border-none z-10"
+            >
+              <IoClose size={16} />
+            </button>
+            <div className="relative z-10">
+              <div className="w-14 h-14 mx-auto mb-4 rounded-2xl bg-gradient-to-br from-amber-400 to-orange-500 shadow-lg shadow-amber-500/30 flex items-center justify-center">
+                <svg className="w-7 h-7 text-white" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth={1.5}>
+                  <path strokeLinecap="round" strokeLinejoin="round" d="M8.25 18.75a1.5 1.5 0 0 1-3 0m3 0a1.5 1.5 0 0 0-3 0m3 0h6m-9 0H3.375a1.125 1.125 0 0 1-1.125-1.125V14.25m17.25 4.5a1.5 1.5 0 0 1-3 0m3 0a1.5 1.5 0 0 0-3 0m3 0h1.125c.621 0 1.129-.504 1.09-1.124a17.902 17.902 0 0 0-3.213-9.193 2.056 2.056 0 0 0-1.58-.86H14.25M16.5 18.75h-2.25m0-11.177v-.958c0-.568-.422-1.048-.987-1.106a48.554 48.554 0 0 0-10.026 0 1.106 1.106 0 0 0-.987 1.106v7.635m12-6.677v6.677m0 4.5v-4.5m0 0h-12" />
+                </svg>
+              </div>
+              <h2 className="text-white text-xl font-bold m-0 tracking-tight">Driver App</h2>
+              <p className="text-white/50 text-[13px] mt-1.5 m-0 font-normal">Take control of your rides</p>
+            </div>
           </div>
-        </Modal.Body>
+
+          <div className="relative -mt-6 mx-4 bg-white rounded-2xl shadow-[0_8px_30px_rgba(0,0,0,0.06)] border border-gray-100 px-6 py-6 z-10">
+            <div className="flex items-center gap-3 mb-5">
+              <div className="w-9 h-9 rounded-xl bg-gradient-to-br from-amber-50 to-orange-50 border border-amber-100 flex items-center justify-center flex-shrink-0">
+                <svg className="w-4.5 h-4.5 text-amber-600" viewBox="0 0 20 20" fill="currentColor">
+                  <path d="M10.362 1.093a.75.75 0 0 0-.724 0L2.523 5.018 10 9.143l7.477-4.125-7.115-3.925ZM18 6.443l-7.25 4v8.25l6.862-3.786A.75.75 0 0 0 18 14.25V6.443ZM9.25 18.693v-8.25l-7.25-4v7.807a.75.75 0 0 0 .388.657l6.862 3.786Z" />
+                </svg>
+              </div>
+              <div>
+                <p className="text-[#0a1f2e] font-semibold text-[15px] m-0 leading-tight">Download our app</p>
+                <p className="text-gray-400 text-[12px] m-0 mt-0.5">Available on iOS & Android</p>
+              </div>
+            </div>
+
+            <div className="flex flex-col gap-2.5">
+              <button
+                onClick={() =>
+                  window.open(
+                    "https://play.google.com/store/apps/details?id=com.cabkndriver.app&hl=en",
+                    "_blank",
+                    "noopener,noreferrer"
+                  )
+                }
+                className="group w-full flex items-center gap-4 px-6 py-3 rounded-xl bg-[#0a1f2e] hover:bg-[#0f2a3e] text-white transition-all duration-300 cursor-pointer border-none shadow-sm hover:shadow-md active:scale-[0.98]"
+              >
+                <span className="w-9 h-9 rounded-lg bg-white flex items-center justify-center flex-shrink-0">
+                  <svg className="w-5 h-5 text-[#0a1f2e]" viewBox="0 0 24 24" fill="currentColor">
+                    <path d="M4.98 3.5C4.36 3.5 3.8 3.88 3.6 4.5c-.32.98-.3 2.1-.3 3.5v8c0 1.4-.02 2.52.3 3.5.2.62.77 1 1.4 1 .3 0 .55-.1.77-.28l10.8-7.5c.45-.35.7-.88.7-1.43 0-.55-.25-1.08-.7-1.43L5.74 3.78c-.22-.18-.46-.28-.76-.28z" />
+                  </svg>
+                </span>
+                <div className="text-left">
+                  <p className="text-[9px] text-white/50 group-hover:text-white/70 m-0 leading-none tracking-wider uppercase">Get it on</p>
+                  <p className="text-[14px] font-semibold m-0 leading-none mt-0.5">Google Play</p>
+                </div>
+              </button>
+              <button
+                onClick={() =>
+                  window.open(
+                    "https://apps.apple.com/pk/app/cabkn-driver/id6740235396",
+                    "_blank",
+                    "noopener,noreferrer"
+                  )
+                }
+                className="group w-full flex items-center gap-4 px-6 py-3 rounded-xl bg-[#0a1f2e] hover:bg-[#0f2a3e] text-white transition-all duration-300 cursor-pointer border-none shadow-sm hover:shadow-md active:scale-[0.98]"
+              >
+                <span className="w-9 h-9 rounded-lg bg-white flex items-center justify-center flex-shrink-0">
+                  <svg className="w-5 h-5 text-[#0a1f2e]" viewBox="0 0 24 24" fill="currentColor">
+                    <path d="M17.05 20.28c-.98.95-2.05.8-3.08.35-1.09-.46-2.09-.48-3.24 0-1.44.62-2.2.44-3.06-.35C2.79 15.25 3.51 7.59 9.05 7.31c1.35.07 2.29.74 3.08.8 1.18-.24 2.31-.93 3.57-.84 1.51.12 2.65.72 3.4 1.8-3.12 1.87-2.38 5.98.48 7.13-.57 1.5-1.31 2.99-2.54 4.09zM12.03 7.25c-.15-2.23 1.66-4.07 3.74-4.25.29 2.58-2.34 4.5-3.74 4.25z" />
+                  </svg>
+                </span>
+                <div className="text-left">
+                  <p className="text-[9px] text-white/50 group-hover:text-white/70 m-0 leading-none tracking-wider uppercase">Download on</p>
+                  <p className="text-[14px] font-semibold m-0 leading-none mt-0.5">App Store</p>
+                </div>
+              </button>
+            </div>
+          </div>
+
+          <div className="px-6 py-4 bg-gray-50/80 border-t border-gray-100">
+            <p className="text-[11px] text-gray-400 text-center m-0 leading-relaxed">
+              By continuing, you agree to our{" "}
+              <span className="text-gray-500 underline underline-offset-2 cursor-pointer hover:text-gray-700 transition-colors">Terms</span>
+              {" & "}
+              <span className="text-gray-500 underline underline-offset-2 cursor-pointer hover:text-gray-700 transition-colors">Privacy Policy</span>
+            </p>
+          </div>
+        </div>
       </Modal>
     </>
   );

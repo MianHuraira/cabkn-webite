@@ -2630,12 +2630,8 @@ element {
    DRIVER MODAL STYLES
    ========================================= */
 
-.driver-modal .modal-content {
-  background: #ffffff;
-  border-radius: 20px;
-  border: none;
-  box-shadow: 0 25px 60px rgba(0, 0, 0, 0.15);
-}
+
+
 
 .driver-modal .modal-header {
   border-bottom: 1px solid #f0f0f0;
