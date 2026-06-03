@@ -293,7 +293,7 @@ export default function Tingstodo() {
 
   return (
     <div>
-<div className="d-flex flex-column flex-md-row justify-content-between align-items-center mb-4 mt-5">
+<div className="d-flex flex-column flex-md-row justify-content-between align-items-center mb-4">
 <div style={{ marginLeft: "1.4rem" }}>
           <h1 className="feedBack">Our Tour Recommendations</h1>
         </div>
