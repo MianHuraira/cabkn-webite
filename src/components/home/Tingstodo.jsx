@@ -426,7 +426,7 @@ export default function Tingstodo() {
                       className={`btnHome ${styles.roundedBtn}`}
                       style={{
                         width: "auto",
-                        minWidth: "250px",
+                        minWidth: "150px",
                         padding: "10px 24px",
                         // keep other styles unchanged
                         marginTop: 10,

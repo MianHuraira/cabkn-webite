@@ -9,7 +9,7 @@ import moment from "moment";
 import { Rate } from "antd";
 import { FaStar } from "react-icons/fa";
 
-function ThingstodoCard({ testimonial, onClick, onClick2, btnTitle,isTour }) {
+function ThingstodoCard({ testimonial, onClick, onClick2, btnTitle, isTour }) {
   const settings = {
     dots: true,
     infinite: false,
@@ -37,7 +37,7 @@ function ThingstodoCard({ testimonial, onClick, onClick2, btnTitle,isTour }) {
   return (
     <Card
       className="testimonial-card2 mt-4 cursor-pointer"
-      style={{ height: "auto", width: "95%" , marginLeft: "2.5%"}}
+      style={{ height: "auto", width: "95%", marginLeft: "2.5%" }}
     >
       <Card.Body style={{ padding: 0 }} onClick={onClick2}>
         <div className=" position-relative">
@@ -61,8 +61,8 @@ function ThingstodoCard({ testimonial, onClick, onClick2, btnTitle,isTour }) {
             {testimonial?.category?.name}
           </div>
         </div>
-        <div style={{ padding: 20 }}>
-        <p className="font-medium text-sm text-[#000]  truncate-text mt-0 ">{testimonial.title}</p>
+        <div style={{ padding: 15 }}>
+          <p className="font-medium text-sm text-[#000]  truncate-text mt-0 ">{testimonial.title}</p>
           <div className="mt-1 flex items-center gap-1">
             <FaLocationDot />
             <p
@@ -104,7 +104,7 @@ function ThingstodoCard({ testimonial, onClick, onClick2, btnTitle,isTour }) {
             </>
           ) : null}
 
-        
+
 
           <p
             className="CardDes font-Regular mt-1 truncate-text"
@@ -115,7 +115,7 @@ function ThingstodoCard({ testimonial, onClick, onClick2, btnTitle,isTour }) {
 
           <div className="flex cursor-pointer items-center gap-2">
             {testimonial?.avgRating > 0 && (
-             <FaStar  className="starDivHome"/>
+              <FaStar className="starDivHome" />
             )}
             <h1 className="font-medium mt-1 text-xl text-[#767e94] " style={{ fontSize: 14 }}>
               ({testimonial?.totalReviews || 0}) Reviews
@@ -123,7 +123,7 @@ function ThingstodoCard({ testimonial, onClick, onClick2, btnTitle,isTour }) {
           </div>
 
           <Button
-            style={{ width: isTour? "100%":"60%" }}
+            style={{ width: isTour ? "100%" : "60%" }}
             onClick={onClick}
             className="btnHome"
           >
