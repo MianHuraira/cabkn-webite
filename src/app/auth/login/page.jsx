@@ -6,7 +6,6 @@ import { React, useEffect, useState } from "react";
 import { Formik } from "formik";
 import * as Yup from "yup";
 import { useDispatch } from "react-redux";
-import { message } from "antd";
 import { useGoogleLogin } from "@react-oauth/google";
 import axios from "axios";
 import ApiFunction from "@/components/ApiFunction/ApiFunction";
@@ -16,6 +15,7 @@ import { Eye, EyeOff, Google, LoginImg } from "@/components/assets/Images";
 import { setAuthenticated, setUser } from "@/components/Redux/Slices/AuthSlice";
 import Image from "next/image";
 import { useRouter } from "next/navigation";
+import toast from "react-hot-toast";
 import {
   AuthDivider,
   AuthInlineLink,
@@ -97,17 +97,17 @@ const page = () => {
           dispatch(setUser(res));
           dispatch(setAuthenticated(true));
           router.push("/");
-          message.success("Log in Sucessfully");
+          toast.success("Log in Sucessfully");
           setGoogleLoading(false);
         } else {
-          message.error(res?.message);
+          toast.error(res?.message);
           setGoogleLoading(false);
         }
       })
       .catch((error) => {
         const errorMessage =
           error.response?.data?.message || error.message || "An error occurred";
-        message.error(errorMessage);
+        toast.error(errorMessage);
         setGoogleLoading(false);
       });
   };
@@ -129,13 +129,13 @@ const page = () => {
           localStorage.setItem("isLogin", true);
           localStorage.setItem("Cabkn-token", res?.token);
           router.push("/");
-          message.success("Log in Sucessfully");
+          toast.success("Log in Sucessfully");
         } else {
-          message.error(res?.message);
+          toast.error(res?.message);
         }
       })
       .catch((error) => {
-        message.error(error?.response?.data?.message);
+        toast.error(error?.response?.data?.message);
       })
       .finally(() => {
         setLoading(false);
@@ -162,7 +162,7 @@ const page = () => {
         onSubmit={(values) => handleSubmit(values)}
       >
         {({ values, errors, touched, handleChange, handleBlur, handleSubmit }) => (
-          <form onSubmit={handleSubmit} className="space-y-5">
+          <form onSubmit={handleSubmit} className="space-y-4">
             <AuthTextField
               id="email"
               name="email"

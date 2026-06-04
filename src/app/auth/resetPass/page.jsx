@@ -7,12 +7,12 @@ import { Formik } from "formik";
 import * as Yup from "yup";
 import { useDispatch } from "react-redux";
 
-import { message } from "antd";
 import { useRouter, useSearchParams } from "next/navigation";
 import ApiFunction from "@/components/ApiFunction/ApiFunction";
 import ApiFile from "@/components/ApiFunction/ApiFile";
 import { Eye, EyeOff, forgotpass } from "@/components/assets/Images";
 import Image from "next/image";
+import toast from "react-hot-toast";
 import {
   AuthInlineLink,
   AuthPrimaryButton,
@@ -83,7 +83,7 @@ const Reset = () => {
       setLoading(false);
     } catch (error) {
       setLoading(false);
-      message.error(error?.response?.data?.message);
+      toast.error(error?.response?.data?.message);
       console.log("==========error: ", error?.response?.data?.message);
     } finally {
       setLoading(false);
@@ -109,7 +109,7 @@ const Reset = () => {
         onSubmit={(values) => handleSubmit(values)}
       >
         {({ values, errors, touched, handleChange, handleBlur, handleSubmit }) => (
-          <form onSubmit={handleSubmit} className="space-y-5">
+          <form onSubmit={handleSubmit} className="space-y-4">
             <AuthTextField
               id="npassword"
               name="npassword"

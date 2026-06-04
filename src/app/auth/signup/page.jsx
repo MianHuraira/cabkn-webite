@@ -7,7 +7,7 @@ import { Formik } from "formik";
 import * as Yup from "yup";
 
 import { useDispatch } from "react-redux";
-import { message } from "antd";
+import toast from "react-hot-toast";
 
 import ApiFile from "@/components/ApiFunction/ApiFile";
 import ApiFunction from "@/components/ApiFunction/ApiFunction";
@@ -107,7 +107,7 @@ const Signup = () => {
       setLoading(false);
     } catch (error) {
       setLoading(false);
-      message.error(error?.response?.data?.message);
+      toast.error(error?.response?.data?.message);
       console.log("==========error: ", error?.response?.data?.message);
     } finally {
       setLoading(false);
@@ -134,7 +134,7 @@ const Signup = () => {
         onSubmit={(values) => handleSubmit(values)}
       >
         {({ values, errors, touched, handleChange, handleBlur, handleSubmit }) => (
-          <form onSubmit={handleSubmit} className="space-y-5">
+          <form onSubmit={handleSubmit} className="space-y-4">
             <div className="flex items-center gap-4">
               <div className="relative">
                 <Image
