@@ -1,6 +1,13 @@
 "use client";
 import React, { useEffect, useState } from "react";
-import { FaWallet, FaHistory } from "react-icons/fa";
+import {
+  FaWallet,
+  FaHistory,
+  FaPlus,
+  FaCreditCard,
+  FaCheckCircle,
+  FaTimesCircle,
+} from "react-icons/fa";
 import { Spinner } from "reactstrap";
 import Cards from "react-credit-cards-2";
 import "react-credit-cards-2/dist/es/styles-compiled.css";
@@ -17,13 +24,13 @@ const apiSecret =
   "6EF4CAFCD82E689DECA28EDFDE15ADB35D12BF5982B182E468758A9F8DD072DF";
 const tokenUrl = "https://jad.cash/HAPI/token";
 const paymentUrl = "https://jad.cash/HAPI/cardpayment";
+
 const page = () => {
   const { header1, putData, getData } = ApiFunction();
   const fullData = useSelector((state) => state.auth.user);
   const userData = useSelector((state) => state.auth.user?.user);
-  
+
   const [Tab, setTab] = useState("Topup");
-  const [selectedMonth, setSelectedMonth] = useState("January");
   const [TransLoading, setTransLoading] = useState(false);
   const [TransectionData, setTransectionData] = useState([]);
 
@@ -234,113 +241,293 @@ const page = () => {
     } catch (error) {}
   };
 
+  const [isMobileSidebar, setIsMobileSidebar] = useState(false);
 
+  useEffect(() => {
+    const handleResize = () => setIsMobileSidebar(window.innerWidth < 768);
+    handleResize();
+    window.addEventListener("resize", handleResize);
+    return () => window.removeEventListener("resize", handleResize);
+  }, []);
 
   return (
-    <>
-      <div className="bread">
-        <h5 className="medium-font">Home/Wallet</h5>
-        <h3 className="medium-font">Wallet</h3>
+    <div style={{ minHeight: "100vh", background: "#f8fafc" }}>
+      {/* Header */}
+      <div
+        style={{
+          background: "linear-gradient(135deg, #004a70 0%, #002d47 100%)",
+          padding: "28px 0 44px",
+        }}
+      >
+        <div style={{ maxWidth: 1200, margin: "0 auto", padding: "0 16px" }}>
+          <div style={{ color: "rgba(255,255,255,0.6)", fontSize: 13, marginBottom: 8 }}>
+            Home / Wallet
+          </div>
+          <h1
+            style={{
+              color: "#fff",
+              fontSize: "clamp(22px, 4vw, 28px)",
+              fontWeight: 700,
+              margin: 0,
+              letterSpacing: "-0.3px",
+              display: "flex",
+              alignItems: "center",
+              gap: 10,
+            }}
+          >
+            <FaWallet size={24} />
+            My Wallet
+          </h1>
+        </div>
       </div>
 
-      <Container>
-        <div className="flex  p-4 mt-5">
-          <div className="w-full lg:grid lg:grid-cols-12 gap-8">
-            {/* Left Section - Balance and Actions */}
-            <div className="space-y-4 col-span-4">
-              {/* Balance Card */}
-              <div className="bg-[#1e3a5f] text-white p-8 rounded-2xl shadow-lg">
-                <h2 className="text-4xl font-bold mb-2">
-                  ${userData?.amount?.toFixed(2)}
-                </h2>
-                <p className="text-gray-300">Available Balance</p>
-              </div>
+      {/* Content */}
+      <div style={{ maxWidth: 1200, margin: "-24px auto 0", padding: "0 16px 48px" }}>
+        <div
+          style={{
+            display: "flex",
+            gap: 20,
+            flexDirection: isMobileSidebar ? "column" : "row",
+            alignItems: "flex-start",
+          }}
+        >
+          {/* Left Sidebar */}
+          <div
+            style={{
+              width: isMobileSidebar ? "100%" : 280,
+              flexShrink: 0,
+              display: "flex",
+              flexDirection: "column",
+              gap: 16,
+            }}
+          >
+            {/* Balance Card */}
+            <div
+              style={{
+                background: "linear-gradient(135deg, #004a70 0%, #002d47 100%)",
+                borderRadius: 16,
+                padding: "clamp(20px, 3vw, 28px)",
+                color: "#fff",
+                position: "relative",
+                overflow: "hidden",
+              }}
+            >
+              <div
+                style={{
+                  position: "absolute",
+                  top: -20,
+                  right: -20,
+                  width: 100,
+                  height: 100,
+                  borderRadius: "50%",
+                  background: "rgba(255,255,255,0.05)",
+                }}
+              />
+              <div
+                style={{
+                  position: "absolute",
+                  bottom: -30,
+                  left: -30,
+                  width: 140,
+                  height: 140,
+                  borderRadius: "50%",
+                  background: "rgba(255,255,255,0.03)",
+                }}
+              />
+              <p style={{ fontSize: 13, color: "rgba(255,255,255,0.6)", margin: "0 0 8px", position: "relative", zIndex: 1 }}>
+                Available Balance
+              </p>
+              <p
+                style={{
+                  fontSize: "clamp(28px, 4vw, 36px)",
+                  fontWeight: 700,
+                  margin: 0,
+                  position: "relative",
+                  zIndex: 1,
+                }}
+              >
+                ${userData?.amount?.toFixed(2) || "0.00"}
+              </p>
+            </div>
 
+            {/* Tabs */}
+            <div
+              style={{
+                background: "#fff",
+                borderRadius: 14,
+                border: "1px solid #f0f0f0",
+                padding: 6,
+              }}
+            >
               <div
                 onClick={() => setTab("Topup")}
-                className={`p-4 rounded-xl flex items-center justify-between cursor-pointer transition-colors ${
-                  Tab === "Topup"
-                    ? "bg-[#1e3a5f] hover:bg-[#234670]"
-                    : "bg-gray-50 hover:bg-gray-100"
-                }`}
+                style={{
+                  display: "flex",
+                  alignItems: "center",
+                  gap: 10,
+                  padding: "12px 14px",
+                  borderRadius: 10,
+                  cursor: "pointer",
+                  background: Tab === "Topup" ? "#f0f7ff" : "transparent",
+                  color: Tab === "Topup" ? "#004a70" : "#4b5563",
+                  fontWeight: Tab === "Topup" ? 600 : 500,
+                  fontSize: 14,
+                  transition: "all 0.15s",
+                  marginBottom: 2,
+                }}
+                onMouseEnter={(e) => {
+                  if (Tab !== "Topup") e.currentTarget.style.background = "#f3f4f6";
+                }}
+                onMouseLeave={(e) => {
+                  if (Tab !== "Topup") e.currentTarget.style.background = "transparent";
+                }}
               >
-                <div className="flex items-center gap-4">
-                  <div className="bg-[#1e3a5f] p-3 rounded-full">
-                    <FaWallet className="text-white text-xl" />
-                  </div>
-                  <span
-                    className={`text-lg font-medium ${
-                      Tab === "Topup" ? "text-white" : "text-black"
-                    }`}
-                  >
-                    Topup
-                  </span>
-                </div>
-                <span className="text-gray-400">→</span>
+                <FaWallet size={16} color={Tab === "Topup" ? "#004a70" : "#9ca3af"} />
+                <span style={{ flex: 1 }}>Top Up</span>
+                <svg width={14} height={14} viewBox="0 0 24 24" fill="none" stroke={Tab === "Topup" ? "#004a70" : "#d1d5db"} strokeWidth={2}>
+                  <path strokeLinecap="round" strokeLinejoin="round" d="M9 5l7 7-7 7" />
+                </svg>
               </div>
-
               <div
                 onClick={() => setTab("History")}
-                className={`p-4 rounded-xl flex items-center justify-between cursor-pointer transition-colors ${
-                  Tab === "History"
-                    ? "bg-[#1e3a5f] hover:bg-[#234670]"
-                    : "bg-gray-50 hover:bg-gray-100"
-                }`}
+                style={{
+                  display: "flex",
+                  alignItems: "center",
+                  gap: 10,
+                  padding: "12px 14px",
+                  borderRadius: 10,
+                  cursor: "pointer",
+                  background: Tab === "History" ? "#f0f7ff" : "transparent",
+                  color: Tab === "History" ? "#004a70" : "#4b5563",
+                  fontWeight: Tab === "History" ? 600 : 500,
+                  fontSize: 14,
+                  transition: "all 0.15s",
+                }}
+                onMouseEnter={(e) => {
+                  if (Tab !== "History") e.currentTarget.style.background = "#f3f4f6";
+                }}
+                onMouseLeave={(e) => {
+                  if (Tab !== "History") e.currentTarget.style.background = "transparent";
+                }}
               >
-                <div className="flex items-center gap-4">
-                  <div className="bg-[#1e3a5f] p-3 rounded-full">
-                    <FaHistory className="text-white text-xl" />
-                  </div>
-                  <span
-                    className={`text-lg font-medium ${
-                      Tab === "History" ? "text-white" : "text-black"
-                    }`}
-                  >
-                    History
-                  </span>
-                </div>
-                <span className="text-white">→</span>
+                <FaHistory size={16} color={Tab === "History" ? "#004a70" : "#9ca3af"} />
+                <span style={{ flex: 1 }}>History</span>
+                <svg width={14} height={14} viewBox="0 0 24 24" fill="none" stroke={Tab === "History" ? "#004a70" : "#d1d5db"} strokeWidth={2}>
+                  <path strokeLinecap="round" strokeLinejoin="round" d="M9 5l7 7-7 7" />
+                </svg>
               </div>
             </div>
-            {Tab == "Topup" ? (
-              <div className="bg-white rounded-2xl p-6 shadow-lg col-span-8">
-                {paymentCards?.length ? (
-                  <div className="font-bold text-2xl mb-2.5">Saved Cards</div>
-                ) : null}
+          </div>
 
-                {paymentCards?.map((item, i) => (
-                  <div
-                    onClick={() => onSelectCard(item)}
-                    key={i}
-                    className="bg-white p-4 mb-4 rounded-lg shadow-md cursor-pointer"
-                  >
-                    <div className="flex justify-between items-center mb-1.5">
-                      <div className="text-gray-500 text-sm mr-2">Email</div>
-                      <div className="font-bold text-lg">
-                        {`${item?.email}`}
-                      </div>
+          {/* Right Content */}
+          <div style={{ flex: 1, minWidth: 0 }}>
+            {Tab === "Topup" ? (
+              <div
+                style={{
+                  background: "#fff",
+                  borderRadius: 14,
+                  border: "1px solid #f0f0f0",
+                  padding: "clamp(20px, 3vw, 28px)",
+                }}
+              >
+                {/* Saved Cards */}
+                {paymentCards?.length > 0 && (
+                  <>
+                    <p style={{ fontSize: 15, fontWeight: 600, color: "#1f2937", margin: "0 0 12px" }}>
+                      Saved Cards
+                    </p>
+                    <div style={{ display: "flex", flexDirection: "column", gap: 8, marginBottom: 20 }}>
+                      {paymentCards?.map((item, i) => (
+                        <div
+                          key={i}
+                          onClick={() => onSelectCard(item)}
+                          style={{
+                            display: "flex",
+                            alignItems: "center",
+                            gap: 12,
+                            padding: "12px 16px",
+                            borderRadius: 10,
+                            border: "1px solid #f0f0f0",
+                            cursor: "pointer",
+                            transition: "all 0.15s",
+                          }}
+                          onMouseEnter={(e) => {
+                            e.currentTarget.style.borderColor = "#004a70";
+                            e.currentTarget.style.background = "#f0f7ff";
+                          }}
+                          onMouseLeave={(e) => {
+                            e.currentTarget.style.borderColor = "#f0f0f0";
+                            e.currentTarget.style.background = "transparent";
+                          }}
+                        >
+                          <FaCreditCard size={20} color="#004a70" />
+                          <div style={{ flex: 1, minWidth: 0 }}>
+                            <p style={{ fontSize: 13, fontWeight: 500, color: "#374151", margin: 0 }}>
+                              {item?.email}
+                            </p>
+                            <p style={{ fontSize: 12, color: "#9ca3af", margin: "2px 0 0" }}>
+                              **** {item?.cardnumber?.slice(-4)}
+                            </p>
+                          </div>
+                          <FaCheckCircle size={16} color="#059669" />
+                        </div>
+                      ))}
                     </div>
-                    <div className="flex justify-between items-center">
-                      <div className="text-gray-500 text-sm mr-2">Number</div>
-                      <div className="font-bold text-lg">
-                        {item?.cardnumber}
-                      </div>
-                    </div>
+                  </>
+                )}
+
+                <p style={{ fontSize: 15, fontWeight: 600, color: "#1f2937", margin: "0 0 16px" }}>
+                  Add Funds
+                </p>
+
+                {/* Amount Input */}
+                <div style={{ marginBottom: 20 }}>
+                  <label style={{ fontSize: 13, fontWeight: 500, color: "#374151", display: "block", marginBottom: 6 }}>
+                    Amount
+                  </label>
+                  <div style={{ position: "relative" }}>
+                    <span
+                      style={{
+                        position: "absolute",
+                        left: 14,
+                        top: "50%",
+                        transform: "translateY(-50%)",
+                        fontSize: 16,
+                        fontWeight: 600,
+                        color: "#9ca3af",
+                      }}
+                    >
+                      $
+                    </span>
+                    <input
+                      type="text"
+                      name="price"
+                      placeholder="0.00"
+                      value={cardDetails.price}
+                      onChange={handleInputChange}
+                      style={{
+                        width: "100%",
+                        padding: "12px 14px 12px 32px",
+                        borderRadius: 10,
+                        border: "1px solid #d1d5db",
+                        fontSize: 16,
+                        fontWeight: 600,
+                        outline: "none",
+                      }}
+                    />
                   </div>
-                ))}
-                <h2 className="text-2xl font-bold mb-6">Topup</h2>
+                </div>
 
-                <input
-                  type="text"
-                  name="price"
-                  placeholder="Enter amount"
-                  value={cardDetails.price}
-                  onChange={handleInputChange}
-                  className="w-full p-3 border rounded-lg mb-4 mt-2"
-                />
-
-                <div className="grid grid-cols-1 md:grid-cols-12 gap-4 mt-2">
-                  <div className="md:col-span-6">
+                {/* Card Preview + Fields */}
+                <div
+                  style={{
+                    display: "grid",
+                    gridTemplateColumns: isMobileSidebar ? "1fr" : "1fr 1fr",
+                    gap: 20,
+                    marginBottom: 20,
+                  }}
+                >
+                  <div>
                     <Cards
                       cvc={cardDetails.cvc}
                       expiry={cardDetails.expiry}
@@ -349,75 +536,152 @@ const page = () => {
                     />
                   </div>
 
-                  <div className="md:col-span-6">
-                    <input
-                      className="w-full p-3 border rounded-lg mb-2 mt-2"
-                      type="text"
-                      name="number"
-                      placeholder="Card Number"
-                      value={cardDetails.number}
-                      onChange={handleInputChange}
-                      maxLength="16"
-                      required
-                    />
-                    <input
-                      className="w-full p-3 border rounded-lg mb-2 mt-2"
-                      type="text"
-                      name="name"
-                      placeholder="Card holder Name"
-                      value={cardDetails.name}
-                      onChange={handleInputChange}
-                      required
-                    />
-                    <input
-                      className="w-full p-3 border rounded-lg mb-2 "
-                      type="text"
-                      name="expiry"
-                      placeholder="MM/YY"
-                      value={cardDetails.expiry}
-                      onChange={(e) => {
-                        let value = e.target.value.replace(/\D/g, "");
-                        if (value.length >= 3) {
-                          value = value.slice(0, 2) + "/" + value.slice(2, 4);
-                        }
-                        e.target.value = value.slice(0, 5);
-                        handleInputChange(e);
-                      }}
-                      maxLength="5"
-                      required
-                    />
-                    <input
-                      className="w-full p-3 border rounded-lg mb-2 "
-                      type="text"
-                      name="cvc"
-                      placeholder="CVC"
-                      value={cardDetails.cvc}
-                      onChange={handleInputChange}
-                      maxLength="3"
-                      required
-                    />
+                  <div style={{ display: "flex", flexDirection: "column", gap: 12 }}>
+                    <div>
+                      <label style={{ fontSize: 13, fontWeight: 500, color: "#374151", display: "block", marginBottom: 4 }}>
+                        Card Number
+                      </label>
+                      <input
+                        style={{
+                          width: "100%",
+                          padding: "11px 14px",
+                          borderRadius: 10,
+                          border: "1px solid #d1d5db",
+                          fontSize: 14,
+                          outline: "none",
+                        }}
+                        type="text"
+                        name="number"
+                        placeholder="1234 5678 9012 3456"
+                        value={cardDetails.number}
+                        onChange={handleInputChange}
+                        maxLength="16"
+                        required
+                      />
+                    </div>
+                    <div>
+                      <label style={{ fontSize: 13, fontWeight: 500, color: "#374151", display: "block", marginBottom: 4 }}>
+                        Card Holder Name
+                      </label>
+                      <input
+                        style={{
+                          width: "100%",
+                          padding: "11px 14px",
+                          borderRadius: 10,
+                          border: "1px solid #d1d5db",
+                          fontSize: 14,
+                          outline: "none",
+                        }}
+                        type="text"
+                        name="name"
+                        placeholder="John Doe"
+                        value={cardDetails.name}
+                        onChange={handleInputChange}
+                        required
+                      />
+                    </div>
+                    <div style={{ display: "flex", gap: 12 }}>
+                      <div style={{ flex: 1 }}>
+                        <label style={{ fontSize: 13, fontWeight: 500, color: "#374151", display: "block", marginBottom: 4 }}>
+                          Expiry
+                        </label>
+                        <input
+                          style={{
+                            width: "100%",
+                            padding: "11px 14px",
+                            borderRadius: 10,
+                            border: "1px solid #d1d5db",
+                            fontSize: 14,
+                            outline: "none",
+                          }}
+                          type="text"
+                          name="expiry"
+                          placeholder="MM/YY"
+                          value={cardDetails.expiry}
+                          onChange={(e) => {
+                            let value = e.target.value.replace(/\D/g, "");
+                            if (value.length >= 3) {
+                              value = value.slice(0, 2) + "/" + value.slice(2, 4);
+                            }
+                            e.target.value = value.slice(0, 5);
+                            handleInputChange(e);
+                          }}
+                          maxLength="5"
+                          required
+                        />
+                      </div>
+                      <div style={{ flex: 1 }}>
+                        <label style={{ fontSize: 13, fontWeight: 500, color: "#374151", display: "block", marginBottom: 4 }}>
+                          CVC
+                        </label>
+                        <input
+                          style={{
+                            width: "100%",
+                            padding: "11px 14px",
+                            borderRadius: 10,
+                            border: "1px solid #d1d5db",
+                            fontSize: 14,
+                            outline: "none",
+                          }}
+                          type="text"
+                          name="cvc"
+                          placeholder="123"
+                          value={cardDetails.cvc}
+                          onChange={handleInputChange}
+                          maxLength="3"
+                          required
+                        />
+                      </div>
+                    </div>
                   </div>
                 </div>
 
-                <div className="grid grid-cols-1 md:grid-cols-12 gap-4 mt-2">
-                  <div className="col-span-6">
+                {/* Email & Phone */}
+                <div
+                  style={{
+                    display: "grid",
+                    gridTemplateColumns: isMobileSidebar ? "1fr" : "1fr 1fr",
+                    gap: 12,
+                    marginBottom: 20,
+                  }}
+                >
+                  <div>
+                    <label style={{ fontSize: 13, fontWeight: 500, color: "#374151", display: "block", marginBottom: 4 }}>
+                      Email
+                    </label>
                     <input
-                      className="w-full p-3 border rounded-lg mb-2 mt-2"
+                      style={{
+                        width: "100%",
+                        padding: "11px 14px",
+                        borderRadius: 10,
+                        border: "1px solid #d1d5db",
+                        fontSize: 14,
+                        outline: "none",
+                      }}
                       type="text"
                       name="email"
-                      placeholder="Email"
+                      placeholder="email@example.com"
                       value={cardDetails.email}
                       onChange={handleInputChange}
                       required
                     />
                   </div>
-
-                  <div className="col-span-6">
+                  <div>
+                    <label style={{ fontSize: 13, fontWeight: 500, color: "#374151", display: "block", marginBottom: 4 }}>
+                      Phone
+                    </label>
                     <input
-                      className="w-full p-3 border rounded-lg mb-2 mt-2"
+                      style={{
+                        width: "100%",
+                        padding: "11px 14px",
+                        borderRadius: 10,
+                        border: "1px solid #d1d5db",
+                        fontSize: 14,
+                        outline: "none",
+                      }}
                       type="text"
                       name="phone"
-                      placeholder="Phone"
+                      placeholder="+1 (___)-___-____"
                       value={cardDetails.phone}
                       onChange={handleInputChange}
                       required
@@ -425,60 +689,135 @@ const page = () => {
                   </div>
                 </div>
 
-                <div className="mt-6">
-                  <button
-                    onClick={jadAPiFunction}
-                    type="submit"
-                    className="w-full h-14 px-4 py-2 bg-[#1e3a5f] text-white rounded-lg hover:bg-[#234670]"
-                  >
-                    {loading ? (
-                      <Spinner color="#fff">Loading...</Spinner>
-                    ) : (
-                      "  Add Payment"
-                    )}
-                  </button>
-                </div>
-              </div>
-            ) : (
-              <>
-                <div className="bg-white rounded-2xl p-6 shadow-lg col-span-8">
-                  <h1 className="text-xl font-bold mb-6">
-                    Transaction History
-                  </h1>
-
-                  {TransLoading ? (
-                    <div className="flex justify-center items-center h-full">
-                      <Spinner color="#fff">Loading...</Spinner>
-                    </div>
+                {/* Submit */}
+                <button
+                  onClick={jadAPiFunction}
+                  disabled={loading}
+                  style={{
+                    width: "100%",
+                    padding: "14px",
+                    borderRadius: 12,
+                    background: loading ? "#9ca3af" : "#004a70",
+                    border: "none",
+                    color: "#fff",
+                    fontSize: 15,
+                    fontWeight: 600,
+                    cursor: loading ? "not-allowed" : "pointer",
+                    transition: "all 0.2s",
+                    display: "flex",
+                    alignItems: "center",
+                    justifyContent: "center",
+                    gap: 8,
+                  }}
+                  onMouseEnter={(e) => {
+                    if (!loading) {
+                      e.currentTarget.style.background = "#003353";
+                      e.currentTarget.style.boxShadow = "0 4px 12px rgba(0,74,112,0.3)";
+                    }
+                  }}
+                  onMouseLeave={(e) => {
+                    if (!loading) {
+                      e.currentTarget.style.background = "#004a70";
+                      e.currentTarget.style.boxShadow = "none";
+                    }
+                  }}
+                >
+                  {loading ? (
+                    <>
+                      <Spinner size="sm" style={{ color: "#fff" }} />
+                      Processing...
+                    </>
                   ) : (
                     <>
-                      {TransectionData?.map((section, index) => (
-                        <div key={index}>
-                          <div>
-                            <div className="flex items-center justify-between py-4 border-b">
-                              <div className="flex items-center">
-                                <div>
-                                  <h4 className="font-semibold text-base capitalize">
-                                    {section?.type}
-                                  </h4>
-                                </div>
-                              </div>
-                              <div className="text-red-500 font-medium">
-                                {`${section?.amount} $`}
-                              </div>
-                            </div>
-                          </div>
-                        </div>
-                      ))}
+                      <FaPlus size={14} />
+                      Add Payment
                     </>
                   )}
-                </div>
-              </>
+                </button>
+              </div>
+            ) : (
+              <div
+                style={{
+                  background: "#fff",
+                  borderRadius: 14,
+                  border: "1px solid #f0f0f0",
+                  padding: "clamp(20px, 3vw, 28px)",
+                }}
+              >
+                <p style={{ fontSize: 15, fontWeight: 600, color: "#1f2937", margin: "0 0 16px", paddingBottom: 12, borderBottom: "1px solid #f3f4f6" }}>
+                  Transaction History
+                </p>
+
+                {TransLoading ? (
+                  <div style={{ display: "flex", justifyContent: "center", padding: "40px 0" }}>
+                    <Spinner style={{ color: "#004a70" }} />
+                  </div>
+                ) : TransectionData?.length > 0 ? (
+                  <div style={{ display: "flex", flexDirection: "column" }}>
+                    {TransectionData?.map((section, index) => (
+                      <div
+                        key={index}
+                        style={{
+                          display: "flex",
+                          alignItems: "center",
+                          justifyContent: "space-between",
+                          padding: "14px 0",
+                          borderBottom: index < TransectionData.length - 1 ? "1px solid #f3f4f6" : "none",
+                        }}
+                      >
+                        <div style={{ display: "flex", alignItems: "center", gap: 12, flex: 1, minWidth: 0 }}>
+                          <div
+                            style={{
+                              width: 36,
+                              height: 36,
+                              borderRadius: 10,
+                              background: section?.type === "deposit" ? "#ecfdf5" : "#fef2f2",
+                              display: "flex",
+                              alignItems: "center",
+                              justifyContent: "center",
+                              flexShrink: 0,
+                            }}
+                          >
+                            {section?.type === "deposit" ? (
+                              <FaPlus size={14} color="#059669" />
+                            ) : (
+                              <FaTimesCircle size={14} color="#ef4444" />
+                            )}
+                          </div>
+                          <div style={{ minWidth: 0 }}>
+                            <p style={{ fontSize: 14, fontWeight: 600, color: "#1f2937", margin: 0, textTransform: "capitalize", wordBreak: "break-word" }}>
+                              {section?.type || "Transaction"}
+                            </p>
+                            <p style={{ fontSize: 12, color: "#9ca3af", margin: "2px 0 0" }}>
+                              {section?.createdAt ? moment(section.createdAt).format("MMM DD, YYYY") : ""}
+                            </p>
+                          </div>
+                        </div>
+                        <span
+                          style={{
+                            fontWeight: 600,
+                            fontSize: 14,
+                            color: section?.type === "deposit" ? "#059669" : "#ef4444",
+                            flexShrink: 0,
+                          }}
+                        >
+                          {section?.type === "deposit" ? "+" : "-"}${section?.amount || "0.00"}
+                        </span>
+                      </div>
+                    ))}
+                  </div>
+                ) : (
+                  <div style={{ textAlign: "center", padding: "40px 0" }}>
+                    <FaHistory size={32} color="#d1d5db" />
+                    <p style={{ fontSize: 14, color: "#9ca3af", margin: "8px 0 0" }}>No transactions yet</p>
+                  </div>
+                )}
+              </div>
             )}
           </div>
         </div>
-      </Container>
-    </>
+      </div>
+    </div>
   );
 };
 
