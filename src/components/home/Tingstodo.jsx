@@ -24,6 +24,7 @@ import {
   ListGroupItem,
 } from "reactstrap";
 import { FaSearch } from "react-icons/fa";
+import styles from "./Tingstodo.module.css";
 
 const schema = yup.object().shape({
   name: yup.string().required("Start Location is required"),
@@ -174,6 +175,10 @@ export default function Tingstodo() {
     slidesToShow: 8,
     slidesToScroll: 3,
     arrows: false,
+    autoplay: false,
+    autoplaySpeed: 3000,
+    pauseOnHover: true,
+    centerMode: false,
     initialSlide: 0,
     responsive: [
       {
@@ -293,8 +298,8 @@ export default function Tingstodo() {
 
   return (
     <div>
-<div className="d-flex flex-column flex-md-row justify-content-between align-items-center mb-4">
-<div style={{ marginLeft: "1.4rem" }}>
+      <div className="d-flex flex-column flex-md-row justify-content-between align-items-center mb-4">
+        <div style={{ marginLeft: "1.4rem" }}>
           <h1 className="feedBack">Our Tour Recommendations</h1>
         </div>
         <div className="mt-2">
@@ -302,59 +307,37 @@ export default function Tingstodo() {
             name="name"
             control={control}
             render={({ field }) => (
-              <div
-                style={{
-                  position: "relative",
-                  width: "95%",
-                  marginRight: "5rem",
-                }}
-              >
-                <div
+              <div className={styles.searchWrapper}>
+                <FaSearch />
+                <Input
+                  {...field}
+                  placeholder="Search"
+                  value={searchQuery}
+                  className={styles.searchInput}
+                  onChange={(e) => handleSearch(e.target.value)}
+                  invalid={errors.name && true}
+                />
+                <ListGroup
                   style={{
-                    display: "flex",
-                    flexDirection: "row",
-                    alignItems: "center",
-                    border: "1px solid #dee2e6",
-                    borderRadius: "0.35rem",
-                    paddingLeft: 10,
+                    position: "absolute",
+                    zIndex: 10,
+                    width: "100%",
+                    left: 0,
+                    right: "auto",
+                    maxHeight: "200px",
+                    overflowY: "auto",
                   }}
                 >
-                  <FaSearch />
-                  <Input
-                    {...field}
-                    placeholder="Search"
-                    value={searchQuery}
-                    style={{ border: "none" }}
-                    onChange={(e) => handleSearch(e.target.value)}
-                    invalid={errors.name && true}
-                  />
-                </div>
-
-                {errors.name && (
-                  <FormFeedback>{errors.name.message}</FormFeedback>
-                )}
-                {PridicLoading && <div>Loading...</div>}
-                {predictions.length > 0 && (
-                  <ListGroup
-                    style={{
-                      position: "absolute",
-                      zIndex: 10,
-                      width: "100%",
-                      maxHeight: "200px",
-                      overflowY: "auto",
-                    }}
-                  >
-                    {predictions.map((prediction) => (
-                      <ListGroupItem
-                        key={prediction.place_id}
-                        onClick={() => handlePredictionPress(prediction)}
-                        style={{ cursor: "pointer" }}
-                      >
-                        {prediction.description}
-                      </ListGroupItem>
-                    ))}
-                  </ListGroup>
-                )}
+                  {predictions.map((prediction) => (
+                    <ListGroupItem
+                      key={prediction.place_id}
+                      onClick={() => handlePredictionPress(prediction)}
+                      style={{ cursor: "pointer" }}
+                    >
+                      {prediction.description}
+                    </ListGroupItem>
+                  ))}
+                </ListGroup>
                 {noData && <div>No results found</div>}
               </div>
             )}
@@ -373,13 +356,23 @@ export default function Tingstodo() {
                   style={{
                     padding: "10px",
                     background: isSelected
-                      ? "linear-gradient(179.02deg, rgb(0, 74, 112) -69.5%, rgb(177, 176, 176) 99.16%)" // Gradient when selected
-                      : "#ffff", // Default neutral gradient
+                      ? "linear-gradient(179.02deg, rgb(0, 74, 112) -69.5%, rgb(177, 176, 176) 99.16%)"
+                      : "#ffff",
                     color: isSelected ? "white" : "black",
-                    borderRadius: "5px",
+                    borderRadius: "9999px",
+                    minWidth: "150px",
+                    maxWidth: "250px",
+                    overflow: "visible",
+                    whiteSpace: "normal",
+                    wordBreak: "break-word",
+                    textAlign: "center",
+                    display: "flex",
+                    alignItems: "center",
+                    justifyContent: "center",
                     transition: "all 0.3s ease",
+                    margin: "0 auto",
                   }}
-                  onClick={() => setSelectedCategoryId(category._id)} // Set only the clicked ID
+                  onClick={() => setSelectedCategoryId(category._id)}
                 >
                   <h1 className="font-medium text-base">{category?.name}</h1>
                 </div>
@@ -413,61 +406,65 @@ export default function Tingstodo() {
             </div>
           </div>
         ) : /* Show content when not loading */
-        SubCategory.length > 0 ? (
-          <>
-            <div className="grid grid-cols-1 sm:grid-cols-2 md:grid-cols-3 lg:grid-cols-5  ">
-              {SubCategory?.map((testimonial, index) => (
-                <ThingstodoCard
-                  key={index}
-                  testimonial={testimonial}
-                  onClick={() => handleItemClick(testimonial)}
-                  onClick2={() => handleSelection(testimonial)}
-                />
-              ))}
+          SubCategory.length > 0 ? (
+            <>
+              <div className="grid grid-cols-1 sm:grid-cols-2 md:grid-cols-3 lg:grid-cols-5  ">
+                {SubCategory?.map((testimonial, index) => (
+                  <ThingstodoCard
+                    key={index}
+                    testimonial={testimonial}
+                    onClick={() => handleItemClick(testimonial)}
+                    onClick2={() => handleSelection(testimonial)}
+                  />
+                ))}
+              </div>
+              <div className="flex justify-center items-center mt-5">
+                {Pagelength > 0 ? (
+                  <>
+                    <Button
+                      onClick={ShowMoreDAta}
+                      className={`btnHome ${styles.roundedBtn}`}
+                      style={{
+                        width: 240,
+                        marginTop: 10,
+                        margin: 0,
+                        background: "linear-gradient(179.02deg, rgb(0, 74, 112) -69.5%, rgb(177, 176, 176) 99.16%)",
+                        color: "#fff",
+                        display: "inline-flex",
+                        justifyContent: "center",
+                        alignItems: "center",
+                        overflow: "visible",
+                      }}
+                    >
+                      {MoreLoading ? (
+                        <>
+                          <Spinner size={"sm"} color="#fff" />
+                        </>
+                      ) : (
+                        "See more"
+                      )}
+                    </Button>
+                  </>
+                ) : (
+                  ""
+                )}
+              </div>
+            </>
+          ) : (
+            <div className="d-flex mt-5 flex-col justify-content-center align-items-center">
+              <Image
+                src={NoshowData}
+                style={{
+                  width: "200px",
+                  height: "200px",
+                  objectFit: "cover", // Ensure the image covers the card nicely
+                  borderRadius: "5px",
+                }}
+                alt="No data available"
+              />
+              <h1 className="font-medium text-xl mt-3">{"No Data Found!"}</h1>
             </div>
-            <div className="flex justify-center items-center mt-5">
-              {Pagelength > 0 ? (
-                <>
-                  <Button
-                    onClick={ShowMoreDAta}
-                    className="btnHome"
-                    style={{
-                      width: 100,
-                      marginTop: 10,
-                      margin: 0,
-                      background:
-                        "linear-gradient(179.02deg, rgb(0, 74, 112) -69.5%, rgb(177, 176, 176) 99.16%)",
-                    }}
-                  >
-                    {MoreLoading ? (
-                      <>
-                        <Spinner size={"sm"} color="#fff" />
-                      </>
-                    ) : (
-                      "See more"
-                    )}
-                  </Button>
-                </>
-              ) : (
-                ""
-              )}
-            </div>
-          </>
-        ) : (
-          <div className="d-flex mt-5 flex-col justify-content-center align-items-center">
-            <Image
-              src={NoshowData}
-              style={{
-                width: "200px",
-                height: "200px",
-                objectFit: "cover", // Ensure the image covers the card nicely
-                borderRadius: "5px",
-              }}
-              alt="No data available"
-            />
-            <h1 className="font-medium text-xl mt-3">{"No Data Found!"}</h1>
-          </div>
-        )}
+          )}
       </div>
     </div>
   );

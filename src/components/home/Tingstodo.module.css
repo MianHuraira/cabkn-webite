@@ -1,0 +1,58 @@
+/* Tingstodo.module.css */
+
+/* Search box wrapper with full rounded corners */
+.searchWrapper {
+  position: relative;
+  width: 95%;
+  margin-right: 5rem;
+  display: flex;
+  flex-direction: row;
+  align-items: center;
+  border: 1px solid #dee2e6;
+  border-radius: 9999px;
+  /* fully rounded */
+  padding-left: 10px;
+}
+
+/* Search input – remove native border, round it fully */
+.searchInput {
+  flex: 1;
+  border: none;
+  border-radius: 9999px;
+  outline: none;
+}
+
+/* Fully rounded button with hover effect */
+.roundedBtn {
+  border-radius: 9999px !important;
+  transition: transform 0.2s ease, box-shadow 0.2s ease;
+}
+
+.roundedBtn:hover {
+  transform: scale(1.02);
+  box-shadow: 0 4px 12px rgba(0, 0, 0, 0.2);
+}
+
+/* Slider drag cursor */
+.slick-slide {
+  cursor: grab;
+}
+
+.slick-slide:active {
+  cursor: grabbing;
+}
+
+.slick-list {
+  overflow: visible !important;
+}
+
+/* Ensure slider can be dragged and swiped */
+.slick-slider {
+  overflow: visible !important;
+}
+
+.slider-container {
+  overflow: visible !important;
+  pointer-events: auto;
+  touch-action: pan-x;
+}
