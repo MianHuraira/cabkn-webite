@@ -3,21 +3,23 @@
 import ApiFunction from "@/components/ApiFunction/ApiFunction";
 import { useRouter } from "next/navigation";
 import React, { useEffect, useState } from "react";
-import { Container, Spinner } from "react-bootstrap";
-import { FaHeart, FaRegHeart } from "react-icons/fa";
+import { Spinner } from "react-bootstrap";
+import { FaHeart, FaRegHeart, FaStar, FaUser } from "react-icons/fa";
+import { MdArrowForward } from "react-icons/md";
 
-const page = () => {
+const Page = () => {
   const { getData, header1, putData } = ApiFunction();
-  const [Notitications, setNotitications] = useState([]);
-  const [FavLoading, setFavLoading] = useState(false);
-  const [Loading, setLoading] = useState(false);
+  const [favorites, setFavorites] = useState([]);
+  const [loading, setLoading] = useState(false);
+  const [favLoadingId, setFavLoadingId] = useState(null);
   const router = useRouter();
+
   const getFavorites = async () => {
     setLoading(true);
     try {
       const res = await getData("users/favorite/1", header1);
       if (res?.success) {
-        setNotitications(res?.users);
+        setFavorites(res?.users);
       }
     } catch (error) {
       console.log("Error fetching data: ", error);
@@ -35,6 +37,7 @@ const page = () => {
   };
 
   const onAddFavorite = async (data) => {
+    setFavLoadingId(data?._id);
     try {
       const res = await putData(`users/like/${data?._id}`, {}, header1);
       if (res?.message) {
@@ -43,79 +46,295 @@ const page = () => {
     } catch (error) {
       console.log("Error adding to favorites: ", error);
     } finally {
-      setFavLoading(false);
+      setFavLoadingId(null);
     }
   };
+
+  const [gridCols, setGridCols] = useState(3);
+
+  useEffect(() => {
+    const handleResize = () => {
+      if (window.innerWidth < 640) setGridCols(1);
+      else if (window.innerWidth < 900) setGridCols(2);
+      else if (window.innerWidth < 1200) setGridCols(3);
+      else setGridCols(4);
+    };
+    handleResize();
+    window.addEventListener("resize", handleResize);
+    return () => window.removeEventListener("resize", handleResize);
+  }, []);
 
   useEffect(() => {
     getFavorites();
   }, []);
 
   return (
-    <>
-      <div className="bread p-4 ">
-        <h5 className="text-gray-500 text-sm">Home / Favorites</h5>
-        <h3 className="text-xl font-semibold">Favorites</h3>
+    <div style={{ minHeight: "100vh", background: "#f8fafc" }}>
+      {/* Header */}
+      <div
+        style={{
+          background: "linear-gradient(135deg, #004a70 0%, #002d47 100%)",
+          padding: "28px 0 44px",
+        }}
+      >
+        <div style={{ maxWidth: 1320, margin: "0 auto", padding: "0 16px" }}>
+          <div style={{ color: "rgba(255,255,255,0.6)", fontSize: 13, marginBottom: 8 }}>
+            Home / Favorites
+          </div>
+          <div
+            style={{
+              display: "flex",
+              alignItems: "center",
+              justifyContent: "space-between",
+              flexWrap: "wrap",
+              gap: 12,
+            }}
+          >
+            <div>
+              <h1
+                style={{
+                  color: "#fff",
+                  fontSize: "clamp(22px, 4vw, 28px)",
+                  fontWeight: 700,
+                  margin: 0,
+                  letterSpacing: "-0.3px",
+                }}
+              >
+                My Favorites
+              </h1>
+              <p style={{ color: "rgba(255,255,255,0.6)", fontSize: 14, margin: "4px 0 0" }}>
+                {favorites.length} saved {favorites.length === 1 ? "driver" : "drivers"}
+              </p>
+            </div>
+            <div
+              style={{
+                display: "flex",
+                alignItems: "center",
+                gap: 8,
+                background: "rgba(255,255,255,0.1)",
+                borderRadius: 10,
+                padding: "6px 14px 6px 10px",
+              }}
+            >
+              <FaHeart size={14} color="#f87171" />
+              <span style={{ color: "#fff", fontSize: 14, fontWeight: 500 }}>
+                {favorites.length} Favorites
+              </span>
+            </div>
+          </div>
+        </div>
       </div>
 
-      <Container className="mt-5">
-        {Loading ? (
-          <div className="flex justify-center items-center h-32">
-            <Spinner color="#fff" />
+      <div style={{ maxWidth: 1320, margin: "-24px auto 0", padding: "0 16px 48px" }}>
+        {loading ? (
+          <div
+            style={{
+              display: "flex",
+              justifyContent: "center",
+              alignItems: "center",
+              padding: "80px 0",
+            }}
+          >
+            <Spinner
+              animation="border"
+              style={{ width: 40, height: 40, color: "#004a70" }}
+            />
           </div>
-        ) : Notitications.length === 0 ? (
-          <div className="text-center mt-5 h-32">
-            <h5>No data found</h5>
+        ) : favorites.length === 0 ? (
+          <div
+            style={{
+              background: "#fff",
+              borderRadius: 16,
+              padding: "60px 24px",
+              textAlign: "center",
+              boxShadow: "0 1px 3px rgba(0,0,0,0.06)",
+            }}
+          >
+            <div
+              style={{
+                width: 72,
+                height: 72,
+                borderRadius: 20,
+                background: "#f0f7ff",
+                display: "flex",
+                alignItems: "center",
+                justifyContent: "center",
+                margin: "0 auto 20px",
+              }}
+            >
+              <FaHeart size={28} color="#004a70" opacity={0.4} />
+            </div>
+            <h3
+              style={{
+                fontSize: 20,
+                fontWeight: 600,
+                color: "#1f2937",
+                margin: "0 0 8px",
+              }}
+            >
+              No favorites yet
+            </h3>
+            <p style={{ fontSize: 14, color: "#9ca3af", margin: 0, maxWidth: 360, marginInline: "auto" }}>
+              Start adding drivers to your favorites and they will appear here for quick booking.
+            </p>
           </div>
         ) : (
-          <div className="grid grid-cols-1 sm:grid-cols-1 md:grid-cols-2 lg:grid-cols-3 xl:grid-cols-2 gap-6">
-            {Notitications.map((item) => {
+          <div
+            style={{
+              display: "grid",
+              gridTemplateColumns: `repeat(${gridCols}, 1fr)`,
+              gap: 16,
+            }}
+          >
+            {favorites.map((item) => {
               const isFavorite = item?.likes;
 
               return (
                 <div
                   key={item?._id}
-                  className="p-4 rounded-lg border shadow-sm bg-white flex flex-col"
+                  style={{
+                    background: "#fff",
+                    borderRadius: 14,
+                    border: "1px solid #f0f0f0",
+                    padding: 20,
+                    transition: "all 0.25s ease",
+                    boxShadow: "0 1px 3px rgba(0,0,0,0.04)",
+                  }}
+                  onMouseEnter={(e) => {
+                    e.currentTarget.style.boxShadow = "0 8px 30px rgba(0,0,0,0.08)";
+                    e.currentTarget.style.transform = "translateY(-2px)";
+                  }}
+                  onMouseLeave={(e) => {
+                    e.currentTarget.style.boxShadow = "0 1px 3px rgba(0,0,0,0.04)";
+                    e.currentTarget.style.transform = "translateY(0)";
+                  }}
                 >
-                  <div className="flex justify-between items-center">
-                    <div className="flex items-center">
-                      <img
-                        src={item?.image || "https://via.placeholder.com/150"}
-                        alt="User"
-                        className="h-16 w-16 sm:h-20 sm:w-20 rounded-full object-cover"
-                      />
-                      <div className="ml-4">
-                        <p className="font-semibold text-lg">{item?.name}</p>
-                        <div className="flex items-center mt-1">
+                  <div style={{ display: "flex", justifyContent: "space-between", alignItems: "flex-start" }}>
+                    <div style={{ display: "flex", alignItems: "center", gap: 14 }}>
+                      <div
+                        style={{
+                          width: 56,
+                          height: 56,
+                          borderRadius: 14,
+                          overflow: "hidden",
+                          flexShrink: 0,
+                          background: "#f3f4f6",
+                          display: "flex",
+                          alignItems: "center",
+                          justifyContent: "center",
+                        }}
+                      >
+                        {item?.image ? (
                           <img
-                            src="https://cdn-icons-png.flaticon.com/512/616/616489.png"
-                            alt="Star"
-                            className="h-4 w-4"
+                            src={item?.image}
+                            alt={item?.name}
+                            style={{
+                              width: "100%",
+                              height: "100%",
+                              objectFit: "cover",
+                            }}
                           />
-                          <p className="text-sm ml-2">{item?.rating || 0}</p>
+                        ) : (
+                          <FaUser size={22} color="#9ca3af" />
+                        )}
+                      </div>
+                      <div>
+                        <p
+                          style={{
+                            fontWeight: 600,
+                            fontSize: 16,
+                            color: "#1f2937",
+                            margin: 0,
+                          }}
+                        >
+                          {item?.name}
+                        </p>
+                        <div style={{ display: "flex", alignItems: "center", gap: 4, marginTop: 4 }}>
+                          <FaStar size={13} color="#f59e0b" />
+                          <span
+                            style={{
+                              fontSize: 13,
+                              color: "#6b7280",
+                              fontWeight: 500,
+                            }}
+                          >
+                            {item?.rating || "0.0"}
+                          </span>
                         </div>
                       </div>
                     </div>
 
                     <div
-                      className="cursor-pointer"
                       onClick={() => onAddFavorite(item)}
+                      style={{
+                        width: 38,
+                        height: 38,
+                        borderRadius: 10,
+                        background: isFavorite ? "#fef2f2" : "#f3f4f6",
+                        display: "flex",
+                        alignItems: "center",
+                        justifyContent: "center",
+                        cursor: "pointer",
+                        transition: "all 0.2s",
+                        flexShrink: 0,
+                      }}
+                      onMouseEnter={(e) => {
+                        e.currentTarget.style.background = isFavorite ? "#fee2e2" : "#e5e7eb";
+                        e.currentTarget.style.transform = "scale(1.05)";
+                      }}
+                      onMouseLeave={(e) => {
+                        e.currentTarget.style.background = isFavorite ? "#fef2f2" : "#f3f4f6";
+                        e.currentTarget.style.transform = "scale(1)";
+                      }}
                     >
-                      {isFavorite ? (
-                        <FaHeart color="#004A70" size={20} />
+                      {favLoadingId === item?._id ? (
+                        <Spinner animation="border" size="sm" style={{ color: "#004a70", width: 16, height: 16 }} />
+                      ) : isFavorite ? (
+                        <FaHeart color="#e11d48" size={17} />
                       ) : (
-                        <FaRegHeart color="#004A70" size={20} />
+                        <FaRegHeart color="#9ca3af" size={17} />
                       )}
                     </div>
                   </div>
 
-                  <div className="flex justify-end gap-4 mt-4">
+                  <div
+                    style={{
+                      display: "flex",
+                      justifyContent: "flex-end",
+                      marginTop: 16,
+                      paddingTop: 16,
+                      borderTop: "1px solid #f3f4f6",
+                    }}
+                  >
                     <button
-                      onClick={() => addRideToFavRider(item)} // You can modify this logic as needed
-                      style={{ backgroundColor: "#004A70" }}
-                      className="px-4 py-1 text-sm rounded text-white regular-font"
+                      onClick={() => addRideToFavRider(item)}
+                      style={{
+                        display: "inline-flex",
+                        alignItems: "center",
+                        gap: 8,
+                        padding: "10px 22px",
+                        borderRadius: 10,
+                        background: "#004a70",
+                        color: "#fff",
+                        border: "none",
+                        fontSize: 14,
+                        fontWeight: 600,
+                        cursor: "pointer",
+                        transition: "all 0.2s",
+                      }}
+                      onMouseEnter={(e) => {
+                        e.currentTarget.style.background = "#003353";
+                        e.currentTarget.style.transform = "translateY(-1px)";
+                        e.currentTarget.style.boxShadow = "0 4px 12px rgba(0,74,112,0.3)";
+                      }}
+                      onMouseLeave={(e) => {
+                        e.currentTarget.style.background = "#004a70";
+                        e.currentTarget.style.transform = "translateY(0)";
+                        e.currentTarget.style.boxShadow = "none";
+                      }}
                     >
-                      {"Request"}
+                      Request a Ride
+                      <MdArrowForward size={16} />
                     </button>
                   </div>
                 </div>
@@ -123,9 +342,9 @@ const page = () => {
             })}
           </div>
         )}
-      </Container>
-    </>
+      </div>
+    </div>
   );
 };
 
-export default page;
+export default Page;
