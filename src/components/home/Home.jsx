@@ -38,13 +38,7 @@ const HomeComponent = () => {
 
         <div
           className="absolute inset-0 pointer-events-none"
-        // style={{
-        //   background: `
-        //     radial-gradient(ellipse at 20% 50%, rgba(0, 74, 112, 0.3) 0%, transparent 60%),
-        //     radial-gradient(ellipse at 80% 20%, rgba(0, 74, 112, 0.08) 0%, transparent 50%),
-        //     radial-gradient(ellipse at 50% 80%, rgba(0, 100, 148, 0.15) 0%, transparent 50%)
-        //   `,
-        // }}
+
         />
 
         <div className="relative z-10 w-full max-w-[1280px] mx-auto px-4 sm:px-6 lg:px-8 grid grid-cols-1 lg:grid-cols-2 gap-10 lg:gap-16 items-center pt-28 pb-16 lg:pt-36 lg:pb-20">
