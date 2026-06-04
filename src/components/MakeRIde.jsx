@@ -8,20 +8,14 @@ import { Controller, useForm } from "react-hook-form";
 import { yupResolver } from "@hookform/resolvers/yup";
 import * as yup from "yup";
 import {
-  FormFeedback,
-  Input,
-  Label,
   ListGroup,
   ListGroupItem,
 } from "reactstrap";
 import Select from "react-select";
-import { Button, Form, Spinner } from "react-bootstrap";
-import { FaLocationDot } from "react-icons/fa6";
-import { MdOutlineMyLocation } from "react-icons/md";
-import { message, Space, TimePicker } from "antd";
-import { Checkbox } from "antd";
+import { Spinner } from "react-bootstrap";
+import { message, TimePicker } from "antd";
 
-import { Calendar, theme } from "antd";
+import { Calendar } from "antd";
 import moment from "moment";
 import { Loader } from "@googlemaps/js-api-loader";
 import { getDistance } from "geolib";
@@ -75,6 +69,14 @@ const RidePage = () => {
 
   const [selectedStop, setSelectedStop] = useState(null);
   const [FavUserId, setFavUserId] = useState("");
+  const [isMobile, setIsMobile] = useState(false);
+
+  useEffect(() => {
+    const handleResize = () => setIsMobile(window.innerWidth < 768);
+    handleResize();
+    window.addEventListener("resize", handleResize);
+    return () => window.removeEventListener("resize", handleResize);
+  }, []);
 
   const schema = yup.object().shape({
     name: yup.string().required("Start Location is required"),
@@ -120,15 +122,6 @@ const RidePage = () => {
   });
 
   const [LocationDetails3, setLocationDetails3] = useState([]);
-
-  const { token } = theme.useToken();
-
-  const wrapperStyle = {
-    border: `1px solid ${token.colorBorderSecondary}`,
-    borderRadius: token.borderRadiusLG,
-    marginTop: 15,
-    marginBottom: 15,
-  };
 
   const getLocation = async () => {
     if (navigator.geolocation) {
@@ -198,7 +191,7 @@ const RidePage = () => {
 
   useEffect(() => {
     getLocation();
-  }, [navigator.geolocation]);
+  }, []);
 
   useEffect(() => {
     try {
@@ -230,14 +223,6 @@ const RidePage = () => {
       console.error("Error parsing row or data:", error);
     }
   }, [Currentlocation?.latitude]);
-
-  const onPanelChange = (value, mode) => {
-    <></>
-  };
-
-  const onChangeTime = (time, timeString) => {
-    <></>
-  };
 
   const onChangeSchedule = (e) => {
     setSchuale(e.target.checked);
@@ -743,334 +728,376 @@ const RidePage = () => {
   };
 
   return (
-    <div className="mx-auto w-full grid grid-cols-1 md:grid-cols-12 gap-4 p-4">
-      <div className="RideForm col-span-12 md:col-span-4">
-        <h1 className="rideHeader">Get a Ride</h1>
-        <h5 className="medium-font mt-4">Select your category</h5>
-        <Form onSubmit={handleSubmit(onSubmit)} className="mt-3">
-          <div>
-            <Label for="category" className="">
-              Category
-            </Label>
-            <Controller
-              name="category"
-              control={control}
-              rules={{ required: "Category is required" }}
-              render={({ field: { onChange, value, ref } }) => (
-                <>
-                  <Select
-                    ref={ref}
-                    placeholder="Select Category"
-                    options={[
-                      { value: "driver", label: "Driver" },
-                      { value: "parcel", label: "Parcel" },
-                    ]}
-                    onChange={(selectedOption) => {
-                      setTypeRide(selectedOption?.value);
-                      onChange(selectedOption ? selectedOption.value : null);
-                    }}
-                    value={value?.label} // Bind the selected value
-                    isClearable
-                    className={errors.category ? "is-invalid" : ""}
-                  />
-                  {errors.category && (
-                    <FormFeedback className="text-danger">
-                      {errors.category.message}
-                    </FormFeedback>
-                  )}
-                </>
-              )}
-            />
-          </div>
+    <div style={{ minHeight: "100vh", background: "#f8fafc" }}>
+      {/* Header */}
+      <div style={{ background: "linear-gradient(135deg, #004a70 0%, #002d47 100%)", padding: "28px 0 44px" }}>
+        <div style={{ maxWidth: 1200, margin: "0 auto", padding: "0 16px" }}>
+          <div style={{ color: "rgba(255,255,255,0.6)", fontSize: 13, marginBottom: 8 }}>Home / Book Ride</div>
+          <h1 style={{ color: "#fff", fontSize: "clamp(22px, 4vw, 28px)", fontWeight: 700, margin: 0, letterSpacing: "-0.3px", display: "flex", alignItems: "center", gap: 10 }}>
+            <svg width={24} height={24} viewBox="0 0 24 24" fill="none" stroke="#fff" strokeWidth={1.5}>
+              <path strokeLinecap="round" strokeLinejoin="round" d="M8.25 18.75a1.5 1.5 0 01-3 0m3 0a1.5 1.5 0 00-3 0m3 0h6m-9 0H3.375a1.125 1.125 0 01-1.125-1.125V14.25m17.25 4.5a1.5 1.5 0 01-3 0m3 0a1.5 1.5 0 00-3 0m3 0h1.125c.621 0 1.129-.504 1.09-1.124a17.902 17.902 0 00-3.213-9.193 2.056 2.056 0 00-1.58-.86H14.25M16.5 18.75h-2.25m0-11.177v-.958c0-.568-.422-1.048-.987-1.106a48.554 48.554 0 00-10.026 0 1.106 1.106 0 00-.987 1.106v7.635m12-6.677v6.677m0 4.5v-4.5m0 0h-12" />
+            </svg>
+            Book a Ride
+          </h1>
+        </div>
+      </div>
 
-          <div className="mt-2">
-            <Label for="startLocation">Start Location</Label>
-            <div className="flex items-center gap-2">
-              <Controller
-                name="name"
-                control={control}
-                render={({ field }) => (
-                  <div style={{ position: "relative", width: "100%" }}>
-                    <Input
-                      {...field}
-                      placeholder="Enter start location"
-                      value={searchQuery}
-                      onChange={(e) => handleSearch(e.target.value)}
-                      invalid={errors.name && true}
-                    />
-                    {errors.name && (
-                      <FormFeedback>{errors.name.message}</FormFeedback>
-                    )}
-                    {PridicLoading && <div>Loading...</div>}
-                    {predictions.length > 0 && (
-                      <ListGroup
-                        style={{
-                          position: "absolute",
-                          zIndex: 10,
-                          width: "100%",
-                          maxHeight: "200px",
-                          overflowY: "auto",
-                        }}
-                      >
-                        {predictions.map((prediction) => (
-                          <ListGroupItem
-                            key={prediction.place_id}
-                            onClick={() => handlePredictionPress(prediction)}
-                            style={{ cursor: "pointer" }}
-                          >
-                            {prediction.description}
-                          </ListGroupItem>
-                        ))}
-                      </ListGroup>
-                    )}
-                    {noData && <div>No results found</div>}
-                  </div>
-                )}
-              />
-              <BiCurrentLocation
-                className="cursor-pointer"
-                size={30}
-                onClick={getLocation}
-              />
-            </div>
-          </div>
-
-          <div className="mt-2">
-            <Label for="startLocation">Add Stop</Label>
-            <div className="flex items-center gap-2">
-              <Controller
-                name="stop"
-                control={control}
-                render={({ field }) => (
-                  <div style={{ position: "relative", width: "100%" }}>
-                    <Input
-                      {...field}
-                      placeholder="Enter stop location"
-                      value={SearchQueryStop}
-                      onChange={(e) => HandleStopSearch(e.target.value)}
-                      invalid={errors.stop && true}
-                    />
-                    {errors.stop && (
-                      <FormFeedback>{errors.stop.message}</FormFeedback>
-                    )}
-                    {PridicLoadingStop && <div>Loading...</div>}
-                    {StopPredictions.length > 0 && (
-                      <ListGroup
-                        style={{
-                          position: "absolute",
-                          zIndex: 10,
-                          width: "100%",
-                          maxHeight: "200px",
-                          overflowY: "auto",
-                        }}
-                      >
-                        {StopPredictions.map((prediction) => (
-                          <ListGroupItem
-                            key={prediction.place_id}
-                            onClick={() => HadleStopPridication(prediction)}
-                            style={{ cursor: "pointer" }}
-                          >
-                            {prediction.description}
-                          </ListGroupItem>
-                        ))}
-                      </ListGroup>
-                    )}
-                    {noData && <div>No results found</div>}
-                  </div>
-                )}
-              />
-              <IoMdAddCircleOutline
-                onClick={addlocation}
-                className="cursor-pointer"
-                size={30}
-              />
-            </div>
-
-            {LocationDetails3.map((item, index) => {
-              return (
-                <div className="flex items-center gap-3 cursor-pointer mt-2">
-                  <p className="font-Regular truncate-textLocation">
-                    {item?.address}
-                  </p>
-                  <div onClick={() => RemoveStop(index)}>
-                    <IoMdCloseCircle />
-                  </div>
-                </div>
-              );
-            })}
-          </div>
-
-          <div className="mt-2">
-            <Label for="startLocation">End Location</Label>
-            <Controller
-              name="metaTitle"
-              control={control}
-              render={({ field }) => (
-                <div style={{ position: "relative" }}>
-                  <Input
-                    {...field}
-                    placeholder="Enter end location"
-                    value={SearchQueryEnd}
-                    onChange={(e) => HandleEndSearch(e.target.value)}
-                    invalid={errors.metaTitle && true}
-                  />
-                  {errors.metaTitle && (
-                    <FormFeedback>{errors.metaTitle.message}</FormFeedback>
-                  )}
-                  {PridicLoadingEnd && <div>Loading...</div>}
-                  {EndPredictions.length > 0 && (
-                    <ListGroup
-                      style={{
-                        position: "absolute",
-                        zIndex: 10,
-                        width: "100%",
-                        maxHeight: "200px",
-                        overflowY: "auto",
-                      }}
-                    >
-                      {EndPredictions.map((prediction) => (
-                        <ListGroupItem
-                          key={prediction.place_id}
-                          onClick={() => HadleEndPridication(prediction)}
-                          style={{ cursor: "pointer" }}
-                        >
-                          {prediction.description}
-                        </ListGroupItem>
-                      ))}
-                    </ListGroup>
-                  )}
-                  {noData && <div>No results found</div>}
-                </div>
-              )}
-            />
-          </div>
-
-          <p className="text-sm font-medium mt-2 mb-2">Copy and paste End location  if it doesn’t fetch automatically </p>
-
-          {!RideTime && (
-            <Checkbox className="mt-2 mb-2" onChange={onChangeSchedule}>
-              Schedule
-            </Checkbox>
-          )}
-
-          {RideTime && (
-            <div className="mt-2">
-              <Label for="startLocation">Travlers</Label>
-              <>
+      {/* Content */}
+      <div style={{ maxWidth: 1200, margin: "-24px auto 0", padding: "0 16px 48px" }}>
+        <div style={{ display: "grid", gridTemplateColumns: isMobile ? "1fr" : "4fr 8fr", gap: 24, alignItems: "start" }}>
+          {/* Form Card */}
+          <div style={{ background: "#fff", borderRadius: 14, border: "1px solid #f0f0f0", padding: "clamp(20px, 3vw, 32px)" }}>
+            <form onSubmit={handleSubmit(onSubmit)}>
+              {/* Category */}
+              <div>
+                <p style={{ fontSize: 13, fontWeight: 500, color: "#374151", display: "block", marginBottom: 6 }}>Category</p>
                 <Controller
-                  name="travlers"
+                  name="category"
                   control={control}
-                  render={({ field }) => (
-                    <div>
-                      <Input
-                        type="number"
-                        required
-                        {...field}
-                        placeholder="Travlers"
-                        invalid={errors.travlers && true}
+                  rules={{ required: "Category is required" }}
+                  render={({ field: { onChange, value, ref } }) => (
+                    <>
+                      <Select
+                        ref={ref}
+                        placeholder="Select Category"
+                        options={[
+                          { value: "driver", label: "Driver" },
+                          { value: "parcel", label: "Parcel" },
+                        ]}
+                        styles={selectStyles(errors.category)}
+                        onChange={(selectedOption) => {
+                          setTypeRide(selectedOption?.value);
+                          onChange(selectedOption ? selectedOption.value : null);
+                        }}
+                        value={value?.label}
+                        isClearable
                       />
-                      {errors.travlers && (
-                        <FormFeedback>{errors.travlers.message}</FormFeedback>
+                      {errors.category && (
+                        <span style={{ fontSize: 12, marginTop: 4, color: "#ef4444", display: "block" }}>
+                          {errors.category.message}
+                        </span>
                       )}
-                    </div>
+                    </>
                   )}
                 />
-              </>
-            </div>
-          )}
+              </div>
 
-          {Schuale ? (
-            <>
-              <div style={wrapperStyle}>
-                <div style={{ marginBottom: "20px" }}>
+              <div style={{ height: 1, background: "#f3f4f6", margin: "20px 0" }} />
+
+              {/* Start Location */}
+              <div>
+                <p style={{ fontSize: 13, fontWeight: 500, color: "#374151", display: "block", marginBottom: 6 }}>Start Location</p>
+                <div style={{ display: "flex", alignItems: "center", gap: 8 }}>
                   <Controller
-                    name="date"
+                    name="name"
                     control={control}
-                    defaultValue={null}
                     render={({ field }) => (
-                      <Calendar
-                        fullscreen={false}
-                        {...field}
-                        onSelect={(value, dateString) => {
-                          field.onChange(value);
-                        }}
-                      />
+                      <div style={{ position: "relative", width: "100%" }}>
+                        <input
+                          {...field}
+                          placeholder="Enter start location"
+                          value={searchQuery}
+                          onChange={(e) => handleSearch(e.target.value)}
+                          style={inputStyle(errors.name)}
+                        />
+                        {errors.name && (
+                          <span style={{ fontSize: 12, marginTop: 4, color: "#ef4444", display: "block" }}>
+                            {errors.name.message}
+                          </span>
+                        )}
+                        {PridicLoading && <div style={{ fontSize: 13, color: "#9ca3af", marginTop: 4 }}>Loading...</div>}
+                        {predictions.length > 0 && (
+                          <ListGroup
+                            style={{
+                              position: "absolute",
+                              zIndex: 10,
+                              width: "100%",
+                              maxHeight: "200px",
+                              overflowY: "auto",
+                              marginTop: 2,
+                              borderRadius: 8,
+                            }}
+                          >
+                            {predictions.map((prediction) => (
+                              <ListGroupItem
+                                key={prediction.place_id}
+                                onClick={() => handlePredictionPress(prediction)}
+                                style={{ cursor: "pointer", fontSize: 13, padding: "8px 12px" }}
+                              >
+                                {prediction.description}
+                              </ListGroupItem>
+                            ))}
+                          </ListGroup>
+                        )}
+                        {noData && <div style={{ fontSize: 13, color: "#9ca3af", marginTop: 4 }}>No results found</div>}
+                      </div>
                     )}
+                  />
+                  <BiCurrentLocation
+                    size={28}
+                    onClick={getLocation}
+                    style={{ cursor: "pointer", color: "#004a70", flexShrink: 0 }}
                   />
                 </div>
               </div>
-              {!RideTime && (
-                <div style={{ marginBottom: "20px" }}>
+
+              <div style={{ height: 1, background: "#f3f4f6", margin: "20px 0" }} />
+
+              {/* Add Stop */}
+              <div>
+                <p style={{ fontSize: 13, fontWeight: 500, color: "#374151", display: "block", marginBottom: 6 }}>Add Stop</p>
+                <div style={{ display: "flex", alignItems: "center", gap: 8 }}>
                   <Controller
-                    name="time"
+                    name="stop"
                     control={control}
-                    defaultValue={null}
                     render={({ field }) => (
-                      <TimePicker
-                        style={{ width: "100%" }}
-                        use12Hours
-                        format="h:mm a"
+                      <div style={{ position: "relative", width: "100%" }}>
+                        <input
+                          {...field}
+                          placeholder="Enter stop location"
+                          value={SearchQueryStop}
+                          onChange={(e) => HandleStopSearch(e.target.value)}
+                          style={inputStyle(errors.stop)}
+                        />
+                        {errors.stop && (
+                          <span style={{ fontSize: 12, marginTop: 4, color: "#ef4444", display: "block" }}>
+                            {errors.stop.message}
+                          </span>
+                        )}
+                        {PridicLoadingStop && <div style={{ fontSize: 13, color: "#9ca3af", marginTop: 4 }}>Loading...</div>}
+                        {StopPredictions.length > 0 && (
+                          <ListGroup
+                            style={{
+                              position: "absolute",
+                              zIndex: 10,
+                              width: "100%",
+                              maxHeight: "200px",
+                              overflowY: "auto",
+                              marginTop: 2,
+                              borderRadius: 8,
+                            }}
+                          >
+                            {StopPredictions.map((prediction) => (
+                              <ListGroupItem
+                                key={prediction.place_id}
+                                onClick={() => HadleStopPridication(prediction)}
+                                style={{ cursor: "pointer", fontSize: 13, padding: "8px 12px" }}
+                              >
+                                {prediction.description}
+                              </ListGroupItem>
+                            ))}
+                          </ListGroup>
+                        )}
+                        {noData && <div style={{ fontSize: 13, color: "#9ca3af", marginTop: 4 }}>No results found</div>}
+                      </div>
+                    )}
+                  />
+                  <IoMdAddCircleOutline
+                    onClick={addlocation}
+                    size={28}
+                    style={{ cursor: "pointer", color: "#004a70", flexShrink: 0 }}
+                  />
+                </div>
+
+                {LocationDetails3.map((item, index) => (
+                  <div key={index} style={{ display: "flex", alignItems: "center", gap: 8, marginTop: 8, cursor: "pointer" }}>
+                    <p style={{ fontSize: 13, color: "#374151", margin: 0, flex: 1, overflow: "hidden", textOverflow: "ellipsis", whiteSpace: "nowrap" }}>
+                      {item?.address}
+                    </p>
+                    <div onClick={() => RemoveStop(index)} style={{ color: "#ef4444", flexShrink: 0 }}>
+                      <IoMdCloseCircle size={18} />
+                    </div>
+                  </div>
+                ))}
+              </div>
+
+              <div style={{ height: 1, background: "#f3f4f6", margin: "20px 0" }} />
+
+              {/* End Location */}
+              <div>
+                <p style={{ fontSize: 13, fontWeight: 500, color: "#374151", display: "block", marginBottom: 6 }}>End Location</p>
+                <Controller
+                  name="metaTitle"
+                  control={control}
+                  render={({ field }) => (
+                    <div style={{ position: "relative" }}>
+                      <input
                         {...field}
-                        value={
-                          field.value ? moment(field.value, "h:mm a") : null
-                        }
-                        onChange={(value) =>
-                          field.onChange(value ? value.format("h:mm a") : null)
-                        }
+                        placeholder="Enter end location"
+                        value={SearchQueryEnd}
+                        onChange={(e) => HandleEndSearch(e.target.value)}
+                        style={inputStyle(errors.metaTitle)}
                       />
+                      {errors.metaTitle && (
+                        <span style={{ fontSize: 12, marginTop: 4, color: "#ef4444", display: "block" }}>
+                          {errors.metaTitle.message}
+                        </span>
+                      )}
+                      {PridicLoadingEnd && <div style={{ fontSize: 13, color: "#9ca3af", marginTop: 4 }}>Loading...</div>}
+                      {EndPredictions.length > 0 && (
+                        <ListGroup
+                          style={{
+                            position: "absolute",
+                            zIndex: 10,
+                            width: "100%",
+                            maxHeight: "200px",
+                            overflowY: "auto",
+                            marginTop: 2,
+                            borderRadius: 8,
+                          }}
+                        >
+                          {EndPredictions.map((prediction) => (
+                            <ListGroupItem
+                              key={prediction.place_id}
+                              onClick={() => HadleEndPridication(prediction)}
+                              style={{ cursor: "pointer", fontSize: 13, padding: "8px 12px" }}
+                            >
+                              {prediction.description}
+                            </ListGroupItem>
+                          ))}
+                        </ListGroup>
+                      )}
+                      {noData && <div style={{ fontSize: 13, color: "#9ca3af", marginTop: 4 }}>No results found</div>}
+                    </div>
+                  )}
+                />
+              </div>
+
+              <p style={{ fontSize: 12, color: "#6b7280", margin: "8px 0 4px" }}>
+                Copy and paste End location if it doesn&rsquo;t fetch automatically
+              </p>
+
+              {/* Schedule Checkbox */}
+              {!RideTime && (
+                <label style={{ display: "flex", alignItems: "center", gap: 8, margin: "12px 0", cursor: "pointer", fontSize: 14, fontWeight: 500, color: "#374151" }}>
+                  <input type="checkbox" checked={Schuale} onChange={onChangeSchedule} style={{ width: 16, height: 16, accentColor: "#004a70", cursor: "pointer" }} />
+                  Schedule
+                </label>
+              )}
+
+              {/* Travelers */}
+              {RideTime && (
+                <div style={{ marginTop: 12 }}>
+                  <p style={{ fontSize: 13, fontWeight: 500, color: "#374151", display: "block", marginBottom: 6 }}>Travelers</p>
+                  <Controller
+                    name="travlers"
+                    control={control}
+                    render={({ field }) => (
+                      <div>
+                        <input type="number" required {...field} placeholder="Travelers" style={inputStyle(errors.travlers)} />
+                        {errors.travlers && (
+                          <span style={{ fontSize: 12, marginTop: 4, color: "#ef4444", display: "block" }}>
+                            {errors.travlers.message}
+                          </span>
+                        )}
+                      </div>
                     )}
                   />
                 </div>
               )}
-            </>
-          ) : null}
 
-          {/* <div>
-            <Button
-              onClick={locationSet}
-              className="btnForm mt-3"
-              color="primary"
-              disabled={isLoading}
-            >
-              {isLoading ? <Spinner size="sm" /> : "Create Route"}
-            </Button>
-          </div> */}
+              {/* Schedule Calendar & Time */}
+              {Schuale && (
+                <div style={{ marginTop: 16 }}>
+                  <div style={{ border: "1px solid #e5e7eb", borderRadius: 12, padding: 12, marginBottom: 12 }}>
+                    <Controller
+                      name="date"
+                      control={control}
+                      defaultValue={null}
+                      render={({ field }) => (
+                        <Calendar fullscreen={false} {...field} onSelect={(value) => { field.onChange(value) }} />
+                      )}
+                    />
+                  </div>
+                  {!RideTime && (
+                    <Controller
+                      name="time"
+                      control={control}
+                      defaultValue={null}
+                      render={({ field }) => (
+                        <TimePicker
+                          style={{ width: "100%", borderRadius: 10 }}
+                          use12Hours
+                          format="h:mm a"
+                          {...field}
+                          value={field.value ? moment(field.value, "h:mm a") : null}
+                          onChange={(value) => field.onChange(value ? value.format("h:mm a") : null)}
+                        />
+                      )}
+                    />
+                  )}
+                </div>
+              )}
 
-          <Button type="submit" className="btnForm mt-3" disabled={isLoading}>
-            {isLoading ? <Spinner size="sm" /> : "Next"}
-          </Button>
-        </Form>
+              <div style={{ height: 1, background: "#f3f4f6", margin: "20px 0" }} />
+
+              {/* Submit */}
+              <div style={{ display: "flex", justifyContent: "flex-end" }}>
+                <button
+                  type="submit"
+                  disabled={isLoading}
+                  style={{
+                    padding: "12px 36px",
+                    borderRadius: 12,
+                    background: isLoading ? "#9ca3af" : "#004a70",
+                    border: "none",
+                    color: "#fff",
+                    fontSize: 15,
+                    fontWeight: 600,
+                    cursor: isLoading ? "not-allowed" : "pointer",
+                    transition: "all 0.2s",
+                    display: "flex",
+                    alignItems: "center",
+                    gap: 8,
+                  }}
+                  onMouseEnter={(e) => {
+                    if (!isLoading) { e.currentTarget.style.background = "#003353"; e.currentTarget.style.boxShadow = "0 4px 12px rgba(0,74,112,0.3)" }
+                  }}
+                  onMouseLeave={(e) => {
+                    if (!isLoading) { e.currentTarget.style.background = "#004a70"; e.currentTarget.style.boxShadow = "none" }
+                  }}
+                >
+                  {isLoading ? <Spinner size="sm" style={{ color: "#fff" }} /> : "Next"}
+                </button>
+              </div>
+            </form>
+          </div>
+
+          {/* Map Card */}
+          <div style={{ background: "#fff", borderRadius: 14, border: "1px solid #f0f0f0", overflow: "hidden", minHeight: isMobile ? 300 : 500 }}>
+            <div
+              id="map-container"
+              ref={mapContainerRef}
+              style={{ width: "100%", height: isMobile ? 300 : 500 }}
+            />
+          </div>
+        </div>
       </div>
-      <div className="col-span-12 md:col-span-8">
-        <div
-          id="map-container"
-          className="w-full responsive-map"
-          ref={mapContainerRef}
-        />
-      </div>
 
+      {/* Location Permission Dialog */}
       {ShowPermissionDialog && (
-        <div className="fixed inset-0 bg-black bg-opacity-50 flex items-center justify-center p-4">
-          <div className="bg-white rounded-lg max-w-md w-full p-6 space-y-4">
-            <div className="space-y-2">
-              <h2 className="text-xl font-semibold text-gray-900">
-                Location Access Required
-              </h2>
-              <p className="font-Regular text-gray-600">
-                Please enable location access to use this feature. You can
-                enable it in your browser settings.
-              </p>
-            </div>
-            <div className="flex justify-end space-x-3">
+        <div style={{ position: "fixed", inset: 0, background: "rgba(0,0,0,0.5)", display: "flex", alignItems: "center", justifyContent: "center", padding: 16, zIndex: 1050 }}>
+          <div style={{ background: "#fff", borderRadius: 14, maxWidth: 400, width: "100%", padding: "clamp(20px, 3vw, 28px)" }}>
+            <h2 style={{ fontSize: 18, fontWeight: 600, color: "#1f2937", margin: "0 0 8px" }}>Location Access Required</h2>
+            <p style={{ fontSize: 14, color: "#6b7280", margin: "0 0 20px" }}>
+              Please enable location access to use this feature. You can enable it in your browser settings.
+            </p>
+            <div style={{ display: "flex", justifyContent: "flex-end", gap: 8 }}>
               <button
                 onClick={() => handlePermissionGuide(false)}
-                className="px-4 py-2 text-gray-600 hover:bg-gray-100 rounded-lg transition-colors duration-200 font-Regular"
+                style={{
+                  padding: "10px 20px", borderRadius: 10, background: "#f3f4f6", border: "none",
+                  color: "#374151", fontSize: 14, fontWeight: 500, cursor: "pointer",
+                }}
               >
                 Cancel
               </button>
               <button
                 onClick={handlePermissionGuide}
-                className="px-4 py-2 bg-[#005081]  text-white rounded transition-colors duration-200 font-Regular"
+                style={{
+                  padding: "10px 20px", borderRadius: 10, background: "#004a70", border: "none",
+                  color: "#fff", fontSize: 14, fontWeight: 500, cursor: "pointer",
+                }}
               >
                 Show Instructions
               </button>
@@ -1081,6 +1108,28 @@ const RidePage = () => {
     </div>
   );
 };
+
+const inputStyle = (error) => ({
+  borderRadius: 10,
+  border: error ? "1px solid #ef4444" : "1px solid #d1d5db",
+  padding: "10px 14px",
+  fontSize: 14,
+  marginTop: 0,
+  width: "100%",
+});
+
+const selectStyles = (error) => ({
+  control: (base) => ({
+    ...base,
+    borderRadius: 10,
+    borderColor: error ? "#ef4444" : "#d1d5db",
+    minHeight: 42,
+    fontSize: 14,
+    boxShadow: "none",
+    "&:hover": { borderColor: "#004a70" },
+  }),
+  placeholder: (base) => ({ ...base, fontSize: 14, color: "#9ca3af" }),
+});
 
 const MakeRIde = () => {
   return (
