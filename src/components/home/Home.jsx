@@ -58,10 +58,10 @@ const HomeComponent = () => {
             </div>
 
             <h1 className="text-white font-bold leading-[1.15] tracking-tight m-0 text-[clamp(1.8rem,5vw,3.5rem)] sm:text-[clamp(2rem,4vw,3.5rem)]">
-              Experience seamless rides with
-
-              reliable
-
+              Experience seamless rides with{" "}
+              <span className="bg-gradient-to-r from-brand-400 to-brand-500 bg-clip-text text-transparent">
+                reliable
+              </span>{" "}
               and affordable travel options
             </h1>
 

@@ -55,9 +55,12 @@ const Header = () => {
 
   useEffect(() => {
     const handleScrollEvent = () => {
-      setIsScrolled(window.scrollY > 60);
+      setIsScrolled(window.scrollY > 7);
     };
-    window.addEventListener("scroll", handleScrollEvent);
+
+    handleScrollEvent();
+    window.addEventListener("scroll", handleScrollEvent, { passive: true });
+
     return () => {
       window.removeEventListener("scroll", handleScrollEvent);
     };
@@ -84,9 +87,9 @@ const Header = () => {
   return (
     <>
       <header
-        className={`absolute top-0 left-0 right-0 z-[1000] transition-all duration-300 ${isScrolled
-          ? "shadow-lg py-2"
-          : "py-4"
+        className={`fixed top-0 left-0 right-0 z-[1000] transition-all duration-300 ${isScrolled
+          ? "bg-black shadow-lg py-2"
+          : "bg-transparent py-4"
           }`}
       >
         <div className="max-w-[1320px] mx-auto px-4 sm:px-6 lg:px-8 flex items-center justify-between gap-3 sm:gap-6 lg:gap-8">

@@ -60,19 +60,17 @@ const ClientWrapper = ({ children }) => {
   };
 
   return (
-    <html lang="en">
+    <>
       <Script
         src="https://code.tidio.co/58c3oqohlxcbme9g3rrfxz0gdeygp7i3.js"
         strategy="afterInteractive"
       />
-      <body>
-        <StyledComponentsRegistry>
-          <Provider store={store}>
-            <MainLayout>{children}</MainLayout>
-          </Provider>
-        </StyledComponentsRegistry>
-      </body>
-    </html>
+      <StyledComponentsRegistry>
+        <Provider store={store}>
+          <MainLayout>{children}</MainLayout>
+        </Provider>
+      </StyledComponentsRegistry>
+    </>
   );
 };
 
