@@ -563,683 +563,792 @@ const page = () => {
     name: "highlights",
   });
 
+  const [isMobile, setIsMobile] = useState(false);
+
+  useEffect(() => {
+    const handleResize = () => setIsMobile(window.innerWidth < 768);
+    handleResize();
+    window.addEventListener("resize", handleResize);
+    return () => window.removeEventListener("resize", handleResize);
+  }, []);
+
   return (
-    <>
-      <div className="bread">
-        <h5 className="medium-font">Home/List Own Place</h5>
-        <h3 className="medium-font">List Own Place</h3>
+    <div style={{ minHeight: "100vh", background: "#f8fafc" }}>
+      {/* Header */}
+      <div
+        style={{
+          background: "linear-gradient(135deg, #004a70 0%, #002d47 100%)",
+          padding: "28px 0 44px",
+        }}
+      >
+        <div style={{ maxWidth: 1200, margin: "0 auto", padding: "0 16px" }}>
+          <div style={{ color: "rgba(255,255,255,0.6)", fontSize: 13, marginBottom: 8 }}>
+            Home / List Own Place
+          </div>
+          <h1
+            style={{
+              color: "#fff",
+              fontSize: "clamp(22px, 4vw, 28px)",
+              fontWeight: 700,
+              margin: 0,
+              letterSpacing: "-0.3px",
+              display: "flex",
+              alignItems: "center",
+              gap: 10,
+            }}
+          >
+            <svg width={24} height={24} viewBox="0 0 24 24" fill="none" stroke="#fff" strokeWidth={1.5}>
+              <path strokeLinecap="round" strokeLinejoin="round" d="M8.25 21v-4.875c0-.621.504-1.125 1.125-1.125h2.25c.621 0 1.125.504 1.125 1.125V21m0 0h4.5V3.545M12.75 21h7.5V10.75M2.25 21h1.5m18 0h-18M2.25 9l4.5-1.636M18.75 3l-1.5.545m0 6.205l3 1m1.5.5l-1.5-.5M6.75 7.364V3h-3v18m3-13.636l10.5-3.819" />
+            </svg>
+            List Your Place
+          </h1>
+        </div>
       </div>
-      <Container>
+
+      <div style={{ maxWidth: 1200, margin: "-24px auto 0", padding: "0 16px 48px" }}>
         <Form onSubmit={handleSubmit(onSubmit)}>
-          <div className="row gy-1">
-            {/* Other fields */}
-            <div className="col-md-12">
-              <Label for="category">Category</Label>
-              <Controller
-                name="category"
-                control={control}
-                rules={{ required: "Category is required" }}
-                render={({ field: { onChange, value, ref } }) => (
-                  <>
-                    <Select
-                      ref={ref}
-                      placeholder="Select Category"
-                      options={Category.map((cat) => ({
-                        value: cat._id,
-                        label: cat.name,
-                      }))}
-                      onChange={(selectedOption) => {
-                        handleCategoryChange(selectedOption);
-                        onChange(selectedOption?.value);
-                      }}
-                      value={
-                        Category.map((cat) => ({
+          <div
+            style={{
+              background: "#fff",
+              borderRadius: 14,
+              border: "1px solid #f0f0f0",
+              padding: "clamp(20px, 3vw, 32px)",
+            }}
+          >
+
+            <div style={{ display: "grid", gridTemplateColumns: isMobile ? "1fr" : "1fr 1fr", gap: "12px 20px" }}>
+              {/* Category */}
+              <div>
+                <Label for="category" style={{ fontSize: 13, fontWeight: 500, color: "#374151", display: "block", marginBottom: 4 }}>
+                  Category <span style={{ color: "#ef4444" }}>*</span>
+                </Label>
+                <Controller
+                  name="category"
+                  control={control}
+                  rules={{ required: "Category is required" }}
+                  render={({ field: { onChange, value, ref } }) => (
+                    <>
+                      <Select
+                        ref={ref}
+                        placeholder="Select Category"
+                        options={Category.map((cat) => ({
                           value: cat._id,
                           label: cat.name,
-                        })).find((option) => option.value === value) || null
-                      }
-                      isClearable
-                      className={errors.category ? "is-invalid" : ""}
-                    />
-                    {errors.category && (
-                      <FormFeedback className="text-danger">
-                        {errors.category.message}
-                      </FormFeedback>
-                    )}
-                  </>
-                )}
-              />
-            </div>
-
-            <div className="col-md-12">
-              <Label for="sucat">Sub Category Name</Label>
-              <Controller
-                name="sucat"
-                control={control}
-                rules={{
-                  validate: (value) =>
-                    value && value.length > 0 ? true : "Category is required",
-                }}
-                render={({ field: { onChange, value, ref } }) => (
-                  <>
-                    <Select
-                      ref={ref}
-                      isMulti
-                      placeholder="Select Category"
-                      getOptionLabel={(e) => e.name}
-                      getOptionValue={(e) => e._id}
-                      options={Category}
-                      onChange={(selectedOption) => {
-                        const sanitized = selectedOption || [];
-                        handleSubCategoryChange(sanitized);
-                        onChange(sanitized);
-                      }}
-                      value={value || []}
-                      isClearable
-                    />
-                    {errors.sucat && (
-                      <div className="invalid-feedback">
-                        {errors.sucat.message}
-                      </div>
-                    )}
-                  </>
-                )}
-              />
-            </div>
-
-            {/* <div className="col-md-12 mt-3">
-              <Label for="sucat">Sub Category Name</Label>
-              <Controller
-                id="sucat"
-                name="sucat"
-                control={control}
-                render={({ field }) => (
-                  <Input
-                    {...field}
-                    placeholder="Enter Name"
-                    invalid={errors.sucat && true}
-                  />
-                )}
-              />
-              {errors.sucat && (
-                <FormFeedback>{errors.sucat.message}</FormFeedback>
-              )}
-            </div> */}
-
-            <div className="col-md-12 mt-3">
-              <Label for="location">Start Location</Label>
-              <Controller
-                name="location"
-                control={control}
-                render={({ field }) => (
-                  <div style={{ position: "relative" }}>
-                    <Input
-                      {...field}
-                      placeholder="Enter start location"
-                      value={searchQuery}
-                      onChange={(e) => handleSearch(e.target.value)}
-                      invalid={errors.location && true}
-                    />
-                    {errors.location && (
-                      <FormFeedback>{errors.location.message}</FormFeedback>
-                    )}
-                    {PridicLoading && <div>Loading...</div>}
-                    {predictions.length > 0 && (
-                      <ListGroup
-                        style={{
-                          position: "absolute",
-                          zIndex: 10,
-                          width: "100%",
-                          maxHeight: "200px",
-                          overflowY: "auto",
+                        }))}
+                        onChange={(selectedOption) => {
+                          handleCategoryChange(selectedOption);
+                          onChange(selectedOption?.value);
                         }}
-                      >
-                        {predictions.map((prediction) => (
-                          <ListGroupItem
-                            key={prediction.place_id}
-                            onClick={() => handlePredictionPress(prediction)}
-                            style={{ cursor: "pointer" }}
-                          >
-                            {prediction.description}
-                          </ListGroupItem>
-                        ))}
-                      </ListGroup>
-                    )}
-                    {noData && <div>No results found</div>}
-                  </div>
-                )}
-              />
-            </div>
-
-            <div className="mb-1 w-100">
-              {highlightFields.map((field, index) => (
-                <div
-                  key={field.id}
-                  className="d-flex align-items-center gap-2 mt-2"
-                >
-                  <Controller
-                    name={`highlights.${index}`}
-                    control={control}
-                    render={({ field }) => (
-                      <Input
-                        {...field}
-                        type="text"
-                        invalid={errors?.highlights?.[index] && true}
-                        value={field.value || ""}
-                        onChange={(e) => field.onChange(e.target.value)}
+                        value={
+                          Category.map((cat) => ({
+                            value: cat._id,
+                            label: cat.name,
+                          })).find((option) => option.value === value) || null
+                        }
+                        isClearable
+                        styles={selectStyles(errors.category)}
                       />
-                    )}
-                  />
-                  <Button color="danger" onClick={() => removeHighlight(index)}>
-                    X
-                  </Button>
-                </div>
-              ))}
-
-              <Button
-                color="secondary"
-                className="mt-2"
-                onClick={() => addHighlight("")}
-              >
-                Add Highlights
-              </Button>
-            </div>
-
-            {selectedCategory?.name === "Excursion" && (
-              <>
-                <div className="mb-1 w-100">
-                  {timeFields.map((field, index) => (
-                    <div
-                      key={field.id}
-                      className="d-flex align-items-center gap-2 mt-2"
-                    >
-                      {/* Time Picker */}
-                      <Controller
-                        name={`timeSlots.${index}`}
-                        control={control}
-                        render={({ field }) => (
-                          <Input
-                            {...field}
-                            type="time"
-                            invalid={errors?.timeSlots?.[index] && true}
-                            value={field.value || ""}
-                            onChange={(e) => field.onChange(e.target.value)}
-                          />
-                        )}
-                      />
-                      <Button color="danger" onClick={() => removeTime(index)}>
-                        X
-                      </Button>
-                    </div>
-                  ))}
-
-                  <Button
-                    color="secondary"
-                    className="mt-2"
-                    onClick={() => addTime("")} // Append only time strings
-                  >
-                    Add Time
-                  </Button>
-                </div>
-
-                <div className="col-md-12 mt-3">
-                  <Label for="title">Trevelers</Label>
-                  <Controller
-                    id="trevelers"
-                    name="trevelers"
-                    control={control}
-                    render={({ field }) => (
-                      <Input
-                        required
-                        {...field}
-                        placeholder="Enter Persons"
-                        invalid={errors.trevelers && true}
-                      />
-                    )}
-                  />
-                  {errors.trevelers && (
-                    <FormFeedback>{errors.trevelers.message}</FormFeedback>
+                      {errors.category && (
+                        <FormFeedback style={{ fontSize: 12, marginTop: 4, color: "#ef4444", display: "block" }}>
+                          {errors.category.message}
+                        </FormFeedback>
+                      )}
+                    </>
                   )}
-                </div>
+                />
+              </div>
 
-                <div className="col-md-12 mt-3">
-                  <Label for="title">Price Per Person</Label>
-                  <Controller
-                    id="price_per_person"
-                    name="price_per_person"
-                    control={control}
-                    render={({ field }) => (
-                      <Input
-                        {...field}
-                        required
-                        type="number"
-                        placeholder="Enter Price"
-                        invalid={errors.price_per_person && true}
-                      />
-                    )}
-                  />
-                  {errors.price_per_person && (
-                    <FormFeedback>
-                      {errors.price_per_person.message}
-                    </FormFeedback>
-                  )}
-                </div>
-              </>
-            )}
-
-            {selectedCategory?.name !== "Excursion" && (
-              <div className="col-md-12 mt-3">
-                <Label for="location_price">Location Price</Label>
+              {/* Sub Category */}
+              <div>
+                <Label for="sucat" style={{ fontSize: 13, fontWeight: 500, color: "#374151", display: "block", marginBottom: 4 }}>
+                  Sub Category <span style={{ color: "#ef4444" }}>*</span>
+                </Label>
                 <Controller
-                  id="location_price"
-                  name="location_price"
+                  name="sucat"
+                  control={control}
+                  rules={{
+                    validate: (value) =>
+                      value && value.length > 0 ? true : "Sub category is required",
+                  }}
+                  render={({ field: { onChange, value, ref } }) => (
+                    <>
+                      <Select
+                        ref={ref}
+                        isMulti
+                        placeholder="Select Sub Category"
+                        getOptionLabel={(e) => e.name}
+                        getOptionValue={(e) => e._id}
+                        options={Category}
+                        onChange={(selectedOption) => {
+                          const sanitized = selectedOption || [];
+                          handleSubCategoryChange(sanitized);
+                          onChange(sanitized);
+                        }}
+                        value={value || []}
+                        isClearable
+                        styles={selectStyles(errors.sucat)}
+                      />
+                      {errors.sucat && (
+                        <div style={{ fontSize: 12, marginTop: 4, color: "#ef4444" }}>
+                          {errors.sucat.message}
+                        </div>
+                      )}
+                    </>
+                  )}
+                />
+              </div>
+
+              {/* Title */}
+              <div>
+                <Label style={{ fontSize: 13, fontWeight: 500, color: "#374151", display: "block", marginBottom: 4 }}>
+                  Title <span style={{ color: "#ef4444" }}>*</span>
+                </Label>
+                <Controller
+                  name="title"
                   control={control}
                   render={({ field }) => (
                     <Input
-                      required
                       {...field}
-                      placeholder="Enter Price"
-                      invalid={errors.location_price && true}
+                      placeholder="Enter title"
+                      style={inputStyle(errors.title)}
+                      invalid={errors.title && true}
                     />
                   )}
                 />
-                {errors.location_price && (
-                  <FormFeedback>{errors.location_price.message}</FormFeedback>
+                {errors.title && (
+                  <FormFeedback style={{ fontSize: 12, marginTop: 4, color: "#ef4444", display: "block" }}>
+                    {errors.title.message}
+                  </FormFeedback>
                 )}
               </div>
-            )}
 
-            <div className="col-md-12 mt-3">
-              <Label for="title">Title</Label>
-              <Controller
-                id="title"
-                name="title"
-                control={control}
-                render={({ field }) => (
-                  <Input
-                    {...field}
-                    placeholder="Enter title"
-                    invalid={errors.title && true}
-                  />
-                )}
-              />
-              {errors.title && (
-                <FormFeedback>{errors.title.message}</FormFeedback>
-              )}
+              {/* Location */}
+              <div>
+                <Label style={{ fontSize: 13, fontWeight: 500, color: "#374151", display: "block", marginBottom: 4 }}>
+                  Start Location
+                </Label>
+                <Controller
+                  name="location"
+                  control={control}
+                  render={({ field }) => (
+                    <div style={{ position: "relative" }}>
+                      <Input
+                        {...field}
+                        placeholder="Enter start location"
+                        value={searchQuery}
+                        onChange={(e) => handleSearch(e.target.value)}
+                        style={{ ...inputStyle(errors.location), paddingRight: 30 }}
+                        invalid={errors.location && true}
+                      />
+                      {PridicLoading && <span style={{ position: "absolute", right: 10, top: "50%", transform: "translateY(-50%)", fontSize: 12, color: "#9ca3af" }}>Loading...</span>}
+                      {predictions.length > 0 && (
+                        <div
+                          style={{
+                            position: "absolute",
+                            zIndex: 10,
+                            width: "100%",
+                            maxHeight: 200,
+                            overflowY: "auto",
+                            background: "#fff",
+                            borderRadius: 10,
+                            border: "1px solid #e5e7eb",
+                            marginTop: 4,
+                          }}
+                        >
+                          {predictions.map((prediction) => (
+                            <div
+                              key={prediction.place_id}
+                              onClick={() => handlePredictionPress(prediction)}
+                              style={{
+                                padding: "10px 14px",
+                                cursor: "pointer",
+                                fontSize: 13,
+                                borderBottom: "1px solid #f3f4f6",
+                              }}
+                              onMouseEnter={(e) => (e.currentTarget.style.background = "#f3f4f6")}
+                              onMouseLeave={(e) => (e.currentTarget.style.background = "transparent")}
+                            >
+                              {prediction.description}
+                            </div>
+                          ))}
+                        </div>
+                      )}
+                      {noData && <span style={{ fontSize: 12, color: "#9ca3af", marginTop: 4, display: "block" }}>No results found</span>}
+                    </div>
+                  )}
+                />
+              </div>
             </div>
 
-            <div className="col-md-12 mt-3">
-              <Label for="description">Description</Label>
+            {/* Description */}
+            <div style={{ marginTop: 16 }}>
+              <Label style={{ fontSize: 13, fontWeight: 500, color: "#374151", display: "block", marginBottom: 4 }}>
+                Description <span style={{ color: "#ef4444" }}>*</span>
+              </Label>
               <Controller
-                id="description"
                 name="description"
                 control={control}
                 render={({ field }) => (
                   <Input
                     type="textarea"
                     {...field}
-                    placeholder="Enter Name"
-                    invalid={errors.sucat && true}
+                    placeholder="Describe your place..."
+                    style={{ ...inputStyle(errors.description), minHeight: 100, resize: "vertical" }}
+                    invalid={errors.description && true}
                   />
                 )}
               />
               {errors.description && (
-                <FormFeedback>{errors.description.message}</FormFeedback>
+                <FormFeedback style={{ fontSize: 12, marginTop: 4, color: "#ef4444", display: "block" }}>
+                  {errors.description.message}
+                </FormFeedback>
               )}
             </div>
 
-            <div className="col-md-12 mt-3">
-              <Label for="images">Image Upload</Label>
-              <Input
-                className="uploadFeild"
-                type="file"
-                multiple
-                accept="image/*"
-                onChange={handleImagesChange}
-                disabled={imageLoading}
-              />
-              {errors.images && (
-                <FormFeedback>{errors.images.message}</FormFeedback>
-              )}
-            </div>
+            <div style={{ height: 1, background: "#f3f4f6", margin: "20px 0" }} />
 
-            <div className="col-md-12  d-flex mt-3">
-              {imageLoading ? (
-                <Spinner size="sm" />
-              ) : (
-                <>
-                  {imageUrls.map((preview, index) => (
-                    <div
-                      key={index}
-                      style={{ width: "fit-content" }}
-                      className="position-relative me-2 mb-2 "
-                    >
-                      <img
-                        src={preview}
-                        alt={`Preview ${index + 1}`}
-                        style={{
-                          width: "100px",
-                          maxHeight: "100px",
-                          objectFit: "cover",
-                        }}
-                      />
-                      <FaTimesCircle
-                        className="position-absolute"
-                        style={{
-                          top: "-10px",
-                          right: "-10px",
-                          cursor: "pointer",
-                          color: "red",
-                        }}
-                        onClick={() => handleRemoveImage(index)}
-                      />
-                    </div>
-                  ))}
-                </>
-              )}
-            </div>
-            <div className="col-md-12">
+            <p style={{ fontSize: 15, fontWeight: 600, color: "#1f2937", margin: "0 0 12px" }}>
+              Highlights
+            </p>
+            {highlightFields.map((field, index) => (
               <div
-                className="paywith cursor-pointer"
-                style={{
-                  backgroundColor:
-                    PaymentMethod == "jad" ? "#004a70" : "transparent",
-                }}
-                onClick={() => selectMethod("jad")}
+                key={field.id}
+                style={{ display: "flex", gap: 8, marginBottom: 8 }}
               >
-                <h6
-                  style={{
-                    color: PaymentMethod == "jad" ? "#fff" : "#004a70",
-                  }}
-                  className="medium-font"
-                >
-                  Credit/Debit
-                </h6>
-              </div>
-            </div>
-            <div className="col-md-12">
-              <div
-                className="paywith cursor-pointer"
-                style={{
-                  backgroundColor:
-                    PaymentMethod == "wallet" ? "#004a70" : "transparent",
-                }}
-                onClick={() => selectMethod("wallet")}
-              >
-                <FaWallet
-                  size={30}
-                  color={PaymentMethod == "wallet" ? "#fff" : "#004a70"}
+                <Controller
+                  name={`highlights.${index}`}
+                  control={control}
+                  render={({ field }) => (
+                    <Input
+                      {...field}
+                      type="text"
+                      placeholder="Enter highlight"
+                      value={field.value || ""}
+                      onChange={(e) => field.onChange(e.target.value)}
+                      style={{ ...inputStyle(errors?.highlights?.[index]), flex: 1 }}
+                    />
+                  )}
                 />
-
-                <h6
-                  className="medium-font"
+                <button
+                  type="button"
+                  onClick={() => removeHighlight(index)}
                   style={{
-                    color: PaymentMethod == "wallet" ? "#fff" : "#004a70",
+                    width: 38,
+                    height: 38,
+                    borderRadius: 10,
+                    background: "#fef2f2",
+                    border: "1px solid #fecaca",
+                    color: "#ef4444",
+                    cursor: "pointer",
+                    display: "flex",
+                    alignItems: "center",
+                    justifyContent: "center",
+                    fontSize: 14,
+                    fontWeight: 600,
+                    flexShrink: 0,
                   }}
                 >
-                  Wallet
-                </h6>
-              </div>
-            </div>
-
-            <div className="col-md-12 mt-3 mb-5">
-              <Button
-                className="btnForm mt-3"
-                type="submit"
-                color="primary"
-                disabled={isLoading || imageLoading}
-              >
-                {isLoading ? <Spinner size="sm" /> : "Submit"}
-              </Button>
-            </div>
-          </div>
-        </Form>
-
-        <Modal centered size="lg" show={show} onHide={handleClose}>
-          <Modal.Header closeButton>
-            <Modal.Title>Payment</Modal.Title>
-          </Modal.Header>
-          <Modal.Body>
-            {paymentCards?.length ? (
-              <div className="font-bold text-2xl mb-2.5">Saved Cards</div>
-            ) : null}
-
-            {paymentCards?.map((item, i) => (
-              <div
-                onClick={() => onSelectCard(item)}
-                key={i}
-                className="bg-white p-4 mb-4 rounded-lg shadow-md cursor-pointer"
-              >
-                <div className="flex justify-between items-center mb-1.5">
-                  <div className="text-gray-500 text-sm mr-2">Name</div>
-                  <div className="font-bold text-lg">
-                    {`${item?.cardfirstname} ${item?.cardlastname}`}
-                  </div>
-                </div>
-                <div className="flex justify-between items-center">
-                  <div className="text-gray-500 text-sm mr-2">Number</div>
-                  <div className="font-bold text-lg">{item?.cardnumber}</div>
-                </div>
+                  ✕
+                </button>
               </div>
             ))}
+            <button
+              type="button"
+              onClick={() => addHighlight("")}
+              style={{
+                padding: "10px 20px",
+                borderRadius: 10,
+                background: "#f0f7ff",
+                border: "1px dashed #004a70",
+                color: "#004a70",
+                fontSize: 13,
+                fontWeight: 500,
+                cursor: "pointer",
+                transition: "all 0.15s",
+              }}
+              onMouseEnter={(e) => { e.currentTarget.style.background = "#e0edf7" }}
+              onMouseLeave={(e) => { e.currentTarget.style.background = "#f0f7ff" }}
+            >
+              + Add Highlight
+            </button>
 
-            {/* <form> */}
-            <h2 className="text-2xl font-bold mb-6">Price</h2>
-
-            <div className="grid grid-cols-1 md:grid-cols-12 gap-4 mt-2">
-              <div className="md:col-span-6">
-                <Cards
-                  className="cardStyle"
-                  cvc={cardDetails.cvc}
-                  expiry={cardDetails.expiry}
-                  name={cardDetails.name}
-                  number={cardDetails.number}
-                />
-              </div>
-
-              <div className="md:col-span-6">
-                <input
-                  className="w-full p-3 border rounded-lg mb-2 mt-2"
-                  type="text"
-                  name="number"
-                  placeholder="Card Number"
-                  value={cardDetails.number}
-                  onChange={handleInputChange}
-                  maxLength="16"
-                  required
-                />
-                <input
-                  className="w-full p-3 border rounded-lg mb-2 mt-2"
-                  type="text"
-                  name="name"
-                  placeholder="Cardholder Name"
-                  value={cardDetails.name}
-                  onChange={handleInputChange}
-                  required
-                />
-                <input
-                  className="w-full p-3 border rounded-lg mb-2 "
-                  type="text"
-                  name="expiry"
-                  placeholder="MM/YY"
-                  value={cardDetails.expiry}
-                  onChange={(e) => {
-                    let value = e.target.value.replace(/\D/g, "");
-                    if (value.length >= 3) {
-                      value = value.slice(0, 2) + "/" + value.slice(2, 4);
-                    }
-                    e.target.value = value.slice(0, 5);
-                    handleInputChange(e);
-                  }}
-                  maxLength="5"
-                  required
-                />
-                <input
-                  className="w-full p-3 border rounded-lg mb-2 "
-                  type="text"
-                  name="cvc"
-                  placeholder="CVC"
-                  value={cardDetails.cvc}
-                  onChange={handleInputChange}
-                  maxLength="3"
-                  required
-                />
-              </div>
-            </div>
-
-            <div className="grid grid-cols-1 md:grid-cols-12 gap-4 mt-2">
-              <div className="md:col-span-6">
-                <input
-                  className="w-full p-3 border rounded-lg mb-2 mt-2"
-                  type="text"
-                  name="firstName"
-                  placeholder="First Name"
-                  value={cardDetails.firstName}
-                  onChange={handleInputChange}
-                  required
-                />
-                <input
-                  className="w-full p-3 border rounded-lg mb-2 mt-2"
-                  type="text"
-                  name="address"
-                  placeholder="Address line 1"
-                  value={cardDetails.address}
-                  onChange={handleInputChange}
-                  required
-                />
-                <input
-                  className="w-full p-3 border rounded-lg mb-2 mt-2"
-                  type="text"
-                  name="countary"
-                  placeholder="Country"
-                  value={cardDetails.countary}
-                  onChange={handleInputChange}
-                  required
-                />
-                <input
-                  className="w-full p-3 border rounded-lg mb-2 mt-2"
-                  type="text"
-                  name="city"
-                  placeholder="City"
-                  value={cardDetails.city}
-                  onChange={handleInputChange}
-                  required
-                />
-                <input
-                  className="w-full p-3 border rounded-lg mb-2 mt-2"
-                  type="text"
-                  name="email"
-                  placeholder="Email"
-                  value={cardDetails.email}
-                  onChange={handleInputChange}
-                  required
-                />
-              </div>
-
-              <div className="md:col-span-6">
-                <input
-                  className="w-full p-3 border rounded-lg mb-2 mt-2"
-                  type="text"
-                  name="lastName"
-                  placeholder="Last Name"
-                  value={cardDetails.lastName}
-                  onChange={handleInputChange}
-                  required
-                />
-                <input
-                  className="w-full p-3 border rounded-lg mb-2 mt-2"
-                  type="text"
-                  name="postalCode"
-                  placeholder="Postal Code (optional)"
-                  value={cardDetails.postalCode}
-                  onChange={handleInputChange}
-                  required
-                />
-                <input
-                  className="w-full p-3 border rounded-lg mb-2 mt-2"
-                  type="text"
-                  name="state"
-                  placeholder="State"
-                  value={cardDetails.state}
-                  onChange={handleInputChange}
-                  required
-                />
-                <input
-                  className="w-full p-3 border rounded-lg mb-2 mt-2"
-                  type="text"
-                  name="phone"
-                  placeholder="Phone"
-                  value={cardDetails.phone}
-                  onChange={handleInputChange}
-                  required
-                />
-              </div>
-            </div>
-
-            <div className="mt-6">
-              <button
-                onClick={jadAPiFunction}
-                disabled={!areAllFieldsFilled()}
-                className={`w-full h-14 px-4 py-2 rounded-lg text-white hover:bg-[#234670] ${
-                  !areAllFieldsFilled() ? "bg-[#d3d3d3]" : "bg-[#1e3a5f]"
-                }`}
-              >
-                {loading ? (
-                  <Spinner animation="border" role="status">
-                    <span className="visually-hidden">Loading...</span>
-                  </Spinner>
-                ) : (
-                  " Add Payment Method"
-                )}
-              </button>
-            </div>
-
-            {/* </form> */}
-          </Modal.Body>
-        </Modal>
-
-        <Modal show={show1} onHide={() => setShow1(false)} centered>
-          <Modal.Body className="p-6">
-            <div className="flex flex-col items-center">
-              <div className="mb-4">
-                <div className="w-16 h-16 bg-green-100 rounded-full flex items-center justify-center">
-                  <svg
-                    xmlns="http://www.w3.org/2000/svg"
-                    fill="none"
-                    viewBox="0 0 24 24"
-                    strokeWidth="2"
-                    stroke="currentColor"
-                    className="w-10 h-10 text-green-500"
-                  >
-                    <path
-                      strokeLinecap="round"
-                      strokeLinejoin="round"
-                      d="M5 13l4 4L19 7"
-                    />
-                  </svg>
+          {/* Excursion Section */}
+          {selectedCategory?.name === "Excursion" && (
+            <>
+              <div style={{ height: 1, background: "#f3f4f6", margin: "20px 0" }} />
+              <p style={{ fontSize: 15, fontWeight: 600, color: "#1f2937", margin: "0 0 12px" }}>
+                Excursion Details
+              </p>
+              <div style={{ display: "grid", gridTemplateColumns: isMobile ? "1fr" : "1fr 1fr", gap: "12px 20px", marginBottom: 16 }}>
+                <div>
+                  <Label style={{ fontSize: 13, fontWeight: 500, color: "#374151", display: "block", marginBottom: 4 }}>
+                    Travelers
+                  </Label>
+                  <Controller
+                    name="trevelers"
+                    control={control}
+                    render={({ field }) => (
+                      <Input {...field} required placeholder="Max travelers" style={inputStyle(errors.trevelers)} invalid={errors.trevelers && true} />
+                    )}
+                  />
+                  {errors.trevelers && <FormFeedback style={{ fontSize: 12, marginTop: 4, color: "#ef4444", display: "block" }}>{errors.trevelers.message}</FormFeedback>}
+                </div>
+                <div>
+                  <Label style={{ fontSize: 13, fontWeight: 500, color: "#374151", display: "block", marginBottom: 4 }}>
+                    Price Per Person ($)
+                  </Label>
+                  <Controller
+                    name="price_per_person"
+                    control={control}
+                    render={({ field }) => (
+                      <Input {...field} required type="number" placeholder="0.00" style={inputStyle(errors.price_per_person)} invalid={errors.price_per_person && true} />
+                    )}
+                  />
+                  {errors.price_per_person && <FormFeedback style={{ fontSize: 12, marginTop: 4, color: "#ef4444", display: "block" }}>{errors.price_per_person.message}</FormFeedback>}
                 </div>
               </div>
-              <h2 className="text-xl font-Bold mb-2">Payment Success</h2>
-              <p className="font-medium text-gray-500 text-center mb-4">
-                Your money has been successfully
-              </p>
-
-              <Button
-                className="findDriver mt-5"
-                // style={{ position: "absolute", bottom: 20, width: "90%" }}
-                onClick={() => {
-                  setShow1(false);
-                  router.push("/");
+              <p style={{ fontSize: 13, fontWeight: 500, color: "#374151", marginBottom: 8 }}>Time Slots</p>
+              {timeFields.map((field, index) => (
+                <div key={field.id} style={{ display: "flex", gap: 8, marginBottom: 8 }}>
+                  <Controller
+                    name={`timeSlots.${index}`}
+                    control={control}
+                    render={({ field }) => (
+                      <Input
+                        {...field}
+                        type="time"
+                        value={field.value || ""}
+                        onChange={(e) => field.onChange(e.target.value)}
+                        style={{ ...inputStyle(errors?.timeSlots?.[index]), flex: 1 }}
+                      />
+                    )}
+                  />
+                  <button
+                    type="button"
+                    onClick={() => removeTime(index)}
+                    style={{
+                      width: 38,
+                      height: 38,
+                      borderRadius: 10,
+                      background: "#fef2f2",
+                      border: "1px solid #fecaca",
+                      color: "#ef4444",
+                      cursor: "pointer",
+                      display: "flex",
+                      alignItems: "center",
+                      justifyContent: "center",
+                      flexShrink: 0,
+                    }}
+                  >
+                    ✕
+                  </button>
+                </div>
+              ))}
+              <button
+                type="button"
+                onClick={() => addTime("")}
+                style={{
+                  padding: "10px 20px",
+                  borderRadius: 10,
+                  background: "#f0f7ff",
+                  border: "1px dashed #004a70",
+                  color: "#004a70",
+                  fontSize: 13,
+                  fontWeight: 500,
+                  cursor: "pointer",
+                  transition: "all 0.15s",
                 }}
+                onMouseEnter={(e) => { e.currentTarget.style.background = "#e0edf7" }}
+                onMouseLeave={(e) => { e.currentTarget.style.background = "#f0f7ff" }}
               >
-                Back to Home
-              </Button>
+                + Add Time Slot
+              </button>
+            </>)}
+
+          {/* Non-Excursion Price */}
+          {selectedCategory?.name !== "Excursion" && (
+            <>
+              <div style={{ height: 1, background: "#f3f4f6", margin: "20px 0" }} />
+              <div style={{ maxWidth: 300 }}>
+                <Label style={{ fontSize: 13, fontWeight: 500, color: "#374151", display: "block", marginBottom: 4 }}>
+                  Location Price ($)
+                </Label>
+                <Controller
+                  name="location_price"
+                  control={control}
+                  render={({ field }) => (
+                    <Input
+                      {...field}
+                      required
+                      placeholder="0.00"
+                      style={inputStyle(errors.location_price)}
+                      invalid={errors.location_price && true}
+                    />
+                  )}
+                />
+                {errors.location_price && (
+                  <FormFeedback style={{ fontSize: 12, marginTop: 4, color: "#ef4444", display: "block" }}>
+                    {errors.location_price.message}
+                  </FormFeedback>
+                )}
+              </div>
+            </>
+          )}
+
+          {/* Images */}
+          <div style={{ height: 1, background: "#f3f4f6", margin: "20px 0" }} />
+          <p style={{ fontSize: 15, fontWeight: 600, color: "#1f2937", margin: "0 0 12px" }}>
+            Images
+          </p>
+          <div
+            style={{
+              border: "2px dashed #d1d5db",
+              borderRadius: 12,
+              padding: 32,
+              textAlign: "center",
+              cursor: "pointer",
+              transition: "all 0.15s",
+              background: "#fafafa",
+            }}
+            onClick={() => document.getElementById("image-upload-input").click()}
+            onMouseEnter={(e) => { e.currentTarget.style.borderColor = "#004a70"; e.currentTarget.style.background = "#f0f7ff" }}
+            onMouseLeave={(e) => { e.currentTarget.style.borderColor = "#d1d5db"; e.currentTarget.style.background = "#fafafa" }}
+          >
+            <svg width={32} height={32} viewBox="0 0 24 24" fill="none" stroke="#9ca3af" strokeWidth={1.5}>
+              <path strokeLinecap="round" strokeLinejoin="round" d="M2.25 15.75l5.159-5.159a2.25 2.25 0 0 1 3.182 0l5.159 5.159m-1.5-1.5l1.409-1.409a2.25 2.25 0 0 1 3.182 0l2.909 2.909M3.75 21h16.5A2.25 2.25 0 0 0 22.5 18.75V5.25A2.25 2.25 0 0 0 20.25 3H3.75A2.25 2.25 0 0 0 1.5 5.25v13.5A2.25 2.25 0 0 0 3.75 21Z" />
+            </svg>
+            <p style={{ fontSize: 14, color: "#6b7280", margin: "8px 0 0" }}>
+              {imageLoading ? "Uploading..." : "Click or drag images here"}
+            </p>
+            <p style={{ fontSize: 12, color: "#9ca3af", margin: "4px 0 0" }}>
+              JPG, PNG, SVG up to 1MB each
+            </p>
+            <Input
+              id="image-upload-input"
+              type="file"
+              multiple
+              accept="image/*"
+              onChange={handleImagesChange}
+              disabled={imageLoading}
+              style={{ display: "none" }}
+            />
+          </div>
+
+          {imageUrls.length > 0 && (
+            <div style={{ display: "flex", flexWrap: "wrap", gap: 10, marginTop: 14 }}>
+              {imageUrls.map((url, index) => (
+                <div key={index} style={{ position: "relative", width: 100, height: 100, borderRadius: 10, overflow: "hidden" }}>
+                  <img src={url} alt={`Upload ${index + 1}`} style={{ width: "100%", height: "100%", objectFit: "cover" }} />
+                  <button
+                    type="button"
+                    onClick={() => handleRemoveImage(index)}
+                    style={{
+                      position: "absolute",
+                      top: 4,
+                      right: 4,
+                      width: 22,
+                      height: 22,
+                      borderRadius: "50%",
+                      background: "rgba(0,0,0,0.5)",
+                      border: "none",
+                      color: "#fff",
+                      fontSize: 12,
+                      cursor: "pointer",
+                      display: "flex",
+                      alignItems: "center",
+                      justifyContent: "center",
+                    }}
+                  >
+                    ✕
+                  </button>
+                </div>
+              ))}
             </div>
-          </Modal.Body>
-        </Modal>
-      </Container>
-    </>
+          )}
+
+          {/* Payment Method */}
+          <div style={{ height: 1, background: "#f3f4f6", margin: "20px 0" }} />
+          <p style={{ fontSize: 15, fontWeight: 600, color: "#1f2937", margin: "0 0 12px" }}>
+            Payment Method
+          </p>
+          <p style={{ fontSize: 13, color: "#6b7280", margin: "0 0 14px" }}>
+            Listing fee: <strong>$40.00</strong>
+          </p>
+          <div style={{ display: "flex", gap: 12, flexWrap: "wrap" }}>
+            <div
+              onClick={() => selectMethod("jad")}
+              style={{
+                flex: 1,
+                minWidth: 160,
+                padding: "16px 20px",
+                borderRadius: 12,
+                border: PaymentMethod === "jad" ? "2px solid #004a70" : "2px solid #e5e7eb",
+                background: PaymentMethod === "jad" ? "#f0f7ff" : "#fff",
+                cursor: "pointer",
+                display: "flex",
+                alignItems: "center",
+                gap: 12,
+                transition: "all 0.15s",
+              }}
+            >
+              <div style={{
+                width: 40, height: 40, borderRadius: 10,
+                background: PaymentMethod === "jad" ? "#004a70" : "#f3f4f6",
+                display: "flex", alignItems: "center", justifyContent: "center", flexShrink: 0,
+              }}>
+                <svg width={20} height={20} viewBox="0 0 24 24" fill={PaymentMethod === "jad" ? "#fff" : "#6b7280"}>
+                  <path d="M4 4h16c1.1 0 2 .9 2 2v12c0 1.1-.9 2-2 2H4c-1.1 0-2-.9-2-2V6c0-1.1.9-2 2-2zm0 2v12h16V6H4zm2 6h12v2H6v-2zm0-3h12v2H6V9zm0 6h8v2H6v-2z"/>
+                </svg>
+              </div>
+              <div>
+                <p style={{ fontSize: 14, fontWeight: 600, color: "#1f2937", margin: 0 }}>Credit / Debit</p>
+                <p style={{ fontSize: 12, color: "#9ca3af", margin: "2px 0 0" }}>Pay with card</p>
+              </div>
+            </div>
+            <div
+              onClick={() => selectMethod("wallet")}
+              style={{
+                flex: 1,
+                minWidth: 160,
+                padding: "16px 20px",
+                borderRadius: 12,
+                border: PaymentMethod === "wallet" ? "2px solid #004a70" : "2px solid #e5e7eb",
+                background: PaymentMethod === "wallet" ? "#f0f7ff" : "#fff",
+                cursor: "pointer",
+                display: "flex",
+                alignItems: "center",
+                gap: 12,
+                transition: "all 0.15s",
+              }}
+            >
+              <div style={{
+                width: 40, height: 40, borderRadius: 10,
+                background: PaymentMethod === "wallet" ? "#004a70" : "#f3f4f6",
+                display: "flex", alignItems: "center", justifyContent: "center", flexShrink: 0,
+              }}>
+                <FaWallet size={18} color={PaymentMethod === "wallet" ? "#fff" : "#6b7280"} />
+              </div>
+              <div>
+                <p style={{ fontSize: 14, fontWeight: 600, color: "#1f2937", margin: 0 }}>Wallet</p>
+                <p style={{ fontSize: 12, color: "#9ca3af", margin: "2px 0 0" }}>Balance: ${userData?.amount?.toFixed(2) || "0.00"}</p>
+              </div>
+            </div>
+          </div>
+
+          {/* Submit */}
+          <div style={{ marginTop: 20, display: "flex", justifyContent: "flex-end" }}>
+            <button
+              type="submit"
+              disabled={isLoading || imageLoading}
+              style={{
+                padding: "12px 36px",
+                borderRadius: 12,
+                background: isLoading || imageLoading ? "#9ca3af" : "#004a70",
+                border: "none",
+                color: "#fff",
+                fontSize: 15,
+                fontWeight: 600,
+                cursor: isLoading || imageLoading ? "not-allowed" : "pointer",
+                transition: "all 0.2s",
+                display: "flex",
+                alignItems: "center",
+                gap: 8,
+              }}
+              onMouseEnter={(e) => {
+                if (!isLoading && !imageLoading) {
+                  e.currentTarget.style.background = "#003353";
+                  e.currentTarget.style.boxShadow = "0 4px 12px rgba(0,74,112,0.3)";
+                }
+              }}
+              onMouseLeave={(e) => {
+                if (!isLoading && !imageLoading) {
+                  e.currentTarget.style.background = "#004a70";
+                  e.currentTarget.style.boxShadow = "none";
+                }
+              }}
+            >
+              {isLoading ? <Spinner size="sm" style={{ color: "#fff" }} /> : null}
+              {isLoading ? "Processing..." : "Submit Listing"}
+            </button>
+          </div>
+        </div>
+      </Form>
+      </div>
+
+      {/* Payment Modal */}
+      <Modal centered show={show} onHide={handleClose} style={{ borderRadius: 20, overflow: "hidden" }} size="lg">
+        <div style={{
+          background: "linear-gradient(135deg, #004a70 0%, #002d47 100%)",
+          padding: "clamp(20px, 3vw, 28px)",
+          textAlign: "center",
+          position: "relative",
+        }}>
+          <button onClick={handleClose} style={{
+            position: "absolute", top: 12, right: 12, width: 32, height: 32, borderRadius: 8,
+            background: "rgba(255,255,255,0.1)", border: "none", color: "#fff", fontSize: 18,
+            cursor: "pointer", display: "flex", alignItems: "center", justifyContent: "center",
+          }}>✕</button>
+          <div style={{
+            width: 56, height: 56, borderRadius: "50%", background: "rgba(255,255,255,0.12)",
+            display: "flex", alignItems: "center", justifyContent: "center", margin: "0 auto 12px",
+          }}>
+            <svg width={26} height={26} viewBox="0 0 24 24" fill="none" stroke="#fff" strokeWidth={1.5}>
+              <path strokeLinecap="round" strokeLinejoin="round" d="M2.25 8.25h19.5M2.25 9h19.5m-16.5 5.25h6m-6 2.25h3m-3.75 3h15a2.25 2.25 0 0 0 2.25-2.25V6.75A2.25 2.25 0 0 0 19.5 4.5h-15a2.25 2.25 0 0 0-2.25 2.25v10.5A2.25 2.25 0 0 0 4.5 19.5Z" />
+            </svg>
+          </div>
+          <h2 style={{ color: "#fff", fontSize: "clamp(18px, 3vw, 22px)", fontWeight: 700, margin: 0 }}>Pay with Card</h2>
+          <p style={{ color: "rgba(255,255,255,0.6)", fontSize: 13, margin: "4px 0 0" }}>Amount: $40.00</p>
+        </div>
+        <div style={{ padding: "clamp(20px, 3vw, 28px)" }}>
+          {paymentCards?.length > 0 && (
+            <>
+              <p style={{ fontSize: 14, fontWeight: 600, color: "#1f2937", margin: "0 0 10px" }}>Saved Cards</p>
+              <div style={{ display: "flex", flexDirection: "column", gap: 8, marginBottom: 20 }}>
+                {paymentCards?.map((item, i) => (
+                  <div key={i} onClick={() => onSelectCard(item)} style={{
+                    display: "flex", alignItems: "center", gap: 12, padding: "12px 16px",
+                    borderRadius: 10, border: "1px solid #f0f0f0", cursor: "pointer", transition: "all 0.15s",
+                  }}
+                    onMouseEnter={(e) => { e.currentTarget.style.borderColor = "#004a70"; e.currentTarget.style.background = "#f0f7ff" }}
+                    onMouseLeave={(e) => { e.currentTarget.style.borderColor = "#f0f0f0"; e.currentTarget.style.background = "transparent" }}
+                  >
+                    <svg width={20} height={20} viewBox="0 0 24 24" fill="#004a70"><path d="M4 4h16c1.1 0 2 .9 2 2v12c0 1.1-.9 2-2 2H4c-1.1 0-2-.9-2-2V6c0-1.1.9-2 2-2zm0 2v12h16V6H4zm2 6h12v2H6v-2zm0-3h12v2H6V9zm0 6h8v2H6v-2z" /></svg>
+                    <div style={{ flex: 1, minWidth: 0 }}>
+                      <p style={{ fontSize: 13, fontWeight: 500, color: "#374151", margin: 0 }}>{item?.cardfirstname} {item?.cardlastname}</p>
+                      <p style={{ fontSize: 12, color: "#9ca3af", margin: "2px 0 0" }}>**** {item?.cardnumber?.slice(-4)}</p>
+                    </div>
+                    <svg width={16} height={16} viewBox="0 0 24 24" fill="#059669"><path d="M9 16.17L4.83 12l-1.42 1.41L9 19 21 7l-1.41-1.41z" /></svg>
+                  </div>
+                ))}
+              </div>
+            </>
+          )}
+          <div style={{ display: "grid", gridTemplateColumns: isMobile ? "1fr" : "1fr 1fr", gap: 20 }}>
+            <div><Cards className="cardStyle" cvc={cardDetails.cvc} expiry={cardDetails.expiry} name={cardDetails.name} number={cardDetails.number} /></div>
+            <div style={{ display: "flex", flexDirection: "column", gap: 10 }}>
+              <div>
+                <label style={{ fontSize: 12, fontWeight: 500, color: "#374151", display: "block", marginBottom: 3 }}>Card Number</label>
+                <input type="text" name="number" placeholder="1234 5678 9012 3456" value={cardDetails.number} onChange={handleInputChange} maxLength="16" required style={modalInputStyle} />
+              </div>
+              <div>
+                <label style={{ fontSize: 12, fontWeight: 500, color: "#374151", display: "block", marginBottom: 3 }}>Cardholder Name</label>
+                <input type="text" name="name" placeholder="John Doe" value={cardDetails.name} onChange={handleInputChange} required style={modalInputStyle} />
+              </div>
+              <div style={{ display: "flex", gap: 10 }}>
+                <div style={{ flex: 1 }}>
+                  <label style={{ fontSize: 12, fontWeight: 500, color: "#374151", display: "block", marginBottom: 3 }}>Expiry</label>
+                  <input type="text" name="expiry" placeholder="MM/YY" value={cardDetails.expiry}
+                    onChange={(e) => {
+                      let value = e.target.value.replace(/\D/g, "");
+                      if (value.length >= 3) value = value.slice(0, 2) + "/" + value.slice(2, 4);
+                      e.target.value = value.slice(0, 5);
+                      handleInputChange(e);
+                    }} maxLength="5" required style={modalInputStyle} />
+                </div>
+                <div style={{ flex: 1 }}>
+                  <label style={{ fontSize: 12, fontWeight: 500, color: "#374151", display: "block", marginBottom: 3 }}>CVC</label>
+                  <input type="text" name="cvc" placeholder="123" value={cardDetails.cvc} onChange={handleInputChange} maxLength="3" required style={modalInputStyle} />
+                </div>
+              </div>
+            </div>
+          </div>
+          <div style={{ display: "grid", gridTemplateColumns: isMobile ? "1fr" : "1fr 1fr", gap: 10, marginTop: 16 }}>
+            <div><label style={{ fontSize: 12, fontWeight: 500, color: "#374151", display: "block", marginBottom: 3 }}>First Name</label><input type="text" name="firstName" placeholder="John" value={cardDetails.firstName} onChange={handleInputChange} required style={modalInputStyle} /></div>
+            <div><label style={{ fontSize: 12, fontWeight: 500, color: "#374151", display: "block", marginBottom: 3 }}>Last Name</label><input type="text" name="lastName" placeholder="Doe" value={cardDetails.lastName} onChange={handleInputChange} required style={modalInputStyle} /></div>
+            <div><label style={{ fontSize: 12, fontWeight: 500, color: "#374151", display: "block", marginBottom: 3 }}>Address</label><input type="text" name="address" placeholder="Address" value={cardDetails.address} onChange={handleInputChange} required style={modalInputStyle} /></div>
+            <div><label style={{ fontSize: 12, fontWeight: 500, color: "#374151", display: "block", marginBottom: 3 }}>Postal Code</label><input type="text" name="postalCode" placeholder="Postal code" value={cardDetails.postalCode} onChange={handleInputChange} required style={modalInputStyle} /></div>
+            <div><label style={{ fontSize: 12, fontWeight: 500, color: "#374151", display: "block", marginBottom: 3 }}>Country</label><input type="text" name="countary" placeholder="Country" value={cardDetails.countary} onChange={handleInputChange} required style={modalInputStyle} /></div>
+            <div><label style={{ fontSize: 12, fontWeight: 500, color: "#374151", display: "block", marginBottom: 3 }}>City</label><input type="text" name="city" placeholder="City" value={cardDetails.city} onChange={handleInputChange} required style={modalInputStyle} /></div>
+            <div><label style={{ fontSize: 12, fontWeight: 500, color: "#374151", display: "block", marginBottom: 3 }}>State</label><input type="text" name="state" placeholder="State" value={cardDetails.state} onChange={handleInputChange} required style={modalInputStyle} /></div>
+            <div><label style={{ fontSize: 12, fontWeight: 500, color: "#374151", display: "block", marginBottom: 3 }}>Phone</label><input type="text" name="phone" placeholder="+1 (___)-___-____" value={cardDetails.phone} onChange={handleInputChange} required style={modalInputStyle} /></div>
+            <div><label style={{ fontSize: 12, fontWeight: 500, color: "#374151", display: "block", marginBottom: 3 }}>Email</label><input type="text" name="email" placeholder="email@example.com" value={cardDetails.email} onChange={handleInputChange} required style={modalInputStyle} /></div>
+          </div>
+          <button
+            onClick={jadAPiFunction}
+            disabled={!areAllFieldsFilled()}
+            style={{
+              width: "100%", padding: "14px", borderRadius: 12,
+              background: !areAllFieldsFilled() ? "#d1d5db" : "#004a70",
+              border: "none", color: "#fff", fontSize: 15, fontWeight: 600,
+              cursor: !areAllFieldsFilled() ? "not-allowed" : "pointer",
+              transition: "all 0.2s", marginTop: 20,
+              display: "flex", alignItems: "center", justifyContent: "center", gap: 8,
+            }}
+            onMouseEnter={(e) => {
+              if (areAllFieldsFilled()) { e.currentTarget.style.background = "#003353"; e.currentTarget.style.boxShadow = "0 4px 12px rgba(0,74,112,0.3)" }
+            }}
+            onMouseLeave={(e) => {
+              if (areAllFieldsFilled()) { e.currentTarget.style.background = "#004a70"; e.currentTarget.style.boxShadow = "none" }
+            }}
+          >
+            {loading ? <Spinner size="sm" style={{ color: "#fff" }} /> : "Pay $40.00"}
+          </button>
+        </div>
+      </Modal>
+
+      {/* Success Modal */}
+      <Modal show={show1} onHide={() => setShow1(false)} centered style={{ borderRadius: 20, overflow: "hidden" }} size="sm">
+        <div style={{ padding: "clamp(32px, 5vw, 48px)", textAlign: "center" }}>
+          <div style={{
+            width: 64, height: 64, borderRadius: "50%", background: "#ecfdf5",
+            display: "flex", alignItems: "center", justifyContent: "center", margin: "0 auto 16px",
+          }}>
+            <svg width={32} height={32} viewBox="0 0 24 24" fill="none" stroke="#059669" strokeWidth={2}>
+              <path strokeLinecap="round" strokeLinejoin="round" d="M4.5 12.75l6 6 9-13.5" />
+            </svg>
+          </div>
+          <h2 style={{ fontSize: 20, fontWeight: 700, color: "#1f2937", margin: "0 0 4px" }}>Payment Successful!</h2>
+          <p style={{ fontSize: 14, color: "#6b7280", margin: "0 0 24px" }}>Your listing has been submitted</p>
+          <button
+            onClick={() => { setShow1(false); router.push("/") }}
+            style={{
+              padding: "12px 32px", borderRadius: 10, background: "#004a70",
+              border: "none", color: "#fff", fontSize: 14, fontWeight: 600, cursor: "pointer",
+            }}
+            onMouseEnter={(e) => { e.currentTarget.style.background = "#003353" }}
+            onMouseLeave={(e) => { e.currentTarget.style.background = "#004a70" }}
+          >
+            Back to Home
+          </button>
+        </div>
+      </Modal>
+    </div>
   );
 };
+
+const selectStyles = (error) => ({
+  control: (base) => ({
+    ...base,
+    borderRadius: 10,
+    borderColor: error ? "#ef4444" : "#d1d5db",
+    minHeight: 42,
+    fontSize: 14,
+    boxShadow: "none",
+    "&:hover": { borderColor: "#004a70" },
+  }),
+  placeholder: (base) => ({ ...base, fontSize: 14, color: "#9ca3af" }),
+  multiValue: (base) => ({ ...base, borderRadius: 6, background: "#f0f7ff" }),
+  multiValueLabel: (base) => ({ ...base, color: "#004a70", fontSize: 12 }),
+  multiValueRemove: (base) => ({ ...base, color: "#004a70", "&:hover": { background: "#e0edf7", color: "#004a70" } }),
+});
+
+const inputStyle = (error) => ({
+  borderRadius: 10,
+  border: error ? "1px solid #ef4444" : "1px solid #d1d5db",
+  padding: "10px 14px",
+  fontSize: 14,
+  marginTop: 0,
+  width: "100%",
+});
+
+const modalInputStyle = {
+  width: "100%",
+  padding: "10px 14px",
+  borderRadius: 10,
+  border: "1px solid #d1d5db",
+  fontSize: 14,
+  outline: "none",
+};
+
 
 export default page;
