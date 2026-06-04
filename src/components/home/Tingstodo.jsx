@@ -382,7 +382,7 @@ export default function Tingstodo() {
         </Slider>
       </div>
 
-      <div className="slider-container p-1">
+      <div className="slider-container p-3">
         {/* Show spinner when location loading */}
         {locationLoading ? (
           <div
@@ -408,7 +408,7 @@ export default function Tingstodo() {
         ) : /* Show content when not loading */
           SubCategory.length > 0 ? (
             <>
-              <div className="grid grid-cols-1 sm:grid-cols-2 md:grid-cols-3 lg:grid-cols-5  ">
+              <div className="grid grid-cols-1 sm:grid-cols-2 md:grid-cols-3 lg:grid-cols-4 gap-2">
                 {SubCategory?.map((testimonial, index) => (
                   <ThingstodoCard
                     key={index}

@@ -18,7 +18,7 @@ export default function ServiceComponent() {
   const router = useRouter();
   const { getData, header1 } = ApiFunction();
   const [Category, setCategory] = useState([]);
-  const [selectedCategoryId, setSelectedCategoryId] = useState(0); 
+  const [selectedCategoryId, setSelectedCategoryId] = useState(0);
   const [SubCategory, setSubCategory] = useState([]);
   // const userData = useSelector((state) => state.auth.user?.user);
   const [loading, setloading] = useState(false);
@@ -29,7 +29,7 @@ export default function ServiceComponent() {
   const getCategory = async () => {
     try {
       const response = await getData("/servicecat/all/1", header1);
-      const staticCategory = { _id: 0, name: "All" }; 
+      const staticCategory = { _id: 0, name: "All" };
       const updatedCategories = [
         staticCategory,
         ...(response?.categories || []),
@@ -143,14 +143,14 @@ export default function ServiceComponent() {
 
   return (
     <div>
-     
+
       <div className="d-flex justify-content-between align-items-center mb-4 mt-5">
         <div style={{ marginLeft: "1.4rem" }}>
           <h1 className="feedBack">Our Products</h1>
         </div>
       </div>
-      
-      <div className="slider-container p-2 " style={{marginLeft: '10px'}}>
+
+      <div className="slider-container p-2 " style={{ marginLeft: '10px' }}>
         <Slider {...settings2} key={Category.length}>
           {Category.map((category, index) => {
             const isSelected = selectedCategoryId === category._id;
@@ -163,9 +163,9 @@ export default function ServiceComponent() {
                     background: isSelected
                       ? "linear-gradient(179.02deg, rgb(0, 74, 112) -69.5%, rgb(177, 176, 176) 99.16%)" // Gradient when selected
                       : "#ffff", // Default neutral gradient
-                    color: isSelected ? "white" : "black", 
+                    color: isSelected ? "white" : "black",
                     borderRadius: "5px",
-                    transition: "all 0.3s ease", 
+                    transition: "all 0.3s ease",
                   }}
                   onClick={() => setSelectedCategoryId(category._id)} // Set only the clicked ID
                 >
@@ -177,11 +177,11 @@ export default function ServiceComponent() {
         </Slider>
       </div>
 
-      <div className="slider-container p-1">
+      <div className="slider-container p-5">
         {SubCategory.length > 0 ? (
           <>
-            <div className="grid grid-cols-1 sm:grid-cols-2 md:grid-cols-3 lg:grid-cols-5  ">
-            {SubCategory?.map((testimonial, index) => (
+            <div className="grid grid-cols-1 sm:grid-cols-2 md:grid-cols-3 lg:grid-cols-4 gap-2">
+              {SubCategory?.map((testimonial, index) => (
                 <ThingstodoCard
                   key={index}
                   testimonial={testimonial}
@@ -194,7 +194,7 @@ export default function ServiceComponent() {
             <div className="flex justify-center items-center mt-5">
               {Pagelength > 1 ? (
                 <>
-                  <Button onClick={ShowMoreDAta} className="btnHome" style={{ width: 100, marginTop: 10, margin: 0 , background:'linear-gradient(179.02deg, rgb(0, 74, 112) -69.5%, rgb(177, 176, 176) 99.16%)'}}>
+                  <Button onClick={ShowMoreDAta} className="btnHome" style={{ width: 100, marginTop: 10, margin: 0, background: 'linear-gradient(179.02deg, rgb(0, 74, 112) -69.5%, rgb(177, 176, 176) 99.16%)' }}>
                     {MoreLoading ? (
                       <>
                         <Spinner size={"sm"} color="#fff" />

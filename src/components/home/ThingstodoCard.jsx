@@ -36,23 +36,18 @@ function ThingstodoCard({ testimonial, onClick, onClick2, btnTitle, isTour }) {
 
   return (
     <Card
-      className="testimonial-card2 mt-4 cursor-pointer"
-      style={{ height: "auto", width: "95%", marginLeft: "2.5%" }}
+      className="testimonial-card2 mt-2 cursor-pointer w-full group overflow-hidden border border-gray-100 hover:border-gray-200/80 shadow-sm hover:shadow-xl transition-all duration-300 hover:-translate-y-1.5 rounded-2xl"
+      style={{ height: "auto", borderRadius: "16px" }}
     >
       <Card.Body style={{ padding: 0 }} onClick={onClick2}>
-        <div className=" position-relative">
+        <div className="position-relative overflow-hidden rounded-t-2xl">
           <Slider {...settings}>
             {testimonial?.images?.map((item, index) => (
-              <div key={index} style={{ textAlign: "center" }}>
+              <div key={index} style={{ textAlign: "center" }} className="overflow-hidden">
                 <img
                   src={item}
                   alt={`${testimonial.title}-${index}`}
-                  style={{
-                    width: "100%",
-                    height: "200px",
-                    objectFit: "cover", // Ensure the image covers the card nicely
-                    borderRadius: "5px",
-                  }}
+                  className="w-full h-[200px] object-cover transition-transform duration-500 group-hover:scale-105"
                 />
               </div>
             ))}
@@ -61,8 +56,18 @@ function ThingstodoCard({ testimonial, onClick, onClick2, btnTitle, isTour }) {
             {testimonial?.category?.name}
           </div>
         </div>
-        <div style={{ padding: 15 }}>
-          <p className="font-medium text-sm text-[#000]  truncate-text mt-0 ">{testimonial.title}</p>
+        <div style={{ padding: "10px 15px" }}>
+          <div className="flex items-start justify-between gap-2 mt-0">
+            <p className="font-medium text-sm text-[#000] truncate-text m-0 flex-1">{testimonial.title}</p>
+            <div className="flex items-center gap-1 flex-shrink-0 cursor-pointer">
+              {testimonial?.avgRating > 0 && (
+                <FaStar className="starDivHome" />
+              )}
+              <span className="font-medium text-[12px] text-[#767e94]">
+                ({testimonial?.totalReviews || 0}) Reviews
+              </span>
+            </div>
+          </div>
           <div className="mt-1 flex items-center gap-1">
             <FaLocationDot />
             <p
@@ -107,25 +112,25 @@ function ThingstodoCard({ testimonial, onClick, onClick2, btnTitle, isTour }) {
 
 
           <p
-            className="CardDes font-Regular mt-1 truncate-text"
-            style={{ fontSize: 12 }}
+            className="CardDes font-Regular mt-1"
+            style={{
+              fontSize: 12,
+              display: "-webkit-box",
+              WebkitLineClamp: 2,
+              WebkitBoxOrient: "vertical",
+              overflow: "hidden",
+              textOverflow: "ellipsis",
+              minHeight: "36px",
+            }}
           >
             {testimonial.about}
           </p>
 
-          <div className="flex cursor-pointer items-center gap-2">
-            {testimonial?.avgRating > 0 && (
-              <FaStar className="starDivHome" />
-            )}
-            <h1 className="font-medium mt-1 text-xl text-[#767e94] " style={{ fontSize: 14 }}>
-              ({testimonial?.totalReviews || 0}) Reviews
-            </h1>
-          </div>
 
           <Button
-            style={{ width: isTour ? "100%" : "60%" }}
+            style={{ width: isTour ? "100%" : "60%", borderRadius: "9999px" }}
             onClick={onClick}
-            className="btnHome"
+            className="btnHome rounded-full"
           >
             {btnTitle || "Book a Ride"}
           </Button>
