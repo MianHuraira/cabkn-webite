@@ -360,7 +360,7 @@ export default function Tingstodo() {
                       : "#ffff",
                     color: isSelected ? "white" : "black",
                     borderRadius: "9999px",
-                    minWidth: "150px",
+                    minWidth: "160px",
                     maxWidth: "250px",
                     overflow: "visible",
                     whiteSpace: "normal",
@@ -425,7 +425,10 @@ export default function Tingstodo() {
                       onClick={ShowMoreDAta}
                       className={`btnHome ${styles.roundedBtn}`}
                       style={{
-                        width: 240,
+                        width: "auto",
+                        minWidth: "250px",
+                        padding: "10px 24px",
+                        // keep other styles unchanged
                         marginTop: 10,
                         margin: 0,
                         background: "linear-gradient(179.02deg, rgb(0, 74, 112) -69.5%, rgb(177, 176, 176) 99.16%)",
@@ -433,7 +436,12 @@ export default function Tingstodo() {
                         display: "inline-flex",
                         justifyContent: "center",
                         alignItems: "center",
-                        overflow: "visible",
+                        whiteSpace: "nowrap",
+                        overflow: "hidden",
+                        textOverflow: "ellipsis",
+                        textAlign: "center",
+                        boxSizing: "border-box",
+                        flexShrink: 0,
                       }}
                     >
                       {MoreLoading ? (
@@ -457,8 +465,9 @@ export default function Tingstodo() {
                 style={{
                   width: "200px",
                   height: "200px",
-                  objectFit: "cover", // Ensure the image covers the card nicely
+                  objectFit: "cover",
                   borderRadius: "5px",
+                  marginTop: "20px",
                 }}
                 alt="No data available"
               />
