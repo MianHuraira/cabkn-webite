@@ -9,6 +9,7 @@ import { useSelector } from "react-redux";
 import ApiFunction from "../ApiFunction/ApiFunction";
 import { ApplePlayBlack, GooglePlayblack } from "../assets/Images";
 import Image from "next/image";
+import Link from "next/link";
 import { useRouter } from "next/navigation";
 
 export default function Footer() {
@@ -172,13 +173,13 @@ export default function Footer() {
 
             {/* Legal Links */}
             <div className="flex items-center gap-5 mt-6 pt-5">
-              <span className="text-white/60 text-[13px] cursor-pointer hover:text-white transition-colors">
+              <Link href="/privacy" className="text-white/60 text-[13px] cursor-pointer hover:text-white transition-colors">
                 Privacy
-              </span>
+              </Link>
               <span className="text-white/30 text-[13px]">|</span>
-              <span className="text-white/60 text-[13px] cursor-pointer hover:text-white transition-colors">
+              <Link href="/terms" className="text-white/60 text-[13px] cursor-pointer hover:text-white transition-colors">
                 Terms
-              </span>
+              </Link>
             </div>
           </div>
         </div>
