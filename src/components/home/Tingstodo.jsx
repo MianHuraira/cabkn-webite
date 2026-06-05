@@ -298,11 +298,11 @@ export default function Tingstodo() {
 
   return (
     <div>
-      <div className="d-flex flex-column flex-md-row justify-content-between align-items-center mb-4 mt-10">
-        <div style={{ marginLeft: "1.4rem" }}>
-          <h1 className="feedBack">Our Tour Recommendations</h1>
+      <div className="d-flex flex-column flex-lg-row justify-content-between align-items-center mb-4 mt-10" style={{ padding: "0 16px", gap: 12 }}>
+        <div style={{ textAlign: "left" }}>
+          <h1 className="feedBack" style={{ marginLeft: 0, textAlign: "left" }}>Our Tour Recommendations</h1>
         </div>
-        <div className="mt-2">
+        <div className="" style={{ alignSelf: "flex-end", marginLeft: "auto" }}>
           <Controller
             name="name"
             control={control}
@@ -350,31 +350,45 @@ export default function Tingstodo() {
           {Category.map((category, index) => {
             const isSelected = selectedCategoryId === category._id;
             return (
-              <div className="p-2">
+              <div className="p-2" key={index}>
                 <div
                   className="CategoryMain text-center cursor-pointer"
                   style={{
-                    padding: "10px",
+                    padding: "10px 14px",
                     background: isSelected
                       ? "linear-gradient(179.02deg, rgb(0, 74, 112) -69.5%, rgb(177, 176, 176) 99.16%)"
-                      : "#ffff",
-                    color: isSelected ? "white" : "black",
+                      : "#fff",
+                    color: isSelected ? "white" : "#1e293b",
                     borderRadius: "9999px",
-                    minWidth: "160px",
-                    maxWidth: "250px",
-                    overflow: "visible",
-                    whiteSpace: "normal",
-                    wordBreak: "break-word",
+                    minWidth: "120px",
                     textAlign: "center",
                     display: "flex",
                     alignItems: "center",
                     justifyContent: "center",
                     transition: "all 0.3s ease",
+                    border: isSelected ? "none" : "1px solid #e2e8f0",
+                    boxShadow: isSelected ? "0 2px 8px rgba(0,74,112,0.25)" : "none",
                     margin: "0 auto",
+                    whiteSpace: "nowrap",
+                    fontSize: 14,
+                    fontWeight: 500,
+                    fontFamily: "Inter-Medium",
+                  }}
+                  onMouseEnter={(e) => {
+                    if (!isSelected) {
+                      e.currentTarget.style.borderColor = "#004a70";
+                      e.currentTarget.style.background = "#f1f5f9";
+                    }
+                  }}
+                  onMouseLeave={(e) => {
+                    if (!isSelected) {
+                      e.currentTarget.style.borderColor = "#e2e8f0";
+                      e.currentTarget.style.background = "#fff";
+                    }
                   }}
                   onClick={() => setSelectedCategoryId(category._id)}
                 >
-                  <h1 className="font-medium text-base">{category?.name}</h1>
+                  <span style={{ fontSize: 13, fontFamily: "Inter-Medium" }}>{category?.name}</span>
                 </div>
               </div>
             );
@@ -408,7 +422,7 @@ export default function Tingstodo() {
         ) : /* Show content when not loading */
           SubCategory.length > 0 ? (
             <>
-              <div className="grid grid-cols-1 sm:grid-cols-2 md:grid-cols-3 lg:grid-cols-4 gap-2">
+              <div className="grid grid-cols-1 sm:grid-cols-2 md:grid-cols-3 lg:grid-cols-4 gap-2 md:gap-3">
                 {SubCategory?.map((testimonial, index) => (
                   <ThingstodoCard
                     key={index}
@@ -423,34 +437,33 @@ export default function Tingstodo() {
                   <>
                     <Button
                       onClick={ShowMoreDAta}
-                      className={`btnHome ${styles.roundedBtn}`}
                       style={{
-                        width: "auto",
-                        minWidth: "150px",
-                        padding: "10px 24px",
-                        // keep other styles unchanged
-                        marginTop: 10,
-                        margin: 0,
+                        minWidth: 140,
+                        padding: "10px 28px",
                         background: "linear-gradient(179.02deg, rgb(0, 74, 112) -69.5%, rgb(177, 176, 176) 99.16%)",
+                        border: "none",
+                        borderRadius: "9999px",
                         color: "#fff",
+                        fontFamily: "Inter-Medium",
+                        fontSize: 14,
+                        cursor: "pointer",
                         display: "inline-flex",
-                        justifyContent: "center",
                         alignItems: "center",
-                        whiteSpace: "nowrap",
-                        overflow: "hidden",
-                        textOverflow: "ellipsis",
-                        textAlign: "center",
-                        boxSizing: "border-box",
-                        flexShrink: 0,
+                        justifyContent: "center",
+                        gap: 8,
+                        boxShadow: "0 4px 14px rgba(0,74,112,0.25)",
+                        transition: "all 0.2s",
+                      }}
+                      onMouseEnter={(e) => {
+                        e.currentTarget.style.boxShadow = "0 6px 20px rgba(0,74,112,0.35)";
+                        e.currentTarget.style.transform = "translateY(-1px)";
+                      }}
+                      onMouseLeave={(e) => {
+                        e.currentTarget.style.boxShadow = "0 4px 14px rgba(0,74,112,0.25)";
+                        e.currentTarget.style.transform = "translateY(0)";
                       }}
                     >
-                      {MoreLoading ? (
-                        <>
-                          <Spinner size={"sm"} color="#fff" />
-                        </>
-                      ) : (
-                        "See more"
-                      )}
+                      {MoreLoading ? <Spinner size={"sm"} color="#fff" /> : "See more"}
                     </Button>
                   </>
                 ) : (

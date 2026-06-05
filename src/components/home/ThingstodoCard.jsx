@@ -130,7 +130,7 @@ function ThingstodoCard({ testimonial, onClick, onClick2, btnTitle, isTour }) {
           <Button
             style={{ width: isTour ? "100%" : "60%", borderRadius: "9999px" }}
             onClick={onClick}
-            className="btnHome rounded-full"
+            className="btnHome rounded-full w-full sm:w-[60%]"
           >
             {btnTitle || "Book a Ride"}
           </Button>
