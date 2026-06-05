@@ -19,9 +19,14 @@ import { Toaster } from "react-hot-toast";
 const MainLayout = ({ children }) => {
   const [toggled, setToggled] = useState(false);
   const [broken, setBroken] = useState(false);
+  const [mounted, setMounted] = useState(false);
   const pathname = usePathname();
   const { userData } = ApiFunction();
   const isTipModal = useSelector((state) => state.auth.isTipModal);
+
+  useEffect(() => {
+    setMounted(true);
+  }, []);
 
   const pubRoute = ["/"];
   const authRoute = [
@@ -38,6 +43,13 @@ const MainLayout = ({ children }) => {
     authRoute.includes(pathname) || pathname.startsWith("/rider-request/");
   const isRiderRequest = pathname.startsWith("/rider-request/");
 
+  const renderHeader = () => {
+    if (!isPrivteRoute) {
+      return userData?.user ? <InnerHeader /> : <Header />;
+    }
+    return null;
+  };
+
   return (
     <>
       <GoogleOAuthProvider
@@ -47,16 +59,7 @@ const MainLayout = ({ children }) => {
       >
         <SocketProvider>
           <Provider store={store}>
-            {!isPrivteRoute &&
-              (userData?.user ? (
-                <>
-                  <InnerHeader />
-                </>
-              ) : (
-                <>
-                  <Header />
-                </>
-              ))}
+            {mounted ? renderHeader() : null}
             {children}
             {isPublicRoute && !isRiderRequest ? <Footer /> : ""}
           </Provider>

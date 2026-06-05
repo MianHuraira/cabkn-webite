@@ -61,7 +61,7 @@ const ProductTable = ({
   );
 
   const CustomPagination = () => (
-    <div className="bg-white rounded-b-xl border-t border-t-[#C5C5D3] overflow-hidden">
+    <div className="bg-white rounded-b-xl border-t border-t-[#C5C5D3]">
       <ReactPaginate
         previousLabel={
           <div className="flex text-sm items-center gap-2 btnpgination ">
