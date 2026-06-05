@@ -16,3 +16,11 @@
   50% { opacity: 0.5; transform: scale(0.8); }
 }
 
+@keyframes spin {
+  to { transform: rotate(360deg); }
+}
+
+.animate-spin {
+  animation: spin 1s linear infinite;
+}
+

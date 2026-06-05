@@ -2657,6 +2657,31 @@ element {
   color: #fff !important;
 }
 
+/* Hero Gallery Dots */
+.hero-gallery .slick-dots {
+  bottom: 20px !important;
+}
+.hero-gallery .slick-dots li {
+  margin: 0 3px !important;
+}
+.hero-gallery .slick-dots li button:before {
+  font-size: 8px !important;
+  color: rgba(255,255,255,0.5) !important;
+  opacity: 1 !important;
+}
+.hero-gallery .slick-dots li.slick-active button:before {
+  color: #fff !important;
+  opacity: 1 !important;
+}
+
+/* Animation for loading spinner */
+@keyframes spin {
+  to { transform: rotate(360deg); }
+}
+.animate-spin {
+  animation: spin 1s linear infinite;
+}
+
 /* Inter font utility classes */
 .inter_thin {
   font-family: "Inter-Thin", Arial, sans-serif;
