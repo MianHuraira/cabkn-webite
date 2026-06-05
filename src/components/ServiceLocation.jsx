@@ -2,7 +2,7 @@
 /* eslint-disable react/jsx-key */
 "use client";
 import React, { useEffect, useRef, useState } from "react";
-import { Button, Container, Modal, Spinner } from "react-bootstrap";
+import { Button, Modal, Spinner } from "react-bootstrap";
 import { FaLocationDot } from "react-icons/fa6";
 import Slider from "react-slick";
 import mapboxgl from "mapbox-gl";
@@ -14,8 +14,6 @@ import toast from "react-hot-toast";
 import * as Yup from "yup";
 import { ErrorMessage, Field, Formik, Form } from "formik";
 import ApiFile from "./ApiFunction/ApiFile";
-import Staticimg from "../components/assets/Images/noShow.png";
-import Image from "next/image";
 
 export default function ServiceLocation() {
   const { id } = useParams();
@@ -173,9 +171,6 @@ export default function ServiceLocation() {
       zoom: 12,
       attributionControl: false,
     });
-
-    // Ensure the marker is added correctly
-    // new mapboxgl.Marker({ color: "green" }).setLngLat(start).addTo(mapRef.current);
   };
 
   useEffect(() => {
@@ -236,257 +231,314 @@ export default function ServiceLocation() {
   };
 
   return (
-    <>
-      <div className="bread">
-        <h5 className="medium-font">Home/Detail</h5>
-        <h3 className="medium-font">Detail</h3>
+    <div style={{ minHeight: "100vh", background: "#f8fafc" }}>
+      {/* Blue Gradient Header */}
+      <div style={{ background: "linear-gradient(135deg, #004a70 0%, #002d47 100%)", padding: "28px 0 44px" }}>
+        <div style={{ maxWidth: 1200, margin: "0 auto", padding: "0 16px" }}>
+          <div style={{ color: "rgba(255,255,255,0.6)", fontSize: 13, marginBottom: 8 }}>Home / Product Detail</div>
+          <h1 style={{ color: "#fff", fontSize: "clamp(22px, 4vw, 28px)", fontWeight: 700, margin: 0, letterSpacing: "-0.3px", display: "flex", alignItems: "center", gap: 10 }}>
+            <svg width={24} height={24} viewBox="0 0 24 24" fill="none" stroke="#fff" strokeWidth={1.5}>
+              <path strokeLinecap="round" strokeLinejoin="round" d="M20 7l-8-4-8 4m16 0l-8 4m8-4v10l-8 4m0-10L4 7m8 4v10M4 7v10l8 4" />
+            </svg>
+            {SubcatData?.name || "Product Detail"}
+          </h1>
+        </div>
       </div>
 
-      <Container
-        fluid
-        className=" bg-white rounded  shadow-lg p-0 mt-3 customWidth"
-      >
-        <div className="w-full p-3 sm:p-1 lg:grid lg:grid-cols-12 lg:gap-8 ">
-          <div className="col-span-4">
-            <Slider {...settings}>
-              {SubcatData?.images?.map((item, index) => (
-                <div key={index} style={{ textAlign: "center" }}>
-                  <img
-                    src={item}
-                    className="w-full h-96 md:h-[30rem] object-cover rounded-lg"
-                  />
-                </div>
-              ))}
-            </Slider>
-          </div>
-
-          <div className="col-span-8 flex flex-col h-full mt-4 sm:mt-8">
-            <div className="flex justify-between items-center">
-              <h5 className="mb-1 CardName capitalize text-Bold">
-                {SubcatData?.name}
-              </h5>
-              <div className="hidden md:block" onClick={HandleClick}>
-                <Button className="btnHome">Buy Product</Button>
-              </div>
-            </div>
-
-            <div className="mt-1 flex  gap-1">
-              <FaLocationDot style={{ marginTop: 5 }} />
-              <p
-                className="font-medium text-lg text-[#767e94] mt-0 "
-                style={{ fontSize: 15 }}
-              >
-                {SubcatData?.address}
-              </p>
-            </div>
-
-            <h1 className="font-medium mt-1 text-xl " style={{ fontSize: 14 }}>
-              {"Description"}
-            </h1>
-
-            <p className="CardDes font-Regular mt-1 " style={{ fontSize: 15 }}>
-              {SubcatData?.about}
-            </p>
-
-            <div className="flex items-center gap-2 ">
-              {SubcatData?.color?.map((item, index) => {
-                return (
-                  <div
-                    className={`productColor cursor-pointer border-3 ${
-                      ProductColor === item ? "border-[#004a70]" : ""
-                    }`}
-                    onClick={() => handleColor(item)}
-                    style={{
-                      backgroundColor: item,
-                      borderRadius: "50%",
-                      marginTop: 10,
-                      marginBottom: 10,
-                    }}
-                  ></div>
-                );
-              })}
-            </div>
-
-            <div className="flex items-center gap-2">
-              <div
-                onClick={decrement}
-                className="flex items-center cursor-pointer border w-10 rounded-full justify-center"
-              >
-                -
-              </div>
-              {incDec}
-              <div
-                onClick={increment}
-                className="flex items-center cursor-pointer border  w-10 rounded-full justify-center"
-              >
-                +
-              </div>
-            </div>
-
-            <div className="flex items-center gap-2">
-              {SubcatData?.size?.map((item, index) => {
-                return (
-                  <div
-                    className="sizes cursor-pointer"
-                    style={{
-                      marginTop: 10,
-                      backgroundColor:
-                        Size === item ? "#004a70" : "transparent",
-                    }}
-                    onClick={() => handleSize(item)}
-                  >
-                    <p
-                      className="font-Regular"
-                      style={{ color: Size === item ? "#fff" : "#000" }}
-                    >
-                      {item}
-                    </p>
+      {/* Content */}
+      <div style={{ maxWidth: 1200, margin: "-24px auto 0", padding: "0 16px 48px" }}>
+        <div style={{ background: "#fff", borderRadius: 14, border: "1px solid #f0f0f0", overflow: "hidden" }}>
+          {/* Image Slider & Details Grid */}
+          <div className="lg:grid lg:grid-cols-12 lg:gap-0">
+            {/* Image Slider */}
+            <div className="lg:col-span-5">
+              <Slider {...settings}>
+                {SubcatData?.images?.map((item, index) => (
+                  <div key={index}>
+                    <img
+                      src={item}
+                      alt={SubcatData?.name}
+                      className="w-full h-72 sm:h-96 lg:h-full object-cover"
+                      style={{ minHeight: 320, maxHeight: 480 }}
+                    />
                   </div>
-                );
-              })}
+                ))}
+              </Slider>
             </div>
 
-            <p className="font-bold mt-2">
-              {`Total Price : ${(SubcatData?.location_price * incDec)?.toFixed(
-                2
-              )} XCD - $${(
-                (SubcatData?.location_price * incDec) /
-                2.7
-              )?.toFixed(2)} USD`}
-            </p>
+            {/* Details */}
+            <div className="lg:col-span-7" style={{ padding: "clamp(20px, 3vw, 32px)" }}>
+              {/* Title & Buy Button Row */}
+              <div style={{ display: "flex", justifyContent: "space-between", alignItems: "flex-start", gap: 12, marginBottom: 12 }}>
+                <div>
+                  <h1 style={{ fontSize: "clamp(18px, 2.5vw, 22px)", fontWeight: 700, color: "#1f2937", margin: 0, textTransform: "capitalize" }}>
+                    {SubcatData?.name}
+                  </h1>
+                  <div style={{ display: "flex", alignItems: "center", gap: 6, marginTop: 6 }}>
+                    <FaLocationDot style={{ color: "#004a70", fontSize: 14, flexShrink: 0 }} />
+                    <p style={{ fontSize: 14, color: "#6b7280", margin: 0 }}>{SubcatData?.address}</p>
+                  </div>
+                </div>
+                <button
+                  onClick={HandleClick}
+                  style={{
+                    padding: "10px 28px",
+                    border: "none",
+                    borderRadius: "9999px",
+                    background: "linear-gradient(179.02deg, rgb(0, 74, 112) -69.5%, rgb(177, 176, 176) 99.16%)",
+                    color: "#fff",
+                    fontSize: 14,
+                    fontWeight: 600,
+                    cursor: "pointer",
+                    whiteSpace: "nowrap",
+                    boxShadow: "0 4px 14px rgba(0,74,112,0.25)",
+                    transition: "all 0.2s",
+                    fontFamily: "Inter-SemiBold",
+                  }}
+                  onMouseEnter={(e) => { e.currentTarget.style.boxShadow = "0 6px 20px rgba(0,74,112,0.35)"; e.currentTarget.style.transform = "translateY(-1px)"; }}
+                  onMouseLeave={(e) => { e.currentTarget.style.boxShadow = "0 4px 14px rgba(0,74,112,0.25)"; e.currentTarget.style.transform = "translateY(0)"; }}
+                >
+                  Buy Product
+                </button>
+              </div>
 
-            <div
-              id="map-container"
-              className="w-full mt-3"
-              style={{ height: "20vh" }}
-              ref={mapContainerRef}
-            />
+              {/* Description */}
+              <div style={{ marginBottom: 20 }}>
+                <h2 style={{ fontSize: 15, fontWeight: 600, color: "#374151", margin: "0 0 6px" }}>Description</h2>
+                <p style={{ fontSize: 14, color: "#6b7280", lineHeight: 1.7, margin: 0 }}>{SubcatData?.about}</p>
+              </div>
 
-            {/* {SubcatData?.category?.name === "Excursion" ? (
-              <>
-                {SubcatData?.timeslots && (
-                  <p className="font-Regular mt-2">Select Time Slot</p>
-                )}
-
-                <div className="flex gap-2 mb-3 flex-wrap mt-2">
-                  {SubcatData?.timeslots?.map((item) => {
-                    return (
+              {/* Colors */}
+              {SubcatData?.color?.length > 0 && (
+                <div style={{ marginBottom: 16 }}>
+                  <p style={{ fontSize: 13, fontWeight: 500, color: "#374151", marginBottom: 8 }}>Colors</p>
+                  <div style={{ display: "flex", gap: 10 }}>
+                    {SubcatData?.color?.map((item, index) => (
                       <div
-                        className="dateSelection"
-                        onClick={() => handleTime(item)}
+                        key={index}
+                        onClick={() => handleColor(item)}
                         style={{
-                          background:
-                            SelectedTime === item ? "#004a70" : "#fff",
-                          color: SelectedTime === item ? "#fff" : "#000",
+                          width: 32,
+                          height: 32,
+                          borderRadius: "50%",
+                          backgroundColor: item,
+                          cursor: "pointer",
+                          border: ProductColor === item ? "3px solid #004a70" : "3px solid transparent",
+                          boxShadow: ProductColor === item ? "0 0 0 2px #fff, 0 0 0 4px #004a70" : "none",
+                          transition: "all 0.2s",
+                        }}
+                      />
+                    ))}
+                  </div>
+                </div>
+              )}
+
+              {/* Quantity */}
+              <div style={{ marginBottom: 16 }}>
+                <p style={{ fontSize: 13, fontWeight: 500, color: "#374151", marginBottom: 8 }}>Quantity</p>
+                <div style={{ display: "flex", alignItems: "center", gap: 12 }}>
+                  <button
+                    onClick={decrement}
+                    style={{ width: 36, height: 36, borderRadius: "9999px", border: "1px solid #d1d5db", background: "#fff", fontSize: 18, cursor: "pointer", display: "flex", alignItems: "center", justifyContent: "center", color: "#374151", fontWeight: 600, transition: "all 0.2s" }}
+                    onMouseEnter={(e) => { e.currentTarget.style.borderColor = "#004a70"; e.currentTarget.style.color = "#004a70" }}
+                    onMouseLeave={(e) => { e.currentTarget.style.borderColor = "#d1d5db"; e.currentTarget.style.color = "#374151" }}
+                  >-</button>
+                  <span style={{ fontSize: 16, fontWeight: 600, color: "#1f2937", minWidth: 24, textAlign: "center" }}>{incDec}</span>
+                  <button
+                    onClick={increment}
+                    style={{ width: 36, height: 36, borderRadius: "9999px", border: "1px solid #d1d5db", background: "#fff", fontSize: 18, cursor: "pointer", display: "flex", alignItems: "center", justifyContent: "center", color: "#374151", fontWeight: 600, transition: "all 0.2s" }}
+                    onMouseEnter={(e) => { e.currentTarget.style.borderColor = "#004a70"; e.currentTarget.style.color = "#004a70" }}
+                    onMouseLeave={(e) => { e.currentTarget.style.borderColor = "#d1d5db"; e.currentTarget.style.color = "#374151" }}
+                  >+</button>
+                </div>
+              </div>
+
+              {/* Sizes */}
+              {SubcatData?.size?.length > 0 && (
+                <div style={{ marginBottom: 16 }}>
+                  <p style={{ fontSize: 13, fontWeight: 500, color: "#374151", marginBottom: 8 }}>Size</p>
+                  <div style={{ display: "flex", gap: 8, flexWrap: "wrap" }}>
+                    {SubcatData?.size?.map((item, index) => (
+                      <button
+                        key={index}
+                        onClick={() => handleSize(item)}
+                        style={{
+                          padding: "6px 18px",
+                          borderRadius: "9999px",
+                          border: Size === item ? "none" : "1px solid #d1d5db",
+                          background: Size === item ? "#004a70" : "#fff",
+                          color: Size === item ? "#fff" : "#374151",
+                          fontSize: 13,
+                          fontWeight: 500,
+                          cursor: "pointer",
+                          transition: "all 0.2s",
+                        }}
+                        onMouseEnter={(e) => {
+                          if (Size !== item) { e.currentTarget.style.borderColor = "#004a70"; e.currentTarget.style.color = "#004a70" }
+                        }}
+                        onMouseLeave={(e) => {
+                          if (Size !== item) { e.currentTarget.style.borderColor = "#d1d5db"; e.currentTarget.style.color = "#374151" }
                         }}
                       >
-                        <h6 className="font-medium">
-                          {moment(item, "HH:mm").format("hh:mm A")}
-                        </h6>
-                      </div>
-                    );
-                  })}
+                        {item}
+                      </button>
+                    ))}
+                  </div>
                 </div>
-              </>
-            ) : null} */}
+              )}
 
-            <div className="block md:hidden" onClick={HandleClick}>
-              <Button className="btnHome">Buy Product</Button>
+              {/* Total Price */}
+              <div style={{ padding: "14px 18px", background: "#f0f7ff", borderRadius: 12, marginTop: 4 }}>
+                <p style={{ fontSize: 13, color: "#6b7280", margin: "0 0 4px" }}>Total Price</p>
+                <p style={{ fontSize: 20, fontWeight: 700, color: "#004a70", margin: 0 }}>
+                  {`${(SubcatData?.location_price * incDec)?.toFixed(2)} XCD`}
+                  <span style={{ fontSize: 14, fontWeight: 500, color: "#9ca3af", marginLeft: 8 }}>
+                    {`~ $${((SubcatData?.location_price * incDec) / 2.7)?.toFixed(2)} USD`}
+                  </span>
+                </p>
+              </div>
+
+              {/* Map */}
+              <div
+                id="map-container"
+                ref={mapContainerRef}
+                style={{ width: "100%", height: 180, borderRadius: 10, marginTop: 16, overflow: "hidden" }}
+              />
+
+              {/* Mobile Buy Button */}
+              <div className="block lg:hidden" style={{ marginTop: 16 }}>
+                <button
+                  onClick={HandleClick}
+                  style={{
+                    width: "100%",
+                    height: 48,
+                    border: "none",
+                    borderRadius: "9999px",
+                    background: "linear-gradient(179.02deg, rgb(0, 74, 112) -69.5%, rgb(177, 176, 176) 99.16%)",
+                    color: "#fff",
+                    fontFamily: "Inter-SemiBold",
+                    fontSize: 15,
+                    cursor: "pointer",
+                    boxShadow: "0 4px 14px rgba(0,74,112,0.25)",
+                    transition: "all 0.2s",
+                  }}
+                  onMouseEnter={(e) => { e.currentTarget.style.boxShadow = "0 6px 20px rgba(0,74,112,0.35)"; e.currentTarget.style.transform = "translateY(-1px)"; }}
+                  onMouseLeave={(e) => { e.currentTarget.style.boxShadow = "0 4px 14px rgba(0,74,112,0.25)"; e.currentTarget.style.transform = "translateY(0)"; }}
+                >
+                  Buy Product
+                </button>
+              </div>
             </div>
           </div>
         </div>
 
-        <section className="mt-3">
-          <Container fluid>
-            <div
-              className="flex items-center justify-between"
-              onClick={handleShow}
+        {/* Reviews Section */}
+        <div style={{ background: "#fff", borderRadius: 14, border: "1px solid #f0f0f0", marginTop: 20, padding: "clamp(20px, 3vw, 28px)" }}>
+          <div onClick={handleShow} style={{ display: "flex", justifyContent: "space-between", alignItems: "center", cursor: "pointer", marginBottom: 20 }}>
+            <h2 style={{ fontSize: 18, fontWeight: 700, color: "#1f2937", margin: 0 }}>All Reviews</h2>
+            <button
+              style={{
+                padding: "8px 22px",
+                border: "none",
+                borderRadius: "9999px",
+                background: "linear-gradient(135deg, #004a70 0%, #002d47 100%)",
+                color: "#fff",
+                fontSize: 13,
+                fontWeight: 600,
+                cursor: "pointer",
+                transition: "all 0.2s",
+              }}
+              onMouseEnter={(e) => { e.currentTarget.style.boxShadow = "0 4px 12px rgba(0,74,112,0.3)" }}
+              onMouseLeave={(e) => { e.currentTarget.style.boxShadow = "none" }}
             >
-              <h1 className="font-medium text-xl">All Reviews</h1>
-              <Button className="primbtn w-fit">Leave Review</Button>
-            </div>
-            {isLoading ? (
-              <>
-                <Skeleton active />
-              </>
-            ) : (
-              <>
-                <div onClick={scrollToReviews} className="space-y-4 mt-4 pb-4">
-                  {ratingData?.length > 0 ? (
-                    <>
-                      {ratingData?.map((review) => (
-                        <div
-                          key={review?._id}
-                          className="relative p-3  cursor-pointer border-b-2 border-gray-200"
-                        >
-                          <div className="flex items-center justify-between space-x-4">
-                            <div className="flex items-center gap-2">
-                              {review?.user?.image ? (
-                                <img
-                                  src={review?.user?.image}
-                                  alt={review?.user?.name}
-                                  className="w-12 h-12 rounded-full object-cover border border-gray-300"
-                                />
-                              ) : (
-                                <Image
-                                  src={Staticimg}
-                                  alt=""
-                                  className="w-12 h-12 rounded-full object-cover border border-gray-300"
-                                />
-                              )}
-                              <div>
-                                <h3 className="font-medium text-lg text-gray-900">
-                                  {review?.user?.name}
-                                </h3>
-                                <p className="text-sm text-gray-500">
-                                  {moment(review?.createdAt).format(
-                                    "MMM DD, YYYY"
-                                  )}
-                                </p>
-                              </div>
-                            </div>
-                            <div>
-                              <Rate
-                                className="starDiv"
-                                allowHalf
-                                disabled
-                                defaultValue={review?.rating}
-                              />
-                            </div>
-                          </div>
-                          {/* Review Text */}
-                          <p className="mt-3 text-gray-700 leading-relaxed">
-                            {review.review}
-                          </p>
-                        </div>
-                      ))}
-                      {ratingLength > 0 &&
-                        ratingData?.length < ratingLength && (
-                          <div className="flex justify-center mt-4">
-                            <button
-                              disabled={pagiLoading}
-                              onClick={getRatingData}
-                              className="primbtn w-fit"
-                            >
-                              {pagiLoading ? <Spinner size="sm" /> : "See More"}
-                            </button>
-                          </div>
-                        )}
-                    </>
-                  ) : (
-                    <>
-                      <div>
-                        <div className="text-center">No Reviews found</div>
-                      </div>
-                    </>
-                  )}
-                </div>
-              </>
-            )}
-          </Container>
-        </section>
-      </Container>
+              Leave Review
+            </button>
+          </div>
 
+          {isLoading ? (
+            <Skeleton active />
+          ) : (
+            <div ref={reviewSectionRef}>
+              {ratingData?.length > 0 ? (
+                <>
+                  {ratingData?.map((review) => (
+                    <div
+                      key={review?._id}
+                      style={{
+                        background: "#fff",
+                        border: "1px solid #f0f0f0",
+                        borderRadius: 12,
+                        padding: "clamp(14px, 2vw, 20px)",
+                        marginBottom: 12,
+                        boxShadow: "0 2px 8px rgba(0,0,0,0.04)",
+                        transition: "all 0.2s",
+                      }}
+                      onMouseEnter={(e) => { e.currentTarget.style.boxShadow = "0 4px 16px rgba(0,0,0,0.08)"; e.currentTarget.style.borderColor = "#e5e7eb" }}
+                      onMouseLeave={(e) => { e.currentTarget.style.boxShadow = "0 2px 8px rgba(0,0,0,0.04)"; e.currentTarget.style.borderColor = "#f0f0f0" }}
+                    >
+                      <div style={{ display: "flex", justifyContent: "space-between", alignItems: "center" }}>
+                        <div style={{ display: "flex", alignItems: "center", gap: 12 }}>
+                          {review?.user?.image ? (
+                            <img
+                              src={review?.user?.image}
+                              alt={review?.user?.name}
+                              style={{ width: 44, height: 44, borderRadius: "9999px", objectFit: "cover", border: "2px solid #f3f4f6" }}
+                            />
+                          ) : (
+                            <div style={{ width: 44, height: 44, borderRadius: "9999px", background: "#e5e7eb", display: "flex", alignItems: "center", justifyContent: "center", fontSize: 16, fontWeight: 600, color: "#6b7280" }}>
+                              {review?.user?.name?.[0]?.toUpperCase() || "?"}
+                            </div>
+                          )}
+                          <div>
+                            <p style={{ fontSize: 15, fontWeight: 600, color: "#1f2937", margin: 0 }}>{review?.user?.name}</p>
+                            <p style={{ fontSize: 12, color: "#9ca3af", margin: "2px 0 0" }}>{moment(review?.createdAt).format("MMM DD, YYYY")}</p>
+                          </div>
+                        </div>
+                        <Rate
+                          className="starDiv"
+                          allowHalf
+                          disabled
+                          defaultValue={review?.rating}
+                          style={{ fontSize: 14 }}
+                        />
+                      </div>
+                      <p style={{ fontSize: 14, color: "#6b7280", margin: "10px 0 0", lineHeight: 1.6 }}>{review.review}</p>
+                    </div>
+                  ))}
+                  {ratingLength > 0 && ratingData?.length < ratingLength && (
+                    <div style={{ display: "flex", justifyContent: "center", marginTop: 20 }}>
+                      <button
+                        disabled={pagiLoading}
+                        onClick={getRatingData}
+                        style={{
+                          padding: "10px 28px",
+                          border: "none",
+                          borderRadius: "9999px",
+                          background: "#004a70",
+                          color: "#fff",
+                          fontSize: 14,
+                          fontWeight: 600,
+                          cursor: pagiLoading ? "not-allowed" : "pointer",
+                          fontFamily: "Inter-SemiBold",
+                          transition: "all 0.2s",
+                        }}
+                      >
+                        {pagiLoading ? <Spinner size="sm" style={{ color: "#fff" }} /> : "See More"}
+                      </button>
+                    </div>
+                  )}
+                </>
+              ) : (
+                <div style={{ background: "#fff", border: "1px solid #f0f0f0", borderRadius: 12, padding: "40px 20px", textAlign: "center", boxShadow: "0 2px 8px rgba(0,0,0,0.04)" }}>
+                  <p style={{ fontSize: 14, color: "#9ca3af", margin: 0 }}>No Reviews found</p>
+                </div>
+              )}
+            </div>
+          )}
+        </div>
+      </div>
+
+      {/* Review Modal */}
       <Modal centered backdrop="static" show={show} onHide={handleClose}>
         <Modal.Header closeButton>
           <Modal.Title>Leave Review</Modal.Title>
@@ -560,6 +612,6 @@ export default function ServiceLocation() {
           </Formik>
         </Modal.Body>
       </Modal>
-    </>
+    </div>
   );
 }

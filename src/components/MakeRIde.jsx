@@ -1032,34 +1032,42 @@ const RidePage = () => {
               <div style={{ height: 1, background: "#f3f4f6", margin: "20px 0" }} />
 
               {/* Submit */}
-              <div style={{ display: "flex", justifyContent: "flex-end" }}>
-                <button
-                  type="submit"
-                  disabled={isLoading}
-                  style={{
-                    padding: "12px 36px",
-                    borderRadius: 12,
-                    background: isLoading ? "#9ca3af" : "#004a70",
-                    border: "none",
-                    color: "#fff",
-                    fontSize: 15,
-                    fontWeight: 600,
-                    cursor: isLoading ? "not-allowed" : "pointer",
-                    transition: "all 0.2s",
-                    display: "flex",
-                    alignItems: "center",
-                    gap: 8,
-                  }}
-                  onMouseEnter={(e) => {
-                    if (!isLoading) { e.currentTarget.style.background = "#003353"; e.currentTarget.style.boxShadow = "0 4px 12px rgba(0,74,112,0.3)" }
-                  }}
-                  onMouseLeave={(e) => {
-                    if (!isLoading) { e.currentTarget.style.background = "#004a70"; e.currentTarget.style.boxShadow = "none" }
-                  }}
-                >
-                  {isLoading ? <Spinner size="sm" style={{ color: "#fff" }} /> : "Next"}
-                </button>
-              </div>
+              <button
+                type="submit"
+                disabled={isLoading}
+                style={{
+                  width: "100%",
+                  height: 48,
+                  border: "none",
+                  borderRadius: "9999px",
+                  background: isLoading ? "#9ca3af" : "linear-gradient(179.02deg, rgb(0, 74, 112) -69.5%, rgb(177, 176, 176) 99.16%)",
+                  color: "#fff",
+                  fontFamily: "Inter-SemiBold",
+                  fontSize: 15,
+                  cursor: isLoading ? "not-allowed" : "pointer",
+                  display: "flex",
+                  alignItems: "center",
+                  justifyContent: "center",
+                  gap: 8,
+                  boxShadow: isLoading ? "none" : "0 4px 14px rgba(0,74,112,0.25)",
+                  transition: "all 0.2s",
+                  marginTop: 8,
+                }}
+                onMouseEnter={(e) => {
+                  if (!isLoading) {
+                    e.currentTarget.style.boxShadow = "0 6px 20px rgba(0,74,112,0.35)";
+                    e.currentTarget.style.transform = "translateY(-1px)";
+                  }
+                }}
+                onMouseLeave={(e) => {
+                  if (!isLoading) {
+                    e.currentTarget.style.boxShadow = "0 4px 14px rgba(0,74,112,0.25)";
+                    e.currentTarget.style.transform = "translateY(0)";
+                  }
+                }}
+              >
+                {isLoading ? <Spinner size="sm" style={{ color: "#fff" }} /> : "Next"}
+              </button>
             </form>
           </div>
 
@@ -1086,8 +1094,8 @@ const RidePage = () => {
               <button
                 onClick={() => handlePermissionGuide(false)}
                 style={{
-                  padding: "10px 20px", borderRadius: 10, background: "#f3f4f6", border: "none",
-                  color: "#374151", fontSize: 14, fontWeight: 500, cursor: "pointer",
+                  padding: "10px 24px", borderRadius: "9999px", background: "#f3f4f6", border: "none",
+                  color: "#374151", fontSize: 14, fontWeight: 600, cursor: "pointer",
                 }}
               >
                 Cancel
@@ -1095,8 +1103,8 @@ const RidePage = () => {
               <button
                 onClick={handlePermissionGuide}
                 style={{
-                  padding: "10px 20px", borderRadius: 10, background: "#004a70", border: "none",
-                  color: "#fff", fontSize: 14, fontWeight: 500, cursor: "pointer",
+                  padding: "10px 24px", borderRadius: "9999px", background: "linear-gradient(135deg, #004a70 0%, #002d47 100%)", border: "none",
+                  color: "#fff", fontSize: 14, fontWeight: 600, cursor: "pointer",
                 }}
               >
                 Show Instructions
