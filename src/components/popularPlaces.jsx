@@ -11,7 +11,7 @@ import moment from "moment";
 import { message, Skeleton } from "antd";
 import ApiFunction from "@/components/ApiFunction/ApiFunction";
 import { useParams, useRouter, useSearchParams } from "next/navigation";
-import { Formik, Field, ErrorMessage } from "formik";
+import { Formik, Form, Field, ErrorMessage } from "formik";
 import * as Yup from "yup";
 import { Rate } from "antd";
 import ApiFile from "./ApiFunction/ApiFile";
@@ -117,11 +117,16 @@ const PopularAA = () => {
       const scheduleData = response?.category?.schedule;
       setSchedule(scheduleData ? JSON.parse(scheduleData) : []);
       setSubcatData(response?.category);
-      marker(response?.category);
     } catch (error) {
       console.log(error);
     }
   };
+
+  useEffect(() => {
+    if (SubcatData?.lat || SubcatData?.lng) {
+      marker(SubcatData);
+    }
+  }, [SubcatData]);
 
   const convertTo12Hour = (time24) => {
     const [hours, minutes] = time24.split(":").map(Number);
@@ -204,10 +209,6 @@ const PopularAA = () => {
 
   const handleClose = () => setShow(false);
   const handleShow = () => {
-    if (!userData?.user) {
-      toast.error("Please login to leave a review");
-      return;
-    }
     setShow(true);
   };
   const [value, setValue] = useState(0);
@@ -333,11 +334,29 @@ const PopularAA = () => {
               ))}
             </Slider>
 
-            {/* Hero Category Badge */}
-            <div className="absolute top-6 left-6 z-10">
-              <span className="inline-block bg-white/20 backdrop-blur-sm text-white text-xs font-medium px-3 py-1.5 rounded-full border border-white/10">
-                {SubcatData?.category?.name}
-              </span>
+            {/* Hero Content Overlay */}
+            <div className="absolute bottom-0 left-0 right-0 z-10 p-6 md:p-10">
+              {SubcatData?.category?.name && (
+                <span className="inline-block bg-white/20 backdrop-blur-sm text-white text-xs font-medium px-3 py-1 rounded-full mb-3 border border-white/10">
+                  {SubcatData?.category?.name}
+                </span>
+              )}
+              <h1 className="text-white font-bold text-2xl md:text-3xl lg:text-4xl max-w-3xl leading-tight m-0">
+                {SubcatData?.title}
+              </h1>
+              <div className="flex flex-wrap items-center gap-4 mt-3">
+                <div className="flex items-center gap-1.5 text-white/80">
+                  <FaLocationDot className="text-white/60 text-xs" />
+                  <span className="text-sm font-Regular">{SubcatData?.address}</span>
+                </div>
+                {SubcatData?.avgRating > 0 && (
+                  <div className="flex items-center gap-1.5 text-white/80">
+                    <FaStar className="text-amber-400 text-xs" />
+                    <span className="text-sm font-medium">{SubcatData?.avgRating?.toFixed(1)}</span>
+                    <span className="text-sm font-Regular text-white/60">({SubcatData?.totalReviews} Reviews)</span>
+                  </div>
+                )}
+              </div>
             </div>
           </div>
 
@@ -359,22 +378,6 @@ const PopularAA = () => {
               ))}
             </div>
           )}
-        </div>
-
-        {/* Quick Info Bar */}
-        <div className="bg-white rounded-xl border border-gray-100 shadow-sm p-4 mt-6">
-          <div className="flex flex-wrap items-center gap-4 md:gap-8">
-            <div className="flex items-center gap-3">
-              <FaLocationDot className="text-brand-600/60 text-base" />
-              <span className="text-sm text-gray-600 font-Regular">{SubcatData?.address}</span>
-            </div>
-            {SubcatData?.avgRating > 0 && (
-              <div className="flex items-center gap-1.5" onClick={scrollToReviews} style={{ cursor: "pointer" }}>
-                <Rate className="starDiv !text-sm" allowHalf disabled defaultValue={SubcatData?.avgRating} />
-                <span className="text-sm text-gray-400 font-Regular">({SubcatData?.totalReviews} Reviews)</span>
-              </div>
-            )}
-          </div>
         </div>
 
         {/* Content Grid */}
@@ -423,9 +426,8 @@ const PopularAA = () => {
                   {Schedule?.map((item, index) => (
                     <div
                       key={index}
-                      className={`flex items-center justify-between px-5 py-3.5 ${
-                        index !== Schedule.length - 1 ? "border-b border-gray-50" : ""
-                      } hover:bg-brand-600/[0.02] transition-colors`}
+                      className={`flex items-center justify-between px-5 py-3.5 ${index !== Schedule.length - 1 ? "border-b border-gray-50" : ""
+                        } hover:bg-brand-600/[0.02] transition-colors`}
                     >
                       <span className="font-medium text-gray-800 text-sm">{item?.slot_day}</span>
                       <span className="font-Regular text-gray-500 text-sm">
@@ -467,21 +469,19 @@ const PopularAA = () => {
             )}
 
             {/* Map */}
-            {SubcatData?.lat && SubcatData?.lng && (
-              <div>
-                <h3 className="text-lg font-bold text-gray-900 mb-3 flex items-center gap-2">
-                  <HiOutlineMapPin className="text-brand-600" />
-                  Location
-                </h3>
-                <div className="rounded-xl overflow-hidden border border-gray-100 shadow-sm">
-                  <div
-                    id="map-container"
-                    className="w-full h-[300px] md:h-[350px]"
-                    ref={mapContainerRef}
-                  />
-                </div>
+            <div>
+              <h3 className="text-lg font-bold text-gray-900 mb-3 flex items-center gap-2">
+                <HiOutlineMapPin className="text-brand-600" />
+                Location
+              </h3>
+              <div className="rounded-xl overflow-hidden border border-gray-100 shadow-sm">
+                <div
+                  id="map-container"
+                  className="w-full h-[300px] md:h-[350px]"
+                  ref={mapContainerRef}
+                />
               </div>
-            )}
+            </div>
 
             {/* Reviews Section */}
             <section ref={reviewSectionRef}>
@@ -499,7 +499,7 @@ const PopularAA = () => {
                   onClick={handleShow}
                   className="inline-flex items-center gap-2 bg-brand-600 text-white text-sm font-medium px-5 py-2.5 rounded-full hover:bg-brand-700 transition-all duration-200 border-none cursor-pointer shadow-sm hover:shadow-md"
                 >
-                  Write a Review
+                  Leave a Review
                 </button>
               </div>
 
@@ -680,7 +680,7 @@ const PopularAA = () => {
       <Modal centered backdrop="static" show={show} onHide={handleClose} style={{ zIndex: 2000 }}>
         <div className="p-6">
           <div className="flex items-center justify-between mb-6">
-            <h3 className="text-xl font-bold text-gray-900">Write a Review</h3>
+            <h3 className="text-xl font-bold text-gray-900">Leave a Review</h3>
             <button
               onClick={handleClose}
               className="w-8 h-8 rounded-full bg-gray-100 hover:bg-gray-200 flex items-center justify-center border-none cursor-pointer transition-colors"
