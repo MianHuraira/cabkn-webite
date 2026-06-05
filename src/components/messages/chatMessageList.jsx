@@ -22,6 +22,29 @@ import ApiFile from "../ApiFunction/ApiFile";
 import { useSocket } from "../ApiFunction/SoketProvider";
 import { Spinner } from "react-bootstrap";
 import { StaticUser } from "../assets/Images";
+
+const getSenderId = (sender) => {
+  if (!sender) return null;
+  if (typeof sender === "string") return sender;
+  if (typeof sender === "object") return sender._id || null;
+  return null;
+};
+
+const getOtherUser = (chat) => {
+  if (!chat) return null;
+  if (typeof chat?.otherUser === "object" && chat?.otherUser !== null) {
+    return chat.otherUser;
+  }
+  const id = typeof chat?.otherUser === "string" ? chat.otherUser : null;
+  if (id && chat?.participantsDetails?.length > 0) {
+    return chat.participantsDetails.find((p) => p._id === id) || null;
+  }
+  if (chat?.user1 && chat?.user2) {
+    return chat?.user1?._id === chat?.otherUser ? chat?.user1 : chat?.user2;
+  }
+  return null;
+};
+
 const ChatMessageList = () => {
   const { userData, baseURL, getData, postData, header1 } = ApiFunction();
 
@@ -29,7 +52,7 @@ const ChatMessageList = () => {
   const router = useRouter();
   const dispatch = useDispatch();
   const [chatMsg, setChatMsg] = useState([]);
-  
+
   const [usersId, setUsersId] = useState("");
   const [lastMsgId, setLastMsgId] = useState("");
 
@@ -45,11 +68,12 @@ const ChatMessageList = () => {
 
   const { chatUser } = useChatUser();
   const { activeChatId } = useActiveChat();
-  
+
   const { chatListData, setChatListData } = useChatList();
   const socket = useSocket();
+  const lastFetchedUserId = useRef(null);
 
-  
+  const currentUserId = userData?.user?._id || userData?._id;
 
   useEffect(() => {
     setLastId(chatMsg[0]?._id);
@@ -57,14 +81,16 @@ const ChatMessageList = () => {
 
   useEffect(() => {
     if (socket) {
-
       const handleMessage = (message) => {
-        const isActiveChat =
-          activeChatId === message?.sender ||
-          userData?.user?._id === message?.sender;
+        const msgSenderId = getSenderId(message?.sender);
+        const currentId = currentUserId;
 
-        if (isActiveChat) {
-          setChatMsg((prevChat) => [...prevChat, message]);
+        if (msgSenderId !== currentId && msgSenderId === activeChatId) {
+          setChatMsg((prev) => {
+            if (prev.some((m) => m?._id === message?._id)) return prev;
+            return [...prev, message];
+          });
+          setNewMsg(true);
         }
         setChatListData((prevChatList) => {
           let updatedChatList = prevChatList.map((conversation) => {
@@ -89,12 +115,10 @@ const ChatMessageList = () => {
 
       return () => {
         socket.off("recieved-message", handleMessage);
-        socket.off("send-message");
       };
     }
   }, [activeChatId, chatListData]);
 
-  
   const sendMessage = async (e) => {
     e.preventDefault();
     const input = document.getElementById("chatInput");
@@ -110,6 +134,19 @@ const ChatMessageList = () => {
       chatMessagesRef.current.scrollTop = chatMessagesRef.current.scrollHeight;
       await socket.emit("send-message", data, (res) => {
         setChatMsg((prevChat) => [...prevChat, res]);
+        setChatListData((prev) => {
+          const updated = prev.map((c) => {
+            if (c?._id === res?.conversationId || c?._id === chatUser?._id) {
+              return { ...c, lastMsg: res };
+            }
+            return c;
+          });
+          return updated.sort((a, b) => {
+            const ta = a?.lastMsg?.createdAt || 0;
+            const tb = b?.lastMsg?.createdAt || 0;
+            return new Date(tb) - new Date(ta);
+          });
+        });
       });
       input.value = "";
     }
@@ -179,185 +216,114 @@ const ChatMessageList = () => {
   };
 
   const handleChatClick = async (userId) => {
+    if (!userId || lastFetchedUserId.current === userId) return;
+    lastFetchedUserId.current = userId;
     setIsLoading3(true);
     getUserChat(userId);
     setUsersId(userId);
   };
 
-  // const initiateCall = async (channel, token) => {
-  //   try {
-  //     const response = await postData(
-  //       createCall,
-  //       {
-  //         channel: channel,
-  //         to_user: chatUser?.otherUser?._id,
-  //       },
-  //       header1
-  //     );
-
-  //     if (response?.message) {
-  //       const videoCallData = {
-  //         channel: channel,
-  //         user: chatUser?.otherUser?._id,
-  //       };
-
-  //       // Set video call data in Redux store
-  //       dispatch(setVideoCallData(videoCallData));
-
-  //       // Determine route based on user type
-  //       const redirectPath =
-  //         userData?.user?.currentType === "service"
-  //           ? `/service-provider/VideoCall?channel=${channel}&id=${chatUser?.otherUser?._id}`
-  //           : `/customer/VideoCall?channel=${channel}&id=${chatUser?.otherUser?._id}`;
-
-  //       router.push(redirectPath);
-  //     } else {
-  //       console.error("Call initiation failed. Response message is missing.");
-  //       message.error("Error initiating the call. Please try again.");
-  //     }
-  //   } catch (error) {
-  //     // Log the error details
-  //     console.error("Error initiating the call:", error);
-  //     message.error(error?.response?.data?.message);
-  //   }
-  // };
-
-  // const createChannel = async () => {
-  //   const generateRandomChannelName = (length) => {
-  //     const characters =
-  //       "ABCDEFGHIJKLMNOPQRSTUVWXYZabcdefghijklmnopqrstuvwxyz0123456789";
-  //     let result = "";
-  //     for (let i = 0; i < length; i++) {
-  //       result += characters.charAt(
-  //         Math.floor(Math.random() * characters.length)
-  //       );
-  //     }
-  //     return result;
-  //   };
-  //   const channel = generateRandomChannelName(10);
-  //   try {
-  //     const response = await postData("users/get-token", { channel }, header1);
-  //     if (response?.token) {
-  //       initiateCall(channel, response?.token);
-  //     }
-  //   } catch (error) {}
-  // };
-
   return (
-    <div className="chat_height position-relative">
-      <div
-        className="d-flex align-items-center bg_dark rounded-4"
-        style={{ borderRadius: "8px" }}
-      >
-        <div>
-          <button
-            className="d_left_button"
-            onClick={() => {
-              setResponsiveChat(false);
-            }}
-          >
-            <ChevronLeft />
-          </button>
-        </div>
+    <div className="chat-panel-inner">
+      {/* Header */}
+      <div className="chat-panel-header">
+        <button
+          className="chat-back-btn"
+          onClick={() => setResponsiveChat(false)}
+        >
+          <ChevronLeft size={20} />
+        </button>
 
-        <div className="w-100 py-2 px-3 d-flex justify-content-between align-items-center">
-          {isLoading3 ? (
-            <div className="chatSkltonmain w-50 mt-3">
-              <Skeleton className="chatSklten0" />
+        {isLoading3 ? (
+          <div className="chat-header-skeleton">
+            <div className="skeleton-avatar-sm" />
+            <div className="skeleton-lines-sm">
+              <div className="skeleton-line w-40" />
+              <div className="skeleton-line w-60" />
             </div>
-          ) : (
-            <>
-              <div className="d-flex gap-1 algin-items-center">
-                {chatUser?.otherUser?.image ? (
-                  <>
-                    <img
-                      className="rounded-[50%] bg-white chatImg00"
-                      src={chatUser?.otherUser?.image}
-                      alt=""
-                    />
-                  </>
-                ) : (
-                  <>
-                    <Image
-                      className="rounded-[50%] bg-white chatImg00"
-                      src={StaticUser}
-                      alt=""
-                    />
-                  </>
-                )}
-                <div className="d-flex flex-column">
-                  <>
-                    <span className=" text_white text-sm regular_font fs_11">{`${chatUser?.otherUser?.name}`}</span>
-                    <span className="regular_font text_white text-sm fs_08">
-                      {chatUser?.otherUser?.email}
-                    </span>
-                  </>
+          </div>
+        ) : (
+          <div className="chat-header-user">
+            <div className="chat-header-avatar">
+              {chatUser?.otherUser?.image ? (
+                <img
+                  className="chat-header-img"
+                  src={chatUser?.otherUser?.image}
+                  alt=""
+                />
+              ) : (
+                <div className="chat-header-placeholder">
+                  {chatUser?.otherUser?.name?.[0]?.toUpperCase() || "?"}
                 </div>
-              </div>
-            </>
-          )}
-        </div>
-     
+              )}
+              <span className={`chat-status-dot ${chatUser?.otherUser?.status === "online" ? "online" : "offline"}`} />
+            </div>
+            <div className="chat-header-info">
+              <span className="chat-header-name">{chatUser?.otherUser?.name}</span>
+              <span className="chat-header-status">
+                {chatUser?.otherUser?.status === "online" ? "Online" : "Offline"}
+              </span>
+            </div>
+          </div>
+        )}
       </div>
 
-      <div className="position-relative">
+      {/* Messages */}
+      <div className="chat-messages-container">
         <div
           ref={chatMessagesRef}
           onScroll={handleScroll}
-          className="chat-messages scrolbar px-2 py-3"
+          className="chat-messages-scroll"
         >
           {isLoading3 ? (
-            <div className="text-center flex justify-center mt-10 w-100">
-              <Spinner animation="border" role="status">
-                <span className="visually-hidden">Loading...</span>
-              </Spinner>
+            <div className="chat-loading-spinner">
+              <Spinner animation="border" role="status" style={{ color: "#004a70" }} />
             </div>
           ) : (
             <>
               {isLoading2 && (
-                <div className="text-center flex justify-center mt-10">
-                  {" "}
-                  <Spinner animation="border" role="status"></Spinner>
+                <div className="chat-loading-spinner">
+                  <Spinner animation="border" role="status" style={{ color: "#004a70" }} />
                 </div>
               )}
-              {chatMsg?.length > 0 &&
+              {chatMsg?.length > 0 ? (
                 chatMsg?.map((msg, index) => (
                   <Fragment key={index}>
                     <ChatMessage
-                      left={userData?.user?._id === msg?.sender ? false : true}
+                      left={getSenderId(msg?.sender) !== currentUserId}
                       message={msg?.message}
                       timestamp={`${msg?.createdAt}`}
                     />
                   </Fragment>
-                ))}
+                ))
+              ) : (
+                <div className="chat-empty-messages">
+                  <p>No messages yet. Start a conversation!</p>
+                </div>
+              )}
             </>
           )}
         </div>
       </div>
-      <form onSubmit={sendMessage} className="px-3">
-        <div className="   w-100">
-          <div className="d-flex my-3">
-            <div className="position-relative hideFocus2  w-100 me-1">
-              <input
-                type="text"
-                disabled={isLoading3}
-                id="chatInput"
-                required
-                className="form-control rounded-3 ps-2 py-2 fs_10 "
-                placeholder="Type your message.."
-              />
-            </div>
-            <button
-              disabled={isLoading3}
-              className="send_btn rounded-3"
-              type="submit"
-            >
-              <Send
-                className="text-white p-0 m-0"
-                style={{ width: "1.2rem" }}
-              />
-            </button>
-          </div>
+
+      {/* Input */}
+      <form onSubmit={sendMessage} className="chat-input-form">
+        <div className="chat-input-wrapper">
+          <input
+            type="text"
+            disabled={isLoading3}
+            id="chatInput"
+            required
+            className="chat-input"
+            placeholder="Type your message..."
+          />
+          <button
+            disabled={isLoading3}
+            className="chat-send-btn"
+            type="submit"
+          >
+            <Send size={18} />
+          </button>
         </div>
       </form>
     </div>
