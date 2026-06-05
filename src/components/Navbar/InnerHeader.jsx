@@ -166,7 +166,7 @@ const InnerHeader = () => {
             <Image
               src={logoBlue}
               alt="Cabkn"
-              width={35}
+              width={30}
               height={26}
               style={{ objectFit: "contain" }}
               priority
