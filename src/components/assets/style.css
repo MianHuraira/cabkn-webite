@@ -3030,3 +3030,18 @@ element {
 .mainbanner {
   display: none !important;
 }
+
+/* Category pills gap on small screens */
+@media (max-width: 640px) {
+  .CategoryMain {
+    margin: 0 6px !important;
+  }
+  .section-card {
+    padding: 16px !important;
+  }
+}
+@media (max-width: 480px) {
+  .section-card {
+    padding: 12px !important;
+  }
+}

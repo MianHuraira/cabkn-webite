@@ -14,12 +14,11 @@ import {
   ListGroup,
   ListGroupItem,
 } from "reactstrap";
-import Select from "react-select";
 import { Button, Form, Offcanvas, Spinner } from "react-bootstrap";
 import { FaLocationDot } from "react-icons/fa6";
-import { message, Space, TimePicker } from "antd";
-
-import { Calendar, theme } from "antd";
+import { MdOutlineMyLocation } from "react-icons/md";
+import { message } from "antd";
+import { theme } from "antd";
 import { Loader } from "@googlemaps/js-api-loader";
 import { getDistance } from "geolib";
 import { IoMdCloseCircle } from "react-icons/io";
@@ -591,209 +590,376 @@ function MakeYourTour() {
   };
 
   return (
-    <div className="mx-auto w-full grid grid-cols-1 md:grid-cols-12 gap-4 p-4  ">
-      <div className="RideForm col-span-12 md:col-span-4">
-        <h1 className="rideHeader">Create custom tour</h1>
-        <Form onSubmit={handleSubmit(onSubmit)} className="mt-3">
-          <div className="mt-2">
-            <Label for="startLocation">Start Location</Label>
-            <div className="flex items-center gap-2">
-              <Controller
-                name="name"
-                control={control}
-                render={({ field }) => (
-                  <div style={{ position: "relative", width: "100%" }}>
-                    <Input
-                      {...field}
-                      placeholder="Enter start location"
-                      value={searchQuery}
-                      onChange={(e) => handleSearch(e.target.value)}
-                      invalid={errors.name && true}
-                    />
-                    {errors.name && (
-                      <FormFeedback>{errors.name.message}</FormFeedback>
-                    )}
-                    {PridicLoading && <div>Loading...</div>}
-                    {predictions.length > 0 && (
-                      <ListGroup
-                        style={{
-                          position: "absolute",
-                          zIndex: 10,
-                          width: "100%",
-                          maxHeight: "200px",
-                          overflowY: "auto",
-                        }}
-                      >
-                        {predictions.map((prediction) => (
-                          <ListGroupItem
-                            key={prediction.place_id}
-                            onClick={() => handlePredictionPress(prediction)}
-                            style={{ cursor: "pointer" }}
-                          >
-                            {prediction.description}
-                          </ListGroupItem>
-                        ))}
-                      </ListGroup>
-                    )}
-                    {noData && <div>No results found</div>}
-                  </div>
-                )}
-              />
-              <BiCurrentLocation
-                className="cursor-pointer"
-                size={30}
-                onClick={getLocation}
-              />
-            </div>
-          </div>
-
-          <div className="mt-2">
-            <Label for="startLocation">End Location</Label>
-            <Controller
-              name="metaTitle"
-              control={control}
-              render={({ field }) => (
-                <div style={{ position: "relative" }}>
-                  <Input
-                    {...field}
-                    placeholder="Enter end location"
-                    value={SearchQueryEnd}
-                    onChange={(e) => HandleEndSearch(e.target.value)}
-                    invalid={errors.metaTitle && true}
-                  />
-                  {errors.metaTitle && (
-                    <FormFeedback>{errors.metaTitle.message}</FormFeedback>
-                  )}
-                  {PridicLoadingEnd && <div>Loading...</div>}
-                  {EndPredictions.length > 0 && (
-                    <ListGroup
-                      style={{
-                        position: "absolute",
-                        zIndex: 10,
-                        width: "100%",
-                        maxHeight: "200px",
-                        overflowY: "auto",
-                      }}
-                    >
-                      {EndPredictions.map((prediction) => (
-                        <ListGroupItem
-                          key={prediction.place_id}
-                          onClick={() => HadleEndPridication(prediction)}
-                          style={{ cursor: "pointer" }}
-                        >
-                          {prediction.description}
-                        </ListGroupItem>
-                      ))}
-                    </ListGroup>
-                  )}
-                  {noData && <div>No results found</div>}
-                </div>
-              )}
-            />
-          </div>
-
-          <Button type="submit" className="btnForm mt-5" disabled={isLoading}>
-            {isLoading ? <Spinner size="sm" /> : "Next"}
-          </Button>
-        </Form>
-      </div>
+    <>
+      {/* Blue Gradient Header */}
       <div
-        className="col-span-12 md:col-span-8"
         style={{
-          maxHeight: "90vh", // Adjust height as needed
-          overflowY: "auto", // Enables vertical scrolling
-          overflowX: "hidden", // Prevents horizontal scrolling
-          paddingBottom: "15rem",
+          background: "linear-gradient(135deg, #004a70 0%, #002d47 100%)",
+          padding: "28px 0 44px",
         }}
       >
-        <h1 className="font-medium text-xl ms-3">
-          Add places to your itinerary
-        </h1>
+        <div style={{ maxWidth: 1320, margin: "0 auto", padding: "0 16px" }}>
+          <div style={{ color: "rgba(255,255,255,0.6)", fontSize: 13, marginBottom: 8 }}>
+            Home / Make Your Own Tour
+          </div>
+          <div
+            style={{
+              display: "flex",
+              alignItems: "center",
+              justifyContent: "space-between",
+              flexWrap: "wrap",
+              gap: 12,
+            }}
+          >
+            <div>
+              <h1
+                style={{
+                  color: "#fff",
+                  fontSize: "clamp(22px, 4vw, 28px)",
+                  fontWeight: 700,
+                  margin: 0,
+                  letterSpacing: "-0.3px",
+                  display: "flex",
+                  alignItems: "center",
+                  gap: 10,
+                }}
+              >
+                <svg width={26} height={26} viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth={2} strokeLinecap="round" strokeLinejoin="round">
+                  <circle cx="12" cy="12" r="10" />
+                  <path d="M2 12h20" />
+                  <path d="M12 2a15.3 15.3 0 0 1 4 10 15.3 15.3 0 0 1-4 10 15.3 15.3 0 0 1-4-10 15.3 15.3 0 0 1 4-10z" />
+                </svg>
+                Make Your Own Tour
+              </h1>
+              <p style={{ color: "rgba(255,255,255,0.6)", fontSize: 14, margin: "4px 0 0" }}>
+                Create a custom itinerary for your perfect trip
+              </p>
+            </div>
+          </div>
+        </div>
+      </div>
 
-        <div className="slider-container p-2 ">
-          <Slider {...settings2} key={Category.length}>
-            {Category.map((category, index) => {
-              const isSelected = selectedCategoryId === category._id;
-              return (
-                <div className="p-2">
-                  <div
-                    className="CategoryMain text-center cursor-pointer"
-                    style={{
-                      padding: "10px",
-                      background: isSelected
-                        ? "linear-gradient(179.02deg, rgb(0, 74, 112) -69.5%, rgb(177, 176, 176) 99.16%)" // Gradient when selected
-                        : "#ffff", // Default neutral gradient
-                      color: isSelected ? "white" : "black",
-                      borderRadius: "5px",
-                      transition: "all 0.3s ease",
-                    }}
-                    onClick={() => setSelectedCategoryId(category._id)} // Set only the clicked ID
-                  >
-                    <h1 className="font-medium text-base">{category?.name}</h1>
+      {/* Content - Side by Side */}
+      <div style={{ maxWidth: 1320, margin: "0 auto", padding: "20px 16px", width: "100%" }}>
+        <div className="grid grid-cols-1 lg:grid-cols-12 gap-6">
+          {/* Left: Create Your Tour Form */}
+          <div className="lg:col-span-4">
+            <div className="section-card" style={{
+              background: "#fff",
+              borderRadius: 16,
+              border: "1px solid #e2e8f0",
+              boxShadow: "0 1px 3px rgba(0,0,0,0.04)",
+              padding: 24,
+            }}>
+              <h2 style={{ fontFamily: "Inter-Bold", fontSize: 18, color: "#0f172a", margin: "0 0 6px", textAlign: "center" }}>
+                Create Your Tour
+              </h2>
+              <p style={{ fontFamily: "Inter-Regular", fontSize: 13, color: "#64748b", textAlign: "center", margin: "0 0 20px" }}>
+                Set your start and end locations
+              </p>
+
+              <Form onSubmit={handleSubmit(onSubmit)}>
+                <div style={{ marginBottom: 18 }}>
+                  <div style={{ fontFamily: "Inter-Medium", fontSize: 13, color: "#374151", marginBottom: 6 }}>
+                    <FaLocationDot size={12} color="#004a70" style={{ marginRight: 4 }} />
+                    Start Location
+                  </div>
+                  <div className="flex items-center gap-2">
+                    <Controller
+                      name="name"
+                      control={control}
+                      render={({ field }) => (
+                        <div style={{ position: "relative", width: "100%" }}>
+                          <Input
+                            {...field}
+                            placeholder="Enter start location"
+                            value={searchQuery}
+                            onChange={(e) => handleSearch(e.target.value)}
+                            invalid={errors.name && true}
+                            style={{ borderRadius: 10, height: 46, fontSize: 13, borderColor: errors.name ? "#ef4444" : "#e2e8f0" }}
+                          />
+                          {errors.name && (
+                            <FormFeedback>{errors.name.message}</FormFeedback>
+                          )}
+                          {PridicLoading && <div style={{ fontSize: 12, color: "#94a3b8", marginTop: 4 }}>Loading...</div>}
+                          {predictions.length > 0 && (
+                            <ListGroup style={{
+                              position: "absolute",
+                              zIndex: 10,
+                              width: "100%",
+                              maxHeight: "180px",
+                              overflowY: "auto",
+                              borderRadius: 10,
+                              border: "1px solid #e2e8f0",
+                              boxShadow: "0 4px 12px rgba(0,0,0,0.08)",
+                            }}>
+                              {predictions.map((prediction) => (
+                                <ListGroupItem
+                                  key={prediction.place_id}
+                                  onClick={() => handlePredictionPress(prediction)}
+                                  style={{ cursor: "pointer", fontSize: 13, padding: "10px 14px", border: "none", borderBottom: "1px solid #f1f5f9" }}
+                                >
+                                  {prediction.description}
+                                </ListGroupItem>
+                              ))}
+                            </ListGroup>
+                          )}
+                          {noData && <div style={{ fontSize: 12, color: "#94a3b8", marginTop: 4 }}>No results found</div>}
+                        </div>
+                      )}
+                    />
+                    <div
+                      onClick={getLocation}
+                      style={{
+                        width: 46,
+                        height: 46,
+                        borderRadius: 10,
+                        background: "#f1f5f9",
+                        display: "flex",
+                        alignItems: "center",
+                        justifyContent: "center",
+                        cursor: "pointer",
+                        flexShrink: 0,
+                        transition: "all 0.2s",
+                        border: "1px solid #e2e8f0",
+                      }}
+                      onMouseEnter={(e) => { e.currentTarget.style.background = "#e2e8f0"; }}
+                      onMouseLeave={(e) => { e.currentTarget.style.background = "#f1f5f9"; }}
+                    >
+                      <BiCurrentLocation size={22} color="#004a70" />
+                    </div>
                   </div>
                 </div>
-              );
-            })}
-          </Slider>
-        </div>
 
-        {SubCategory.length > 0 ? (
-          <>
-            <div className="grid grid-cols-1 sm:grid-cols-2 md:grid-cols-3 lg:grid-cols-4 gap-2 p-2">
-              {SubCategory?.map((testimonial, index) => (
-                <ThingstodoCard
-                  key={index}
-                  testimonial={testimonial}
-                  isTour={true}
-                  onClick={() => handleSelection(testimonial)}
-                  btnTitle={"Add to Itinerary"}
-                />
-              ))}
-            </div>
-            <div className="flex justify-center items-center mt-5">
-              {Pagelength > 0 ? (
-                <>
-                  <Button
-                    onClick={ShowMoreDAta}
-                    className="btnHome"
-                    style={{
-                      width: 100,
-                      marginTop: 10,
-                      margin: 0,
-                      background:
-                        "linear-gradient(179.02deg, rgb(0, 74, 112) -69.5%, rgb(177, 176, 176) 99.16%)",
-                      marginBottom: 100,
-                    }}
-                  >
-                    {MoreLoading ? (
-                      <>
-                        <Spinner size={"sm"} color="#fff" />
-                      </>
-                    ) : (
-                      "See more"
+                <div style={{ marginBottom: 24 }}>
+                  <div style={{ fontFamily: "Inter-Medium", fontSize: 13, color: "#374151", marginBottom: 6 }}>
+                    <MdOutlineMyLocation size={14} color="#004a70" style={{ marginRight: 4 }} />
+                    End Location
+                  </div>
+                  <Controller
+                    name="metaTitle"
+                    control={control}
+                    render={({ field }) => (
+                      <div style={{ position: "relative" }}>
+                        <Input
+                          {...field}
+                          placeholder="Enter end location"
+                          value={SearchQueryEnd}
+                          onChange={(e) => HandleEndSearch(e.target.value)}
+                          invalid={errors.metaTitle && true}
+                          style={{ borderRadius: 10, height: 46, fontSize: 13, borderColor: errors.metaTitle ? "#ef4444" : "#e2e8f0" }}
+                        />
+                        {errors.metaTitle && (
+                          <FormFeedback>{errors.metaTitle.message}</FormFeedback>
+                        )}
+                        {PridicLoadingEnd && <div style={{ fontSize: 12, color: "#94a3b8", marginTop: 4 }}>Loading...</div>}
+                        {EndPredictions.length > 0 && (
+                          <ListGroup style={{
+                            position: "absolute",
+                            zIndex: 10,
+                            width: "100%",
+                            maxHeight: "180px",
+                            overflowY: "auto",
+                            borderRadius: 10,
+                            border: "1px solid #e2e8f0",
+                            boxShadow: "0 4px 12px rgba(0,0,0,0.08)",
+                          }}>
+                            {EndPredictions.map((prediction) => (
+                              <ListGroupItem
+                                key={prediction.place_id}
+                                onClick={() => HadleEndPridication(prediction)}
+                                style={{ cursor: "pointer", fontSize: 13, padding: "10px 14px", border: "none", borderBottom: "1px solid #f1f5f9" }}
+                              >
+                                {prediction.description}
+                              </ListGroupItem>
+                            ))}
+                          </ListGroup>
+                        )}
+                        {noData && <div style={{ fontSize: 12, color: "#94a3b8", marginTop: 4 }}>No results found</div>}
+                      </div>
                     )}
-                  </Button>
+                  />
+                </div>
+
+                {distance && (
+                  <div style={{
+                    textAlign: "center",
+                    padding: "10px 16px",
+                    background: "#f0fdf4",
+                    borderRadius: 10,
+                    marginBottom: 16,
+                    border: "1px solid #bbf7d0",
+                  }}>
+                    <span style={{ fontFamily: "Inter-Medium", fontSize: 13, color: "#16a34a" }}>
+                      Distance: {distance} km
+                    </span>
+                  </div>
+                )}
+
+                <Button
+                  type="submit"
+                  disabled={isLoading}
+                  style={{
+                    width: "100%",
+                    height: 48,
+                    border: "none",
+                    borderRadius: "9999px",
+                    background: isLoading ? "#e2e8f0" : "linear-gradient(179.02deg, rgb(0, 74, 112) -69.5%, rgb(177, 176, 176) 99.16%)",
+                    color: "#fff",
+                    fontFamily: "Inter-SemiBold",
+                    fontSize: 15,
+                    cursor: isLoading ? "not-allowed" : "pointer",
+                    display: "flex",
+                    alignItems: "center",
+                    justifyContent: "center",
+                    gap: 8,
+                    boxShadow: isLoading ? "none" : "0 4px 14px rgba(0,74,112,0.25)",
+                    transition: "all 0.2s",
+                  }}
+                  onMouseEnter={(e) => {
+                    if (!isLoading) {
+                      e.currentTarget.style.boxShadow = "0 6px 20px rgba(0,74,112,0.35)";
+                      e.currentTarget.style.transform = "translateY(-1px)";
+                    }
+                  }}
+                  onMouseLeave={(e) => {
+                    if (!isLoading) {
+                      e.currentTarget.style.boxShadow = "0 4px 14px rgba(0,74,112,0.25)";
+                      e.currentTarget.style.transform = "translateY(0)";
+                    }
+                  }}
+                >
+                  {isLoading ? <Spinner size="sm" color="#fff" /> : "Next"}
+                </Button>
+              </Form>
+            </div>
+          </div>
+
+          {/* Right: Add Places Section */}
+          <div className="lg:col-span-8">
+            <div className="section-card" style={{
+              background: "#fff",
+              borderRadius: 16,
+              border: "1px solid #e2e8f0",
+              boxShadow: "0 1px 3px rgba(0,0,0,0.04)",
+              padding: 24,
+            }}>
+              <h2 style={{ fontFamily: "Inter-Bold", fontSize: 18, color: "#0f172a", margin: "0 0 16px" }}>
+                Add places to your itinerary
+              </h2>
+
+              <div className="slider-container" style={{ marginBottom: 20 }}>
+                <Slider {...settings2} key={Category.length}>
+                  {Category.map((category, index) => {
+                    const isSelected = selectedCategoryId === category._id;
+                    return (
+                      <div className="p-2" key={index}>
+                        <div
+                          className="CategoryMain text-center cursor-pointer"
+                          style={{
+                            padding: "10px 14px",
+                            background: isSelected
+                              ? "linear-gradient(179.02deg, rgb(0, 74, 112) -69.5%, rgb(177, 176, 176) 99.16%)"
+                              : "#fff",
+                            color: isSelected ? "white" : "#1e293b",
+                            borderRadius: "9999px",
+                            minWidth: "120px",
+                            textAlign: "center",
+                            display: "flex",
+                            alignItems: "center",
+                            justifyContent: "center",
+                            transition: "all 0.3s ease",
+                            border: isSelected ? "none" : "1px solid #e2e8f0",
+                            boxShadow: isSelected ? "0 2px 8px rgba(0,74,112,0.25)" : "none",
+                            margin: "0 auto",
+                            whiteSpace: "nowrap",
+                            fontSize: 14,
+                            fontWeight: 500,
+                            fontFamily: "Inter-Medium",
+                          }}
+                          onMouseEnter={(e) => {
+                            if (!isSelected) {
+                              e.currentTarget.style.borderColor = "#004a70";
+                              e.currentTarget.style.background = "#f1f5f9";
+                            }
+                          }}
+                          onMouseLeave={(e) => {
+                            if (!isSelected) {
+                              e.currentTarget.style.borderColor = "#e2e8f0";
+                              e.currentTarget.style.background = "#fff";
+                            }
+                          }}
+                          onClick={() => setSelectedCategoryId(category._id)}
+                        >
+                          <span style={{ fontSize: 13, fontFamily: "Inter-Medium" }}>{category?.name}</span>
+                        </div>
+                      </div>
+                    );
+                  })}
+                </Slider>
+              </div>
+
+              {SubCategory.length > 0 ? (
+                <>
+                  <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-3 gap-3">
+                    {SubCategory?.map((testimonial, index) => (
+                      <ThingstodoCard
+                        key={index}
+                        testimonial={testimonial}
+                        isTour={true}
+                        onClick={() => handleSelection(testimonial)}
+                        btnTitle={"Add to Itinerary"}
+                      />
+                    ))}
+                  </div>
+                  <div className="flex justify-center items-center mt-6 mb-2">
+                    {Pagelength > 0 ? (
+                      <Button
+                        onClick={ShowMoreDAta}
+                        style={{
+                          minWidth: 140,
+                          padding: "10px 28px",
+                          background: "linear-gradient(179.02deg, rgb(0, 74, 112) -69.5%, rgb(177, 176, 176) 99.16%)",
+                          border: "none",
+                          borderRadius: "9999px",
+                          color: "#fff",
+                          fontFamily: "Inter-Medium",
+                          fontSize: 14,
+                          cursor: "pointer",
+                          display: "inline-flex",
+                          alignItems: "center",
+                          justifyContent: "center",
+                          gap: 8,
+                          boxShadow: "0 4px 14px rgba(0,74,112,0.25)",
+                          transition: "all 0.2s",
+                        }}
+                        onMouseEnter={(e) => {
+                          e.currentTarget.style.boxShadow = "0 6px 20px rgba(0,74,112,0.35)";
+                          e.currentTarget.style.transform = "translateY(-1px)";
+                        }}
+                        onMouseLeave={(e) => {
+                          e.currentTarget.style.boxShadow = "0 4px 14px rgba(0,74,112,0.25)";
+                          e.currentTarget.style.transform = "translateY(0)";
+                        }}
+                      >
+                        {MoreLoading ? <Spinner size={"sm"} color="#fff" /> : "See more"}
+                      </Button>
+                    ) : null}
+                  </div>
                 </>
               ) : (
-                ""
+                <div className="d-flex flex-column align-items-center" style={{ padding: "40px 0" }}>
+                  <Image
+                    src={NoshowData}
+                    style={{ width: 180, height: 180, objectFit: "cover", borderRadius: 12 }}
+                    alt="No data available"
+                  />
+                  <h1 className="font-medium text-lg mt-3" style={{ color: "#94a3b8" }}>No Data Found!</h1>
+                </div>
               )}
             </div>
-          </>
-        ) : (
-          <div className="d-flex mt-5 flex-col justify-content-center align-items-center">
-            <Image
-              src={NoshowData}
-              style={{
-                width: "200px",
-                height: "200px",
-                objectFit: "cover", // Ensure the image covers the card nicely
-                borderRadius: "5px",
-              }}
-              alt="No data available"
-            />
-            <h1 className="font-medium text-xl mt-3">{"No Data Found!"}</h1>
           </div>
-        )}
+        </div>
       </div>
 
       <Offcanvas
@@ -874,7 +1040,7 @@ function MakeYourTour() {
           </div>
         </div>
       )}
-    </div>
+    </>
   );
 }
 
