@@ -1,33 +1,94 @@
+"use client";
 import Link from "next/link";
+import { useEffect, useState } from "react";
+import { FaFileContract, FaChevronRight } from "react-icons/fa";
 
 export default function TermsPage() {
+  const [content, setContent] = useState(null);
+  const [loading, setLoading] = useState(true);
+
+  useEffect(() => {
+    fetch("https://api.cabkn.com/api/users/terms")
+      .then((res) => res.json())
+      .then((data) => {
+        setContent(data);
+        setLoading(false);
+      })
+      .catch((err) => {
+        console.error(err);
+        setLoading(false);
+      });
+  }, []);
+
   return (
-    <section className="bg-white min-h-screen flex items-center justify-center py-12 px-4 sm:px-6 lg:px-8">
-      <div className="max-w-3xl w-full bg-white rounded-xl p-8 text-gray-800 shadow-md">
-        <h1 className="text-3xl font-bold mb-6 text-center">Terms & Conditions</h1>
-        <section className="space-y-4">
-          <p>
-            This is a placeholder terms and conditions page for CabKN. Replace this content with your actual legal text.
-          </p>
-          <h2 className="text-xl font-semibold mt-4">User Agreement</h2>
-          <p>
-            By using our service, you agree to the following terms: ... (add detailed clauses here).
-          </p>
-          <h2 className="text-xl font-semibold mt-4">Liability</h2>
-          <p>
-            We are not liable for any indirect or consequential damages arising from the use of our platform.
-          </p>
-          <h2 className="text-xl font-semibold mt-4">Contact</h2>
-          <p>
-            If you have any questions about these terms, feel free to contact us via the "Contact Us" section in the footer.
-          </p>
-        </section>
-        <div className="mt-8 text-center">
-          <Link href="/" className="inline-block bg-[#004a70] text-white font-semibold py-2 px-6 rounded hover:bg-[#003d5e] transition-colors">
-            Back to Home
-          </Link>
+    <div style={{ minHeight: "100vh", background: "#f8fafc" }}>
+      {/* Header */}
+      <div style={{ background: "linear-gradient(135deg, #004a70 0%, #002d47 100%)", padding: "28px 0 44px" }}>
+        <div style={{ maxWidth: 1200, margin: "0 auto", padding: "0 16px" }}>
+          <div style={{ color: "rgba(255,255,255,0.6)", fontSize: 13, marginBottom: 8, display: "flex", alignItems: "center", gap: 6 }}>
+            <Link href="/" style={{ color: "rgba(255,255,255,0.6)", textDecoration: "none" }}>Home</Link>
+            <FaChevronRight size={8} />
+            <span>Terms & Conditions</span>
+          </div>
+          <h1 style={{ color: "#fff", fontSize: "clamp(24px, 4vw, 32px)", fontWeight: 700, margin: 0, display: "flex", alignItems: "center", gap: 12 }}>
+            <FaFileContract size={24} />
+            Terms & Conditions
+          </h1>
         </div>
       </div>
-    </section>
+
+      {/* Content */}
+      <div style={{ maxWidth: 1200, margin: "-28px auto 0", padding: "0 16px 48px" }}>
+        <div style={{ background: "#fff", borderRadius: 14, padding: "clamp(20px, 3vw, 40px)", boxShadow: "0 2px 12px rgba(0,0,0,0.04)", border: "1px solid #f0f0f0" }}>
+          {loading ? (
+            <div style={{ textAlign: "center", padding: "48px 0" }}>
+              <div style={{ width: 40, height: 40, border: "3px solid #e5e7eb", borderTopColor: "#004a70", borderRadius: "50%", animation: "spin 0.8s linear infinite", margin: "0 auto 16px" }} />
+              <p style={{ color: "#9ca3af", fontFamily: "Inter-Regular", fontSize: 14, margin: 0 }}>Loading...</p>
+            </div>
+          ) : content?.terms?.description ? (
+            <div
+              className="terms-content"
+              dangerouslySetInnerHTML={{ __html: content.terms.description }}
+            />
+          ) : (
+            <div style={{ textAlign: "center", padding: "24px 0" }}>
+              <p style={{ color: "#9ca3af", fontFamily: "Inter-Regular", fontSize: 14, margin: 0 }}>No terms content available at the moment.</p>
+            </div>
+          )}
+
+          <div style={{ marginTop: 32, textAlign: "center", paddingTop: 24, borderTop: "1px solid #f0f0f0" }}>
+            <Link href="/" style={{ display: "inline-flex", alignItems: "center", gap: 8, background: "linear-gradient(135deg, #004a70 0%, #002d47 100%)", color: "#fff", fontFamily: "Inter-SemiBold", fontSize: 14, padding: "10px 28px", borderRadius: 9999, textDecoration: "none", transition: "all 0.2s", boxShadow: "0 2px 8px rgba(0,74,112,0.2)" }}
+              onMouseEnter={(e) => { e.target.style.transform = "translateY(-1px)"; e.target.style.boxShadow = "0 4px 12px rgba(0,74,112,0.3)"; }}
+              onMouseLeave={(e) => { e.target.style.transform = "none"; e.target.style.boxShadow = "0 2px 8px rgba(0,74,112,0.2)"; }}>
+              Back to Home
+            </Link>
+          </div>
+        </div>
+      </div>
+
+      <style jsx>{`
+        @keyframes spin { to { transform: rotate(360deg); } }
+        .terms-content {
+          font-family: "Inter-Regular", sans-serif;
+          font-size: 15px;
+          line-height: 1.8;
+          color: #374151;
+        }
+        .terms-content h1, .terms-content h2, .terms-content h3, .terms-content h4 {
+          font-family: "Inter-SemiBold", sans-serif;
+          color: #1f2937;
+          margin-top: 28px;
+          margin-bottom: 12px;
+        }
+        .terms-content h1 { font-size: 22px; }
+        .terms-content h2 { font-size: 18px; }
+        .terms-content h3 { font-size: 16px; }
+        .terms-content p { margin-bottom: 14px; }
+        .terms-content ul, .terms-content ol { padding-left: 24px; margin-bottom: 14px; }
+        .terms-content li { margin-bottom: 8px; }
+        .terms-content a { color: #004a70; text-decoration: underline; }
+        .terms-content strong { font-family: "Inter-SemiBold"; }
+      `}</style>
+    </div>
   );
 }

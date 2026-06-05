@@ -1,37 +1,94 @@
+"use client";
 import Link from "next/link";
+import { useEffect, useState } from "react";
+import { FaShieldAlt, FaChevronRight } from "react-icons/fa";
 
 export default function PrivacyPage() {
+  const [content, setContent] = useState(null);
+  const [loading, setLoading] = useState(true);
+
+  useEffect(() => {
+    fetch("https://api.cabkn.com/api/users/privacy")
+      .then((res) => res.json())
+      .then((data) => {
+        setContent(data);
+        setLoading(false);
+      })
+      .catch((err) => {
+        console.error(err);
+        setLoading(false);
+      });
+  }, []);
+
   return (
-    <section className="bg-white min-h-screen flex items-center justify-center py-12 px-4 sm:px-6 lg:px-8">
-      <div className="max-w-3xl w-full bg-white rounded-xl p-8 text-gray-800 shadow-md">
-        <h1 className="text-3xl font-bold mb-6 text-center">Privacy Policy</h1>
-        <section className="space-y-4">
-          <p>
-            Your privacy is important to us. This privacy policy explains how we collect, use, and protect your personal information when you use the CabKN service.
-          </p>
-          <h2 className="text-xl font-semibold mt-4">Information We Collect</h2>
-          <p>
-            We may collect personal data such as your name, email address, phone number, and location when you create an account or use our services. We also collect usage data to improve our platform.
-          </p>
-          <h2 className="text-xl font-semibold mt-4">How We Use Your Data</h2>
-          <p>
-            Your information helps us provide and enhance ride‑booking services, process payments, and communicate important updates. We never sell your personal data to third parties.
-          </p>
-          <h2 className="text-xl font-semibold mt-4">Data Security</h2>
-          <p>
-            We implement industry‑standard security measures to protect your data. However, no method of transmission over the internet is 100% secure.
-          </p>
-          <h2 className="text-xl font-semibold mt-4">Your Rights</h2>
-          <p>
-            You may request access to, correction of, or deletion of your personal data by contacting us at support@cabkn.com.
-          </p>
-        </section>
-        <div className="mt-8 text-center">
-          <Link href="/" className="inline-block bg-[#004a70] text-white font-semibold py-2 px-6 rounded hover:bg-[#003d5e] transition-colors">
-            Back to Home
-          </Link>
+    <div style={{ minHeight: "100vh", background: "#f8fafc" }}>
+      {/* Header */}
+      <div style={{ background: "linear-gradient(135deg, #004a70 0%, #002d47 100%)", padding: "28px 0 44px" }}>
+        <div style={{ maxWidth: 1200, margin: "0 auto", padding: "0 16px" }}>
+          <div style={{ color: "rgba(255,255,255,0.6)", fontSize: 13, marginBottom: 8, display: "flex", alignItems: "center", gap: 6 }}>
+            <Link href="/" style={{ color: "rgba(255,255,255,0.6)", textDecoration: "none" }}>Home</Link>
+            <FaChevronRight size={8} />
+            <span>Privacy Policy</span>
+          </div>
+          <h1 style={{ color: "#fff", fontSize: "clamp(24px, 4vw, 32px)", fontWeight: 700, margin: 0, display: "flex", alignItems: "center", gap: 12 }}>
+            <FaShieldAlt size={26} />
+            Privacy Policy
+          </h1>
         </div>
       </div>
-    </section>
+
+      {/* Content */}
+      <div style={{ maxWidth: 1200, margin: "-28px auto 0", padding: "0 16px 48px" }}>
+        <div style={{ background: "#fff", borderRadius: 14, padding: "clamp(20px, 3vw, 40px)", boxShadow: "0 2px 12px rgba(0,0,0,0.04)", border: "1px solid #f0f0f0" }}>
+          {loading ? (
+            <div style={{ textAlign: "center", padding: "48px 0" }}>
+              <div style={{ width: 40, height: 40, border: "3px solid #e5e7eb", borderTopColor: "#004a70", borderRadius: "50%", animation: "spin 0.8s linear infinite", margin: "0 auto 16px" }} />
+              <p style={{ color: "#9ca3af", fontFamily: "Inter-Regular", fontSize: 14, margin: 0 }}>Loading...</p>
+            </div>
+          ) : content?.privacy?.description ? (
+            <div
+              className="privacy-content"
+              dangerouslySetInnerHTML={{ __html: content.privacy.description }}
+            />
+          ) : (
+            <div style={{ textAlign: "center", padding: "24px 0" }}>
+              <p style={{ color: "#9ca3af", fontFamily: "Inter-Regular", fontSize: 14, margin: 0 }}>No privacy policy content available at the moment.</p>
+            </div>
+          )}
+
+          <div style={{ marginTop: 32, textAlign: "center", paddingTop: 24, borderTop: "1px solid #f0f0f0" }}>
+            <Link href="/" style={{ display: "inline-flex", alignItems: "center", gap: 8, background: "linear-gradient(135deg, #004a70 0%, #002d47 100%)", color: "#fff", fontFamily: "Inter-SemiBold", fontSize: 14, padding: "10px 28px", borderRadius: 9999, textDecoration: "none", transition: "all 0.2s", boxShadow: "0 2px 8px rgba(0,74,112,0.2)" }}
+              onMouseEnter={(e) => { e.target.style.transform = "translateY(-1px)"; e.target.style.boxShadow = "0 4px 12px rgba(0,74,112,0.3)"; }}
+              onMouseLeave={(e) => { e.target.style.transform = "none"; e.target.style.boxShadow = "0 2px 8px rgba(0,74,112,0.2)"; }}>
+              Back to Home
+            </Link>
+          </div>
+        </div>
+      </div>
+
+      <style jsx>{`
+        @keyframes spin { to { transform: rotate(360deg); } }
+        .privacy-content {
+          font-family: "Inter-Regular", sans-serif;
+          font-size: 15px;
+          line-height: 1.8;
+          color: #374151;
+        }
+        .privacy-content h1, .privacy-content h2, .privacy-content h3, .privacy-content h4 {
+          font-family: "Inter-SemiBold", sans-serif;
+          color: #1f2937;
+          margin-top: 28px;
+          margin-bottom: 12px;
+        }
+        .privacy-content h1 { font-size: 22px; }
+        .privacy-content h2 { font-size: 18px; }
+        .privacy-content h3 { font-size: 16px; }
+        .privacy-content p { margin-bottom: 14px; }
+        .privacy-content ul, .privacy-content ol { padding-left: 24px; margin-bottom: 14px; }
+        .privacy-content li { margin-bottom: 8px; }
+        .privacy-content a { color: #004a70; text-decoration: underline; }
+        .privacy-content strong { font-family: "Inter-SemiBold"; }
+      `}</style>
+    </div>
   );
 }
