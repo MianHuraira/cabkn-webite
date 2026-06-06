@@ -114,6 +114,9 @@ function MakeYourTour() {
   const [isLoading, setIsLoading] = useState(false);
   const [Schuale, setSchuale] = useState(false);
 
+  const [mounted, setMounted] = useState(false);
+  useEffect(() => { setMounted(true); }, []);
+
   const [TypeRide, setTypeRide] = useState("");
   const [predictions, setPredictions] = useState([]);
   const [noData, setNoData] = useState(false);
@@ -590,12 +593,14 @@ function MakeYourTour() {
   };
 
   return (
-    <>
+    <div className={mounted ? "animate-fade-in" : "opacity-0"} style={{ background: "#f8fafc", minHeight: "100vh" }}>
       {/* Blue Gradient Header */}
       <div
+        className={mounted ? "animate-fade-in-down" : "opacity-0"}
         style={{
           background: "linear-gradient(135deg, #004a70 0%, #002d47 100%)",
           padding: "28px 0 44px",
+          animationDelay: "50ms",
         }}
       >
         <div style={{ maxWidth: 1320, margin: "0 auto", padding: "0 16px" }}>
@@ -644,13 +649,17 @@ function MakeYourTour() {
         <div className="grid grid-cols-1 lg:grid-cols-12 gap-6">
           {/* Left: Create Your Tour Form */}
           <div className="lg:col-span-4">
-            <div className="section-card" style={{
-              background: "#fff",
-              borderRadius: 16,
-              border: "1px solid #e2e8f0",
-              boxShadow: "0 1px 3px rgba(0,0,0,0.04)",
-              padding: 24,
-            }}>
+            <div
+              className={`section-card ${mounted ? "animate-fade-in-up" : "opacity-0"}`}
+              style={{
+                background: "#fff",
+                borderRadius: 16,
+                border: "1px solid #e2e8f0",
+                boxShadow: "0 1px 3px rgba(0,0,0,0.04)",
+                padding: 24,
+                animationDelay: "150ms",
+              }}
+            >
               <h2 style={{ fontFamily: "Inter-Bold", fontSize: 18, color: "#0f172a", margin: "0 0 6px", textAlign: "center" }}>
                 Create Your Tour
               </h2>
@@ -710,6 +719,7 @@ function MakeYourTour() {
                     />
                     <div
                       onClick={getLocation}
+                      className="hover:bg-slate-200"
                       style={{
                         width: 46,
                         height: 46,
@@ -723,8 +733,6 @@ function MakeYourTour() {
                         transition: "all 0.2s",
                         border: "1px solid #e2e8f0",
                       }}
-                      onMouseEnter={(e) => { e.currentTarget.style.background = "#e2e8f0"; }}
-                      onMouseLeave={(e) => { e.currentTarget.style.background = "#f1f5f9"; }}
                     >
                       <BiCurrentLocation size={22} color="#004a70" />
                     </div>
@@ -799,6 +807,7 @@ function MakeYourTour() {
                 <Button
                   type="submit"
                   disabled={isLoading}
+                  className={!isLoading ? "hover:shadow-lg hover:-translate-y-0.5" : ""}
                   style={{
                     width: "100%",
                     height: 48,
@@ -816,18 +825,6 @@ function MakeYourTour() {
                     boxShadow: isLoading ? "none" : "0 4px 14px rgba(0,74,112,0.25)",
                     transition: "all 0.2s",
                   }}
-                  onMouseEnter={(e) => {
-                    if (!isLoading) {
-                      e.currentTarget.style.boxShadow = "0 6px 20px rgba(0,74,112,0.35)";
-                      e.currentTarget.style.transform = "translateY(-1px)";
-                    }
-                  }}
-                  onMouseLeave={(e) => {
-                    if (!isLoading) {
-                      e.currentTarget.style.boxShadow = "0 4px 14px rgba(0,74,112,0.25)";
-                      e.currentTarget.style.transform = "translateY(0)";
-                    }
-                  }}
                 >
                   {isLoading ? <Spinner size="sm" color="#fff" /> : "Next"}
                 </Button>
@@ -837,13 +834,17 @@ function MakeYourTour() {
 
           {/* Right: Add Places Section */}
           <div className="lg:col-span-8">
-            <div className="section-card" style={{
-              background: "#fff",
-              borderRadius: 16,
-              border: "1px solid #e2e8f0",
-              boxShadow: "0 1px 3px rgba(0,0,0,0.04)",
-              padding: 24,
-            }}>
+            <div
+              className={`section-card ${mounted ? "animate-fade-in-up" : "opacity-0"}`}
+              style={{
+                background: "#fff",
+                borderRadius: 16,
+                border: "1px solid #e2e8f0",
+                boxShadow: "0 1px 3px rgba(0,0,0,0.04)",
+                padding: 24,
+                animationDelay: "250ms",
+              }}
+            >
               <h2 style={{ fontFamily: "Inter-Bold", fontSize: 18, color: "#0f172a", margin: "0 0 16px" }}>
                 Add places to your itinerary
               </h2>
@@ -855,7 +856,7 @@ function MakeYourTour() {
                     return (
                       <div className="p-2" key={index}>
                         <div
-                          className="CategoryMain text-center cursor-pointer"
+                          className={`CategoryMain text-center cursor-pointer ${!isSelected ? "hover:border-brand-700 hover:bg-slate-100" : ""}`}
                           style={{
                             padding: "10px 14px",
                             background: isSelected
@@ -876,18 +877,6 @@ function MakeYourTour() {
                             fontSize: 14,
                             fontWeight: 500,
                             fontFamily: "Inter-Medium",
-                          }}
-                          onMouseEnter={(e) => {
-                            if (!isSelected) {
-                              e.currentTarget.style.borderColor = "#004a70";
-                              e.currentTarget.style.background = "#f1f5f9";
-                            }
-                          }}
-                          onMouseLeave={(e) => {
-                            if (!isSelected) {
-                              e.currentTarget.style.borderColor = "#e2e8f0";
-                              e.currentTarget.style.background = "#fff";
-                            }
                           }}
                           onClick={() => setSelectedCategoryId(category._id)}
                         >
@@ -916,6 +905,7 @@ function MakeYourTour() {
                     {Pagelength > 0 ? (
                       <Button
                         onClick={ShowMoreDAta}
+                        className="hover:shadow-lg hover:-translate-y-0.5"
                         style={{
                           minWidth: 140,
                           padding: "10px 28px",
@@ -932,14 +922,6 @@ function MakeYourTour() {
                           gap: 8,
                           boxShadow: "0 4px 14px rgba(0,74,112,0.25)",
                           transition: "all 0.2s",
-                        }}
-                        onMouseEnter={(e) => {
-                          e.currentTarget.style.boxShadow = "0 6px 20px rgba(0,74,112,0.35)";
-                          e.currentTarget.style.transform = "translateY(-1px)";
-                        }}
-                        onMouseLeave={(e) => {
-                          e.currentTarget.style.boxShadow = "0 4px 14px rgba(0,74,112,0.25)";
-                          e.currentTarget.style.transform = "translateY(0)";
                         }}
                       >
                         {MoreLoading ? <Spinner size={"sm"} color="#fff" /> : "See more"}
@@ -1012,8 +994,8 @@ function MakeYourTour() {
       </Offcanvas>
 
       {ShowPermissionDialog && (
-        <div className="fixed inset-0 bg-black bg-opacity-50 flex items-center justify-center p-4">
-          <div className="bg-white rounded-lg max-w-md w-full p-6 space-y-4">
+        <div className={`fixed inset-0 bg-black bg-opacity-50 flex items-center justify-center p-4 ${mounted ? "animate-fade-in" : "opacity-0"}`}>
+          <div className={`bg-white rounded-lg max-w-md w-full p-6 space-y-4 ${mounted ? "animate-fade-in-up" : "opacity-0"}`} style={{ animationDelay: "50ms" }}>
             <div className="space-y-2">
               <h2 className="text-xl font-semibold text-gray-900">
                 Location Access Required
@@ -1040,7 +1022,7 @@ function MakeYourTour() {
           </div>
         </div>
       )}
-    </>
+    </div>
   );
 }
 

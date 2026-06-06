@@ -17,6 +17,8 @@ export default function CouponPage() {
   const [CouponCode, setCouponCode] = useState("");
   const [loading, setloading] = useState(true);
   const [copied, setCopied] = useState(false);
+  const [mounted, setMounted] = useState(false);
+  useEffect(() => { setMounted(true); }, []);
 
   const handleClose = () => setShow(false);
 
@@ -67,9 +69,11 @@ export default function CouponPage() {
     <>
       {/* Header */}
       <div
+        className={mounted ? 'animate-fade-in-down' : 'opacity-0'}
         style={{
           background: "linear-gradient(135deg, #004a70 0%, #002d47 100%)",
           padding: "28px 0 44px",
+          animationDelay: "50ms",
         }}
       >
         <div style={{ maxWidth: 1320, margin: "0 auto", padding: "0 16px" }}>
@@ -126,7 +130,7 @@ export default function CouponPage() {
         </div>
       </div>
 
-      <div style={{ maxWidth: 1320, margin: "-24px auto 0", padding: "0 16px 48px" }}>
+      <div className={mounted ? 'animate-fade-in' : 'opacity-0'} style={{ maxWidth: 1320, margin: "-24px auto 0", padding: "0 16px 48px" }}>
         {loading ? (
           <div
             style={{
@@ -188,6 +192,7 @@ export default function CouponPage() {
               <div
                 key={index}
                 onClick={() => handleShow(item)}
+                className={`${mounted ? 'animate-fade-in-up' : 'opacity-0'} hover:shadow-lg hover:-translate-y-0.5`}
                 style={{
                   background: "#fff",
                   borderRadius: 14,
@@ -198,14 +203,7 @@ export default function CouponPage() {
                   boxShadow: "0 1px 3px rgba(0,0,0,0.04)",
                   position: "relative",
                   overflow: "hidden",
-                }}
-                onMouseEnter={(e) => {
-                  e.currentTarget.style.boxShadow = "0 8px 30px rgba(0,0,0,0.08)";
-                  e.currentTarget.style.transform = "translateY(-2px)";
-                }}
-                onMouseLeave={(e) => {
-                  e.currentTarget.style.boxShadow = "0 1px 3px rgba(0,0,0,0.04)";
-                  e.currentTarget.style.transform = "translateY(0)";
+                  animationDelay: `${100 + index * 60}ms`,
                 }}
               >
                 {/* Top accent bar */}

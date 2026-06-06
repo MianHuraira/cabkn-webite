@@ -54,6 +54,22 @@ const PopularAA = () => {
   const [SubcatData, setSubcatData] = useState([]);
   const [Schedule, setSchedule] = useState("");
 
+  const [mounted, setMounted] = useState(false);
+  useEffect(() => { setMounted(true); }, []);
+
+  const contentRef = useRef(null);
+  const [contentInView, setContentInView] = useState(false);
+  useEffect(() => {
+    const el = contentRef.current;
+    if (!el) return;
+    const observer = new IntersectionObserver(
+      ([entry]) => { if (entry.isIntersecting) { setContentInView(true); observer.disconnect(); } },
+      { threshold: 0.05 }
+    );
+    observer.observe(el);
+    return () => observer.disconnect();
+  }, []);
+
   const searchParams = useSearchParams();
   const params = new URLSearchParams(searchParams);
   const urlreview = params.get("review");
@@ -293,9 +309,9 @@ const PopularAA = () => {
   };
 
   return (
-    <div style={{ minHeight: "100vh", background: "#f8fafc" }}>
+    <div className={mounted ? "animate-fade-in" : "opacity-0"} style={{ minHeight: "100vh", background: "#f8fafc" }}>
       {/* Blue Gradient Header - matching other pages pattern */}
-      <div style={{ background: "linear-gradient(135deg, #004a70 0%, #002d47 100%)", padding: "28px 0 44px" }}>
+      <div className={mounted ? "animate-fade-in-down" : "opacity-0"} style={{ background: "linear-gradient(135deg, #004a70 0%, #002d47 100%)", padding: "28px 0 44px", animationDelay: "50ms" }}>
         <div style={{ maxWidth: 1200, margin: "0 auto", padding: "0 16px" }}>
           <div style={{ color: "rgba(255,255,255,0.6)", fontSize: 13, marginBottom: 8 }}>
             Home / Popular Places / {SubcatData?.title || "Detail"}
@@ -315,9 +331,9 @@ const PopularAA = () => {
         </div>
       </div>
 
-      <Container fluid className="customWidth" style={{ marginTop: "-24px", paddingBottom: 48 }}>
+      <div className="w-full px-3 sm:px-4 md:px-6" style={{ marginTop: "-24px", paddingBottom: 48, maxWidth: 1200, marginLeft: "auto", marginRight: "auto" }}>
         {/* Hero Gallery Section */}
-        <div className="relative rounded-2xl overflow-hidden bg-brand-600 shadow-xl">
+        <div className={`relative rounded-2xl overflow-hidden bg-brand-600 shadow-xl reveal ${mounted ? "visible" : ""}`} style={{ transitionDelay: "150ms" }}>
           <div className="relative">
             <Slider {...settings} ref={sliderRef1}>
               {SubcatData?.images?.map((item, index) => (
@@ -335,7 +351,7 @@ const PopularAA = () => {
             </Slider>
 
             {/* Hero Content Overlay */}
-            <div className="absolute bottom-0 left-0 right-0 z-10 p-6 md:p-10">
+            <div className="absolute bottom-0 left-0 right-0 z-10 p-4 sm:p-6 md:p-10">
               {SubcatData?.category?.name && (
                 <span className="inline-block bg-white/20 backdrop-blur-sm text-white text-xs font-medium px-3 py-1 rounded-full mb-3 border border-white/10">
                   {SubcatData?.category?.name}
@@ -367,7 +383,7 @@ const PopularAA = () => {
                 <button
                   key={index}
                   onClick={() => sliderRef1.current?.slickGoTo(index)}
-                  className="w-16 h-12 rounded-lg overflow-hidden border-2 transition-all duration-200 flex-shrink-0"
+                  className="w-12 h-10 sm:w-16 sm:h-12 rounded-lg overflow-hidden border-2 transition-all duration-200 flex-shrink-0"
                   style={{
                     borderColor: index === currentSlide ? "#fff" : "rgba(255,255,255,0.3)",
                     opacity: index === currentSlide ? 1 : 0.6,
@@ -381,43 +397,43 @@ const PopularAA = () => {
         </div>
 
         {/* Content Grid */}
-        <div className="grid grid-cols-1 lg:grid-cols-3 gap-8 mt-6">
+        <div ref={contentRef} className="grid grid-cols-1 lg:grid-cols-3 gap-8 mt-6">
           {/* Main Content */}
           <div className="lg:col-span-2 space-y-8">
             {/* Upcoming Events */}
             {SubcatData?.category?.name == "Upcoming Events" && SubcatData.start_date && (
-              <div className="bg-gradient-to-r from-brand-600/5 to-brand-500/5 rounded-xl p-5 border border-brand-600/10">
-                <div className="flex flex-wrap items-center gap-6">
-                  <div className="flex items-center gap-3">
-                    <div className="w-10 h-10 rounded-full bg-brand-600/10 flex items-center justify-center">
-                      <HiOutlineCalendarDays className="text-brand-600 text-lg" />
+                <div className={`bg-gradient-to-r from-brand-600/5 to-brand-500/5 rounded-xl p-4 sm:p-5 border border-brand-600/10 reveal ${contentInView ? "visible" : ""}`} style={{ transitionDelay: "50ms" }}>
+                  <div className="flex flex-col sm:flex-row flex-wrap items-start sm:items-center gap-4 sm:gap-6">
+                    <div className="flex items-center gap-3">
+                      <div className="w-10 h-10 rounded-full bg-brand-600/10 flex items-center justify-center flex-shrink-0">
+                        <HiOutlineCalendarDays className="text-brand-600 text-lg" />
+                      </div>
+                      <div className="min-w-0">
+                        <p className="text-xs text-brand-600/60 font-Regular uppercase tracking-wide">Date</p>
+                        <p className="text-sm font-medium text-brand-600 truncate">
+                          {moment(SubcatData.start_date).format("dddd, MMMM Do, YYYY")}
+                        </p>
+                      </div>
                     </div>
-                    <div>
-                      <p className="text-xs text-brand-600/60 font-Regular uppercase tracking-wide">Date</p>
-                      <p className="text-sm font-medium text-brand-600">
-                        {moment(SubcatData.start_date).format("dddd, MMMM Do, YYYY")}
-                      </p>
-                    </div>
-                  </div>
-                  <div className="w-px h-10 bg-brand-600/10 hidden sm:block" />
-                  <div className="flex items-center gap-3">
-                    <div className="w-10 h-10 rounded-full bg-brand-600/10 flex items-center justify-center">
-                      <HiOutlineClock className="text-brand-600 text-lg" />
-                    </div>
-                    <div>
-                      <p className="text-xs text-brand-600/60 font-Regular uppercase tracking-wide">Time</p>
-                      <p className="text-sm font-medium text-brand-600">
-                        {moment(SubcatData.start_time, "HH:mm").format("hh:mm A")}
-                      </p>
+                    <div className="w-px h-10 bg-brand-600/10 hidden sm:block flex-shrink-0" />
+                    <div className="flex items-center gap-3">
+                      <div className="w-10 h-10 rounded-full bg-brand-600/10 flex items-center justify-center flex-shrink-0">
+                        <HiOutlineClock className="text-brand-600 text-lg" />
+                      </div>
+                      <div className="min-w-0">
+                        <p className="text-xs text-brand-600/60 font-Regular uppercase tracking-wide">Time</p>
+                        <p className="text-sm font-medium text-brand-600">
+                          {moment(SubcatData.start_time, "HH:mm").format("hh:mm A")}
+                        </p>
+                      </div>
                     </div>
                   </div>
                 </div>
-              </div>
             )}
 
             {/* Schedule */}
             {Schedule?.length > 0 && (
-              <div>
+              <div className={`reveal ${contentInView ? "visible" : ""}`} style={{ transitionDelay: "100ms" }}>
                 <h3 className="text-lg font-bold text-gray-900 mb-4 flex items-center gap-2">
                   <HiOutlineCalendarDays className="text-brand-600" />
                   Schedule
@@ -426,11 +442,11 @@ const PopularAA = () => {
                   {Schedule?.map((item, index) => (
                     <div
                       key={index}
-                      className={`flex items-center justify-between px-5 py-3.5 ${index !== Schedule.length - 1 ? "border-b border-gray-50" : ""
+                      className={`flex items-center justify-between gap-2 px-4 sm:px-5 py-3.5 ${index !== Schedule.length - 1 ? "border-b border-gray-50" : ""
                         } hover:bg-brand-600/[0.02] transition-colors`}
                     >
-                      <span className="font-medium text-gray-800 text-sm">{item?.slot_day}</span>
-                      <span className="font-Regular text-gray-500 text-sm">
+                      <span className="font-medium text-gray-800 text-sm truncate">{item?.slot_day}</span>
+                      <span className="font-Regular text-gray-500 text-sm whitespace-nowrap flex-shrink-0">
                         {item?.slots[0] != undefined && item.slots[1] != undefined
                           ? `${convertTo12Hour(item?.slots[0])} - ${convertTo12Hour(item?.slots[1])}`
                           : "No Time"}
@@ -442,7 +458,7 @@ const PopularAA = () => {
             )}
 
             {/* Description */}
-            <div>
+            <div className={`reveal ${contentInView ? "visible" : ""}`} style={{ transitionDelay: "150ms" }}>
               <h3 className="text-lg font-bold text-gray-900 mb-3">Description</h3>
               <div className="bg-white rounded-xl border border-gray-100 shadow-sm p-5">
                 <p className="text-gray-600 font-Regular leading-relaxed text-[15px]">
@@ -453,7 +469,7 @@ const PopularAA = () => {
 
             {/* Highlights */}
             {SubcatData?.heighlights?.length > 0 && (
-              <div>
+              <div className={`reveal ${contentInView ? "visible" : ""}`} style={{ transitionDelay: "200ms" }}>
                 <h3 className="text-lg font-bold text-gray-900 mb-3">Highlights</h3>
                 <div className="bg-white rounded-xl border border-gray-100 shadow-sm p-5">
                   <ul className="space-y-3">
@@ -469,7 +485,7 @@ const PopularAA = () => {
             )}
 
             {/* Map */}
-            <div>
+            <div className={`reveal ${contentInView ? "visible" : ""}`} style={{ transitionDelay: "250ms" }}>
               <h3 className="text-lg font-bold text-gray-900 mb-3 flex items-center gap-2">
                 <HiOutlineMapPin className="text-brand-600" />
                 Location
@@ -484,8 +500,8 @@ const PopularAA = () => {
             </div>
 
             {/* Reviews Section */}
-            <section ref={reviewSectionRef}>
-              <div className="flex items-center justify-between mb-6">
+            <section ref={reviewSectionRef} className={`reveal ${contentInView ? "visible" : ""}`} style={{ transitionDelay: "300ms" }}>
+              <div className="flex flex-col sm:flex-row sm:items-center justify-between gap-3 mb-6">
                 <h3 className="text-lg font-bold text-gray-900 flex items-center gap-2">
                   <HiOutlineChatBubbleLeftRight className="text-brand-600" />
                   Reviews
@@ -497,7 +513,7 @@ const PopularAA = () => {
                 </h3>
                 <button
                   onClick={handleShow}
-                  className="inline-flex items-center gap-2 bg-brand-600 text-white text-sm font-medium px-5 py-2.5 rounded-full hover:bg-brand-700 transition-all duration-200 border-none cursor-pointer shadow-sm hover:shadow-md"
+                  className="inline-flex items-center justify-center gap-2 bg-brand-600 text-white text-sm font-medium px-5 py-2.5 rounded-full hover:bg-brand-700 transition-all duration-200 border-none cursor-pointer shadow-sm hover:shadow-md w-full sm:w-auto"
                 >
                   Leave a Review
                 </button>
@@ -526,9 +542,9 @@ const PopularAA = () => {
                           key={review?._id}
                           className="bg-white rounded-xl border border-gray-100 shadow-sm p-5 hover:shadow-md transition-shadow duration-200"
                         >
-                          <div className="flex items-start justify-between">
-                            <div className="flex items-center gap-3">
-                              <div className="w-11 h-11 rounded-full overflow-hidden border-2 border-gray-100 flex-shrink-0">
+                          <div className="flex flex-col sm:flex-row sm:items-start justify-between gap-2">
+                            <div className="flex items-center gap-3 min-w-0">
+                              <div className="w-10 h-10 sm:w-11 sm:h-11 rounded-full overflow-hidden border-2 border-gray-100 flex-shrink-0">
                                 {review?.user?.image ? (
                                   <img
                                     src={review?.user?.image}
@@ -543,8 +559,8 @@ const PopularAA = () => {
                                   </div>
                                 )}
                               </div>
-                              <div>
-                                <h4 className="font-medium text-gray-900 text-sm">
+                              <div className="min-w-0">
+                                <h4 className="font-medium text-gray-900 text-sm truncate">
                                   {review?.user?.name}
                                 </h4>
                                 <p className="text-xs text-gray-400 font-Regular mt-0.5">
@@ -553,7 +569,7 @@ const PopularAA = () => {
                               </div>
                             </div>
                             <Rate
-                              className="starDiv !text-sm"
+                              className="starDiv !text-sm ml-12 sm:ml-0"
                               allowHalf
                               disabled
                               defaultValue={review?.rating}
@@ -590,9 +606,9 @@ const PopularAA = () => {
           </div>
 
           {/* Sidebar */}
-          <div className="space-y-6">
+          <div className={`space-y-6 reveal ${mounted ? "visible" : ""}`} style={{ transitionDelay: "200ms" }}>
             {/* Book a Ride Card */}
-            <div className="bg-white rounded-xl border border-gray-100 shadow-sm p-6 sticky top-24">
+            <div className="bg-white rounded-xl border border-gray-100 shadow-sm p-5 sm:p-6 sticky top-24">
               <div className="flex items-center gap-2 mb-4">
                 <HiOutlineStar className="text-amber-400 text-lg" />
                 <div>
@@ -617,21 +633,21 @@ const PopularAA = () => {
               {SubcatData?.category?.name === "Excursion" && (
                 <div className="mb-4 p-3 bg-amber-50 rounded-lg border border-amber-100">
                   <p className="text-xs text-amber-700 font-medium mb-2">Select Date & Time</p>
-                  <div className="grid grid-cols-2 gap-2">
-                    <div className="flex flex-col gap-1">
+                  <div className="flex flex-col sm:flex-row gap-2">
+                    <div className="flex flex-col gap-1 flex-1 min-w-0">
                       <label className="text-[11px] text-gray-500 font-Regular">Date</label>
                       <input
                         type="date"
                         onChange={(e) => setTimeSlot({ ...TimeSlot, date: e.target.value })}
-                        className="w-full px-3 py-2 text-sm border border-gray-200 rounded-lg focus:border-brand-600 outline-none font-Regular"
+                        className="w-full px-3 py-2.5 text-sm border border-gray-200 rounded-lg focus:border-brand-600 outline-none font-Regular"
                       />
                     </div>
-                    <div className="flex flex-col gap-1">
+                    <div className="flex flex-col gap-1 flex-1 min-w-0">
                       <label className="text-[11px] text-gray-500 font-Regular">Time</label>
                       <input
                         type="time"
                         onChange={(e) => handleTime({ ...TimeSlot, time: e.target.value })}
-                        className="w-full px-3 py-2 text-sm border border-gray-200 rounded-lg focus:border-brand-600 outline-none font-Regular"
+                        className="w-full px-3 py-2.5 text-sm border border-gray-200 rounded-lg focus:border-brand-600 outline-none font-Regular"
                       />
                     </div>
                   </div>
@@ -652,10 +668,10 @@ const PopularAA = () => {
             </div>
           </div>
         </div>
-      </Container>
+      </div>
 
       {/* Mobile Book a Ride Button */}
-      <div className="fixed bottom-0 left-0 right-0 z-50 p-4 bg-white/95 backdrop-blur-md border-t border-gray-100 shadow-[0_-4px_20px_rgba(0,0,0,0.08)] lg:hidden">
+      <div className={`fixed bottom-0 left-0 right-0 z-50 p-4 bg-white/95 backdrop-blur-md border-t border-gray-100 shadow-[0_-4px_20px_rgba(0,0,0,0.08)] lg:hidden ${mounted ? "animate-fade-in-up" : "opacity-0"}`} style={{ animationDelay: "400ms" }}>
         <div className="flex items-center justify-between mb-2">
           <div className="flex items-center gap-1">
             <FaStar className="text-amber-400 text-xs" />
@@ -677,8 +693,8 @@ const PopularAA = () => {
       </div>
 
       {/* Review Modal */}
-      <Modal centered backdrop="static" show={show} onHide={handleClose} style={{ zIndex: 2000 }}>
-        <div className="p-6">
+      <Modal centered backdrop="static" show={show} onHide={handleClose} style={{ zIndex: 2000 }} className="!mx-2 sm:!mx-0">
+        <div className="p-4 sm:p-6">
           <div className="flex items-center justify-between mb-6">
             <h3 className="text-xl font-bold text-gray-900">Leave a Review</h3>
             <button

@@ -6,6 +6,8 @@ import { FaShieldAlt, FaChevronRight } from "react-icons/fa";
 export default function PrivacyPage() {
   const [content, setContent] = useState(null);
   const [loading, setLoading] = useState(true);
+  const [mounted, setMounted] = useState(false);
+  useEffect(() => { setMounted(true); }, []);
 
   useEffect(() => {
     fetch("https://api.cabkn.com/api/users/privacy")
@@ -21,9 +23,9 @@ export default function PrivacyPage() {
   }, []);
 
   return (
-    <div style={{ minHeight: "100vh", background: "#f8fafc" }}>
+    <div className={mounted ? 'animate-fade-in' : 'opacity-0'} style={{ minHeight: "100vh", background: "#f8fafc" }}>
       {/* Header */}
-      <div style={{ background: "linear-gradient(135deg, #004a70 0%, #002d47 100%)", padding: "28px 0 44px" }}>
+      <div className={mounted ? 'animate-fade-in-down' : 'opacity-0'} style={{ background: "linear-gradient(135deg, #004a70 0%, #002d47 100%)", padding: "28px 0 44px", animationDelay: "50ms" }}>
         <div style={{ maxWidth: 1200, margin: "0 auto", padding: "0 16px" }}>
           <div style={{ color: "rgba(255,255,255,0.6)", fontSize: 13, marginBottom: 8, display: "flex", alignItems: "center", gap: 6 }}>
             <Link href="/" style={{ color: "rgba(255,255,255,0.6)", textDecoration: "none" }}>Home</Link>
@@ -38,7 +40,7 @@ export default function PrivacyPage() {
       </div>
 
       {/* Content */}
-      <div style={{ maxWidth: 1200, margin: "-28px auto 0", padding: "0 16px 48px" }}>
+      <div className={mounted ? 'animate-fade-in-up' : 'opacity-0'} style={{ maxWidth: 1200, margin: "-28px auto 0", padding: "0 16px 48px", animationDelay: "150ms" }}>
         <div style={{ background: "#fff", borderRadius: 14, padding: "clamp(20px, 3vw, 40px)", boxShadow: "0 2px 12px rgba(0,0,0,0.04)", border: "1px solid #f0f0f0" }}>
           {loading ? (
             <div style={{ textAlign: "center", padding: "48px 0" }}>
@@ -57,9 +59,7 @@ export default function PrivacyPage() {
           )}
 
           <div style={{ marginTop: 32, textAlign: "center", paddingTop: 24, borderTop: "1px solid #f0f0f0" }}>
-            <Link href="/" style={{ display: "inline-flex", alignItems: "center", gap: 8, background: "linear-gradient(135deg, #004a70 0%, #002d47 100%)", color: "#fff", fontFamily: "Inter-SemiBold", fontSize: 14, padding: "10px 28px", borderRadius: 9999, textDecoration: "none", transition: "all 0.2s", boxShadow: "0 2px 8px rgba(0,74,112,0.2)" }}
-              onMouseEnter={(e) => { e.target.style.transform = "translateY(-1px)"; e.target.style.boxShadow = "0 4px 12px rgba(0,74,112,0.3)"; }}
-              onMouseLeave={(e) => { e.target.style.transform = "none"; e.target.style.boxShadow = "0 2px 8px rgba(0,74,112,0.2)"; }}>
+            <Link href="/" className="hover:-translate-y-0.5 hover:shadow-lg" style={{ display: "inline-flex", alignItems: "center", gap: 8, background: "linear-gradient(135deg, #004a70 0%, #002d47 100%)", color: "#fff", fontFamily: "Inter-SemiBold", fontSize: 14, padding: "10px 28px", borderRadius: 9999, textDecoration: "none", transition: "all 0.2s", boxShadow: "0 2px 8px rgba(0,74,112,0.2)" }}>
               Back to Home
             </Link>
           </div>

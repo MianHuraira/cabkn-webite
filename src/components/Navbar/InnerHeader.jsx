@@ -35,6 +35,9 @@ const InnerHeader = () => {
   const [driverModal, SetdriverModal] = useState(false);
   const handleClosedriver = () => SetdriverModal(false);
   const [userMenuOpen, setUserMenuOpen] = useState(false);
+  const [mounted, setMounted] = useState(false);
+
+  useEffect(() => { setMounted(true); }, []);
 
   const dispatch = useDispatch();
 
@@ -135,6 +138,7 @@ const InnerHeader = () => {
     <>
       <Navbar
         expand="xl"
+        className={mounted ? "animate-header-slide-down" : "opacity-0"}
         style={{
           position: "sticky",
           top: 0,
@@ -186,11 +190,12 @@ const InnerHeader = () => {
               paddingRight: 16,
             }}
           >
-            {navLinks.map((link) => (
+            {navLinks.map((link, index) => (
               <Link
                 key={link.href}
                 href={link.href}
-                style={linkStyle(link.href)}
+                className="animate-fade-in-down"
+                style={{ ...linkStyle(link.href), animationDelay: `${index * 50}ms` }}
                 onMouseEnter={(e) => {
                   if (!isActive(link.href)) {
                     e.currentTarget.style.color = "#004a70";
@@ -210,105 +215,30 @@ const InnerHeader = () => {
           </div>
 
           {/* Right: Icons + User */}
-          <div className="d-none d-xl-flex" style={{ alignItems: "center", gap: 6, flexShrink: 0 }}>
-            <div
+          <div className="d-none d-xl-flex animate-fade-in" style={{ alignItems: "center", gap: 6, flexShrink: 0, animationDelay: "150ms" }}>
+            <button
               onClick={handleChatUser}
-              style={{
-                width: 34,
-                height: 34,
-                borderRadius: 8,
-                background: "#f3f4f6",
-                display: "flex",
-                alignItems: "center",
-                justifyContent: "center",
-                cursor: "pointer",
-                transition: "all 0.2s",
-                color: "#4b5563",
-              }}
-              onMouseEnter={(e) => {
-                e.currentTarget.style.background = "#004a70";
-                e.currentTarget.style.color = "#fff";
-              }}
-              onMouseLeave={(e) => {
-                e.currentTarget.style.background = "#f3f4f6";
-                e.currentTarget.style.color = "#4b5563";
-              }}
+              className="w-[34px] h-[34px] rounded-lg bg-gray-100 flex items-center justify-center cursor-pointer transition-all duration-200 text-gray-600 hover:bg-brand-600 hover:text-white hover:scale-110 border-0"
             >
               <HiOutlineChatBubbleOvalLeft size={16} />
-            </div>
-            <div
+            </button>
+            <button
               onClick={() => Route("notifications")}
-              style={{
-                width: 34,
-                height: 34,
-                borderRadius: 8,
-                background: "#f3f4f6",
-                display: "flex",
-                alignItems: "center",
-                justifyContent: "center",
-                cursor: "pointer",
-                transition: "all 0.2s",
-                color: "#4b5563",
-              }}
-              onMouseEnter={(e) => {
-                e.currentTarget.style.background = "#004a70";
-                e.currentTarget.style.color = "#fff";
-              }}
-              onMouseLeave={(e) => {
-                e.currentTarget.style.background = "#f3f4f6";
-                e.currentTarget.style.color = "#4b5563";
-              }}
+              className="w-[34px] h-[34px] rounded-lg bg-gray-100 flex items-center justify-center cursor-pointer transition-all duration-200 text-gray-600 hover:bg-brand-600 hover:text-white hover:scale-110 border-0"
             >
               <MdNotificationsActive size={16} />
-            </div>
-            <div
+            </button>
+            <button
               onClick={() => Route("favorites")}
-              style={{
-                width: 34,
-                height: 34,
-                borderRadius: 8,
-                background: "#f3f4f6",
-                display: "flex",
-                alignItems: "center",
-                justifyContent: "center",
-                cursor: "pointer",
-                transition: "all 0.2s",
-                color: "#4b5563",
-              }}
-              onMouseEnter={(e) => {
-                e.currentTarget.style.background = "#004a70";
-                e.currentTarget.style.color = "#fff";
-              }}
-              onMouseLeave={(e) => {
-                e.currentTarget.style.background = "#f3f4f6";
-                e.currentTarget.style.color = "#4b5563";
-              }}
+              className="w-[34px] h-[34px] rounded-lg bg-gray-100 flex items-center justify-center cursor-pointer transition-all duration-200 text-gray-600 hover:bg-brand-600 hover:text-white hover:scale-110 border-0"
             >
               <IoHeart size={16} />
-            </div>
+            </button>
 
             <div ref={userMenuRef} style={{ position: "relative" }}>
-              <div
+              <button
                 onClick={() => setUserMenuOpen(!userMenuOpen)}
-                style={{
-                  width: 34,
-                  height: 34,
-                  borderRadius: 8,
-                  background: "#f3f4f6",
-                  display: "flex",
-                  alignItems: "center",
-                  justifyContent: "center",
-                  cursor: "pointer",
-                  marginLeft: 2,
-                  transition: "all 0.2s",
-                  overflow: "hidden",
-                }}
-                onMouseEnter={(e) => {
-                  e.currentTarget.style.background = "#e5e7eb";
-                }}
-                onMouseLeave={(e) => {
-                  e.currentTarget.style.background = "#f3f4f6";
-                }}
+                className="w-[34px] h-[34px] rounded-lg bg-gray-100 flex items-center justify-center cursor-pointer ml-[2px] transition-all duration-200 overflow-hidden hover:bg-gray-200 border-0"
               >
                 {userData?.user?.image ? (
                   <Image
@@ -326,9 +256,10 @@ const InnerHeader = () => {
                 ) : (
                   <FaUser size={15} color="#6b7280" />
                 )}
-              </div>
+              </button>
               {userMenuOpen && (
                 <div
+                  className="animate-fade-in-up"
                   style={{
                     position: "absolute",
                     top: "calc(100% + 8px)",
@@ -348,6 +279,7 @@ const InnerHeader = () => {
                         <Link
                           href={item.to}
                           onClick={() => setUserMenuOpen(false)}
+                          className="block px-3.5 py-2.5 rounded-lg text-gray-700 font-medium text-sm no-underline transition-all duration-150 hover:bg-gray-100 hover:translate-x-0.5"
                           style={{
                             display: "block",
                             padding: "10px 14px",
@@ -356,10 +288,7 @@ const InnerHeader = () => {
                             fontWeight: 500,
                             fontSize: 14,
                             textDecoration: "none",
-                            transition: "background 0.15s",
                           }}
-                          onMouseEnter={(e) => (e.currentTarget.style.background = "#f3f4f6")}
-                          onMouseLeave={(e) => (e.currentTarget.style.background = "transparent")}
                         >
                           {item.label}
                         </Link>
@@ -369,6 +298,7 @@ const InnerHeader = () => {
                             item.onClick?.();
                             setUserMenuOpen(false);
                           }}
+                          className="px-3.5 py-2.5 rounded-lg text-gray-700 font-medium text-sm cursor-pointer transition-all duration-150 hover:bg-gray-100 hover:translate-x-0.5"
                           style={{
                             padding: "10px 14px",
                             borderRadius: 8,
@@ -376,10 +306,7 @@ const InnerHeader = () => {
                             fontWeight: 500,
                             fontSize: 14,
                             cursor: "pointer",
-                            transition: "background 0.15s",
                           }}
-                          onMouseEnter={(e) => (e.currentTarget.style.background = "#f3f4f6")}
-                          onMouseLeave={(e) => (e.currentTarget.style.background = "transparent")}
                         >
                           {item.label}
                         </div>
@@ -394,7 +321,7 @@ const InnerHeader = () => {
           {/* Mobile toggle */}
           <button
             onClick={() => setShow((prev) => !prev)}
-            className="d-xl-none"
+            className="d-xl-none transition-all duration-200 hover:bg-gray-100"
             style={{
               background: "none",
               border: "none",
@@ -466,33 +393,42 @@ const InnerHeader = () => {
         </Offcanvas.Header>
         <Offcanvas.Body style={{ padding: "12px 16px" }}>
           <div style={{ display: "flex", flexDirection: "column", gap: 2 }}>
-            {navLinks.map((link) => (
-              <MobileNavItem
-                key={link.href}
-                label={link.label}
-                active={isActive(link.href)}
-                onClick={() => Route(link.href === "/" ? "" : link.href.slice(1))}
-              />
+            {navLinks.map((link, index) => (
+              <div key={link.href} className="animate-fade-in" style={{ animationDelay: `${index * 40}ms` }}>
+                <MobileNavItem
+                  label={link.label}
+                  active={isActive(link.href)}
+                  onClick={() => Route(link.href === "/" ? "" : link.href.slice(1))}
+                />
+              </div>
             ))}
 
             <div style={{ borderTop: "1px solid #f0f0f0", margin: "12px 0", paddingTop: 12 }}>
-              <MobileNavItem
-                label="Profile"
-                onClick={() => Route("profile")}
-              />
-              <MobileNavItem
-                label="Notifications"
-                onClick={() => Route("notifications")}
-              />
-              <MobileNavItem
-                label="Signup as Driver"
-                onClick={HandleModal}
-              />
-              <MobileNavItem
-                label="Logout"
-                onClick={handleLogout}
-                danger
-              />
+              <div className="animate-fade-in" style={{ animationDelay: "500ms" }}>
+                <MobileNavItem
+                  label="Profile"
+                  onClick={() => Route("profile")}
+                />
+              </div>
+              <div className="animate-fade-in" style={{ animationDelay: "550ms" }}>
+                <MobileNavItem
+                  label="Notifications"
+                  onClick={() => Route("notifications")}
+                />
+              </div>
+              <div className="animate-fade-in" style={{ animationDelay: "600ms" }}>
+                <MobileNavItem
+                  label="Signup as Driver"
+                  onClick={HandleModal}
+                />
+              </div>
+              <div className="animate-fade-in" style={{ animationDelay: "650ms" }}>
+                <MobileNavItem
+                  label="Logout"
+                  onClick={handleLogout}
+                  danger
+                />
+              </div>
             </div>
           </div>
         </Offcanvas.Body>
@@ -783,21 +719,20 @@ const InnerHeader = () => {
 const MobileNavItem = ({ label, onClick, active, danger }) => (
   <div
     onClick={onClick}
+    className={`transition-all duration-150 ${
+      active
+        ? "bg-indigo-50 font-semibold"
+        : danger
+          ? "hover:bg-red-50"
+          : "hover:bg-gray-100"
+    }`}
     style={{
       padding: "11px 12px",
       borderRadius: 10,
       cursor: "pointer",
       color: active ? "#004a70" : danger ? "#ef4444" : "#374151",
-      background: active ? "#eef2ff" : "transparent",
       fontSize: 14,
       fontWeight: active ? 600 : 500,
-      transition: "all 0.15s",
-    }}
-    onMouseEnter={(e) => {
-      if (!active) e.currentTarget.style.background = danger ? "#fef2f2" : "#f3f4f6";
-    }}
-    onMouseLeave={(e) => {
-      if (!active) e.currentTarget.style.background = "transparent";
     }}
   >
     {label}

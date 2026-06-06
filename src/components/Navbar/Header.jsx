@@ -18,9 +18,12 @@ import { useRouter } from "next/navigation";
 
 const Header = () => {
   const [show, setShow] = useState(false);
+  const [mounted, setMounted] = useState(false);
   const handleClose = () => setShow(false);
   const handleShow = () => setShow(true);
   const router = useRouter();
+
+  useEffect(() => { setMounted(true); }, []);
 
   const [driverModal, SetdriverModal] = useState(false);
   const handleClosedriver = () => SetdriverModal(false);
@@ -87,7 +90,7 @@ const Header = () => {
   return (
     <>
       <header
-        className={`fixed top-0 left-0 right-0 z-[1000] transition-all duration-300 ${isScrolled
+        className={`fixed top-0 left-0 right-0 z-[1000] transition-all duration-300 ${mounted ? "animate-header-slide-down" : "opacity-0"} ${isScrolled
           ? "bg-black shadow-lg py-2"
           : "bg-transparent py-4"
           }`}

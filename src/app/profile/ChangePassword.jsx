@@ -1,5 +1,5 @@
 "use client";
-import React, { useState } from "react";
+import React, { useEffect, useState } from "react";
 import { Controller, useForm } from "react-hook-form";
 import { yupResolver } from "@hookform/resolvers/yup";
 import * as yup from "yup";
@@ -19,6 +19,8 @@ const schema = yup.object().shape({
 
 export default function ChangePassword() {
   const [isLoading, setisLoading] = useState(false);
+  const [mounted, setMounted] = useState(false);
+  useEffect(() => { setMounted(true); }, []);
   const { postData, header1, putData, header2, getData } = ApiFunction();
   const {
     handleSubmit,
@@ -56,7 +58,7 @@ export default function ChangePassword() {
     }
   };
   return (
-    <div>
+    <div className={mounted ? 'animate-fade-in-up' : 'opacity-0'}>
       <Form onSubmit={handleSubmit(onSubmit)} className="mt-3">
         <h2 className="font-medium text-lg">Personal Info</h2>
 

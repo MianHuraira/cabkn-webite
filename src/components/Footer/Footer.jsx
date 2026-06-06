@@ -1,6 +1,6 @@
 "use client";
 
-import React, { useEffect, useState } from "react";
+import React, { useEffect, useState, useRef } from "react";
 import { BsFillTelephoneFill } from "react-icons/bs";
 import { FiMapPin, FiArrowRight } from "react-icons/fi";
 import { AiOutlineMail } from "react-icons/ai";
@@ -32,6 +32,20 @@ export default function Footer() {
     getProfile();
   }, []);
 
+  const sectionRef = useRef(null);
+  const [inView, setInView] = useState(false);
+
+  useEffect(() => {
+    const el = sectionRef.current;
+    if (!el) return;
+    const observer = new IntersectionObserver(
+      ([entry]) => { if (entry.isIntersecting) { setInView(true); observer.disconnect(); } },
+      { threshold: 0.05 }
+    );
+    observer.observe(el);
+    return () => observer.disconnect();
+  }, []);
+
   const socialLinks = [
     { icon: <FaTwitter size={18} />, key: "twitter" },
     { icon: <FaFacebookF size={18} />, key: "facebook" },
@@ -40,14 +54,15 @@ export default function Footer() {
   ];
 
   return (
-    <footer className="bg-[#004a70]">
+    <footer ref={sectionRef} className="bg-[#004a70]">
       {/* Top Wave Divider */}
 
 
       <div className="max-w-[1320px] mx-auto px-4 sm:px-6 lg:px-8 pb-12 lg:pb-16">
         <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-12 gap-8 lg:gap-12 pt-5">
           {/* Brand Column */}
-          <div className="lg:col-span-4 flex flex-col gap-4">
+          <div className={`lg:col-span-4 flex flex-col gap-4 reveal ${inView ? "visible" : ""}`}
+            style={{ transitionDelay: "50ms" }}>
             <h3 className="text-white text-[28px] sm:text-[32px] font-bold m-0 tracking-tight">
               CabKN
             </h3>
@@ -64,7 +79,8 @@ export default function Footer() {
           </div>
 
           {/* Contacts Column */}
-          <div className="lg:col-span-4">
+          <div className={`lg:col-span-4 reveal ${inView ? "visible" : ""}`}
+            style={{ transitionDelay: "150ms" }}>
             <h4 className="text-white text-lg font-bold m-0 mb-5 relative inline-block pb-2.5 after:content-[''] after:absolute after:bottom-0 after:left-0 after:w-8 after:h-0.5 after:rounded-full after:bg-white/50">
               Contacts
             </h4>
@@ -116,7 +132,8 @@ export default function Footer() {
           </div>
 
           {/* Social & Apps Column */}
-          <div className="lg:col-span-4">
+          <div className={`lg:col-span-4 reveal ${inView ? "visible" : ""}`}
+            style={{ transitionDelay: "250ms" }}>
             <h4 className="text-white text-lg font-bold m-0 mb-5 relative inline-block pb-2.5 after:content-[''] after:absolute after:bottom-0 after:left-0 after:w-8 after:h-0.5 after:rounded-full after:bg-white/50">
               Follow Us
             </h4>
@@ -186,7 +203,8 @@ export default function Footer() {
       </div>
 
       {/* Bottom Bar */}
-      <div className="bg-[#003d5e]">
+      <div className={`bg-[#003d5e] reveal ${inView ? "visible" : ""}`}
+        style={{ transitionDelay: "350ms" }}>
         <div className="max-w-[1320px] mx-auto px-4 sm:px-6 lg:px-8 py-4">
           <p className="text-white/50 text-[13px] text-center m-0">
             &copy; {new Date().getFullYear()} CabKN. All rights reserved.

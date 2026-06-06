@@ -15,6 +15,8 @@ import { useRouter } from "next/navigation";
 
 export default function ServiceComponent() {
   const [currentPage, setCurrentPage] = useState(0);
+  const [mounted, setMounted] = useState(false);
+  useEffect(() => { setMounted(true); }, []);
   const router = useRouter();
   const { getData, header1 } = ApiFunction();
   const [Category, setCategory] = useState([]);
@@ -142,12 +144,14 @@ export default function ServiceComponent() {
   };
 
   return (
-    <>
+    <div className={mounted ? "animate-fade-in" : "opacity-0"}>
       {/* Blue Gradient Header */}
       <div
+        className={mounted ? "animate-fade-in-down" : "opacity-0"}
         style={{
           background: "linear-gradient(135deg, #004a70 0%, #002d47 100%)",
           padding: "28px 0 44px",
+          animationDelay: "50ms",
         }}
       >
         <div style={{ maxWidth: 1320, margin: "0 auto", padding: "0 16px" }}>
@@ -201,7 +205,7 @@ export default function ServiceComponent() {
               return (
                 <div className="p-2" key={index}>
                   <div
-                    className="CategoryMain text-center cursor-pointer"
+                    className={`CategoryMain text-center cursor-pointer ${!isSelected ? "hover:border-brand-700 hover:bg-slate-100" : ""}`}
                     style={{
                       padding: "10px 14px",
                       background: isSelected
@@ -223,18 +227,6 @@ export default function ServiceComponent() {
                       fontWeight: 500,
                       fontFamily: "Inter-Medium",
                     }}
-                    onMouseEnter={(e) => {
-                      if (!isSelected) {
-                        e.currentTarget.style.borderColor = "#004a70";
-                        e.currentTarget.style.background = "#f1f5f9";
-                      }
-                    }}
-                    onMouseLeave={(e) => {
-                      if (!isSelected) {
-                        e.currentTarget.style.borderColor = "#e2e8f0";
-                        e.currentTarget.style.background = "#fff";
-                      }
-                    }}
                     onClick={() => setSelectedCategoryId(category._id)}
                   >
                     <span style={{ fontSize: 13, fontFamily: "Inter-Medium" }}>{category?.name}</span>
@@ -250,19 +242,25 @@ export default function ServiceComponent() {
           <>
             <div className="grid grid-cols-1 sm:grid-cols-2 md:grid-cols-3 lg:grid-cols-4 gap-3">
               {SubCategory?.map((testimonial, index) => (
-                <ThingstodoCard
+                <div
                   key={index}
-                  testimonial={testimonial}
-                  onClick={() => handleItemClick(testimonial)}
-                  onClick2={() => handleSelection(testimonial)}
-                  btnTitle={'Buy Product'}
-                />
+                  className={`${mounted ? "animate-fade-in-up" : "opacity-0"}`}
+                  style={{ animationDelay: `${60 + index * 40}ms` }}
+                >
+                  <ThingstodoCard
+                    testimonial={testimonial}
+                    onClick={() => handleItemClick(testimonial)}
+                    onClick2={() => handleSelection(testimonial)}
+                    btnTitle={'Buy Product'}
+                  />
+                </div>
               ))}
             </div>
             <div className="flex justify-center items-center mt-6 mb-8">
               {Pagelength > 1 ? (
                 <Button
                   onClick={ShowMoreDAta}
+                  className="hover:shadow-lg hover:-translate-y-0.5"
                   style={{
                     minWidth: 140,
                     padding: "10px 28px",
@@ -279,14 +277,6 @@ export default function ServiceComponent() {
                     gap: 8,
                     boxShadow: "0 4px 14px rgba(0,74,112,0.25)",
                     transition: "all 0.2s",
-                  }}
-                  onMouseEnter={(e) => {
-                    e.currentTarget.style.boxShadow = "0 6px 20px rgba(0,74,112,0.35)";
-                    e.currentTarget.style.transform = "translateY(-1px)";
-                  }}
-                  onMouseLeave={(e) => {
-                    e.currentTarget.style.boxShadow = "0 4px 14px rgba(0,74,112,0.25)";
-                    e.currentTarget.style.transform = "translateY(0)";
                   }}
                 >
                   {MoreLoading ? <Spinner size={"sm"} color="#fff" /> : "See more"}
@@ -310,6 +300,6 @@ export default function ServiceComponent() {
           </div>
         )}
       </div>
-    </>
+    </div>
   );
 }

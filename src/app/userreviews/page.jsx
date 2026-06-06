@@ -10,6 +10,8 @@ import { FaStar, FaStarHalfAlt, FaRegStar, FaUserCircle } from "react-icons/fa";
 export default function Page() {
   const [Reviews, setReviews] = useState([]);
   const [Loading, setLoading] = useState(true);
+  const [mounted, setMounted] = useState(false);
+  useEffect(() => { setMounted(true); }, []);
   const { getData, header1 } = ApiFunction();
   const userData = useSelector((state) => state.auth.user?.user);
 
@@ -65,12 +67,14 @@ export default function Page() {
       : 0;
 
   return (
-    <div style={{ minHeight: "100vh", background: "#f8fafc" }}>
+    <div className={mounted ? 'animate-fade-in' : 'opacity-0'} style={{ minHeight: "100vh", background: "#f8fafc" }}>
       {/* Header */}
       <div
+        className={mounted ? 'animate-fade-in-down' : 'opacity-0'}
         style={{
           background: "linear-gradient(135deg, #004a70 0%, #002d47 100%)",
           padding: "28px 0 44px",
+          animationDelay: "50ms",
         }}
       >
         <div style={{ maxWidth: 1320, margin: "0 auto", padding: "0 16px" }}>
@@ -127,7 +131,7 @@ export default function Page() {
         </div>
       </div>
 
-      <div style={{ maxWidth: 1320, margin: "-24px auto 0", padding: "0 16px 48px" }}>
+      <div className={mounted ? 'animate-fade-in' : 'opacity-0'} style={{ maxWidth: 1320, margin: "-24px auto 0", padding: "0 16px 48px" }}>
         {Loading ? (
           <div
             style={{
@@ -188,6 +192,7 @@ export default function Page() {
             {Reviews.map((item, index) => (
               <div
                 key={index}
+                className={`${mounted ? 'animate-fade-in-up' : 'opacity-0'} hover:shadow-lg hover:-translate-y-0.5`}
                 style={{
                   background: "#fff",
                   borderRadius: 14,
@@ -195,14 +200,7 @@ export default function Page() {
                   padding: 20,
                   transition: "all 0.25s ease",
                   boxShadow: "0 1px 3px rgba(0,0,0,0.04)",
-                }}
-                onMouseEnter={(e) => {
-                  e.currentTarget.style.boxShadow = "0 8px 30px rgba(0,0,0,0.08)";
-                  e.currentTarget.style.transform = "translateY(-2px)";
-                }}
-                onMouseLeave={(e) => {
-                  e.currentTarget.style.boxShadow = "0 1px 3px rgba(0,0,0,0.04)";
-                  e.currentTarget.style.transform = "translateY(0)";
+                  animationDelay: `${100 + index * 60}ms`,
                 }}
               >
                 <div style={{ display: "flex", alignItems: "center", gap: 12, marginBottom: 14 }}>

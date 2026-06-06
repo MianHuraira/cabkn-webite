@@ -39,6 +39,8 @@ const ChatMessage = () => {
   const params = new URLSearchParams(searchParams);
   const urlDataEnq = params.get("query");
   const [searchQuery, setSearchQuery] = useState("");
+  const [mounted, setMounted] = useState(false);
+  useEffect(() => { setMounted(true); }, []);
 
   useEffect(() => {
     const urlData = urlDataEnq ? decryptData(urlDataEnq) : "";
@@ -66,9 +68,9 @@ const ChatMessage = () => {
     console.error("WebSocket connection error:", error);
   };
   return (
-    <div style={{ minHeight: "100vh", background: "#f8fafc" }}>
+    <div className={mounted ? 'animate-fade-in' : 'opacity-0'} style={{ minHeight: "100vh", background: "#f8fafc" }}>
       {/* Blue Gradient Header */}
-      <div style={{ background: "linear-gradient(135deg, #004a70 0%, #002d47 100%)", padding: "28px 0 44px" }}>
+      <div className={mounted ? 'animate-fade-in-down' : 'opacity-0'} style={{ background: "linear-gradient(135deg, #004a70 0%, #002d47 100%)", padding: "28px 0 44px", animationDelay: "50ms" }}>
         <div style={{ maxWidth: 1200, margin: "0 auto", padding: "0 16px" }}>
           <div style={{ color: "rgba(255,255,255,0.6)", fontSize: 13, marginBottom: 8 }}>Home / Chat</div>
           <h1 style={{ color: "#fff", fontSize: "clamp(22px, 4vw, 28px)", fontWeight: 700, margin: 0, letterSpacing: "-0.3px", display: "flex", alignItems: "center", gap: 10 }}>
@@ -81,7 +83,7 @@ const ChatMessage = () => {
       </div>
 
       {/* Chat Content */}
-      <div style={{ maxWidth: 1200, margin: "-28px auto 0", padding: "0 16px 48px" }}>
+      <div className={mounted ? 'animate-fade-in-up' : 'opacity-0'} style={{ maxWidth: 1200, margin: "-28px auto 0", padding: "0 16px 48px", animationDelay: "150ms" }}>
         <div className="chat_grid">
           {/* Chat List Sidebar */}
           <div className={`chat-sidebar ${!responsiveChat ? "" : "d_chat_none"}`}>

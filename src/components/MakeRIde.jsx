@@ -71,6 +71,9 @@ const RidePage = () => {
   const [FavUserId, setFavUserId] = useState("");
   const [isMobile, setIsMobile] = useState(false);
 
+  const [mounted, setMounted] = useState(false);
+  useEffect(() => { setMounted(true); }, []);
+
   useEffect(() => {
     const handleResize = () => setIsMobile(window.innerWidth < 768);
     handleResize();
@@ -728,9 +731,16 @@ const RidePage = () => {
   };
 
   return (
-    <div style={{ minHeight: "100vh", background: "#f8fafc" }}>
+    <div className={mounted ? "animate-fade-in" : "opacity-0"} style={{ minHeight: "100vh", background: "#f8fafc" }}>
       {/* Header */}
-      <div style={{ background: "linear-gradient(135deg, #004a70 0%, #002d47 100%)", padding: "28px 0 44px" }}>
+      <div
+        className={mounted ? "animate-fade-in-down" : "opacity-0"}
+        style={{
+          background: "linear-gradient(135deg, #004a70 0%, #002d47 100%)",
+          padding: "28px 0 44px",
+          animationDelay: "50ms",
+        }}
+      >
         <div style={{ maxWidth: 1200, margin: "0 auto", padding: "0 16px" }}>
           <div style={{ color: "rgba(255,255,255,0.6)", fontSize: 13, marginBottom: 8 }}>Home / Book Ride</div>
           <h1 style={{ color: "#fff", fontSize: "clamp(22px, 4vw, 28px)", fontWeight: 700, margin: 0, letterSpacing: "-0.3px", display: "flex", alignItems: "center", gap: 10 }}>
@@ -746,7 +756,13 @@ const RidePage = () => {
       <div style={{ maxWidth: 1200, margin: "-24px auto 0", padding: "0 16px 48px" }}>
         <div style={{ display: "grid", gridTemplateColumns: isMobile ? "1fr" : "4fr 8fr", gap: 24, alignItems: "start" }}>
           {/* Form Card */}
-          <div style={{ background: "#fff", borderRadius: 14, border: "1px solid #f0f0f0", padding: "clamp(20px, 3vw, 32px)" }}>
+          <div
+            className={mounted ? "animate-fade-in-up" : "opacity-0"}
+            style={{
+              background: "#fff", borderRadius: 14, border: "1px solid #f0f0f0", padding: "clamp(20px, 3vw, 32px)",
+              animationDelay: "150ms",
+            }}
+          >
             <form onSubmit={handleSubmit(onSubmit)}>
               {/* Category */}
               <div>
@@ -1035,6 +1051,7 @@ const RidePage = () => {
               <button
                 type="submit"
                 disabled={isLoading}
+                className={!isLoading ? "hover:shadow-lg hover:-translate-y-0.5" : ""}
                 style={{
                   width: "100%",
                   height: 48,
@@ -1053,18 +1070,6 @@ const RidePage = () => {
                   transition: "all 0.2s",
                   marginTop: 8,
                 }}
-                onMouseEnter={(e) => {
-                  if (!isLoading) {
-                    e.currentTarget.style.boxShadow = "0 6px 20px rgba(0,74,112,0.35)";
-                    e.currentTarget.style.transform = "translateY(-1px)";
-                  }
-                }}
-                onMouseLeave={(e) => {
-                  if (!isLoading) {
-                    e.currentTarget.style.boxShadow = "0 4px 14px rgba(0,74,112,0.25)";
-                    e.currentTarget.style.transform = "translateY(0)";
-                  }
-                }}
               >
                 {isLoading ? <Spinner size="sm" style={{ color: "#fff" }} /> : "Next"}
               </button>
@@ -1072,7 +1077,13 @@ const RidePage = () => {
           </div>
 
           {/* Map Card */}
-          <div style={{ background: "#fff", borderRadius: 14, border: "1px solid #f0f0f0", overflow: "hidden", minHeight: isMobile ? 300 : 500 }}>
+          <div
+            className={mounted ? "animate-fade-in-up" : "opacity-0"}
+            style={{
+              background: "#fff", borderRadius: 14, border: "1px solid #f0f0f0", overflow: "hidden", minHeight: isMobile ? 300 : 500,
+              animationDelay: "250ms",
+            }}
+          >
             <div
               id="map-container"
               ref={mapContainerRef}
@@ -1084,8 +1095,8 @@ const RidePage = () => {
 
       {/* Location Permission Dialog */}
       {ShowPermissionDialog && (
-        <div style={{ position: "fixed", inset: 0, background: "rgba(0,0,0,0.5)", display: "flex", alignItems: "center", justifyContent: "center", padding: 16, zIndex: 1050 }}>
-          <div style={{ background: "#fff", borderRadius: 14, maxWidth: 400, width: "100%", padding: "clamp(20px, 3vw, 28px)" }}>
+        <div className={mounted ? "animate-fade-in" : "opacity-0"} style={{ position: "fixed", inset: 0, background: "rgba(0,0,0,0.5)", display: "flex", alignItems: "center", justifyContent: "center", padding: 16, zIndex: 1050 }}>
+          <div className={mounted ? "animate-fade-in-up" : "opacity-0"} style={{ background: "#fff", borderRadius: 14, maxWidth: 400, width: "100%", padding: "clamp(20px, 3vw, 28px)", animationDelay: "50ms" }}>
             <h2 style={{ fontSize: 18, fontWeight: 600, color: "#1f2937", margin: "0 0 8px" }}>Location Access Required</h2>
             <p style={{ fontSize: 14, color: "#6b7280", margin: "0 0 20px" }}>
               Please enable location access to use this feature. You can enable it in your browser settings.
@@ -1093,18 +1104,22 @@ const RidePage = () => {
             <div style={{ display: "flex", justifyContent: "flex-end", gap: 8 }}>
               <button
                 onClick={() => handlePermissionGuide(false)}
+                className="hover:bg-gray-200"
                 style={{
                   padding: "10px 24px", borderRadius: "9999px", background: "#f3f4f6", border: "none",
                   color: "#374151", fontSize: 14, fontWeight: 600, cursor: "pointer",
+                  transition: "background 0.2s",
                 }}
               >
                 Cancel
               </button>
               <button
                 onClick={handlePermissionGuide}
+                className="hover:opacity-90"
                 style={{
                   padding: "10px 24px", borderRadius: "9999px", background: "linear-gradient(135deg, #004a70 0%, #002d47 100%)", border: "none",
                   color: "#fff", fontSize: 14, fontWeight: 600, cursor: "pointer",
+                  transition: "opacity 0.2s",
                 }}
               >
                 Show Instructions

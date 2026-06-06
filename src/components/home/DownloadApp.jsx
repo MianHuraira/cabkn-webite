@@ -1,11 +1,26 @@
-import React from "react";
+import React, { useEffect, useState, useRef } from "react";
 import { Col, Row } from "reactstrap";
 import { AppStore, GooglePlay, mobiledown } from "../assets/Images";
 import Image from "next/image";
 
 export default function DownloadApp() {
+  const sectionRef = useRef(null);
+  const [inView, setInView] = useState(false);
+
+  useEffect(() => {
+    const el = sectionRef.current;
+    if (!el) return;
+    const observer = new IntersectionObserver(
+      ([entry]) => { if (entry.isIntersecting) { setInView(true); observer.disconnect(); } },
+      { threshold: 0.08 }
+    );
+    observer.observe(el);
+    return () => observer.disconnect();
+  }, []);
+
   return (
     <div
+      ref={sectionRef}
       style={{
         marginTop: "5rem",
         marginBottom: "5rem",
@@ -16,40 +31,47 @@ export default function DownloadApp() {
         <Col lg={6} className="p-5">
           <div className="d-flex flex-column gap-3">
             <span
+              className={`reveal ${inView ? "visible" : ""}`}
               style={{
                 color: "#004a70",
                 fontSize: 14,
                 fontWeight: 600,
                 letterSpacing: 2,
                 textTransform: "uppercase",
+                transitionDelay: "100ms",
               }}
             >
               Download
             </span>
             <h1
+              className={`reveal ${inView ? "visible" : ""}`}
               style={{
                 fontSize: 42,
                 fontWeight: 700,
                 color: "#1a1a2e",
                 lineHeight: 1.15,
                 margin: 0,
+                transitionDelay: "200ms",
               }}
             >
               Download our{" "}
               <span style={{ color: "#004a70" }}>Mobile app</span>
             </h1>
             <p
+              className={`reveal ${inView ? "visible" : ""}`}
               style={{
                 color: "#6b7280",
                 fontSize: 16,
                 lineHeight: 1.7,
                 maxWidth: 440,
+                transitionDelay: "300ms",
               }}
             >
               Download the Cabkn app for easy transportation between Nevis And
               Saint Kitts
             </p>
-            <div className="d-flex flex-wrap gap-3 mt-3">
+            <div className={`d-flex flex-wrap gap-3 mt-3 reveal ${inView ? "visible" : ""}`}
+              style={{ transitionDelay: "400ms" }}>
               <div
                 onClick={() =>
                   window.open(
@@ -58,15 +80,7 @@ export default function DownloadApp() {
                     "noopener,noreferrer",
                   )
                 }
-                style={{
-                  cursor: "pointer",
-                  transition: "transform 0.2s ease",
-                  borderRadius: 12,
-                  overflow: "hidden",
-                  boxShadow: "0 4px 14px rgba(0,0,0,0.08)",
-                }}
-                onMouseEnter={(e) => (e.currentTarget.style.transform = "scale(1.04)")}
-                onMouseLeave={(e) => (e.currentTarget.style.transform = "scale(1)")}
+                className="cursor-pointer transition-all duration-200 hover:scale-105 rounded-xl overflow-hidden shadow-[0_4px_14px_rgba(0,0,0,0.08)] hover:shadow-[0_8px_24px_rgba(0,0,0,0.12)]"
               >
                 <Image
                   src={GooglePlay}
@@ -82,15 +96,7 @@ export default function DownloadApp() {
                     "noopener,noreferrer",
                   )
                 }
-                style={{
-                  cursor: "pointer",
-                  transition: "transform 0.2s ease",
-                  borderRadius: 12,
-                  overflow: "hidden",
-                  boxShadow: "0 4px 14px rgba(0,0,0,0.08)",
-                }}
-                onMouseEnter={(e) => (e.currentTarget.style.transform = "scale(1.04)")}
-                onMouseLeave={(e) => (e.currentTarget.style.transform = "scale(1)")}
+                className="cursor-pointer transition-all duration-200 hover:scale-105 rounded-xl overflow-hidden shadow-[0_4px_14px_rgba(0,0,0,0.08)] hover:shadow-[0_8px_24px_rgba(0,0,0,0.12)]"
               >
                 <Image
                   src={AppStore}
@@ -103,9 +109,11 @@ export default function DownloadApp() {
         </Col>
         <Col lg={6} className="text-center">
           <div
+            className={`reveal ${inView ? "visible" : ""}`}
             style={{
               display: "inline-block",
               position: "relative",
+              transitionDelay: "300ms",
             }}
           >
             <div
@@ -119,6 +127,7 @@ export default function DownloadApp() {
             />
             <Image
               src={mobiledown}
+              className="animate-[float-car_6s_ease-in-out_infinite]"
               style={{
                 objectFit: "contain",
                 width: "100%",

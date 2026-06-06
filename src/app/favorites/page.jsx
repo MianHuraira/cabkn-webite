@@ -14,6 +14,9 @@ const Page = () => {
   const [favLoadingId, setFavLoadingId] = useState(null);
   const router = useRouter();
 
+  const [mounted, setMounted] = useState(false);
+  useEffect(() => { setMounted(true); }, []);
+
   const getFavorites = async () => {
     setLoading(true);
     try {
@@ -69,12 +72,14 @@ const Page = () => {
   }, []);
 
   return (
-    <div style={{ minHeight: "100vh", background: "#f8fafc" }}>
+    <div className={mounted ? 'animate-fade-in' : 'opacity-0'} style={{ minHeight: "100vh", background: "#f8fafc" }}>
       {/* Header */}
       <div
+        className={mounted ? 'animate-fade-in-down' : 'opacity-0'}
         style={{
           background: "linear-gradient(135deg, #004a70 0%, #002d47 100%)",
           padding: "28px 0 44px",
+          animationDelay: "50ms",
         }}
       >
         <div style={{ maxWidth: 1320, margin: "0 auto", padding: "0 16px" }}>
@@ -186,12 +191,13 @@ const Page = () => {
               gap: 16,
             }}
           >
-            {favorites.map((item) => {
+            {favorites.map((item, index) => {
               const isFavorite = item?.likes;
 
               return (
                 <div
                   key={item?._id}
+                  className={`${mounted ? 'animate-fade-in-up' : 'opacity-0'} hover:shadow-lg hover:-translate-y-0.5`}
                   style={{
                     background: "#fff",
                     borderRadius: 14,
@@ -199,14 +205,7 @@ const Page = () => {
                     padding: 20,
                     transition: "all 0.25s ease",
                     boxShadow: "0 1px 3px rgba(0,0,0,0.04)",
-                  }}
-                  onMouseEnter={(e) => {
-                    e.currentTarget.style.boxShadow = "0 8px 30px rgba(0,0,0,0.08)";
-                    e.currentTarget.style.transform = "translateY(-2px)";
-                  }}
-                  onMouseLeave={(e) => {
-                    e.currentTarget.style.boxShadow = "0 1px 3px rgba(0,0,0,0.04)";
-                    e.currentTarget.style.transform = "translateY(0)";
+                    animationDelay: `${100 + index * 60}ms`,
                   }}
                 >
                   <div style={{ display: "flex", justifyContent: "space-between", alignItems: "flex-start" }}>
@@ -266,6 +265,7 @@ const Page = () => {
 
                     <div
                       onClick={() => onAddFavorite(item)}
+                      className="hover:scale-105"
                       style={{
                         width: 38,
                         height: 38,
@@ -277,14 +277,6 @@ const Page = () => {
                         cursor: "pointer",
                         transition: "all 0.2s",
                         flexShrink: 0,
-                      }}
-                      onMouseEnter={(e) => {
-                        e.currentTarget.style.background = isFavorite ? "#fee2e2" : "#e5e7eb";
-                        e.currentTarget.style.transform = "scale(1.05)";
-                      }}
-                      onMouseLeave={(e) => {
-                        e.currentTarget.style.background = isFavorite ? "#fef2f2" : "#f3f4f6";
-                        e.currentTarget.style.transform = "scale(1)";
                       }}
                     >
                       {favLoadingId === item?._id ? (
@@ -308,29 +300,22 @@ const Page = () => {
                   >
                     <button
                       onClick={() => addRideToFavRider(item)}
+                      className="hover:bg-brand-700 hover:text-white"
                       style={{
-                        display: "inline-flex",
+                        display: "flex",
                         alignItems: "center",
-                        gap: 8,
-                        padding: "10px 22px",
+                        justifyContent: "center",
+                        gap: 6,
+                        width: "100%",
+                        padding: "10px 18px",
                         borderRadius: 10,
-                        background: "#004a70",
-                        color: "#fff",
-                        border: "none",
-                        fontSize: 14,
+                        background: "transparent",
+                        border: "1.5px solid #004a70",
+                        color: "#004a70",
+                        fontSize: 13,
                         fontWeight: 600,
                         cursor: "pointer",
                         transition: "all 0.2s",
-                      }}
-                      onMouseEnter={(e) => {
-                        e.currentTarget.style.background = "#003353";
-                        e.currentTarget.style.transform = "translateY(-1px)";
-                        e.currentTarget.style.boxShadow = "0 4px 12px rgba(0,74,112,0.3)";
-                      }}
-                      onMouseLeave={(e) => {
-                        e.currentTarget.style.background = "#004a70";
-                        e.currentTarget.style.transform = "translateY(0)";
-                        e.currentTarget.style.boxShadow = "none";
                       }}
                     >
                       Request a Ride

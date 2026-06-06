@@ -1,5 +1,5 @@
 "use client";
-import React, { useState } from "react";
+import React, { useEffect, useState } from "react";
 import { Modal } from "react-bootstrap";
 import { useSelector } from "react-redux";
 import {
@@ -16,6 +16,8 @@ import {
 import ApiFunction from "@/components/ApiFunction/ApiFunction";
 
 export default function Referrals() {
+  const [mounted, setMounted] = useState(false);
+  useEffect(() => { setMounted(true); }, []);
   const {userData} =ApiFunction()
   const customStyle = {
     root: {
@@ -54,7 +56,7 @@ export default function Referrals() {
   };
 
   return (
-    <div>
+    <div className={mounted ? 'animate-fade-in-up' : 'opacity-0'}>
       <h2 className="font-medium text-lg">Referrals</h2>
       <div className="flex items-center justify-between bg-[#ECECEC] p-4 rounded shadow-md mt-4 mb-4">
         <div className="flex items-center space-x-3">

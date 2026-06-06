@@ -2,7 +2,7 @@
 
 "use client";
 
-import React, { useEffect, useState } from "react";
+import React, { useEffect, useState, useRef } from "react";
 import moment from "moment/moment";
 import { FaEye, FaStar } from "react-icons/fa";
 import { Spinner } from "react-bootstrap";
@@ -48,6 +48,22 @@ function Page() {
   const [TipOrderId, setTipOrderId] = useState("");
   const dispatch = useDispatch();
   const [loading, setloading] = useState(false);
+
+  const [mounted, setMounted] = useState(false);
+  useEffect(() => { setMounted(true); }, []);
+
+  const contentRef = useRef(null);
+  const [contentInView, setContentInView] = useState(false);
+  useEffect(() => {
+    const el = contentRef.current;
+    if (!el) return;
+    const observer = new IntersectionObserver(
+      ([entry]) => { if (entry.isIntersecting) { setContentInView(true); observer.disconnect(); } },
+      { threshold: 0.05 }
+    );
+    observer.observe(el);
+    return () => observer.disconnect();
+  }, []);
 
   const [cardDetails, setCardDetails] = useState({
     price: tipAmount || "",
@@ -532,6 +548,7 @@ function Page() {
         <Button
           disabled={row?.tip === 1}
           onClick={() => { openModal(true); setTipOrderId(row?._id); }}
+          className={row?.tip !== 1 ? "hover:bg-brand-700 hover:text-white" : ""}
           style={{
             height: 34,
             fontSize: 12,
@@ -547,18 +564,6 @@ function Page() {
             alignItems: "center",
             gap: 6,
           }}
-          onMouseEnter={(e) => {
-            if (row?.tip !== 1) {
-              e.currentTarget.style.background = "#004a70";
-              e.currentTarget.style.color = "#fff";
-            }
-          }}
-          onMouseLeave={(e) => {
-            if (row?.tip !== 1) {
-              e.currentTarget.style.background = "transparent";
-              e.currentTarget.style.color = "#004a70";
-            }
-          }}
         >
           <svg width={14} height={14} viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth={2}><path d="M12 2v20M2 12h20"/></svg>
           {row?.tip === 1 ? "Tipped" : "Tip"}
@@ -572,6 +577,7 @@ function Page() {
         <button
           onClick={() => gotoDetails(row)}
           title="View Details"
+          className="hover:bg-indigo-50 hover:text-brand-700 hover:border-brand-700"
           style={{
             width: 32, height: 32,
             borderRadius: 8,
@@ -584,16 +590,6 @@ function Page() {
             color: "#6b7280",
             transition: "all 0.2s",
           }}
-          onMouseEnter={(e) => {
-            e.currentTarget.style.background = "#eef2ff";
-            e.currentTarget.style.color = "#004a70";
-            e.currentTarget.style.borderColor = "#004a70";
-          }}
-          onMouseLeave={(e) => {
-            e.currentTarget.style.background = "#fff";
-            e.currentTarget.style.color = "#6b7280";
-            e.currentTarget.style.borderColor = "#e5e7eb";
-          }}
         >
           <FaEye size={14} />
         </button>
@@ -602,12 +598,14 @@ function Page() {
   ];
 
   return (
-    <>
+    <div className={mounted ? "animate-fade-in" : "opacity-0"}>
       {/* Blue Gradient Header - matching other pages */}
       <div
+        className={mounted ? "animate-fade-in-down" : "opacity-0"}
         style={{
           background: "linear-gradient(135deg, #004a70 0%, #002d47 100%)",
           padding: "28px 0 44px",
+          animationDelay: "50ms",
         }}
       >
         <div style={{ maxWidth: 1320, margin: "0 auto", padding: "0 16px" }}>
@@ -663,8 +661,8 @@ function Page() {
       </div>
 
       {/* Tabs - Separate from Table */}
-      <div style={{ maxWidth: 1320, margin: "-24px auto 0", padding: "0 16px 48px" }}>
-        <div style={{
+      <div ref={contentRef} style={{ maxWidth: 1320, margin: "-24px auto 0", padding: "0 16px 48px" }}>
+        <div className={`reveal ${contentInView ? "visible" : ""}`} style={{
           background: "#fff",
           borderRadius: 16,
           boxShadow: "0 1px 3px rgba(0,0,0,0.06), 0 1px 2px rgba(0,0,0,0.04)",
@@ -689,6 +687,7 @@ function Page() {
                 <button
                   key={tab.key}
                   onClick={() => handleTabSelect(tab.key)}
+                  className={activeTab !== tab.key ? "hover:bg-gray-100 hover:text-brand-700" : ""}
                   style={{
                     padding: "10px 18px",
                     borderRadius: "10px 10px 0 0",
@@ -703,18 +702,6 @@ function Page() {
                     alignItems: "center",
                     gap: 6,
                     whiteSpace: "nowrap",
-                  }}
-                  onMouseEnter={(e) => {
-                    if (activeTab !== tab.key) {
-                      e.currentTarget.style.background = "#f1f5f9";
-                      e.currentTarget.style.color = "#004a70";
-                    }
-                  }}
-                  onMouseLeave={(e) => {
-                    if (activeTab !== tab.key) {
-                      e.currentTarget.style.background = "transparent";
-                      e.currentTarget.style.color = "#64748b";
-                    }
                   }}
                 >
                   <span>{tab.icon}</span>
@@ -747,6 +734,7 @@ function Page() {
 
       {isModalOpen && (
         <div
+          className={mounted ? "animate-fade-in" : "opacity-0"}
           style={{
             position: "fixed",
             inset: 0,
@@ -761,6 +749,7 @@ function Page() {
           onClick={closeModal}
         >
           <div
+            className={mounted ? "animate-fade-in-up" : "opacity-0"}
             onClick={(e) => e.stopPropagation()}
             style={{
               background: "#fff",
@@ -770,6 +759,7 @@ function Page() {
               maxWidth: 440,
               position: "relative",
               overflow: "hidden",
+              animationDelay: "50ms",
             }}
           >
             {/* Header */}
@@ -781,6 +771,7 @@ function Page() {
             }}>
               <button
                 onClick={closeModal}
+                className="hover:bg-white/25"
                 style={{
                   position: "absolute",
                   top: 14,
@@ -798,8 +789,6 @@ function Page() {
                   justifyContent: "center",
                   transition: "all 0.2s",
                 }}
-                onMouseEnter={(e) => e.currentTarget.style.background = "rgba(255,255,255,0.25)"}
-                onMouseLeave={(e) => e.currentTarget.style.background = "rgba(255,255,255,0.12)"}
               >
                 <X size={18} />
               </button>
@@ -1438,7 +1427,7 @@ function Page() {
           </div>
         </div>
       </Modal>
-    </>
+    </div>
   );
 }
 

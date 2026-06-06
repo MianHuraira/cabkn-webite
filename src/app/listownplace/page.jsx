@@ -54,6 +54,9 @@ const page = () => {
   const { getData, header1, postData, putData, header2 } = ApiFunction();
   const { paymentData, setPaymentData, clearPaymentData } = usePaymentStore();
 
+  const [mounted, setMounted] = useState(false);
+  useEffect(() => { setMounted(true); }, []);
+
   const paymentCards = useSelector((state) => state.auth.paymentCards);
   const userData = useSelector((state) => state.auth.user?.user);
   const [SelectedSubCategory, setSelectedSubCategory] = useState([]);
@@ -573,12 +576,14 @@ const page = () => {
   }, []);
 
   return (
-    <div style={{ minHeight: "100vh", background: "#f8fafc" }}>
+    <div className={mounted ? "animate-fade-in" : "opacity-0"} style={{ minHeight: "100vh", background: "#f8fafc" }}>
       {/* Header */}
       <div
+        className={mounted ? "animate-fade-in-down" : "opacity-0"}
         style={{
           background: "linear-gradient(135deg, #004a70 0%, #002d47 100%)",
           padding: "28px 0 44px",
+          animationDelay: "50ms",
         }}
       >
         <div style={{ maxWidth: 1200, margin: "0 auto", padding: "0 16px" }}>
@@ -608,11 +613,13 @@ const page = () => {
       <div style={{ maxWidth: 1200, margin: "-24px auto 0", padding: "0 16px 48px" }}>
         <Form onSubmit={handleSubmit(onSubmit)}>
           <div
+            className={mounted ? "animate-fade-in-up" : "opacity-0"}
             style={{
               background: "#fff",
               borderRadius: 14,
               border: "1px solid #f0f0f0",
               padding: "clamp(20px, 3vw, 32px)",
+              animationDelay: "150ms",
             }}
           >
 
@@ -759,14 +766,13 @@ const page = () => {
                             <div
                               key={prediction.place_id}
                               onClick={() => handlePredictionPress(prediction)}
+                              className="hover:bg-gray-100"
                               style={{
                                 padding: "10px 14px",
                                 cursor: "pointer",
                                 fontSize: 13,
                                 borderBottom: "1px solid #f3f4f6",
                               }}
-                              onMouseEnter={(e) => (e.currentTarget.style.background = "#f3f4f6")}
-                              onMouseLeave={(e) => (e.currentTarget.style.background = "transparent")}
                             >
                               {prediction.description}
                             </div>
@@ -855,6 +861,7 @@ const page = () => {
             <button
               type="button"
               onClick={() => addHighlight("")}
+              className="hover:bg-blue-100"
               style={{
                 padding: "10px 20px",
                 borderRadius: 10,
@@ -866,8 +873,6 @@ const page = () => {
                 cursor: "pointer",
                 transition: "all 0.15s",
               }}
-              onMouseEnter={(e) => { e.currentTarget.style.background = "#e0edf7" }}
-              onMouseLeave={(e) => { e.currentTarget.style.background = "#f0f7ff" }}
             >
               + Add Highlight
             </button>
@@ -947,6 +952,7 @@ const page = () => {
               <button
                 type="button"
                 onClick={() => addTime("")}
+                className="hover:bg-blue-100"
                 style={{
                   padding: "10px 20px",
                   borderRadius: 10,
@@ -958,8 +964,6 @@ const page = () => {
                   cursor: "pointer",
                   transition: "all 0.15s",
                 }}
-                onMouseEnter={(e) => { e.currentTarget.style.background = "#e0edf7" }}
-                onMouseLeave={(e) => { e.currentTarget.style.background = "#f0f7ff" }}
               >
                 + Add Time Slot
               </button>
@@ -1001,6 +1005,7 @@ const page = () => {
             Images
           </p>
           <div
+            className="hover:border-brand-700 hover:bg-blue-50"
             style={{
               border: "2px dashed #d1d5db",
               borderRadius: 12,
@@ -1011,8 +1016,6 @@ const page = () => {
               background: "#fafafa",
             }}
             onClick={() => document.getElementById("image-upload-input").click()}
-            onMouseEnter={(e) => { e.currentTarget.style.borderColor = "#004a70"; e.currentTarget.style.background = "#f0f7ff" }}
-            onMouseLeave={(e) => { e.currentTarget.style.borderColor = "#d1d5db"; e.currentTarget.style.background = "#fafafa" }}
           >
             <svg width={32} height={32} viewBox="0 0 24 24" fill="none" stroke="#9ca3af" strokeWidth={1.5}>
               <path strokeLinecap="round" strokeLinejoin="round" d="M2.25 15.75l5.159-5.159a2.25 2.25 0 0 1 3.182 0l5.159 5.159m-1.5-1.5l1.409-1.409a2.25 2.25 0 0 1 3.182 0l2.909 2.909M3.75 21h16.5A2.25 2.25 0 0 0 22.5 18.75V5.25A2.25 2.25 0 0 0 20.25 3H3.75A2.25 2.25 0 0 0 1.5 5.25v13.5A2.25 2.25 0 0 0 3.75 21Z" />
@@ -1140,6 +1143,7 @@ const page = () => {
             <button
               type="submit"
               disabled={isLoading || imageLoading}
+              className={!isLoading && !imageLoading ? "hover:bg-brand-800 hover:shadow-lg" : ""}
               style={{
                 padding: "12px 36px",
                 borderRadius: 12,
@@ -1153,18 +1157,6 @@ const page = () => {
                 display: "flex",
                 alignItems: "center",
                 gap: 8,
-              }}
-              onMouseEnter={(e) => {
-                if (!isLoading && !imageLoading) {
-                  e.currentTarget.style.background = "#003353";
-                  e.currentTarget.style.boxShadow = "0 4px 12px rgba(0,74,112,0.3)";
-                }
-              }}
-              onMouseLeave={(e) => {
-                if (!isLoading && !imageLoading) {
-                  e.currentTarget.style.background = "#004a70";
-                  e.currentTarget.style.boxShadow = "none";
-                }
               }}
             >
               {isLoading ? <Spinner size="sm" style={{ color: "#fff" }} /> : null}
@@ -1205,12 +1197,10 @@ const page = () => {
               <p style={{ fontSize: 14, fontWeight: 600, color: "#1f2937", margin: "0 0 10px" }}>Saved Cards</p>
               <div style={{ display: "flex", flexDirection: "column", gap: 8, marginBottom: 20 }}>
                 {paymentCards?.map((item, i) => (
-                  <div key={i} onClick={() => onSelectCard(item)} style={{
+                  <div key={i} onClick={() => onSelectCard(item)} className="hover:border-brand-700 hover:bg-blue-50" style={{
                     display: "flex", alignItems: "center", gap: 12, padding: "12px 16px",
                     borderRadius: 10, border: "1px solid #f0f0f0", cursor: "pointer", transition: "all 0.15s",
                   }}
-                    onMouseEnter={(e) => { e.currentTarget.style.borderColor = "#004a70"; e.currentTarget.style.background = "#f0f7ff" }}
-                    onMouseLeave={(e) => { e.currentTarget.style.borderColor = "#f0f0f0"; e.currentTarget.style.background = "transparent" }}
                   >
                     <svg width={20} height={20} viewBox="0 0 24 24" fill="#004a70"><path d="M4 4h16c1.1 0 2 .9 2 2v12c0 1.1-.9 2-2 2H4c-1.1 0-2-.9-2-2V6c0-1.1.9-2 2-2zm0 2v12h16V6H4zm2 6h12v2H6v-2zm0-3h12v2H6V9zm0 6h8v2H6v-2z" /></svg>
                     <div style={{ flex: 1, minWidth: 0 }}>
@@ -1266,6 +1256,7 @@ const page = () => {
           <button
             onClick={jadAPiFunction}
             disabled={!areAllFieldsFilled()}
+            className={areAllFieldsFilled() ? "hover:bg-brand-800 hover:shadow-lg" : ""}
             style={{
               width: "100%", padding: "14px", borderRadius: 12,
               background: !areAllFieldsFilled() ? "#d1d5db" : "#004a70",
@@ -1273,12 +1264,6 @@ const page = () => {
               cursor: !areAllFieldsFilled() ? "not-allowed" : "pointer",
               transition: "all 0.2s", marginTop: 20,
               display: "flex", alignItems: "center", justifyContent: "center", gap: 8,
-            }}
-            onMouseEnter={(e) => {
-              if (areAllFieldsFilled()) { e.currentTarget.style.background = "#003353"; e.currentTarget.style.boxShadow = "0 4px 12px rgba(0,74,112,0.3)" }
-            }}
-            onMouseLeave={(e) => {
-              if (areAllFieldsFilled()) { e.currentTarget.style.background = "#004a70"; e.currentTarget.style.boxShadow = "none" }
             }}
           >
             {loading ? <Spinner size="sm" style={{ color: "#fff" }} /> : "Pay $40.00"}
@@ -1301,12 +1286,12 @@ const page = () => {
           <p style={{ fontSize: 14, color: "#6b7280", margin: "0 0 24px" }}>Your listing has been submitted</p>
           <button
             onClick={() => { setShow1(false); router.push("/") }}
+            className="hover:bg-brand-800"
             style={{
               padding: "12px 32px", borderRadius: 10, background: "#004a70",
               border: "none", color: "#fff", fontSize: 14, fontWeight: 600, cursor: "pointer",
+              transition: "background 0.2s",
             }}
-            onMouseEnter={(e) => { e.currentTarget.style.background = "#003353" }}
-            onMouseLeave={(e) => { e.currentTarget.style.background = "#004a70" }}
           >
             Back to Home
           </button>

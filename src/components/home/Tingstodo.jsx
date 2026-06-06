@@ -2,7 +2,7 @@
 /* eslint-disable no-unused-vars */
 /* eslint-disable react/jsx-key */
 "use client";
-import React, { useEffect, useState } from "react";
+import React, { useEffect, useState, useRef, useCallback } from "react";
 import { Container, Row, Col } from "react-bootstrap";
 import Slider from "react-slick";
 import ThingstodoCard from "./ThingstodoCard";
@@ -217,6 +217,25 @@ export default function Tingstodo() {
     router.push(`/ride?data=${encodedData}`);
   };
 
+  const sectionRef = useRef(null);
+  const [inView, setInView] = useState(false);
+
+  useEffect(() => {
+    const el = sectionRef.current;
+    if (!el) return;
+    const observer = new IntersectionObserver(
+      ([entry]) => {
+        if (entry.isIntersecting) {
+          setInView(true);
+          observer.disconnect();
+        }
+      },
+      { threshold: 0.08 }
+    );
+    observer.observe(el);
+    return () => observer.disconnect();
+  }, []);
+
   const handleSearch = async (text) => {
     setSearchQuery(text);
     setPridicLoading(true);
@@ -297,8 +316,8 @@ export default function Tingstodo() {
   };
 
   return (
-    <div>
-      <div className="d-flex flex-column flex-lg-row justify-content-between align-items-center mb-4 mt-10" style={{ padding: "0 16px", gap: 12 }}>
+    <div ref={sectionRef}>
+      <div className={`d-flex flex-column flex-lg-row justify-content-between align-items-center mb-4 mt-10 reveal ${inView ? "visible" : ""}`} style={{ padding: "0 16px", gap: 12, transitionDelay: "50ms" }}>
         <div style={{ textAlign: "left" }}>
           <h1 className="feedBack" style={{ marginLeft: 0, textAlign: "left" }}>Our Tour Recommendations</h1>
         </div>
@@ -345,46 +364,35 @@ export default function Tingstodo() {
         </div>
       </div>
 
-      <div className="slider-container p-2 ">
+      <div className={`slider-container p-2 reveal ${inView ? "visible" : ""}`} style={{ transitionDelay: "150ms" }}>
         <Slider {...settings2} key={Category.length}>
           {Category.map((category, index) => {
             const isSelected = selectedCategoryId === category._id;
             return (
               <div className="p-2" key={index}>
                 <div
-                  className="CategoryMain text-center cursor-pointer"
+                  className={`CategoryMain text-center cursor-pointer transition-all duration-300 ${
+                    isSelected
+                      ? "text-white shadow-[0_2px_8px_rgba(0,74,112,0.25)]"
+                      : "text-slate-800 bg-white border border-slate-200 hover:border-brand-600 hover:bg-slate-100"
+                  }`}
                   style={{
                     padding: "10px 14px",
                     background: isSelected
                       ? "linear-gradient(179.02deg, rgb(0, 74, 112) -69.5%, rgb(177, 176, 176) 99.16%)"
-                      : "#fff",
-                    color: isSelected ? "white" : "#1e293b",
+                      : "",
                     borderRadius: "9999px",
                     minWidth: "120px",
                     textAlign: "center",
                     display: "flex",
                     alignItems: "center",
                     justifyContent: "center",
-                    transition: "all 0.3s ease",
-                    border: isSelected ? "none" : "1px solid #e2e8f0",
-                    boxShadow: isSelected ? "0 2px 8px rgba(0,74,112,0.25)" : "none",
+                    border: isSelected ? "none" : "",
                     margin: "0 auto",
                     whiteSpace: "nowrap",
                     fontSize: 14,
                     fontWeight: 500,
                     fontFamily: "Inter-Medium",
-                  }}
-                  onMouseEnter={(e) => {
-                    if (!isSelected) {
-                      e.currentTarget.style.borderColor = "#004a70";
-                      e.currentTarget.style.background = "#f1f5f9";
-                    }
-                  }}
-                  onMouseLeave={(e) => {
-                    if (!isSelected) {
-                      e.currentTarget.style.borderColor = "#e2e8f0";
-                      e.currentTarget.style.background = "#fff";
-                    }
                   }}
                   onClick={() => setSelectedCategoryId(category._id)}
                 >
@@ -424,19 +432,21 @@ export default function Tingstodo() {
             <>
               <div className="grid grid-cols-1 sm:grid-cols-2 md:grid-cols-3 lg:grid-cols-4 gap-2 md:gap-3">
                 {SubCategory?.map((testimonial, index) => (
-                  <ThingstodoCard
-                    key={index}
-                    testimonial={testimonial}
-                    onClick={() => handleItemClick(testimonial)}
-                    onClick2={() => handleSelection(testimonial)}
-                  />
+                  <div key={index} className={`reveal ${inView ? "visible" : ""}`} style={{ transitionDelay: `${index * 60}ms` }}>
+                    <ThingstodoCard
+                      testimonial={testimonial}
+                      onClick={() => handleItemClick(testimonial)}
+                      onClick2={() => handleSelection(testimonial)}
+                    />
+                  </div>
                 ))}
               </div>
-              <div className="flex justify-center items-center mt-5">
+              <div className={`flex justify-center items-center mt-5 reveal ${inView ? "visible" : ""}`} style={{ transitionDelay: "400ms" }}>
                 {Pagelength > 0 ? (
                   <>
                     <Button
                       onClick={ShowMoreDAta}
+                      className="transition-all duration-200 hover:shadow-[0_6px_20px_rgba(0,74,112,0.35)] hover:-translate-y-0.5"
                       style={{
                         minWidth: 140,
                         padding: "10px 28px",
@@ -452,15 +462,6 @@ export default function Tingstodo() {
                         justifyContent: "center",
                         gap: 8,
                         boxShadow: "0 4px 14px rgba(0,74,112,0.25)",
-                        transition: "all 0.2s",
-                      }}
-                      onMouseEnter={(e) => {
-                        e.currentTarget.style.boxShadow = "0 6px 20px rgba(0,74,112,0.35)";
-                        e.currentTarget.style.transform = "translateY(-1px)";
-                      }}
-                      onMouseLeave={(e) => {
-                        e.currentTarget.style.boxShadow = "0 4px 14px rgba(0,74,112,0.25)";
-                        e.currentTarget.style.transform = "translateY(0)";
                       }}
                     >
                       {MoreLoading ? <Spinner size={"sm"} color="#fff" /> : "See more"}
@@ -472,7 +473,7 @@ export default function Tingstodo() {
               </div>
             </>
           ) : (
-            <div className="d-flex mt-5 flex-col justify-content-center align-items-center">
+            <div className={`d-flex mt-5 flex-col justify-content-center align-items-center reveal ${inView ? "visible" : ""}`}>
               <Image
                 src={NoshowData}
                 style={{

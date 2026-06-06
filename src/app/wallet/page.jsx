@@ -30,6 +30,9 @@ const page = () => {
   const fullData = useSelector((state) => state.auth.user);
   const userData = useSelector((state) => state.auth.user?.user);
 
+  const [mounted, setMounted] = useState(false);
+  useEffect(() => { setMounted(true); }, []);
+
   const [Tab, setTab] = useState("Topup");
   const [TransLoading, setTransLoading] = useState(false);
   const [TransectionData, setTransectionData] = useState([]);
@@ -251,12 +254,14 @@ const page = () => {
   }, []);
 
   return (
-    <div style={{ minHeight: "100vh", background: "#f8fafc" }}>
+    <div className={mounted ? 'animate-fade-in' : 'opacity-0'} style={{ minHeight: "100vh", background: "#f8fafc" }}>
       {/* Header */}
       <div
+        className={mounted ? 'animate-fade-in-down' : 'opacity-0'}
         style={{
           background: "linear-gradient(135deg, #004a70 0%, #002d47 100%)",
           padding: "28px 0 44px",
+          animationDelay: "50ms",
         }}
       >
         <div style={{ maxWidth: 1200, margin: "0 auto", padding: "0 16px" }}>
@@ -293,12 +298,14 @@ const page = () => {
         >
           {/* Left Sidebar */}
           <div
+            className={mounted ? 'animate-fade-in-up' : 'opacity-0'}
             style={{
               width: isMobileSidebar ? "100%" : 280,
               flexShrink: 0,
               display: "flex",
               flexDirection: "column",
               gap: 16,
+              animationDelay: "150ms",
             }}
           >
             {/* Balance Card */}
@@ -361,6 +368,7 @@ const page = () => {
             >
               <div
                 onClick={() => setTab("Topup")}
+                className={Tab !== "Topup" ? 'hover:bg-gray-100' : ''}
                 style={{
                   display: "flex",
                   alignItems: "center",
@@ -375,12 +383,6 @@ const page = () => {
                   transition: "all 0.15s",
                   marginBottom: 2,
                 }}
-                onMouseEnter={(e) => {
-                  if (Tab !== "Topup") e.currentTarget.style.background = "#f3f4f6";
-                }}
-                onMouseLeave={(e) => {
-                  if (Tab !== "Topup") e.currentTarget.style.background = "transparent";
-                }}
               >
                 <FaWallet size={16} color={Tab === "Topup" ? "#004a70" : "#9ca3af"} />
                 <span style={{ flex: 1 }}>Top Up</span>
@@ -390,6 +392,7 @@ const page = () => {
               </div>
               <div
                 onClick={() => setTab("History")}
+                className={Tab !== "History" ? 'hover:bg-gray-100' : ''}
                 style={{
                   display: "flex",
                   alignItems: "center",
@@ -403,12 +406,6 @@ const page = () => {
                   fontSize: 14,
                   transition: "all 0.15s",
                 }}
-                onMouseEnter={(e) => {
-                  if (Tab !== "History") e.currentTarget.style.background = "#f3f4f6";
-                }}
-                onMouseLeave={(e) => {
-                  if (Tab !== "History") e.currentTarget.style.background = "transparent";
-                }}
               >
                 <FaHistory size={16} color={Tab === "History" ? "#004a70" : "#9ca3af"} />
                 <span style={{ flex: 1 }}>History</span>
@@ -420,7 +417,7 @@ const page = () => {
           </div>
 
           {/* Right Content */}
-          <div style={{ flex: 1, minWidth: 0 }}>
+          <div className={mounted ? 'animate-fade-in-up' : 'opacity-0'} style={{ flex: 1, minWidth: 0, animationDelay: "250ms" }}>
             {Tab === "Topup" ? (
               <div
                 style={{
@@ -441,6 +438,7 @@ const page = () => {
                         <div
                           key={i}
                           onClick={() => onSelectCard(item)}
+                          className='hover:border-brand-700 hover:bg-blue-50'
                           style={{
                             display: "flex",
                             alignItems: "center",
@@ -450,14 +448,6 @@ const page = () => {
                             border: "1px solid #f0f0f0",
                             cursor: "pointer",
                             transition: "all 0.15s",
-                          }}
-                          onMouseEnter={(e) => {
-                            e.currentTarget.style.borderColor = "#004a70";
-                            e.currentTarget.style.background = "#f0f7ff";
-                          }}
-                          onMouseLeave={(e) => {
-                            e.currentTarget.style.borderColor = "#f0f0f0";
-                            e.currentTarget.style.background = "transparent";
                           }}
                         >
                           <FaCreditCard size={20} color="#004a70" />
@@ -693,6 +683,7 @@ const page = () => {
                 <button
                   onClick={jadAPiFunction}
                   disabled={loading}
+                  className={!loading ? 'hover:bg-brand-800 hover:shadow-lg' : ''}
                   style={{
                     width: "100%",
                     padding: "14px",
@@ -708,18 +699,6 @@ const page = () => {
                     alignItems: "center",
                     justifyContent: "center",
                     gap: 8,
-                  }}
-                  onMouseEnter={(e) => {
-                    if (!loading) {
-                      e.currentTarget.style.background = "#003353";
-                      e.currentTarget.style.boxShadow = "0 4px 12px rgba(0,74,112,0.3)";
-                    }
-                  }}
-                  onMouseLeave={(e) => {
-                    if (!loading) {
-                      e.currentTarget.style.background = "#004a70";
-                      e.currentTarget.style.boxShadow = "none";
-                    }
                   }}
                 >
                   {loading ? (

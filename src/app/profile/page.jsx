@@ -54,6 +54,8 @@ export default function EditProfile() {
   const dispatch = useDispatch();
 
   const [isMobile, setIsMobile] = useState(false);
+  const [mounted, setMounted] = useState(false);
+  useEffect(() => { setMounted(true); }, []);
 
   useEffect(() => {
     const handleResize = () => setIsMobile(window.innerWidth < 768);
@@ -605,12 +607,14 @@ export default function EditProfile() {
   };
 
   return (
-    <div style={{ minHeight: "100vh", background: "#f8fafc" }}>
+    <div className={mounted ? 'animate-fade-in' : 'opacity-0'} style={{ minHeight: "100vh", background: "#f8fafc" }}>
       {/* Header */}
       <div
+        className={mounted ? 'animate-fade-in-down' : 'opacity-0'}
         style={{
           background: "linear-gradient(135deg, #004a70 0%, #002d47 100%)",
           padding: "28px 0 44px",
+          animationDelay: "50ms",
         }}
       >
         <div style={{ maxWidth: 1200, margin: "0 auto", padding: "0 16px" }}>
@@ -636,7 +640,7 @@ export default function EditProfile() {
       </div>
 
       {/* Content */}
-      <div style={{ maxWidth: 1200, margin: "-24px auto 0", padding: "0 16px 48px" }}>
+      <div className={mounted ? 'animate-fade-in-up' : 'opacity-0'} style={{ maxWidth: 1200, margin: "-24px auto 0", padding: "0 16px 48px", animationDelay: "150ms" }}>
         <div
           style={{
             display: "flex",
@@ -657,10 +661,11 @@ export default function EditProfile() {
                 msOverflowStyle: "none",
               }}
             >
-              {tabs.map((tab) => (
+              {tabs.map((tab, idx) => (
                 <div
                   key={tab.key}
                   onClick={() => setActiveTab(tab.key)}
+                  className={`${mounted ? 'animate-fade-in-up' : 'opacity-0'}`}
                   style={{
                     display: "flex",
                     alignItems: "center",
@@ -676,6 +681,7 @@ export default function EditProfile() {
                     flexShrink: 0,
                     transition: "all 0.15s",
                     boxShadow: activeTab === tab.key ? "0 2px 8px rgba(0,74,112,0.25)" : "none",
+                    animationDelay: `${200 + idx * 50}ms`,
                   }}
                 >
                   <span style={{ display: "flex", color: "inherit" }}>
@@ -699,10 +705,11 @@ export default function EditProfile() {
                 top: 88,
               }}
             >
-              {tabs.map((tab) => (
+              {tabs.map((tab, idx) => (
                 <div
                   key={tab.key}
                   onClick={() => setActiveTab(tab.key)}
+                  className={`${mounted ? 'animate-fade-in-up' : 'opacity-0'} ${activeTab !== tab.key ? 'hover:bg-gray-100' : ''}`}
                   style={{
                     display: "flex",
                     alignItems: "center",
@@ -716,12 +723,7 @@ export default function EditProfile() {
                     fontSize: 14,
                     transition: "all 0.15s",
                     marginBottom: 2,
-                  }}
-                  onMouseEnter={(e) => {
-                    if (activeTab !== tab.key) e.currentTarget.style.background = "#f3f4f6";
-                  }}
-                  onMouseLeave={(e) => {
-                    if (activeTab !== tab.key) e.currentTarget.style.background = "transparent";
+                    animationDelay: `${200 + idx * 50}ms`,
                   }}
                 >
                   <span style={{ color: activeTab === tab.key ? "#004a70" : "#9ca3af", display: "flex" }}>

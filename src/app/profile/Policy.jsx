@@ -2,6 +2,8 @@
 import React, { useEffect, useState } from 'react'
 
 export default function Policy() {
+  const [mounted, setMounted] = useState(false);
+  useEffect(() => { setMounted(true); }, []);
   const [content, setContent] = useState(null);
   const [loading, setLoading] = useState(true);
 
@@ -16,7 +18,7 @@ export default function Policy() {
   }, []);
 
   return (
-    <div>
+    <div className={mounted ? 'animate-fade-in-up' : 'opacity-0'}>
       <h2 style={{ fontFamily: "Inter-SemiBold", fontSize: 18, color: "#1f2937", margin: "0 0 16px" }}>Privacy & Policy</h2>
       {loading ? (
         <div style={{ textAlign: "center", padding: "24px 0" }}>

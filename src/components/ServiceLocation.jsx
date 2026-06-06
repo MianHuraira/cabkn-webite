@@ -18,6 +18,8 @@ import ApiFile from "./ApiFunction/ApiFile";
 export default function ServiceLocation() {
   const { id } = useParams();
   const [value, setValue] = useState(0);
+  const [mounted, setMounted] = useState(false);
+  useEffect(() => { setMounted(true); }, []);
   const { giveproductRating, getproductRating } = ApiFile;
 
   const [ratingLoading, setRatingLoading] = useState(false);
@@ -231,9 +233,16 @@ export default function ServiceLocation() {
   };
 
   return (
-    <div style={{ minHeight: "100vh", background: "#f8fafc" }}>
+    <div className={mounted ? "animate-fade-in" : "opacity-0"} style={{ minHeight: "100vh", background: "#f8fafc" }}>
       {/* Blue Gradient Header */}
-      <div style={{ background: "linear-gradient(135deg, #004a70 0%, #002d47 100%)", padding: "28px 0 44px" }}>
+      <div
+        className={mounted ? "animate-fade-in-down" : "opacity-0"}
+        style={{
+          background: "linear-gradient(135deg, #004a70 0%, #002d47 100%)",
+          padding: "28px 0 44px",
+          animationDelay: "50ms",
+        }}
+      >
         <div style={{ maxWidth: 1200, margin: "0 auto", padding: "0 16px" }}>
           <div style={{ color: "rgba(255,255,255,0.6)", fontSize: 13, marginBottom: 8 }}>Home / Product Detail</div>
           <h1 style={{ color: "#fff", fontSize: "clamp(22px, 4vw, 28px)", fontWeight: 700, margin: 0, letterSpacing: "-0.3px", display: "flex", alignItems: "center", gap: 10 }}>
@@ -247,7 +256,13 @@ export default function ServiceLocation() {
 
       {/* Content */}
       <div style={{ maxWidth: 1200, margin: "-24px auto 0", padding: "0 16px 48px" }}>
-        <div style={{ background: "#fff", borderRadius: 14, border: "1px solid #f0f0f0", overflow: "hidden" }}>
+        <div
+          className={mounted ? "animate-fade-in-up" : "opacity-0"}
+          style={{
+            background: "#fff", borderRadius: 14, border: "1px solid #f0f0f0", overflow: "hidden",
+            animationDelay: "150ms",
+          }}
+        >
           {/* Image Slider & Details Grid */}
           <div className="lg:grid lg:grid-cols-12 lg:gap-0">
             {/* Image Slider */}
@@ -281,6 +296,7 @@ export default function ServiceLocation() {
                 </div>
                 <button
                   onClick={HandleClick}
+                  className="hover:shadow-lg hover:-translate-y-0.5"
                   style={{
                     padding: "10px 28px",
                     border: "none",
@@ -295,8 +311,6 @@ export default function ServiceLocation() {
                     transition: "all 0.2s",
                     fontFamily: "Inter-SemiBold",
                   }}
-                  onMouseEnter={(e) => { e.currentTarget.style.boxShadow = "0 6px 20px rgba(0,74,112,0.35)"; e.currentTarget.style.transform = "translateY(-1px)"; }}
-                  onMouseLeave={(e) => { e.currentTarget.style.boxShadow = "0 4px 14px rgba(0,74,112,0.25)"; e.currentTarget.style.transform = "translateY(0)"; }}
                 >
                   Buy Product
                 </button>
@@ -339,16 +353,14 @@ export default function ServiceLocation() {
                 <div style={{ display: "flex", alignItems: "center", gap: 12 }}>
                   <button
                     onClick={decrement}
+                    className="hover:border-brand-700 hover:text-brand-700"
                     style={{ width: 36, height: 36, borderRadius: "9999px", border: "1px solid #d1d5db", background: "#fff", fontSize: 18, cursor: "pointer", display: "flex", alignItems: "center", justifyContent: "center", color: "#374151", fontWeight: 600, transition: "all 0.2s" }}
-                    onMouseEnter={(e) => { e.currentTarget.style.borderColor = "#004a70"; e.currentTarget.style.color = "#004a70" }}
-                    onMouseLeave={(e) => { e.currentTarget.style.borderColor = "#d1d5db"; e.currentTarget.style.color = "#374151" }}
                   >-</button>
                   <span style={{ fontSize: 16, fontWeight: 600, color: "#1f2937", minWidth: 24, textAlign: "center" }}>{incDec}</span>
                   <button
                     onClick={increment}
+                    className="hover:border-brand-700 hover:text-brand-700"
                     style={{ width: 36, height: 36, borderRadius: "9999px", border: "1px solid #d1d5db", background: "#fff", fontSize: 18, cursor: "pointer", display: "flex", alignItems: "center", justifyContent: "center", color: "#374151", fontWeight: 600, transition: "all 0.2s" }}
-                    onMouseEnter={(e) => { e.currentTarget.style.borderColor = "#004a70"; e.currentTarget.style.color = "#004a70" }}
-                    onMouseLeave={(e) => { e.currentTarget.style.borderColor = "#d1d5db"; e.currentTarget.style.color = "#374151" }}
                   >+</button>
                 </div>
               </div>
@@ -362,6 +374,7 @@ export default function ServiceLocation() {
                       <button
                         key={index}
                         onClick={() => handleSize(item)}
+                        className={Size !== item ? "hover:border-brand-700 hover:text-brand-700" : ""}
                         style={{
                           padding: "6px 18px",
                           borderRadius: "9999px",
@@ -372,12 +385,6 @@ export default function ServiceLocation() {
                           fontWeight: 500,
                           cursor: "pointer",
                           transition: "all 0.2s",
-                        }}
-                        onMouseEnter={(e) => {
-                          if (Size !== item) { e.currentTarget.style.borderColor = "#004a70"; e.currentTarget.style.color = "#004a70" }
-                        }}
-                        onMouseLeave={(e) => {
-                          if (Size !== item) { e.currentTarget.style.borderColor = "#d1d5db"; e.currentTarget.style.color = "#374151" }
                         }}
                       >
                         {item}
@@ -409,6 +416,7 @@ export default function ServiceLocation() {
               <div className="block lg:hidden" style={{ marginTop: 16 }}>
                 <button
                   onClick={HandleClick}
+                  className="hover:shadow-lg hover:-translate-y-0.5"
                   style={{
                     width: "100%",
                     height: 48,
@@ -422,8 +430,6 @@ export default function ServiceLocation() {
                     boxShadow: "0 4px 14px rgba(0,74,112,0.25)",
                     transition: "all 0.2s",
                   }}
-                  onMouseEnter={(e) => { e.currentTarget.style.boxShadow = "0 6px 20px rgba(0,74,112,0.35)"; e.currentTarget.style.transform = "translateY(-1px)"; }}
-                  onMouseLeave={(e) => { e.currentTarget.style.boxShadow = "0 4px 14px rgba(0,74,112,0.25)"; e.currentTarget.style.transform = "translateY(0)"; }}
                 >
                   Buy Product
                 </button>
@@ -437,6 +443,7 @@ export default function ServiceLocation() {
           <div onClick={handleShow} style={{ display: "flex", justifyContent: "space-between", alignItems: "center", cursor: "pointer", marginBottom: 20 }}>
             <h2 style={{ fontSize: 18, fontWeight: 700, color: "#1f2937", margin: 0 }}>All Reviews</h2>
             <button
+              className="hover:shadow-lg"
               style={{
                 padding: "8px 22px",
                 border: "none",
@@ -448,8 +455,6 @@ export default function ServiceLocation() {
                 cursor: "pointer",
                 transition: "all 0.2s",
               }}
-              onMouseEnter={(e) => { e.currentTarget.style.boxShadow = "0 4px 12px rgba(0,74,112,0.3)" }}
-              onMouseLeave={(e) => { e.currentTarget.style.boxShadow = "none" }}
             >
               Leave Review
             </button>
@@ -464,6 +469,7 @@ export default function ServiceLocation() {
                   {ratingData?.map((review) => (
                     <div
                       key={review?._id}
+                      className="hover:shadow-md hover:border-gray-200"
                       style={{
                         background: "#fff",
                         border: "1px solid #f0f0f0",
@@ -473,8 +479,6 @@ export default function ServiceLocation() {
                         boxShadow: "0 2px 8px rgba(0,0,0,0.04)",
                         transition: "all 0.2s",
                       }}
-                      onMouseEnter={(e) => { e.currentTarget.style.boxShadow = "0 4px 16px rgba(0,0,0,0.08)"; e.currentTarget.style.borderColor = "#e5e7eb" }}
-                      onMouseLeave={(e) => { e.currentTarget.style.boxShadow = "0 2px 8px rgba(0,0,0,0.04)"; e.currentTarget.style.borderColor = "#f0f0f0" }}
                     >
                       <div style={{ display: "flex", justifyContent: "space-between", alignItems: "center" }}>
                         <div style={{ display: "flex", alignItems: "center", gap: 12 }}>
@@ -510,6 +514,7 @@ export default function ServiceLocation() {
                       <button
                         disabled={pagiLoading}
                         onClick={getRatingData}
+                        className="hover:shadow-lg"
                         style={{
                           padding: "10px 28px",
                           border: "none",
