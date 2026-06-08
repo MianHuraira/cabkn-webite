@@ -278,7 +278,10 @@ const InnerHeader = () => {
                       {item.to ? (
                         <Link
                           href={item.to}
-                          onClick={() => setUserMenuOpen(false)}
+                          onClick={() => {
+                            item.onClick?.();
+                            setUserMenuOpen(false);
+                          }}
                           className="block px-3.5 py-2.5 rounded-lg text-gray-700 font-medium text-sm no-underline transition-all duration-150 hover:bg-gray-100 hover:translate-x-0.5"
                           style={{
                             display: "block",
