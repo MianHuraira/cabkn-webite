@@ -81,7 +81,7 @@ function ContactForm() {
         phone: data.phone,
         message: data.message,
       };
-      const res = await postData("contact/send", body, header3);
+      const res = await postData("users/contact", body, header3);
       if (res?.success) {
         message.success(res?.message || "Message sent successfully!");
         reset({ name: "", email: "", phone: "", message: "" });
