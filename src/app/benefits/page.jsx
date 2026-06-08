@@ -113,15 +113,15 @@ export default function Benefits() {
           <div style={{ display: "grid", gridTemplateColumns: "repeat(auto-fit, minmax(260px, 1fr))", gap: "clamp(12px, 2vw, 20px)" }}>
             {benefits.map((b, i) => (
               <div key={i}
+                className="flex flex-col items-start text-left"
                 style={{
-                  display: "flex", gap: 16,
+                  gap: 16,
                   background: "#fff",
                   borderRadius: 16,
                   padding: "clamp(20px, 3vw, 24px)",
                   border: "1px solid rgba(0,0,0,0.04)",
                   boxShadow: "0 4px 16px rgba(0,0,0,0.04)",
                   transition: "all 0.2s",
-                  textAlign: "left",
                 }}
                 onMouseEnter={(e) => { e.currentTarget.style.transform = "translateY(-4px)"; e.currentTarget.style.boxShadow = "0 12px 32px rgba(0,0,0,0.08)"; e.currentTarget.style.borderColor = "rgba(0,74,112,0.15)"; }}
                 onMouseLeave={(e) => { e.currentTarget.style.transform = ""; e.currentTarget.style.boxShadow = "0 4px 16px rgba(0,0,0,0.04)"; e.currentTarget.style.borderColor = "rgba(0,0,0,0.04)"; }}
