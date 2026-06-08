@@ -3,7 +3,7 @@
 /* eslint-disable no-unused-vars */
 "use client";
 
-import React, { useEffect, useState, useRef } from "react";
+import React, { useEffect, useState } from "react";
 import { Modal } from "react-bootstrap";
 
 import { logout } from "../Redux/Slices/AuthSlice";
@@ -32,66 +32,44 @@ const Header = () => {
   const dispatch = useDispatch();
 
   const [isScrolled, setIsScrolled] = useState(false);
-  const [activeLink, setActiveLink] = useState("");
 
-  useEffect(() => {
-    const hash = window.location.hash;
-    const scrollToElementFromHash = () => {
-      if (hash) {
-        const elementId = hash.replace("#", "");
-        const targetElement = document.getElementById(elementId);
-        if (targetElement) {
-          targetElement.scrollIntoView({ behavior: "smooth" });
-        }
-      }
-    };
-    scrollToElementFromHash();
-  }, []);
-
-  const handleScroll = (id) => {
-    setActiveLink(id);
-    const targetElement = document.getElementById(id);
-    if (targetElement) {
-      targetElement.scrollIntoView({ behavior: "smooth" });
-    }
-    handleClose();
-  };
 
   useEffect(() => {
     const handleScrollEvent = () => {
       setIsScrolled(window.scrollY > 7);
     };
-
     handleScrollEvent();
     window.addEventListener("scroll", handleScrollEvent, { passive: true });
-
-    return () => {
-      window.removeEventListener("scroll", handleScrollEvent);
-    };
+    return () => window.removeEventListener("scroll", handleScrollEvent);
   }, []);
 
   const navLinks = [
-    { id: "whyUs", label: "Why Us" },
+    { id: "why-us", label: "Why Us" },
     { id: "benefits", label: "Benefits" },
     { id: "testimonials", label: "Testimonials" },
-    { id: "contactUs", label: "Contact Us" },
+    { id: "contact-us", label: "Contact Us" },
   ];
+
+  const handleNavClick = (id) => {
+    handleClose();
+    router.push(`/${id}`);
+  };
 
   const isActive = (href) => {
     if (href === "/") return pathname === "/";
-    return pathname.startsWith(href);
+    return pathname === `/${href}` || pathname.startsWith(`/${href}/`);
   };
 
   const linkStyle = (id) => ({
     padding: "8px 12px",
-    color: activeLink === id ? "#004a70" : "#4b5563",
+    color: isActive(id) ? "#004a70" : "#4b5563",
     fontSize: 13.5,
-    fontWeight: activeLink === id ? 600 : 500,
+    fontWeight: isActive(id) ? 600 : 500,
     textDecoration: "none",
     whiteSpace: "nowrap",
     position: "relative",
     transition: "color 0.2s ease",
-    borderBottom: activeLink === id ? "2px solid #004a70" : "2px solid transparent",
+    borderBottom: isActive(id) ? "2px solid #004a70" : "2px solid transparent",
     paddingBottom: 4,
   });
 
@@ -154,7 +132,7 @@ const Header = () => {
             {navLinks.map((link, index) => (
               <button
                 key={link.id}
-                onClick={() => handleScroll(link.id)}
+                onClick={() => handleNavClick(link.id)}
                 className="animate-fade-in-down"
                 style={{
                   ...linkStyle(link.id),
@@ -165,13 +143,13 @@ const Header = () => {
                   fontFamily: "inherit",
                 }}
                 onMouseEnter={(e) => {
-                  if (activeLink !== link.id) {
+                  if (!isActive(link.id)) {
                     e.currentTarget.style.color = "#004a70";
                     e.currentTarget.style.borderBottom = "2px solid #004a70";
                   }
                 }}
                 onMouseLeave={(e) => {
-                  if (activeLink !== link.id) {
+                  if (!isActive(link.id)) {
                     e.currentTarget.style.color = "#4b5563";
                     e.currentTarget.style.borderBottom = "2px solid transparent";
                   }
@@ -312,8 +290,8 @@ const Header = () => {
             <div key={link.id} className="animate-fade-in" style={{ animationDelay: `${index * 40}ms` }}>
               <MobileNavItem
                 label={link.label}
-                active={activeLink === link.id}
-                onClick={() => handleScroll(link.id)}
+                active={isActive(link.id)}
+                onClick={() => handleNavClick(link.id)}
               />
             </div>
           ))}
