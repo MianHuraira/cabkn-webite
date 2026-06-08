@@ -3,7 +3,7 @@ import React, { useEffect, useState, useRef, useMemo } from "react";
 import { Controller, useForm } from "react-hook-form";
 import { yupResolver } from "@hookform/resolvers/yup";
 import * as yup from "yup";
-import { FormFeedback, Spinner } from "reactstrap";
+import { Spinner } from "reactstrap";
 import { message } from "antd";
 import { mainBanner } from "@/components/assets/Images";
 import ApiFunction from "@/components/ApiFunction/ApiFunction";
@@ -20,12 +20,46 @@ const schema = yup.object().shape({
   message: yup.string().required("Message is required").min(10, "Message must be at least 10 characters"),
 });
 
-export default function ContactUs() {
-  const [mounted, setMounted] = useState(false);
-  const [loading, setLoading] = useState(false);
-  const [openFaq, setOpenFaq] = useState(null);
-  useEffect(() => { setMounted(true); }, []);
+const contactInfo = [
+  {
+    icon: <LuPhoneCall size={22} />,
+    title: "Phone",
+    details: ["+1 (869) 123-4567", "+1 (869) 765-4321"],
+  },
+  {
+    icon: <MdEmail size={22} />,
+    title: "Email",
+    details: ["info@cabkn.com", "support@cabkn.com"],
+  },
+  {
+    icon: <GrLocation size={22} />,
+    title: "Address",
+    details: ["Basseterre, Saint Kitts", "Charlestown, Nevis"],
+  },
+];
 
+const SectionReveal = ({ children, delay = 0 }) => {
+  const ref = useRef(null);
+  const [inView, setInView] = useState(false);
+  useEffect(() => {
+    const el = ref.current;
+    if (!el) return;
+    const observer = new IntersectionObserver(
+      ([entry]) => { if (entry.isIntersecting) { setInView(true); observer.disconnect(); } },
+      { threshold: 0.08 }
+    );
+    observer.observe(el);
+    return () => observer.disconnect();
+  }, []);
+  return (
+    <div ref={ref} className={`reveal ${inView ? "visible" : ""}`} style={{ transitionDelay: `${delay}ms` }}>
+      {children}
+    </div>
+  );
+};
+
+function ContactForm() {
+  const [loading, setLoading] = useState(false);
   const { postData, header3 } = ApiFunction();
 
   const {
@@ -50,7 +84,7 @@ export default function ContactUs() {
       const res = await postData("contact/send", body, header3);
       if (res?.success) {
         message.success(res?.message || "Message sent successfully!");
-        reset();
+        reset({ name: "", email: "", phone: "", message: "" });
       } else {
         message.error(res?.message || "Something went wrong");
       }
@@ -61,47 +95,143 @@ export default function ContactUs() {
     }
   };
 
-  const contactInfo = [
-    {
-      icon: <LuPhoneCall size={22} />,
-      title: "Phone",
-      details: ["+1 (869) 123-4567", "+1 (869) 765-4321"],
-    },
-    {
-      icon: <MdEmail size={22} />,
-      title: "Email",
-      details: ["info@cabkn.com", "support@cabkn.com"],
-    },
-    {
-      icon: <GrLocation size={22} />,
-      title: "Address",
-      details: ["Basseterre, Saint Kitts", "Charlestown, Nevis"],
-    },
-  ];
-
-  const SectionReveal = ({ children, delay = 0 }) => {
-    const ref = useRef(null);
-    const [inView, setInView] = useState(false);
-    useEffect(() => {
-      const el = ref.current;
-      if (!el) return;
-      const observer = new IntersectionObserver(
-        ([entry]) => { if (entry.isIntersecting) { setInView(true); observer.disconnect(); } },
-        { threshold: 0.08 }
-      );
-      observer.observe(el);
-      return () => observer.disconnect();
-    }, []);
-    return (
-      <div ref={ref} className={`reveal ${inView ? "visible" : ""}`} style={{ transitionDelay: `${delay}ms` }}>
-        {children}
+  return (
+    <div style={{ background: "#f8fafc", borderRadius: 20, padding: "clamp(24px, 4vw, 36px)", border: "1px solid rgba(0,0,0,0.04)" }}>
+      <h2 style={{ fontSize: "clamp(18px, 2vw, 22px)", fontWeight: 700, color: "#1a1a2e", margin: "0 0 24px" }}>Send Us a Message</h2>
+      <div style={{ display: "flex", flexDirection: "column", gap: 16 }}>
+        <div style={{ display: "grid", gridTemplateColumns: "1fr", gap: 16 }}>
+          <div>
+            <label style={{ display: "block", fontSize: "clamp(12px, 1vw, 13px)", fontWeight: 500, color: "#374151", marginBottom: 6 }}>Name *</label>
+            <Controller
+              name="name"
+              control={control}
+              render={({ field }) => (
+                <input
+                  {...field}
+                  placeholder="Your name"
+                  style={{
+                    width: "100%", padding: "10px 14px", borderRadius: 10,
+                    border: errors.name ? "1px solid #ef4444" : "1px solid #e5e7eb",
+                    fontSize: 14, outline: "none", background: "#fff", boxSizing: "border-box", fontFamily: "inherit",
+                  }}
+                />
+              )}
+            />
+            {errors.name && <p style={{ color: "#ef4444", fontSize: 12, margin: "4px 0 0" }}>{errors.name.message}</p>}
+          </div>
+          <div>
+            <label style={{ display: "block", fontSize: "clamp(12px, 1vw, 13px)", fontWeight: 500, color: "#374151", marginBottom: 6 }}>Email *</label>
+            <Controller
+              name="email"
+              control={control}
+              render={({ field }) => (
+                <input
+                  {...field}
+                  placeholder="Your email"
+                  style={{
+                    width: "100%", padding: "10px 14px", borderRadius: 10,
+                    border: errors.email ? "1px solid #ef4444" : "1px solid #e5e7eb",
+                    fontSize: 14, outline: "none", background: "#fff", boxSizing: "border-box", fontFamily: "inherit",
+                  }}
+                />
+              )}
+            />
+            {errors.email && <p style={{ color: "#ef4444", fontSize: 12, margin: "4px 0 0" }}>{errors.email.message}</p>}
+          </div>
+        </div>
+        <div>
+          <label style={{ display: "block", fontSize: "clamp(12px, 1vw, 13px)", fontWeight: 500, color: "#374151", marginBottom: 6 }}>Phone Number *</label>
+          <Controller
+            name="phone"
+            control={control}
+            render={({ field }) => (
+              <PhoneInput
+                country={"us"}
+                value={field.value}
+                onChange={(value) => field.onChange(value)}
+                onBlur={field.onBlur}
+                inputStyle={{
+                  width: "100%", padding: "10px 14px 10px 48px", borderRadius: 10,
+                  border: errors.phone ? "1px solid #ef4444" : "1px solid #e5e7eb",
+                  fontSize: 14, outline: "none", background: "#fff", boxSizing: "border-box", fontFamily: "inherit", height: "auto",
+                }}
+                buttonStyle={{
+                  border: "none", background: "transparent", borderRadius: "10px 0 0 10px",
+                }}
+                dropdownStyle={{
+                  borderRadius: 10,
+                }}
+              />
+            )}
+          />
+          {errors.phone && <p style={{ color: "#ef4444", fontSize: 12, margin: "4px 0 0" }}>{errors.phone.message}</p>}
+        </div>
+        <div>
+          <label style={{ display: "block", fontSize: "clamp(12px, 1vw, 13px)", fontWeight: 500, color: "#374151", marginBottom: 6 }}>Message *</label>
+          <Controller
+            name="message"
+            control={control}
+            render={({ field }) => (
+              <textarea
+                {...field}
+                rows={4}
+                placeholder="Write your message..."
+                style={{
+                  width: "100%", padding: "10px 14px", borderRadius: 10,
+                  border: errors.message ? "1px solid #ef4444" : "1px solid #e5e7eb",
+                  fontSize: 14, outline: "none", background: "#fff", resize: "vertical", fontFamily: "inherit", boxSizing: "border-box",
+                }}
+              />
+            )}
+          />
+          {errors.message && <p style={{ color: "#ef4444", fontSize: 12, margin: "4px 0 0" }}>{errors.message.message}</p>}
+        </div>
+        <button
+          type="button"
+          disabled={loading}
+          onClick={() => handleSubmit(onSubmit)()}
+          style={{
+            width: "100%", padding: "12px 28px", borderRadius: 9999, background: loading ? "#6b7280" : "#004a70",
+            color: "#fff", fontSize: "clamp(14px, 1.2vw, 15px)", fontWeight: 600,
+            border: "none", cursor: loading ? "not-allowed" : "pointer", transition: "all 0.2s",
+            display: "flex", alignItems: "center", justifyContent: "center", gap: 8,
+          }}
+        >
+          {loading && (
+            <span style={{ display: "inline-flex" }}>
+              <Spinner size="sm" style={{ color: "#fff" }} />
+            </span>
+          )}
+          {loading ? "Sending..." : "Send Message"}
+        </button>
       </div>
-    );
-  };
+    </div>
+  );
+}
+
+const MemoizedMap = React.memo(function MapSection() {
+  return (
+    <div style={{ borderRadius: 20, overflow: "hidden", boxShadow: "0 8px 30px rgba(0,0,0,0.06)", border: "1px solid rgba(0,0,0,0.04)", height: "100%", minHeight: 350 }}>
+      <iframe
+        src="https://www.google.com/maps/embed?pb=!1m18!1m12!1m3!1d387555.5496957033!2d-62.84503236205066!3d17.25410677905199!2m3!1f0!2f0!3f0!3m2!1i1024!2i768!4f13.1!3m3!1m2!1s0x8c0e8b2e1d3b2f8b%3A0x2e8e8e8e8e8e8e8e!2sSaint%20Kitts%20and%20Nevis!5e0!3m2!1sen!2s!4v1"
+        width="100%"
+        height="100%"
+        style={{ border: 0, minHeight: 350, display: "block" }}
+        allowFullScreen
+        loading="lazy"
+        referrerPolicy="no-referrer-when-downgrade"
+        title="Cabkn Location"
+      />
+    </div>
+  );
+});
+
+export default function ContactUs() {
+  const [mounted, setMounted] = useState(false);
+  useEffect(() => { setMounted(true); }, []);
 
   return (
     <div className={mounted ? "animate-fade-in" : "opacity-0"} style={{ minHeight: "100vh", background: "#fff" }}>
-      {/* Hero */}
       <section
         className={mounted ? "animate-fade-in-down" : "opacity-0"}
         style={{
@@ -123,7 +253,6 @@ export default function ContactUs() {
         </div>
       </section>
 
-      {/* Contact Info Cards */}
       {useMemo(() => (
         <section style={{ marginTop: -40, position: "relative", zIndex: 2, padding: "0 clamp(16px, 4vw, 24px)" }}>
           <div style={{ maxWidth: 1100, margin: "0 auto", display: "grid", gridTemplateColumns: "repeat(auto-fit, minmax(220px, 1fr))", gap: "clamp(10px, 1.5vw, 16px)" }}>
@@ -140,137 +269,11 @@ export default function ContactUs() {
         </section>
       ), [])}
 
-      {/* Form + Map */}
       <SectionReveal>
         <div style={{ maxWidth: 1200, margin: "clamp(40px, 8vw, 80px) auto", padding: "0 clamp(16px, 4vw, 24px)" }}>
           <div style={{ display: "grid", gridTemplateColumns: "repeat(auto-fit, minmax(300px, 1fr))", gap: "clamp(20px, 3vw, 40px)", alignItems: "stretch" }}>
-
-            <div style={{ background: "#f8fafc", borderRadius: 20, padding: "clamp(24px, 4vw, 36px)", border: "1px solid rgba(0,0,0,0.04)" }}>
-              <h2 style={{ fontSize: "clamp(18px, 2vw, 22px)", fontWeight: 700, color: "#1a1a2e", margin: "0 0 24px" }}>Send Us a Message</h2>
-              <div style={{ display: "flex", flexDirection: "column", gap: 16 }}>
-                <div style={{ display: "grid", gridTemplateColumns: "1fr", gap: 16 }}>
-                  <div>
-                    <label style={{ display: "block", fontSize: "clamp(12px, 1vw, 13px)", fontWeight: 500, color: "#374151", marginBottom: 6 }}>Name *</label>
-                    <Controller
-                      name="name"
-                      control={control}
-                      render={({ field }) => (
-                        <input
-                          {...field}
-                          placeholder="Your name"
-                          style={{
-                            width: "100%", padding: "10px 14px", borderRadius: 10,
-                            border: errors.name ? "1px solid #ef4444" : "1px solid #e5e7eb",
-                            fontSize: 14, outline: "none", background: "#fff", boxSizing: "border-box", fontFamily: "inherit",
-                          }}
-                        />
-                      )}
-                    />
-                    {errors.name && <p style={{ color: "#ef4444", fontSize: 12, margin: "4px 0 0" }}>{errors.name.message}</p>}
-                  </div>
-                  <div>
-                    <label style={{ display: "block", fontSize: "clamp(12px, 1vw, 13px)", fontWeight: 500, color: "#374151", marginBottom: 6 }}>Email *</label>
-                    <Controller
-                      name="email"
-                      control={control}
-                      render={({ field }) => (
-                        <input
-                          {...field}
-                          placeholder="Your email"
-                          style={{
-                            width: "100%", padding: "10px 14px", borderRadius: 10,
-                            border: errors.email ? "1px solid #ef4444" : "1px solid #e5e7eb",
-                            fontSize: 14, outline: "none", background: "#fff", boxSizing: "border-box", fontFamily: "inherit",
-                          }}
-                        />
-                      )}
-                    />
-                    {errors.email && <p style={{ color: "#ef4444", fontSize: 12, margin: "4px 0 0" }}>{errors.email.message}</p>}
-                  </div>
-                </div>
-                <div>
-                  <label style={{ display: "block", fontSize: "clamp(12px, 1vw, 13px)", fontWeight: 500, color: "#374151", marginBottom: 6 }}>Phone Number *</label>
-                  <Controller
-                    name="phone"
-                    control={control}
-                    render={({ field }) => (
-                      <PhoneInput
-                        country={"us"}
-                        value={field.value}
-                        onChange={(value) => field.onChange(value)}
-                        onBlur={field.onBlur}
-                        inputStyle={{
-                          width: "100%", padding: "10px 14px 10px 48px", borderRadius: 10,
-                          border: errors.phone ? "1px solid #ef4444" : "1px solid #e5e7eb",
-                          fontSize: 14, outline: "none", background: "#fff", boxSizing: "border-box", fontFamily: "inherit", height: "auto",
-                        }}
-                        buttonStyle={{
-                          border: "none", background: "transparent", borderRadius: "10px 0 0 10px",
-                        }}
-                        dropdownStyle={{
-                          borderRadius: 10,
-                        }}
-                      />
-                    )}
-                  />
-                  {errors.phone && <p style={{ color: "#ef4444", fontSize: 12, margin: "4px 0 0" }}>{errors.phone.message}</p>}
-                </div>
-                <div>
-                  <label style={{ display: "block", fontSize: "clamp(12px, 1vw, 13px)", fontWeight: 500, color: "#374151", marginBottom: 6 }}>Message *</label>
-                  <Controller
-                    name="message"
-                    control={control}
-                    render={({ field }) => (
-                      <textarea
-                        {...field}
-                        rows={4}
-                        placeholder="Write your message..."
-                        style={{
-                          width: "100%", padding: "10px 14px", borderRadius: 10,
-                          border: errors.message ? "1px solid #ef4444" : "1px solid #e5e7eb",
-                          fontSize: 14, outline: "none", background: "#fff", resize: "vertical", fontFamily: "inherit", boxSizing: "border-box",
-                        }}
-                      />
-                    )}
-                  />
-                  {errors.message && <p style={{ color: "#ef4444", fontSize: 12, margin: "4px 0 0" }}>{errors.message.message}</p>}
-                </div>
-                <button
-                  type="button"
-                  disabled={loading}
-                  onClick={() => handleSubmit(onSubmit)()}
-                  style={{
-                    width: "100%", padding: "12px 28px", borderRadius: 9999, background: loading ? "#6b7280" : "#004a70",
-                    color: "#fff", fontSize: "clamp(14px, 1.2vw, 15px)", fontWeight: 600,
-                    border: "none", cursor: loading ? "not-allowed" : "pointer", transition: "all 0.2s",
-                    display: "flex", alignItems: "center", justifyContent: "center", gap: 8,
-                  }}
-                >
-                  {loading && (
-                    <span style={{ display: "inline-flex" }}>
-                      <Spinner size="sm" style={{ color: "#fff" }} />
-                    </span>
-                  )}
-                  {loading ? "Sending..." : "Send Message"}
-                </button>
-              </div>
-            </div>
-
-            {/* Map */}
-            {useMemo(() => (
-              <div style={{ borderRadius: 20, overflow: "hidden", boxShadow: "0 8px 30px rgba(0,0,0,0.06)", border: "1px solid rgba(0,0,0,0.04)", height: "100%", minHeight: 350 }}>
-                <iframe
-                  src="https://www.google.com/maps/embed?pb=!1m18!1m12!1m3!1d387555.5496957033!2d-62.84503236205066!3d17.25410677905199!2m3!1f0!2f0!3f0!3m2!1i1024!2i768!4f13.1!3m3!1m2!1s0x8c0e8b2e1d3b2f8b%3A0x2e8e8e8e8e8e8e8e!2sSaint%20Kitts%20and%20Nevis!5e0!3m2!1sen!2s!4v1"
-                  width="100%"
-                  height="100%"
-                  style={{ border: 0, minHeight: 350, display: "block" }}
-                  allowFullScreen
-                  loading="lazy"
-                  referrerPolicy="no-referrer-when-downgrade"
-                  title="Cabkn Location"
-                />
-              </div>
-            ), [])}
+            <ContactForm />
+            <MemoizedMap />
           </div>
         </div>
       </SectionReveal>
