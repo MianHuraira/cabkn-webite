@@ -345,11 +345,11 @@ const InnerHeader = () => {
       <Offcanvas
         show={show}
         onHide={handleClose}
-        placement="end"
+        placement="start"
         style={{
           width: 300,
           maxWidth: "85vw",
-          borderLeft: "1px solid rgba(0,0,0,0.06)",
+          borderRight: "1px solid rgba(0,0,0,0.06)",
         }}
       >
         <Offcanvas.Header

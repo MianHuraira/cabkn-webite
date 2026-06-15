@@ -247,11 +247,11 @@ const Header = () => {
 
       {/* Mobile Drawer */}
       <div
-        className={`fixed top-0 right-0 w-[320px] max-w-[85vw] h-full z-[1002] overflow-y-auto transition-all duration-300 ease-out ${show ? "translate-x-0" : "translate-x-full"}`}
+        className={`fixed top-0 left-0 w-[320px] max-w-[85vw] h-full z-[1002] overflow-y-auto transition-all duration-300 ease-out ${show ? "translate-x-0" : "-translate-x-full"}`}
         style={{
           background: "#fff",
-          boxShadow: "-20px 0 60px rgba(0,0,0,0.15)",
-          borderLeft: "1px solid rgba(0,0,0,0.06)",
+          boxShadow: "20px 0 60px rgba(0,0,0,0.15)",
+          borderRight: "1px solid rgba(0,0,0,0.06)",
         }}
       >
         <div style={{
