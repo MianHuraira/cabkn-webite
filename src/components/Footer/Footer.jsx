@@ -188,16 +188,7 @@ export default function Footer() {
               </div>
             </div>
 
-            {/* Legal Links */}
-            <div className="flex items-center gap-5 mt-6 pt-5">
-              <Link href="/privacy" className="text-white/60 text-[13px] cursor-pointer hover:text-white transition-colors">
-                Privacy
-              </Link>
-              <span className="text-white/30 text-[13px]">|</span>
-              <Link href="/terms" className="text-white/60 text-[13px] cursor-pointer hover:text-white transition-colors">
-                Terms
-              </Link>
-            </div>
+
           </div>
         </div>
       </div>
@@ -206,9 +197,20 @@ export default function Footer() {
       <div className={`bg-[#003d5e] reveal ${inView ? "visible" : ""}`}
         style={{ transitionDelay: "350ms" }}>
         <div className="max-w-[1320px] mx-auto px-4 sm:px-6 lg:px-8 py-4">
-          <p className="text-white/50 text-[13px] text-center m-0">
-            &copy; {new Date().getFullYear()} CabKN. All rights reserved.
-          </p>
+          <div className="flex flex-col sm:flex-row items-center justify-center gap-3 sm:gap-5">
+            <p className="text-white/50 text-[13px] text-center m-0">
+              &copy; {new Date().getFullYear()} CabKN. All rights reserved.
+            </p>
+            <div className="flex items-center gap-3 sm:gap-5">
+              <Link href="/privacy" className="text-white/50 text-[13px] cursor-pointer hover:text-white transition-colors">
+                Privacy Policy
+              </Link>
+              <span className="text-white/30 text-[13px]">|</span>
+              <Link href="/terms" className="text-white/50 text-[13px] cursor-pointer hover:text-white transition-colors">
+                Terms &amp; Conditions
+              </Link>
+            </div>
+          </div>
         </div>
       </div>
     </footer>

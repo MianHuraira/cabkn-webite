@@ -1,10 +1,10 @@
 import React from "react";
 import { Card } from "react-bootstrap";
 import Slider from "react-slick";
-import { Button } from "reactstrap";
 import { FaLocationDot } from "react-icons/fa6";
 import { MdDateRange } from "react-icons/md";
 import { IoMdTime } from "react-icons/io";
+import { FiArrowRight } from "react-icons/fi";
 import moment from "moment";
 import { Rate } from "antd";
 import { FaStar } from "react-icons/fa";
@@ -127,13 +127,16 @@ function ThingstodoCard({ testimonial, onClick, onClick2, btnTitle, isTour }) {
           </p>
 
 
-          <Button
-            style={{ width: isTour ? "100%" : "60%", borderRadius: "9999px" }}
+          <div
             onClick={onClick}
-            className="btnHome rounded-full w-full sm:w-[60%]"
+            className="inline-flex items-center gap-2 text-brand-600 font-medium text-sm cursor-pointer group w-fit mt-3"
+            style={{ fontFamily: "Inter-Medium" }}
           >
-            {btnTitle || "Book a Ride"}
-          </Button>
+            <span className="border-b border-transparent group-hover:border-brand-600 transition-all duration-300">
+              {btnTitle || "Book a Ride"}
+            </span>
+            <FiArrowRight className="text-brand-600 text-sm transition-all duration-300 group-hover:translate-x-1" />
+          </div>
         </div>
       </Card.Body>
     </Card>
