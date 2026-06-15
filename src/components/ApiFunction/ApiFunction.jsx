@@ -7,13 +7,7 @@ import { useSelector } from "react-redux";
 
 const ApiFunction = () => {
   const userData = useSelector(selectUser);
-
-
-
   const token = userData?.token;
-// 
-
-
   const baseURL = "https://api.cabkn.com/api/";
   // const baseURL = "https://xjnhtpzb-5400.inc1.devtunnels.ms/api/"
 
