@@ -138,6 +138,21 @@ const ChatMessageList = () => {
     e.preventDefault();
     const input = document.getElementById("chatInput");
     const message = input.value;
+    if (message.trim() === "") return;
+
+    const tempId = Date.now().toString();
+    const optimisticMsg = {
+      _id: tempId,
+      message,
+      sender: userData?.user?._id || userData?._id,
+      createdAt: new Date().toISOString(),
+    };
+
+    setChatMsg((prevChat) => [...prevChat, optimisticMsg]);
+    input.value = "";
+    setTimeout(() => {
+      chatMessagesRef.current.scrollTop = chatMessagesRef.current.scrollHeight;
+    }, 0);
 
     const data = {
       name: chatUser?.otherUser?.name,
@@ -145,26 +160,24 @@ const ChatMessageList = () => {
       messageText: message,
     };
 
-    if (message.trim() !== "") {
-      chatMessagesRef.current.scrollTop = chatMessagesRef.current.scrollHeight;
-      await socket.emit("send-message", data, (res) => {
-        setChatMsg((prevChat) => [...prevChat, res]);
-        setChatListData((prev) => {
-          const updated = prev.map((c) => {
-            if (c?._id === res?.conversationId || c?._id === chatUser?._id) {
-              return { ...c, lastMsg: res };
-            }
-            return c;
-          });
-          return updated.sort((a, b) => {
-            const ta = a?.lastMsg?.createdAt || 0;
-            const tb = b?.lastMsg?.createdAt || 0;
-            return new Date(tb) - new Date(ta);
-          });
+    socket.emit("send-message", data, (res) => {
+      setChatMsg((prevChat) =>
+        prevChat.map((m) => (m._id === tempId ? res : m))
+      );
+      setChatListData((prev) => {
+        const updated = prev.map((c) => {
+          if (c?._id === res?.conversationId || c?._id === chatUser?._id) {
+            return { ...c, lastMsg: res };
+          }
+          return c;
+        });
+        return updated.sort((a, b) => {
+          const ta = a?.lastMsg?.createdAt || 0;
+          const tb = b?.lastMsg?.createdAt || 0;
+          return new Date(tb) - new Date(ta);
         });
       });
-      input.value = "";
-    }
+    });
   };
 
   const getUserChat = (userId) => {
