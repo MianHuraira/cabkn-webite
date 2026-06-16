@@ -9,6 +9,7 @@ const authSlice = createSlice({
     paymentCards: [],
     isTipModal: false,
     tipOrderId: {},
+    unreadCount: 0,
   },
   reducers: {
     setUser: (state, action) => {
@@ -27,6 +28,9 @@ const authSlice = createSlice({
     },
     setTipOrderId(state, action) {
       state.tipOrderId = action.payload;
+    },
+    setUnreadCount(state, action) {
+      state.unreadCount = action.payload;
     },
     setPaymentCards(state, action) {
       const newCard = { ...action.payload };
@@ -53,6 +57,7 @@ export const {
   setPaymentCards,
   setTipModal,
   setTipOrderId,
+  setUnreadCount,
 } = authSlice.actions;
 
 export const selectUser = (state) => state.auth.user;

@@ -26,6 +26,8 @@ import { useRouter, useSearchParams } from "next/navigation";
 import ApiFunction from "../ApiFunction/ApiFunction";
 import { decryptData } from "../ApiFunction/encrypted";
 import { useSocket } from "../ApiFunction/SoketProvider";
+import { useDispatch } from "react-redux";
+import { setUnreadCount } from "../Redux/Slices/AuthSlice";
 
 const ChatMessage = () => {
   const { userData, baseURL } = ApiFunction();
@@ -35,6 +37,7 @@ const ChatMessage = () => {
   const { activeChatId, setActiveChatId } = useActiveChat();
   const { responsiveChat, setResponsiveChat } = useResponsiveChat();
   const socket = useSocket();
+  const dispatch = useDispatch();
   const searchParams = useSearchParams();
   const params = new URLSearchParams(searchParams);
   const urlDataEnq = params.get("query");
@@ -64,6 +67,20 @@ const ChatMessage = () => {
       }
     };
   }, []);
+
+  useEffect(() => {
+    const currentUserId = userData?.user?._id || userData?._id;
+    const total = chatListData?.reduce((sum, conv) => {
+      const sender = conv?.lastMsg?.sender;
+      const senderId = typeof sender === "object" ? sender?._id : sender;
+      const isFromOther = senderId !== currentUserId;
+      if (isFromOther && conv?.unseen > 0) {
+        return sum + (conv?.unseen || 0);
+      }
+      return sum;
+    }, 0) || 0;
+    dispatch(setUnreadCount(total));
+  }, [chatListData, userData]);
   const handleError = (error) => {
     console.error("WebSocket connection error:", error);
   };

@@ -9,6 +9,7 @@ import { useRouter } from "next/navigation";
 import { IoVideocamOutline } from "react-icons/io5";
 import Skeleton from "react-loading-skeleton";
 import { useDispatch, useSelector } from "react-redux";
+import { setUnreadCount } from "../Redux/Slices/AuthSlice";
 
 import {
   useActiveChat,
@@ -95,9 +96,11 @@ const ChatMessageList = () => {
         setChatListData((prevChatList) => {
           let updatedChatList = prevChatList.map((conversation) => {
             if (conversation?._id === message?.conversationId) {
+              const isFromOther = msgSenderId !== currentId;
               return {
                 ...conversation,
                 lastMsg: message,
+                unseen: isFromOther ? (conversation.unseen || 0) + 1 : (conversation.unseen || 0),
               };
             }
             return conversation;
@@ -118,6 +121,18 @@ const ChatMessageList = () => {
       };
     }
   }, [activeChatId, chatListData]);
+
+  useEffect(() => {
+    const total = chatListData?.reduce((sum, conv) => {
+      const lastSender = getSenderId(conv?.lastMsg?.sender);
+      const isFromOther = lastSender !== currentUserId && lastSender !== userData?._id;
+      if (isFromOther && conv?.unseen > 0) {
+        return sum + (conv?.unseen || 0);
+      }
+      return sum;
+    }, 0) || 0;
+    dispatch(setUnreadCount(total));
+  }, [chatListData, currentUserId]);
 
   const sendMessage = async (e) => {
     e.preventDefault();
@@ -173,6 +188,17 @@ const ChatMessageList = () => {
 
   useLayoutEffect(() => {
     handleChatClick(activeChatId);
+    if (activeChatId) {
+      setChatListData((prev) =>
+        prev.map((c) => {
+          const otherId = typeof c?.otherUser === "object" ? c?.otherUser?._id : c?.otherUser;
+          if (otherId === activeChatId || c?._id === activeChatId) {
+            return { ...c, unseen: 0 };
+          }
+          return c;
+        })
+      );
+    }
   }, [activeChatId]);
   useEffect(() => {
     if (chatMsg?.length > 0) {

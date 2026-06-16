@@ -10,6 +10,7 @@ import { FaUser } from "react-icons/fa";
 import { message } from "antd";
 
 import { useDispatch, useSelector } from "react-redux";
+import { Badge } from "antd";
 import { AiOutlineMenuFold } from "react-icons/ai";
 import { HiOutlineChatBubbleOvalLeft } from "react-icons/hi2";
 import { MdNotificationsActive } from "react-icons/md";
@@ -19,18 +20,62 @@ import Link from "next/link";
 import { AppStore, GooglePlay, logoBlue } from "../assets/Images";
 import Image from "next/image";
 import ApiFunction from "../ApiFunction/ApiFunction";
-import { logout } from "../Redux/Slices/AuthSlice";
+import { logout, setUnreadCount } from "../Redux/Slices/AuthSlice";
 import { useRouter, usePathname } from "next/navigation";
 import { encryptData } from "../ApiFunction/encrypted";
+import { useSocket } from "../ApiFunction/SoketProvider";
+import ApiFile from "../ApiFunction/ApiFile";
 
 const InnerHeader = () => {
   const [show, setShow] = useState(false);
   const handleClose = () => setShow(false);
 
 
-  const { getData, header3, header1, baseURL, userData } = ApiFunction();
+  const { getData, baseURL, userData } = ApiFunction();
+  const dispatch = useDispatch();
   const router = useRouter();
   const pathname = usePathname();
+  const unreadCount = useSelector((state) => state.auth.unreadCount);
+  const socket = useSocket();
+  const { getAllConversation } = ApiFile;
+
+  useEffect(() => {
+    if (!userData?.token) return;
+    const h1 = { "Content-Type": "application/json", "x-auth-token": userData.token };
+    const fetchUnreadCount = async () => {
+      try {
+        const res = await getData(`${getAllConversation}?page=1&limit=50`, h1);
+        if (res?.success) {
+          const userId = userData?.user?._id || userData?._id;
+          const total = (res?.conversations || []).reduce((sum, conv) => {
+            const sender = conv?.lastMsg?.sender;
+            const senderId = typeof sender === "object" ? sender?._id : sender;
+            if (senderId && senderId !== userId && conv?.unseen > 0) {
+              return sum + (Number(conv?.unseen) || 0);
+            }
+            return sum;
+          }, 0);
+          dispatch(setUnreadCount(total));
+        }
+      } catch (e) {
+        console.error("Failed to fetch unread count", e);
+      }
+    };
+    fetchUnreadCount();
+  }, [userData?.token]);
+
+  useEffect(() => {
+    if (!socket || !userData?.token) return;
+    const userId = userData?.user?._id || userData?._id;
+    const handleMessage = (message) => {
+      const msgSenderId = typeof message?.sender === "object" ? message?.sender?._id : message?.sender;
+      if (msgSenderId && msgSenderId !== userId) {
+        dispatch(setUnreadCount(unreadCount + 1));
+      }
+    };
+    socket.on("recieved-message", handleMessage);
+    return () => socket.off("recieved-message", handleMessage);
+  }, [socket, userData?.token, unreadCount]);
 
   const [driverModal, SetdriverModal] = useState(false);
   const handleClosedriver = () => SetdriverModal(false);
@@ -38,8 +83,6 @@ const InnerHeader = () => {
   const [mounted, setMounted] = useState(false);
 
   useEffect(() => { setMounted(true); }, []);
-
-  const dispatch = useDispatch();
 
   const handleChatUser = () => {
     if (!userData?.user) {
@@ -216,12 +259,14 @@ const InnerHeader = () => {
 
           {/* Right: Icons + User */}
           <div className="d-none d-xl-flex animate-fade-in" style={{ alignItems: "center", gap: 6, flexShrink: 0, animationDelay: "150ms" }}>
-            <button
-              onClick={handleChatUser}
-              className="w-[34px] h-[34px] rounded-lg bg-gray-100 flex items-center justify-center cursor-pointer transition-all duration-200 text-gray-600 hover:bg-brand-600 hover:text-white hover:scale-110 border-0"
-            >
-              <HiOutlineChatBubbleOvalLeft size={16} />
-            </button>
+            <Badge count={unreadCount} size="small" offset={[-2, 2]} style={{ backgroundColor: "#ef4444" }}>
+              <button
+                onClick={handleChatUser}
+                className="w-[34px] h-[34px] rounded-lg bg-gray-100 flex items-center justify-center cursor-pointer transition-all duration-200 text-gray-600 hover:bg-brand-600 hover:text-white hover:scale-110 border-0"
+              >
+                <HiOutlineChatBubbleOvalLeft size={16} />
+              </button>
+            </Badge>
             <button
               onClick={() => Route("notifications")}
               className="w-[34px] h-[34px] rounded-lg bg-gray-100 flex items-center justify-center cursor-pointer transition-all duration-200 text-gray-600 hover:bg-brand-600 hover:text-white hover:scale-110 border-0"
