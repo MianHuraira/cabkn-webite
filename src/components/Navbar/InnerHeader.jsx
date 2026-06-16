@@ -20,7 +20,7 @@ import Link from "next/link";
 import { AppStore, GooglePlay, logoBlue } from "../assets/Images";
 import Image from "next/image";
 import ApiFunction from "../ApiFunction/ApiFunction";
-import { logout, setUnreadCount } from "../Redux/Slices/AuthSlice";
+import { logout, setUnreadCount, setNotifUnreadCount, setNotifLastTotal } from "../Redux/Slices/AuthSlice";
 import { useRouter, usePathname } from "next/navigation";
 import { encryptData } from "../ApiFunction/encrypted";
 import { useSocket } from "../ApiFunction/SoketProvider";
@@ -36,6 +36,8 @@ const InnerHeader = () => {
   const router = useRouter();
   const pathname = usePathname();
   const unreadCount = useSelector((state) => state.auth.unreadCount);
+  const notifUnreadCount = useSelector((state) => state.auth.notifUnreadCount);
+  const notifLastTotalRef = useRef(0);
   const socket = useSocket();
   const { getAllConversation } = ApiFile;
 
@@ -76,6 +78,34 @@ const InnerHeader = () => {
     socket.on("recieved-message", handleMessage);
     return () => socket.off("recieved-message", handleMessage);
   }, [socket, userData?.token, unreadCount]);
+
+  useEffect(() => {
+    if (!userData?.token) return;
+    const h1 = { "Content-Type": "application/json", "x-auth-token": userData.token };
+    const fetchNotifCount = async () => {
+      try {
+        const res = await getData("notification/all/", h1);
+        if (res?.success) {
+          const total = res?.notifications?.length || 0;
+          if (notifLastTotalRef.current === -1) {
+            notifLastTotalRef.current = total;
+            dispatch(setNotifLastTotal(total));
+            return;
+          }
+          const diff = Math.max(0, total - notifLastTotalRef.current);
+          notifLastTotalRef.current = total;
+          if (diff > 0) {
+            dispatch(setNotifUnreadCount((prev) => prev + diff));
+          }
+          dispatch(setNotifLastTotal(total));
+        }
+      } catch (e) { /* ignore */ }
+    };
+    notifLastTotalRef.current = -1;
+    fetchNotifCount();
+    const interval = setInterval(fetchNotifCount, 30000);
+    return () => clearInterval(interval);
+  }, [userData?.token]);
 
   const [driverModal, SetdriverModal] = useState(false);
   const handleClosedriver = () => SetdriverModal(false);
@@ -267,12 +297,14 @@ const InnerHeader = () => {
                 <HiOutlineChatBubbleOvalLeft size={16} />
               </button>
             </Badge>
-            <button
-              onClick={() => Route("notifications")}
-              className="w-[34px] h-[34px] rounded-lg bg-gray-100 flex items-center justify-center cursor-pointer transition-all duration-200 text-gray-600 hover:bg-brand-600 hover:text-white hover:scale-110 border-0"
-            >
-              <MdNotificationsActive size={16} />
-            </button>
+            <Badge count={notifUnreadCount} size="small" offset={[-2, 2]} style={{ backgroundColor: "#ef4444" }}>
+              <button
+                onClick={() => { dispatch(setNotifUnreadCount(0)); Route("notifications"); }}
+                className="w-[34px] h-[34px] rounded-lg bg-gray-100 flex items-center justify-center cursor-pointer transition-all duration-200 text-gray-600 hover:bg-brand-600 hover:text-white hover:scale-110 border-0"
+              >
+                <MdNotificationsActive size={16} />
+              </button>
+            </Badge>
             <button
               onClick={() => Route("favorites")}
               className="w-[34px] h-[34px] rounded-lg bg-gray-100 flex items-center justify-center cursor-pointer transition-all duration-200 text-gray-600 hover:bg-brand-600 hover:text-white hover:scale-110 border-0"
