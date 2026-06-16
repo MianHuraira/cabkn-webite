@@ -1057,7 +1057,7 @@ const RidePage = () => {
                   height: 48,
                   border: "none",
                   borderRadius: "9999px",
-                  background: isLoading ? "#9ca3af" : "linear-gradient(179.02deg, rgb(0, 74, 112) -69.5%, rgb(177, 176, 176) 99.16%)",
+                   background: isLoading ? "#9ca3af" : "#004a70",
                   color: "#fff",
                   fontFamily: "Inter-SemiBold",
                   fontSize: 15,

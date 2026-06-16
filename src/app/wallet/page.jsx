@@ -142,6 +142,10 @@ const page = () => {
   }
 
   const jadAPiFunction = async () => {
+    if (!cardDetails.price || !cardDetails.number || !cardDetails.name || !cardDetails.expiry || !cardDetails.cvc || !cardDetails.email || !cardDetails.phone) {
+      message.warning("Please fill all required fields");
+      return;
+    }
     setLoading(true);
     const tokenResponse = await getToken();
     if (tokenResponse.result !== "Success") {
