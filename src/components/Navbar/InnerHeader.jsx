@@ -157,8 +157,8 @@ const InnerHeader = () => {
     { label: "List Own Place", href: "/listownplace" },
     { label: "Shop", href: "/serviceLocations" },
     { label: "Wallet", href: "/wallet" },
-    { label: "Chat", href: "/chat" },
-    { label: "Favorites", href: "/favorites" },
+    // { label: "Chat", href: "/chat" },
+    // { label: "Favorites", href: "/favorites" },
     { label: "Offers", href: "/coupon" },
     { label: "Reviews", href: "/userreviews" },
   ];

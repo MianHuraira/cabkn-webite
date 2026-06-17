@@ -52,6 +52,7 @@ export default function EditProfile() {
     lng: null,
   });
   const dispatch = useDispatch();
+  
 
   const [isMobile, setIsMobile] = useState(false);
   const [mounted, setMounted] = useState(false);
@@ -118,11 +119,14 @@ export default function EditProfile() {
       if (res?.success) {
         setisLoading(false);
         getProfile();
-        message.success(res?.message);
+        message.success(res?.message || "Profile updated successfully");
+      } else {
+        setisLoading(false);
+        message.error(res?.message || "Failed to update profile");
       }
     } catch (error) {
       setisLoading(false);
-      message.success(error.response?.data?.message);
+      message.error(error?.response?.data?.message || "Something went wrong");
     }
   };
 
@@ -280,7 +284,7 @@ export default function EditProfile() {
                   )}
                 </div>
                 <div>
-                  <p
+                  <h5
                     style={{
                       fontWeight: 600,
                       fontSize: 18,
@@ -288,17 +292,18 @@ export default function EditProfile() {
                       margin: 0,
                     }}
                   >
-                    {userData?.user?.name || "Your Name"}
-                  </p>
-                  <p
+                    {mounted ? (userData?.user?.name || "Your Name") : "Your Name"}
+                  </h5>
+                  <span
                     style={{
                       fontSize: 13,
                       color: "#6b7280",
                       margin: "4px 0 0",
                     }}
                   >
-                    {userData?.user?.email || "email@example.com"}
-                  </p>
+                    {mounted ? (userData?.user?.email || "email@example.com") : "email@example.com"}
+                  </span>
+                  <br />
                   <button
                     onClick={() =>
                       document.getElementById("file-upload-profile").click()

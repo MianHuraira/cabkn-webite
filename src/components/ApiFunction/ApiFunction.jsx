@@ -45,8 +45,8 @@ export const useApi = () => {
       console.error(`API ${method} Error:`, error.message);
     }
     
-    // Re-throw for component-level handling
-    throw error;
+    // Don't re-throw, return undefined
+    return undefined;
   };
 
   const getData = async (endpoint, headers = {}) => {
