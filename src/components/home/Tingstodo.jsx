@@ -80,8 +80,12 @@ export default function Tingstodo() {
     },
   });
 
+  const [categoryError, setCategoryError] = useState(false);
+  const [subCategoryError, setSubCategoryError] = useState(false);
+
   const getCategory = async () => {
     try {
+      setCategoryError(false);
       const response = await getData("/webcat/all/1", header1);
       const staticCategory = { _id: 0, name: "All" };
       const updatedCategories = [
@@ -91,25 +95,31 @@ export default function Tingstodo() {
 
       setCategory(updatedCategories);
     } catch (error) {
-      console.log(error);
+      console.error("Failed to load categories:", error);
+      setCategoryError(true);
+      // Set at least the "All" category to show something
+      setCategory([{ _id: 0, name: "All" }]);
     }
   };
 
   const getCategorydata = async () => {
     setloading(true);
     try {
+      setSubCategoryError(false);
       const response = await getData(
         selectedCategoryId === 0
           ? `/websubcat/all/${1}`
           : `/websubcat/all/${1}/${selectedCategoryId}`,
         header1
       );
-      setSubCategory(response?.categories);
+      setSubCategory(response?.categories || []);
       setPagelength(response?.count?.currentPageSize);
-      setloading(false);
     } catch (error) {
+      console.error("Failed to load category data:", error);
+      setSubCategoryError(true);
+      setSubCategory([]);
+    } finally {
       setloading(false);
-      console.log(error);
     }
   };
 
@@ -155,13 +165,15 @@ export default function Tingstodo() {
       );
       setSubCategory((prevCategories) => [
         ...prevCategories,
-        ...response?.categories,
+        ...(response?.categories || []),
       ]);
       setPagelength(response?.count?.currentPageSize);
-      setMoreLoading(false);
     } catch (error) {
+      console.error("Failed to load more data:", error);
+      // Don't increment count if there was an error
+      setCount(Count);
+    } finally {
       setMoreLoading(false);
-      console.log(error);
     }
   };
 
