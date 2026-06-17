@@ -1,6 +1,6 @@
 import React, { useEffect, useState, useRef } from "react";
 import { Col, Row } from "reactstrap";
-import { AppStore, GooglePlay, mobiledown } from "../assets/Images";
+import { ApplePlayBlack as AppStore, GooglePlayblack as GooglePlay, mobiledown } from "../assets/Images";
 import Image from "next/image";
 
 export default function DownloadApp() {
@@ -80,11 +80,11 @@ export default function DownloadApp() {
                     "noopener,noreferrer",
                   )
                 }
-                className="cursor-pointer transition-all duration-200 hover:scale-105 rounded-xl overflow-hidden shadow-[0_4px_14px_rgba(0,0,0,0.08)] hover:shadow-[0_8px_24px_rgba(0,0,0,0.12)]"
+                className="cursor-pointer transition-all duration-200 hover:scale-105"
               >
                 <Image
                   src={GooglePlay}
-                  style={{ objectFit: "contain", height: 54, width: 180 }}
+                  style={{ objectFit: "contain", height: 54, width: 180, mixBlendMode: "multiply" }}
                   alt="Google Play"
                 />
               </div>
@@ -96,11 +96,11 @@ export default function DownloadApp() {
                     "noopener,noreferrer",
                   )
                 }
-                className="cursor-pointer transition-all duration-200 hover:scale-105 rounded-xl overflow-hidden shadow-[0_4px_14px_rgba(0,0,0,0.08)] hover:shadow-[0_8px_24px_rgba(0,0,0,0.12)]"
+                className="cursor-pointer transition-all duration-200 hover:scale-105"
               >
                 <Image
                   src={AppStore}
-                  style={{ objectFit: "contain", height: 54, width: 180 }}
+                  style={{ objectFit: "contain", height: 54, width: 180, mixBlendMode: "multiply" }}
                   alt="App Store"
                 />
               </div>

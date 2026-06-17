@@ -1,6 +1,6 @@
 /** @type {import('tailwindcss').Config} */
 export default {
-  
+
   content: [
     "./src/pages/**/*.{js,ts,jsx,tsx,mdx}",
     "./src/components/**/*.{js,ts,jsx,tsx,mdx}",
@@ -9,6 +9,17 @@ export default {
 
   ],
   theme: {
+    container: {
+      center: true,
+      padding: "1rem",
+      screens: {
+        sm: "640px",
+        md: "768px",
+        lg: "1024px",
+        xl: "1400px",
+        "2xl": "1720px",
+      },
+    },
     extend: {
       keyframes: {
         "auth-in": {
@@ -60,6 +71,12 @@ export default {
       colors: {
         background: "var(--background)",
         foreground: "var(--foreground)",
+        primary: "#004a70",
+        secondary: "#6c757d",
+        success: "#28a745",
+        danger: "#dc3545",
+        warning: "#ffc107",
+        info: "#17a2b8",
         brand: {
           50: "#eff9ff",
           100: "#d7f0ff",

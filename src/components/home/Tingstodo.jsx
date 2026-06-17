@@ -9,6 +9,7 @@ import ThingstodoCard from "./ThingstodoCard";
 // import { useSelector } from "react-redux";
 import { Button, Spinner } from "reactstrap";
 import Image from "next/image";
+import CustomButton from "../CustomButton";
 import { NoshowData } from "../assets/Images";
 import ApiFunction from "../ApiFunction/ApiFunction";
 import { useRouter } from "next/navigation";
@@ -273,7 +274,9 @@ export default function Tingstodo() {
                         ) {
                           resolve({
                             description: prediction.description,
+                            place_id: prediction.place_id,
                             latLng: result.geometry.location.toJSON(),
+                            photoUrl: result.photos && result.photos.length > 0 ? result.photos[0].getUrl({ maxWidth: 100, maxHeight: 100 }) : null,
                           });
                         } else {
                           resolve(null);
@@ -317,69 +320,83 @@ export default function Tingstodo() {
 
   return (
     <div ref={sectionRef}>
-      <div className={`d-flex flex-column flex-lg-row justify-content-between align-items-center mb-4 mt-10 reveal ${inView ? "visible" : ""}`} style={{ padding: "0 16px", gap: 12, transitionDelay: "50ms" }}>
+      <div className={`d-flex container mx-auto flex-column flex-lg-row justify-content-between align-items-center mb-4 mt-10 reveal ${inView ? "visible" : ""}`} style={{ padding: "0 16px", gap: 12, transitionDelay: "50ms", position: "relative", zIndex: 100 }}>
         <div style={{ textAlign: "left" }}>
           <h1 className="feedBack" style={{ marginLeft: 0, textAlign: "left" }}>Our Tour Recommendations</h1>
         </div>
-        <div className="" style={{ alignSelf: "flex-end", marginLeft: "auto" }}>
+        <div className="w-full lg:w-[400px]" style={{ alignSelf: "flex-end", marginLeft: "auto", position: "relative", zIndex: 100 }}>
           <Controller
             name="name"
             control={control}
             render={({ field }) => (
-              <div className={styles.searchWrapper}>
-                <FaSearch />
-                <Input
-                  {...field}
-                  placeholder="Search"
-                  value={searchQuery}
-                  className={styles.searchInput}
-                  onChange={(e) => handleSearch(e.target.value)}
-                  invalid={errors.name && true}
-                />
-                <ListGroup
-                  style={{
-                    position: "absolute",
-                    zIndex: 10,
-                    width: "100%",
-                    left: 0,
-                    right: "auto",
-                    maxHeight: "200px",
-                    overflowY: "auto",
-                  }}
-                >
-                  {predictions.map((prediction) => (
-                    <ListGroupItem
-                      key={prediction.place_id}
-                      onClick={() => handlePredictionPress(prediction)}
-                      style={{ cursor: "pointer" }}
-                    >
-                      {prediction.description}
-                    </ListGroupItem>
-                  ))}
-                </ListGroup>
-                {noData && <div>No results found</div>}
+              <div className="relative group w-full">
+                <div className="flex items-center w-full px-3 py-0.5 bg-white border border-slate-200 rounded-[9999px] shadow-[0_2px_12px_rgba(0,0,0,0.04)] transition-all duration-300 hover:shadow-[0_6px_20px_rgba(0,74,112,0.1)] hover:border-brand-300 focus-within:!border-primary focus-within:!ring-4 focus-within:!ring-brand-100">
+                  <FaSearch className="text-slate-400 group-focus-within:text-primary transition-colors duration-300 w-4 h-4 ml-2" />
+                  <Input
+                    {...field}
+                    placeholder="Search locations..."
+                    value={searchQuery}
+                    className="flex-1 !border-none !shadow-none !outline-none !ring-0 !bg-transparent !py-1.5 !px-3 text-slate-700 font-['Inter-Medium'] placeholder:text-slate-400 placeholder:font-normal text-sm"
+                    onChange={(e) => handleSearch(e.target.value)}
+                    invalid={errors.name && true}
+                    style={{ boxShadow: 'none', background: 'transparent', border: 'none', minHeight: 'unset' }}
+                  />
+                  {PridicLoading && <Spinner size="sm" color="#004a70" className="mr-2" />}
+                </div>
+
+                {predictions.length > 0 && (
+                  <div className="absolute z-[100] w-full mt-3 bg-white/95 backdrop-blur-md rounded-2xl shadow-[0_10px_40px_rgba(0,0,0,0.1)] border border-slate-100 overflow-hidden animate-fade-in-down">
+                    <ul className="max-h-[300px] overflow-y-auto m-0 p-2 list-none">
+                      {predictions.map((prediction, index) => (
+                        <li
+                          key={prediction.place_id || index}
+                          onClick={() => handlePredictionPress(prediction)}
+                          className="px-4 py-3 border-0 rounded-xl mb-1 last:mb-0 cursor-pointer transition-all duration-200 hover:bg-brand-50 hover:text-primary flex flex-row items-center gap-3"
+                        >
+                          {prediction.photoUrl ? (
+                            <div className="flex-shrink-0 w-10 h-10 rounded-lg overflow-hidden shadow-sm bg-slate-100">
+                              <img src={prediction.photoUrl} alt="Location" className="w-full h-full object-cover" />
+                            </div>
+                          ) : (
+                            <div className="flex-shrink-0 w-10 h-10 rounded-lg bg-primary/10 flex items-center justify-center text-primary shadow-sm">
+                              <FaSearch className="w-4 h-4" />
+                            </div>
+                          )}
+                          <span className="font-['Inter-Medium'] text-slate-700 text-sm truncate flex-1 block">{prediction.description}</span>
+                        </li>
+                      ))}
+                    </ul>
+                  </div>
+                )}
+                {noData && (
+                  <div className="absolute z-[100] w-full mt-3 bg-white rounded-2xl shadow-[0_10px_40px_rgba(0,0,0,0.1)] border border-slate-100 p-5 text-center flex flex-col items-center gap-2 animate-fade-in-down">
+                    <div className="w-10 h-10 rounded-full bg-slate-50 flex items-center justify-center text-slate-400">
+                      <FaSearch className="w-4 h-4" />
+                    </div>
+                    <span className="text-slate-500 font-['Inter-Medium'] text-sm">No results found</span>
+                  </div>
+                )}
               </div>
             )}
           />
         </div>
       </div>
 
-      <div className={`slider-container p-2 reveal ${inView ? "visible" : ""}`} style={{ transitionDelay: "150ms" }}>
+      <div className={`slider-container container mx-auto p-2 reveal ${inView ? "visible" : ""}`} style={{ transitionDelay: "150ms" }}>
         <Slider {...settings2} key={Category.length}>
           {Category.map((category, index) => {
             const isSelected = selectedCategoryId === category._id;
             return (
               <div className="p-2" key={index}>
                 <div
-                  className={`CategoryMain text-center cursor-pointer transition-all duration-300 ${
-                    isSelected
-                      ? "text-white shadow-[0_2px_8px_rgba(0,74,112,0.25)]"
-                      : "text-slate-800 bg-white border border-slate-200 hover:border-brand-600 hover:bg-slate-100"
-                  }`}
+                  className={`CategoryMain text-center cursor-pointer transition-all duration-300 ${isSelected
+                    ? "text-white shadow-[0_2px_8px_rgba(0,74,112,0.25)]"
+                    : "text-slate-800 bg-white border border-slate-200 hover:border-brand-600 hover:bg-slate-100"
+                    }`}
                   style={{
                     padding: "10px 14px",
                     background: isSelected
-                      ? "linear-gradient(179.02deg, rgb(0, 74, 112) -69.5%, rgb(177, 176, 176) 99.16%)"
+                      ? "#004a70"
                       : "",
                     borderRadius: "9999px",
                     minWidth: "120px",
@@ -404,27 +421,30 @@ export default function Tingstodo() {
         </Slider>
       </div>
 
-      <div className="slider-container p-3">
+      <div className="slider-container container mx-auto p-3">
         {/* Show spinner when location loading */}
         {locationLoading ? (
-          <div
-            className="d-flex justify-content-center align-items-center"
-            style={{ minHeight: "300px" }}
-          >
-            <div className="text-center">
-              <Spinner
-                size="lg"
-                style={{
-                  width: "3rem",
-                  height: "3rem",
-                  color: "#004a70",
-                }}
-              />
-              <div className="mt-3">
-                <h5 style={{ color: "#004a70" }}>
-                  Loading recommendations for your location...
-                </h5>
+          <div className="w-full py-4">
+            <div className="flex justify-center mb-8">
+              <div className="px-6 py-2.5 bg-brand-50 text-primary font-['Inter-Medium'] rounded-full text-sm animate-pulse border border-brand-100 flex items-center gap-3 shadow-sm">
+                <Spinner size="sm" color="#004a70" />
+                <span>Loading recommendations for your location...</span>
               </div>
+            </div>
+            <div className="grid grid-cols-1 sm:grid-cols-2 md:grid-cols-3 lg:grid-cols-4 gap-2 md:gap-3">
+              {[1, 2, 3, 4].map((item) => (
+                <div key={item} className="bg-white rounded-[20px] overflow-hidden shadow-[0_4px_12px_rgba(0,0,0,0.03)] border border-slate-100 flex flex-col h-[340px] animate-pulse">
+                  <div className="bg-slate-200/70 h-[210px] w-full"></div>
+                  <div className="p-4 flex-1 flex flex-col gap-4">
+                    <div className="flex justify-between items-center gap-4">
+                      <div className="bg-slate-200/70 h-5 w-3/4 rounded-full"></div>
+                      <div className="bg-slate-200/70 h-5 w-1/4 rounded-full"></div>
+                    </div>
+                    <div className="bg-slate-200/70 h-4 w-1/2 rounded-full"></div>
+                    <div className="mt-auto bg-slate-200/70 h-11 w-full rounded-[9999px]"></div>
+                  </div>
+                </div>
+              ))}
             </div>
           </div>
         ) : /* Show content when not loading */
@@ -444,28 +464,12 @@ export default function Tingstodo() {
               <div className={`flex justify-center items-center mt-5 reveal ${inView ? "visible" : ""}`} style={{ transitionDelay: "400ms" }}>
                 {Pagelength > 0 ? (
                   <>
-                    <Button
+                    <CustomButton
                       onClick={ShowMoreDAta}
-                      className="transition-all duration-200 hover:shadow-[0_6px_20px_rgba(0,74,112,0.35)] hover:-translate-y-0.5"
-                      style={{
-                        minWidth: 140,
-                        padding: "10px 28px",
-                        background: "linear-gradient(179.02deg, rgb(0, 74, 112) -69.5%, rgb(177, 176, 176) 99.16%)",
-                        border: "none",
-                        borderRadius: "9999px",
-                        color: "#fff",
-                        fontFamily: "Inter-Medium",
-                        fontSize: 14,
-                        cursor: "pointer",
-                        display: "inline-flex",
-                        alignItems: "center",
-                        justifyContent: "center",
-                        gap: 8,
-                        boxShadow: "0 4px 14px rgba(0,74,112,0.25)",
-                      }}
+                      loading={MoreLoading}
                     >
-                      {MoreLoading ? <Spinner size={"sm"} color="#fff" /> : "See more"}
-                    </Button>
+                      See more
+                    </CustomButton>
                   </>
                 ) : (
                   ""

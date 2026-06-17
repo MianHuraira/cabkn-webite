@@ -8,6 +8,7 @@ export const dynamicParams = true;
 const frontendBaseURL = "https://cabkn.com/popular";
 
 export async function generateMetadata({ params }) {
+
   const { id } = params;
 
   try {
@@ -46,13 +47,13 @@ export async function generateMetadata({ params }) {
         url: `${frontendBaseURL}/${id}`, // Using frontendBaseURL properly
         images: imageUrl
           ? [
-              {
-                url: imageUrl,
-                width: 1200,
-                height: 630,
-                alt: category.title,
-              },
-            ]
+            {
+              url: imageUrl,
+              width: 1200,
+              height: 630,
+              alt: category.title,
+            },
+          ]
           : [],
         siteName: "CabKn",
       },
@@ -68,8 +69,8 @@ export async function generateMetadata({ params }) {
         images: imageUrl
           ? [imageUrl]
           : [
-              "https://firebasestorage.googleapis.com/v0/b/new-jesuspod.appspot.com/o/logoBlue.png?alt=media&token=8512e03c-5b30-4e1f-b805-d5facfa150a5",
-            ],
+            "https://firebasestorage.googleapis.com/v0/b/new-jesuspod.appspot.com/o/logoBlue.png?alt=media&token=8512e03c-5b30-4e1f-b805-d5facfa150a5",
+          ],
       },
     };
   } catch (error) {

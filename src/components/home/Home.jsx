@@ -64,7 +64,7 @@ const HomeComponent = () => {
 
         />
 
-        <div className="relative z-10 w-full max-w-[1280px] mx-auto px-4 sm:px-6 lg:px-8 grid grid-cols-1 lg:grid-cols-2 gap-10 lg:gap-16 items-center pt-28 pb-16 lg:pt-36 lg:pb-20">
+        <div className="relative z-10 w-full container mx-auto px-4 sm:px-6 lg:px-8 grid grid-cols-1 lg:grid-cols-2 gap-10 lg:gap-16 items-center pt-28 pb-16 lg:pt-36 lg:pb-20">
           <div className="flex flex-col gap-4 sm:gap-6">
             <div className={`inline-flex items-center gap-2 bg-brand-500/10 border border-brand-500/20 rounded-full px-4 py-2 text-brand-600 text-[11px] sm:text-xs uppercase tracking-[0.08em] font-medium w-fit backdrop-blur-sm ${mounted ? "animate-fade-in-down" : "opacity-0"}`}
               style={{ animationDelay: "100ms" }}>

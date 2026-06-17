@@ -57,7 +57,7 @@ export default function RootLayout({ children }) {
           }}
         />
       </head>
-      <body>
+      <body style={{ fontFamily: "'Inter-Regular', sans-serif" }}>
         {/* Your Scripts */}
 
         {/* Your App Content */}
