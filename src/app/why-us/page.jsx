@@ -2,10 +2,14 @@
 import React, { useEffect, useState, useRef } from "react";
 import Image from "next/image";
 import { CarBanner, mainBanner } from "@/components/assets/Images";
-import { FiAward, FiUsers, FiMapPin, FiShield } from "react-icons/fi";
+import { FiAward, FiUsers, FiMapPin, FiShield, FiArrowRight } from "react-icons/fi";
+import CustomButton from "../../components/CustomButton";
+import { useRouter } from "next/navigation";
 
 export default function WhyUs() {
   const [mounted, setMounted] = useState(false);
+  const router = useRouter();
+
   useEffect(() => { setMounted(true); }, []);
 
   const stats = [
@@ -52,54 +56,41 @@ export default function WhyUs() {
       return () => observer.disconnect();
     }, []);
     return (
-      <div ref={ref} className={`reveal ${inView ? "visible" : ""}`} style={{ transitionDelay: `${delay}ms` }}>
+      <div ref={ref} className={`transition-all duration-700 transform ${inView ? "opacity-100 translate-y-0" : "opacity-0 translate-y-10"}`} style={{ transitionDelay: `${delay}ms` }}>
         {children}
       </div>
     );
   };
 
   return (
-    <div className={mounted ? "animate-fade-in" : "opacity-0"} style={{ minHeight: "100vh", background: "#fff" }}>
-      <style>{`
-        @media (min-width: 768px) {
-          .story-left { text-align: left !important; }
-          .story-left h2 { margin-left: 0 !important; }
-          .story-left p { margin-left: 0 !important; }
-        }
-      `}</style>
-
+    <div className={`min-h-screen bg-white ${mounted ? "animate-fade-in" : "opacity-0"}`}>
       {/* Hero */}
-      <section
-        className={mounted ? "animate-fade-in-down" : "opacity-0"}
-        style={{
-          background: "linear-gradient(135deg, #004a70 0%, #002d47 100%)",
-          padding: "clamp(60px, 10vw, 100px) 0 clamp(50px, 8vw, 80px)",
-          position: "relative",
-          overflow: "hidden",
-        }}
-      >
-        <div style={{ position: "absolute", inset: 0, opacity: 0.05, backgroundImage: `url(${mainBanner.src})`, backgroundSize: "cover", backgroundPosition: "center" }} />
-        <div style={{ maxWidth: 1200, margin: "0 auto", padding: "0 clamp(16px, 4vw, 24px)", textAlign: "center", position: "relative", zIndex: 1 }}>
-          <span style={{ color: "rgba(255,255,255,0.6)", fontSize: "clamp(12px, 1.2vw, 14px)", fontWeight: 600, letterSpacing: 3, textTransform: "uppercase" }}>About Cabkn</span>
-          <h1 style={{ color: "#fff", fontSize: "clamp(1.8rem, 5vw, 3.5rem)", fontWeight: 700, margin: "16px 0 20px", lineHeight: 1.15, letterSpacing: "-0.5px" }}>
-            Why Choose <span style={{ color: "#60a5fa" }}>Cabkn</span>?
+      <section className="relative overflow-hidden bg-gradient-to-br from-brand-800 to-brand-950 pt-24 pb-20 md:pt-32 md:pb-28">
+        <div
+          className="absolute inset-0 opacity-5 bg-cover bg-center"
+          style={{ backgroundImage: `url(${mainBanner.src})` }}
+        />
+        <div className="relative z-10 max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 text-center">
+          <span className="text-white/60 text-xs sm:text-sm font-semibold tracking-widest uppercase">About Cabkn</span>
+          <h1 className="text-white text-4xl sm:text-5xl md:text-6xl font-bold mt-4 mb-5 leading-tight tracking-tight">
+            Why Choose <span className="!text-brand-500">Cabkn</span>?
           </h1>
-          <p style={{ color: "rgba(255,255,255,0.7)", fontSize: "clamp(0.9rem, 1.2vw, 1.15rem)", maxWidth: 640, margin: "0 auto", lineHeight: 1.7 }}>
+          <p className="text-white/70 text-base sm:text-lg max-w-2xl mx-auto leading-relaxed">
             We are on a mission to transform the way people travel between Nevis and Saint Kitts — making it seamless, safe, and stress-free.
           </p>
         </div>
       </section>
 
       {/* Stats */}
-      <section style={{ marginTop: -40, position: "relative", zIndex: 2, padding: "0 clamp(16px, 4vw, 24px)" }}>
-        <div style={{ maxWidth: 1100, margin: "0 auto", display: "grid", gridTemplateColumns: "repeat(auto-fit, minmax(150px, 1fr))", gap: "clamp(10px, 1.5vw, 16px)" }}>
+      <section className="relative z-20 px-4 sm:px-6 lg:px-8 -mt-10">
+        <div className="max-w-6xl mx-auto grid grid-cols-2 md:grid-cols-4 gap-4 md:gap-6">
           {stats.map((stat, i) => (
-            <div key={i} className="reveal visible" style={{ animationDelay: `${i * 100}ms` }}>
-              <div style={{ background: "#fff", borderRadius: 16, padding: "clamp(20px, 3vw, 28px) clamp(16px, 2vw, 20px)", textAlign: "center", boxShadow: "0 8px 30px rgba(0,0,0,0.06)", border: "1px solid rgba(0,0,0,0.04)" }}>
-                <div style={{ width: 48, height: 48, borderRadius: 12, background: "#eef2f6", display: "flex", alignItems: "center", justifyContent: "center", margin: "0 auto 12px", color: "#004a70" }}>{stat.icon}</div>
-                <h3 style={{ fontSize: "clamp(22px, 3vw, 28px)", fontWeight: 700, color: "#1a1a2e", margin: 0 }}>{stat.value}</h3>
-                <p style={{ fontSize: "clamp(12px, 1.2vw, 14px)", color: "#6b7280", margin: "4px 0 0" }}>{stat.label}</p>
+            <div key={i} className={`bg-white rounded-2xl p-6 text-center shadow-[0_8px_30px_rgba(0,0,0,0.06)] border border-slate-100 ${mounted ? "animate-fade-in-up" : "opacity-0"}`} style={{ animationDelay: `${(i + 1) * 100}ms` }}>
+              <div className="w-12 h-12 rounded-xl bg-slate-100 !text-primary flex items-center justify-center mx-auto mb-4">
+                {stat.icon}
               </div>
+              <h3 className="text-2xl md:text-3xl font-bold text-slate-900 m-0">{stat.value}</h3>
+              <p className="text-xs md:text-sm text-slate-500 mt-1">{stat.label}</p>
             </div>
           ))}
         </div>
@@ -107,73 +98,72 @@ export default function WhyUs() {
 
       {/* Story */}
       <SectionReveal>
-        <div style={{ maxWidth: 1200, margin: "clamp(40px, 8vw, 80px) auto", padding: "0 clamp(16px, 4vw, 24px)" }}>
-          <div className="story-left" style={{ display: "grid", gridTemplateColumns: "repeat(auto-fit, minmax(280px, 1fr))", gap: "clamp(24px, 4vw, 48px)", alignItems: "center", textAlign: "center" }}>
-            <div>
-              <span style={{ color: "#004a70", fontSize: "clamp(12px, 1.2vw, 13px)", fontWeight: 600, letterSpacing: 2, textTransform: "uppercase" }}>Our Story</span>
-              <h2 style={{ fontSize: "clamp(1.4rem, 3vw, 2.2rem)", fontWeight: 700, color: "#1a1a2e", margin: "12px auto 16px", lineHeight: 1.2, maxWidth: 600 }}>Making Travel Between Islands Effortless</h2>
-              <p style={{ color: "#6b7280", fontSize: "clamp(14px, 1.2vw, 15px)", lineHeight: 1.8, margin: "0 auto", maxWidth: 600 }}>
-                Cabkn was born from a simple idea: travel between Nevis and Saint Kitts should be as easy as booking a ride across town. 
-                We built a platform that connects riders with trusted drivers, providing real-time tracking, transparent pricing, and 
-                a seamless booking experience. Today, thousands of riders rely on Cabkn for their daily commute, airport transfers, 
+        <section className="max-w-7xl mx-auto py-16 md:py-24 px-4 sm:px-6 lg:px-8">
+          <div className="grid grid-cols-1 md:grid-cols-2 gap-10 md:gap-16 items-center">
+            <div className="text-start md:text-left">
+              <span className="!text-primary text-xs md:text-sm font-semibold tracking-widest uppercase">Our Story</span>
+              <h2 className="text-3xl md:text-4xl font-bold text-slate-900 mt-3 mb-5 leading-tight">
+                Making Travel Between Islands Effortless
+              </h2>
+              <p className="text-slate-500 text-sm md:text-base leading-relaxed max-w-xl mx-auto md:mx-0">
+                Cabkn was born from a simple idea: travel between Nevis and Saint Kitts should be as easy as booking a ride across town.
+                We built a platform that connects riders with trusted drivers, providing real-time tracking, transparent pricing, and
+                a seamless booking experience. Today, thousands of riders rely on Cabkn for their daily commute, airport transfers,
                 and island explorations.
               </p>
             </div>
-            <div style={{ position: "relative" }}>
-              <div style={{ borderRadius: 20, overflow: "hidden", boxShadow: "0 20px 60px rgba(0,0,0,0.1)" }}>
-                <Image src={CarBanner} alt="Cabkn service" style={{ width: "100%", height: "auto", display: "block" }} />
-              </div>
+            <div className="relative rounded-3xl overflow-hidden ">
+              <Image src={CarBanner} alt="Cabkn service" className="w-full h-auto object-cover" />
             </div>
           </div>
-        </div>
+        </section>
       </SectionReveal>
 
       {/* Values */}
-      <SectionReveal>
-        <div style={{ background: "#f8fafc", padding: "clamp(40px, 8vw, 80px) clamp(16px, 4vw, 24px)" }}>
-          <div style={{ maxWidth: 1200, margin: "0 auto" }}>
-            <div style={{ textAlign: "center", marginBottom: "clamp(24px, 4vw, 48px)" }}>
-              <span style={{ color: "#004a70", fontSize: "clamp(12px, 1.2vw, 13px)", fontWeight: 600, letterSpacing: 2, textTransform: "uppercase" }}>Our Values</span>
-              <h2 style={{ fontSize: "clamp(1.4rem, 3vw, 2rem)", fontWeight: 700, color: "#1a1a2e", margin: "12px 0 0" }}>What Sets Us Apart</h2>
+      <section className="bg-slate-50 py-16 md:py-24 px-4 sm:px-6 lg:px-8">
+        <div className="max-w-7xl mx-auto">
+          <SectionReveal>
+            <div className="text-center mb-12 md:mb-16">
+              <span className="!text-primary text-xs md:text-sm font-semibold tracking-widest uppercase">Our Values</span>
+              <h2 className="text-3xl md:text-4xl font-bold text-slate-900 mt-3">What Sets Us Apart</h2>
             </div>
-            <div style={{ display: "grid", gridTemplateColumns: "repeat(auto-fit, minmax(240px, 1fr))", gap: "clamp(12px, 2vw, 20px)" }}>
-              {values.map((v, i) => (
-                <div key={i}
-                  style={{
-                    background: "#fff",
-                    borderRadius: 16,
-                    padding: "clamp(20px, 3vw, 28px)",
-                    border: "1px solid rgba(0,0,0,0.04)",
-                    boxShadow: "0 4px 16px rgba(0,0,0,0.04)",
-                    transition: "transform 0.2s, box-shadow 0.2s",
-                    textAlign: "center",
-                  }}
-                  onMouseEnter={(e) => { e.currentTarget.style.transform = "translateY(-4px)"; e.currentTarget.style.boxShadow = "0 12px 32px rgba(0,0,0,0.08)"; }}
-                  onMouseLeave={(e) => { e.currentTarget.style.transform = ""; e.currentTarget.style.boxShadow = "0 4px 16px rgba(0,0,0,0.04)"; }}
-                >
-                  <span style={{ fontSize: 32, display: "block", marginBottom: 12 }}>{v.icon}</span>
-                  <h3 style={{ fontSize: "clamp(15px, 1.5vw, 17px)", fontWeight: 600, color: "#1a1a2e", margin: "0 0 8px" }}>{v.title}</h3>
-                  <p style={{ fontSize: "clamp(13px, 1.2vw, 14px)", color: "#6b7280", lineHeight: 1.7, margin: 0 }}>{v.desc}</p>
+          </SectionReveal>
+
+          <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-4 gap-6">
+            {values.map((v, i) => (
+              <SectionReveal key={i} delay={i * 100}>
+                <div className="bg-white rounded-2xl p-6 md:p-8 border border-slate-100 shadow-sm hover:shadow-[0_12px_32px_rgba(0,0,0,0.08)] hover:-translate-y-1 transition-all duration-300 text-center h-full">
+                  <span className="text-4xl block mb-4">{v.icon}</span>
+                  <h3 className="text-lg font-semibold text-slate-900 mb-3">{v.title}</h3>
+                  <p className="text-sm text-slate-500 leading-relaxed m-0">{v.desc}</p>
                 </div>
-              ))}
-            </div>
+              </SectionReveal>
+            ))}
           </div>
         </div>
-      </SectionReveal>
+      </section>
 
       {/* CTA */}
       <SectionReveal>
-        <div style={{ maxWidth: 800, margin: "clamp(40px, 8vw, 80px) auto", padding: "0 clamp(16px, 4vw, 24px)", textAlign: "center" }}>
-          <h2 style={{ fontSize: "clamp(1.2rem, 2.5vw, 1.8rem)", fontWeight: 700, color: "#1a1a2e", margin: "0 0 12px" }}>Ready to Experience the Cabkn Difference?</h2>
-          <p style={{ color: "#6b7280", fontSize: "clamp(14px, 1.2vw, 15px)", maxWidth: 500, margin: "0 auto 24px", lineHeight: 1.7 }}>Join thousands of satisfied riders and enjoy the most reliable transportation service between Nevis and Saint Kitts.</p>
-          <a href="/auth/stepOne" style={{ display: "inline-flex", alignItems: "center", justifyContent: "center", gap: 8, padding: "14px 32px", borderRadius: 9999, background: "#004a70", color: "#fff", fontSize: "clamp(14px, 1.2vw, 15px)", fontWeight: 600, textDecoration: "none", border: "none", cursor: "pointer", boxShadow: "0 8px 24px rgba(0,74,112,0.3)", transition: "all 0.2s" }}
-            onMouseEnter={(e) => { e.currentTarget.style.background = "#003353"; e.currentTarget.style.transform = "translateY(-2px)"; e.currentTarget.style.boxShadow = "0 12px 32px rgba(0,74,112,0.4)"; }}
-            onMouseLeave={(e) => { e.currentTarget.style.background = "#004a70"; e.currentTarget.style.transform = ""; e.currentTarget.style.boxShadow = "0 8px 24px rgba(0,74,112,0.3)"; }}
-          >
-            Get Started
-            <span style={{ fontSize: 18 }}>→</span>
-          </a>
-        </div>
+        <section className="bg-gradient-to-br from-brand-800 to-brand-950 py-16 md:py-20 px-4 sm:px-6 lg:px-8 text-center">
+          <div className="max-w-3xl mx-auto">
+            <h2 className="text-white text-3xl md:text-4xl font-bold mb-4">
+              Ready to Experience the Cabkn Difference?
+            </h2>
+            <p className="text-white/70 text-base md:text-lg !mb-8 leading-relaxed max-w-2xl mx-auto">
+              Join thousands of satisfied riders and enjoy the most reliable transportation service between Nevis and Saint Kitts.
+            </p>
+            <CustomButton
+              onClick={() => router.push('/auth/stepOne')}
+              variant="primary"
+              size="lg"
+              className="!bg-white !text-primary hover:!bg-slate-50 hover:!shadow-[0_8px_24px_rgba(255,255,255,0.2)]"
+              endContent={<FiArrowRight className="group-hover:translate-x-1 transition-transform duration-300" />}
+            >
+              Get Started
+            </CustomButton>
+          </div>
+        </section>
       </SectionReveal>
     </div>
   );
