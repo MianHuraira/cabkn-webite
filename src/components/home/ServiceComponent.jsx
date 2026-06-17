@@ -12,6 +12,7 @@ import Image from "next/image";
 import { NoshowData } from "../assets/Images";
 import ApiFunction from "../ApiFunction/ApiFunction";
 import { useRouter } from "next/navigation";
+import CustomButton from "../CustomButton";
 
 export default function ServiceComponent() {
   const [currentPage, setCurrentPage] = useState(0);
@@ -205,11 +206,11 @@ export default function ServiceComponent() {
               return (
                 <div className="p-2" key={index}>
                   <div
-                    className={`CategoryMain text-center cursor-pointer ${!isSelected ? "hover:border-brand-700 hover:bg-slate-100" : ""}`}
+                    className={`CategoryMain text-center cursor-pointer capitalize ${!isSelected ? "hover:border-brand-700 hover:bg-slate-100" : ""}`}
                     style={{
                       padding: "10px 14px",
                       background: isSelected
-                        ? "linear-gradient(179.02deg, rgb(0, 74, 112) -69.5%, rgb(177, 176, 176) 99.16%)"
+                        ? "#004a70"
                         : "#fff",
                       color: isSelected ? "white" : "#1e293b",
                       borderRadius: "9999px",
@@ -258,29 +259,14 @@ export default function ServiceComponent() {
             </div>
             <div className="flex justify-center items-center mt-6 mb-8">
               {Pagelength > 1 ? (
-                <Button
+                <CustomButton
                   onClick={ShowMoreDAta}
-                  className="hover:shadow-lg hover:-translate-y-0.5"
-                  style={{
-                    minWidth: 140,
-                    padding: "10px 28px",
-                    background: "linear-gradient(179.02deg, rgb(0, 74, 112) -69.5%, rgb(177, 176, 176) 99.16%)",
-                    border: "none",
-                    borderRadius: "9999px",
-                    color: "#fff",
-                    fontFamily: "Inter-Medium",
-                    fontSize: 14,
-                    cursor: "pointer",
-                    display: "inline-flex",
-                    alignItems: "center",
-                    justifyContent: "center",
-                    gap: 8,
-                    boxShadow: "0 4px 14px rgba(0,74,112,0.25)",
-                    transition: "all 0.2s",
-                  }}
+                  variant="primary"
+                  size="md"
+                  loading={MoreLoading}
                 >
-                  {MoreLoading ? <Spinner size={"sm"} color="#fff" /> : "See more"}
-                </Button>
+                  See more
+                </CustomButton>
               ) : null}
             </div>
           </>

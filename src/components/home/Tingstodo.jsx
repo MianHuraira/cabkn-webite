@@ -424,7 +424,7 @@ export default function Tingstodo() {
             return (
               <div className="p-2" key={index}>
                 <div
-                  className={`CategoryMain text-center cursor-pointer transition-all duration-300 ${isSelected
+                  className={`CategoryMain text-center cursor-pointer capitalize transition-all duration-300 ${isSelected
                     ? "text-white shadow-[0_2px_8px_rgba(0,74,112,0.25)]"
                     : "text-slate-800 bg-white border border-slate-200 hover:border-brand-600 hover:bg-slate-100"
                     }`}

@@ -2,6 +2,7 @@
 /* eslint-disable react/jsx-key */
 "use client";
 import React, { useEffect, useRef, useState } from "react";
+import CustomButton from "./CustomButton";
 import { Button, Modal, Spinner } from "react-bootstrap";
 import { FaLocationDot } from "react-icons/fa6";
 import Slider from "react-slick";
@@ -294,26 +295,13 @@ export default function ServiceLocation() {
                     <p style={{ fontSize: 14, color: "#6b7280", margin: 0 }}>{SubcatData?.address}</p>
                   </div>
                 </div>
-                <button
+                <CustomButton
                   onClick={HandleClick}
-                  className="hover:shadow-lg hover:-translate-y-0.5"
-                  style={{
-                    padding: "10px 28px",
-                    border: "none",
-                    borderRadius: "9999px",
-                    background: "linear-gradient(179.02deg, rgb(0, 74, 112) -69.5%, rgb(177, 176, 176) 99.16%)",
-                    color: "#fff",
-                    fontSize: 14,
-                    fontWeight: 600,
-                    cursor: "pointer",
-                    whiteSpace: "nowrap",
-                    boxShadow: "0 4px 14px rgba(0,74,112,0.25)",
-                    transition: "all 0.2s",
-                    fontFamily: "Inter-SemiBold",
-                  }}
+                  variant="primary"
+                  size="md"
                 >
                   Buy Product
-                </button>
+                </CustomButton>
               </div>
 
               {/* Description */}
@@ -414,25 +402,14 @@ export default function ServiceLocation() {
 
               {/* Mobile Buy Button */}
               <div className="block lg:hidden" style={{ marginTop: 16 }}>
-                <button
+                <CustomButton
                   onClick={HandleClick}
-                  className="hover:shadow-lg hover:-translate-y-0.5"
-                  style={{
-                    width: "100%",
-                    height: 48,
-                    border: "none",
-                    borderRadius: "9999px",
-                    background: "linear-gradient(179.02deg, rgb(0, 74, 112) -69.5%, rgb(177, 176, 176) 99.16%)",
-                    color: "#fff",
-                    fontFamily: "Inter-SemiBold",
-                    fontSize: 15,
-                    cursor: "pointer",
-                    boxShadow: "0 4px 14px rgba(0,74,112,0.25)",
-                    transition: "all 0.2s",
-                  }}
+                  variant="primary"
+                  size="md"
+                  className="!w-full !h-12"
                 >
                   Buy Product
-                </button>
+                </CustomButton>
               </div>
             </div>
           </div>
@@ -442,22 +419,13 @@ export default function ServiceLocation() {
         <div style={{ background: "#fff", borderRadius: 14, border: "1px solid #f0f0f0", marginTop: 20, padding: "clamp(20px, 3vw, 28px)" }}>
           <div onClick={handleShow} style={{ display: "flex", justifyContent: "space-between", alignItems: "center", cursor: "pointer", marginBottom: 20 }}>
             <h2 style={{ fontSize: 18, fontWeight: 700, color: "#1f2937", margin: 0 }}>All Reviews</h2>
-            <button
-              className="hover:shadow-lg"
-              style={{
-                padding: "8px 22px",
-                border: "none",
-                borderRadius: "9999px",
-                background: "linear-gradient(135deg, #004a70 0%, #002d47 100%)",
-                color: "#fff",
-                fontSize: 13,
-                fontWeight: 600,
-                cursor: "pointer",
-                transition: "all 0.2s",
-              }}
+            <CustomButton
+              onClick={handleShow}
+              variant="primary"
+              size="sm"
             >
               Leave Review
-            </button>
+            </CustomButton>
           </div>
 
           {isLoading ? (

@@ -11,6 +11,7 @@ import { ApplePlayBlack, GooglePlayblack, logoBlue } from "../assets/Images";
 import Image from "next/image";
 import Link from "next/link";
 import { useRouter } from "next/navigation";
+import CustomButton from "../CustomButton";
 
 export default function Footer() {
   const userData = useSelector((state) => state.auth.user?.user);
@@ -84,14 +85,16 @@ export default function Footer() {
               {FooterData?.short_title || "Your reliable ride partner, connecting you to your destinations safely and comfortably."}
             </p>
             
-            {/* CTA Button - Proper width on mobile */}
-            <button
+            {/* CTA Button */}
+            <CustomButton
               onClick={() => router.push(userData ? "/ride" : "/auth/login")}
-              className="group flex items-center justify-center gap-2 w-[260px] px-4 py-2.5 rounded-xl bg-white text-[#004a70] font-semibold text-sm shadow-lg shadow-black/12 hover:shadow-xl hover:-translate-y-0.5 transition-all duration-300 whitespace-nowrap"
+              variant="primary"
+              size="md"
+              endContent={<FiArrowRight size={14} className="group-hover:translate-x-0.5 transition-transform duration-300" />}
+              className="!bg-white !text-brand-700 !shadow-lg !shadow-black/12 !hover:shadow-xl !hover:-translate-y-0.5 !font-semibold"
             >
               Request a driver
-              <FiArrowRight size={14} className="transition-transform duration-300 group-hover:translate-x-0.5" />
-            </button>
+            </CustomButton>
             
           </div>
 
@@ -169,13 +172,13 @@ export default function Footer() {
                 Book rides on the go with our mobile app.
               </p>
               
-              {/* App Store Buttons - Fixed max width on mobile */}
+              {/* App Store Buttons */}
               <div className="flex flex-col sm:flex-row gap-2 pt-0.5 items-center sm:items-start">
                 <Link
                   href="https://play.google.com/store/apps/details?id=com.cabkn.app"
                   target="_blank"
                   rel="noopener noreferrer"
-                  className="group flex items-center justify-center bg-black rounded-lg p-1.5 hover:bg-gray-800 hover:-translate-y-0.5 hover:shadow-lg transition-all duration-300 flex-shrink-0"
+                  className="group flex items-center justify-center bg-black rounded-lg p-1.5 hover:bg-gray-800 hover:-translate-y-0.5 hover:shadow-lg transition-all duration-300"
                 >
                   <Image
                     src={GooglePlayblack}
@@ -189,7 +192,7 @@ export default function Footer() {
                   href="https://apps.apple.com/pk/app/cabkn/id6740235227"
                   target="_blank"
                   rel="noopener noreferrer"
-                  className="group flex items-center justify-center bg-black rounded-lg p-1.5 hover:bg-gray-800 hover:-translate-y-0.5 hover:shadow-lg transition-all duration-300 flex-shrink-0"
+                  className="group flex items-center justify-center bg-black rounded-lg p-1.5 hover:bg-gray-800 hover:-translate-y-0.5 hover:shadow-lg transition-all duration-300"
                 >
                   <Image
                     src={ApplePlayBlack}

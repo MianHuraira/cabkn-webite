@@ -29,6 +29,7 @@ import ThingstodoCard from "@/components/home/ThingstodoCard";
 import ApiFunction from "@/components/ApiFunction/ApiFunction";
 import { useRouter } from "next/navigation";
 import Slider from "react-slick";
+import CustomButton from "./CustomButton";
 
 // const frontendBaseURL = "https://cabkn.com/popular";
 
@@ -804,30 +805,15 @@ function MakeYourTour() {
                   </div>
                 )}
 
-                <Button
+                <CustomButton
                   type="submit"
-                  disabled={isLoading}
-                  className={!isLoading ? "hover:shadow-lg hover:-translate-y-0.5" : ""}
-                  style={{
-                    width: "100%",
-                    height: 48,
-                    border: "none",
-                    borderRadius: "9999px",
-                    background: isLoading ? "#e2e8f0" : "#004a70",
-                    color: "#fff",
-                    fontFamily: "Inter-SemiBold",
-                    fontSize: 15,
-                    cursor: isLoading ? "not-allowed" : "pointer",
-                    display: "flex",
-                    alignItems: "center",
-                    justifyContent: "center",
-                    gap: 8,
-                    boxShadow: isLoading ? "none" : "0 4px 14px rgba(0,74,112,0.25)",
-                    transition: "all 0.2s",
-                  }}
+                  variant="primary"
+                  size="md"
+                  loading={isLoading}
+                  className="!w-full !h-12"
                 >
-                  {isLoading ? <Spinner size="sm" color="#fff" /> : "Next"}
-                </Button>
+                  Next
+                </CustomButton>
               </Form>
             </div>
           </div>
@@ -856,11 +842,11 @@ function MakeYourTour() {
                     return (
                       <div className="p-2" key={index}>
                         <div
-                          className={`CategoryMain text-center cursor-pointer ${!isSelected ? "hover:border-brand-700 hover:bg-slate-100" : ""}`}
+                          className={`CategoryMain text-center cursor-pointer capitalize ${!isSelected ? "hover:border-brand-700 hover:bg-slate-100" : ""}`}
                           style={{
                             padding: "10px 14px",
                             background: isSelected
-                              ? "linear-gradient(179.02deg, rgb(0, 74, 112) -69.5%, rgb(177, 176, 176) 99.16%)"
+                              ? "#004a70"
                               : "#fff",
                             color: isSelected ? "white" : "#1e293b",
                             borderRadius: "9999px",
@@ -903,29 +889,14 @@ function MakeYourTour() {
                   </div>
                   <div className="flex justify-center items-center mt-6 mb-2">
                     {Pagelength > 0 ? (
-                      <Button
+                      <CustomButton
                         onClick={ShowMoreDAta}
-                        className="hover:shadow-lg hover:-translate-y-0.5"
-                        style={{
-                          minWidth: 140,
-                          padding: "10px 28px",
-                          background: "linear-gradient(179.02deg, rgb(0, 74, 112) -69.5%, rgb(177, 176, 176) 99.16%)",
-                          border: "none",
-                          borderRadius: "9999px",
-                          color: "#fff",
-                          fontFamily: "Inter-Medium",
-                          fontSize: 14,
-                          cursor: "pointer",
-                          display: "inline-flex",
-                          alignItems: "center",
-                          justifyContent: "center",
-                          gap: 8,
-                          boxShadow: "0 4px 14px rgba(0,74,112,0.25)",
-                          transition: "all 0.2s",
-                        }}
+                        variant="primary"
+                        size="md"
+                        loading={MoreLoading}
                       >
-                        {MoreLoading ? <Spinner size={"sm"} color="#fff" /> : "See more"}
-                      </Button>
+                        See more
+                      </CustomButton>
                     ) : null}
                   </div>
                 </>
