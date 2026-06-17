@@ -8,7 +8,7 @@ import * as Yup from "yup";
 import { useDispatch } from "react-redux";
 import { useGoogleLogin } from "@react-oauth/google";
 import axios from "axios";
-import ApiFunction from "@/components/ApiFunction/ApiFunction";
+import { useApi } from "@/components/ApiFunction/ApiFunction";
 import ApiFile from "@/components/ApiFunction/ApiFile";
 import Link from "next/link";
 import { Eye, EyeOff, Google, LoginImg } from "@/components/assets/Images";
@@ -35,8 +35,7 @@ const page = () => {
   const [profile, setProfile] = useState([]);
 
   const dispatch = useDispatch();
-  const api = ApiFunction();
-  const { postData, header3 } = api;
+  const { postData, header3 } = useApi();
   const { loginApi } = ApiFile;
 
   const togglePasswordVisibility = () => {

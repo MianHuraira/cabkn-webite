@@ -5,7 +5,7 @@ import axios from "axios";
 import { selectUser } from "../Redux/Slices/AuthSlice";
 import { useSelector } from "react-redux";
 
-const ApiFunction = () => {
+export const useApi = () => {
   const userData = useSelector(selectUser);
   const token = userData?.token;
   const baseURL = "https://api.cabkn.com/api/";
@@ -13,6 +13,7 @@ const ApiFunction = () => {
 
   const baseUrlImage = "";
   const GoogleApiKey = "AIzaSyCkw_MZd-894MZUR4g1_p2XohCWTSTR8S4";
+  
   const header1 = {
     "Content-Type": "application/json",
     "x-auth-token": token,
@@ -99,4 +100,5 @@ const ApiFunction = () => {
   };
 };
 
-export default ApiFunction;
+// For backward compatibility
+export default useApi;
