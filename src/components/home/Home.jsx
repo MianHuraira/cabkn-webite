@@ -44,28 +44,13 @@ const HomeComponent = () => {
 
   return (
     <>
-      <section
-        className={`relative min-h-screen flex items-center overflow-hidden ${mounted ? "animate-fade-in" : "opacity-0"}`}
-        style={{
-          background: "linear-gradient(179.02deg, rgb(0, 74, 112) -69.5%, rgb(177, 176, 176) 99.16%)",
-        }} >
+      <section className={`relative min-h-screen flex items-center overflow-hidden bg-gradient-to-br from-brand-700 to-brand-950 pt-24 pb-20 md:pt-32 md:pb-28 ${mounted ? "animate-fade-in" : "opacity-0"}`}>
         <div
-          className="absolute inset-0 opacity-15 pointer-events-none"
-          style={{
-            backgroundImage: `url(${mainBanner.src})`,
-            backgroundRepeat: "no-repeat",
-            backgroundSize: "cover",
-            backgroundPosition: "center",
-
-          }}
+          className="absolute inset-0 opacity-5 pointer-events-none bg-cover bg-center"
+          style={{ backgroundImage: `url(${mainBanner.src})` }}
         />
 
-        <div
-          className="absolute inset-0 pointer-events-none"
-
-        />
-
-        <div className="relative z-10 w-full container mx-auto px-4 sm:px-6 lg:px-8 grid grid-cols-1 lg:grid-cols-2 gap-10 lg:gap-16 items-center pt-28 pb-16 lg:pt-36 lg:pb-20">
+        <div className="relative z-10 w-full max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 grid grid-cols-1 lg:grid-cols-2 gap-10 lg:gap-16 items-center">
           <div className="flex flex-col gap-4 sm:gap-6">
             <div className={`inline-flex items-center gap-2.5 bg-white/10 hover:bg-white/15 border border-white/20 rounded-full px-4 py-2 text-white text-[11px] sm:text-xs uppercase tracking-[0.1em] font-['Inter-Medium'] w-fit backdrop-blur-md transition-all duration-300 shadow-[0_4px_16px_rgba(0,0,0,0.1)] cursor-default ${mounted ? "animate-fade-in-down" : "opacity-0"}`}
               style={{ animationDelay: "100ms" }}>
@@ -76,30 +61,30 @@ const HomeComponent = () => {
               Premium Ride Service
             </div>
 
-            <h1 className={`text-white font-bold leading-[1.15] tracking-tight m-0 text-[clamp(1.8rem,5vw,3.5rem)] sm:text-[clamp(2rem,4vw,3.5rem)] ${mounted ? "animate-fade-in-down" : "opacity-0"}`}
+            <h1 className={`text-white font-bold leading-[1.15] tracking-tight m-0 text-[clamp(2rem,5vw,3rem)] sm:text-[clamp(2.25rem,4vw,3rem)] ${mounted ? "animate-fade-in-down" : "opacity-0"}`}
               style={{ animationDelay: "200ms" }}>
               Experience seamless rides with{" "}
-              <span className="bg-gradient-to-r from-brand-400 to-brand-500 bg-clip-text text-transparent">
+              <span className="!text-brand-400">
                 reliable
               </span>{" "}
               and affordable travel options
             </h1>
 
-            <p className={`text-white/65 leading-relaxed m-0 max-w-[520px] text-[clamp(0.85rem,1.2vw,1.1rem)] sm:text-[clamp(0.9rem,1.2vw,1.1rem)] ${mounted ? "animate-fade-in-down" : "opacity-0"}`}
+            <p className={`text-white/70 leading-relaxed m-0 max-w-[520px] text-[clamp(0.95rem,1.2vw,1.1rem)] sm:text-[clamp(0.95rem,1.2vw,1.1rem)] ${mounted ? "animate-fade-in-down" : "opacity-0"}`}
               style={{ animationDelay: "300ms" }}>
               Discover a smarter way to travel with our reliable ride services.
               Book effortlessly, track your rides in real-time, and enjoy a
               hassle-free journey. Your comfort and convenience are our priority.
             </p>
 
-            <div className={`flex flex-wrap gap-4 ${mounted ? "animate-fade-in-down" : "opacity-0"}`}
+            <div className={`flex flex-wrap gap-4 mt-2 ${mounted ? "animate-fade-in-down" : "opacity-0"}`}
               style={{ animationDelay: "400ms" }}>
               <CustomButton
                 onClick={Routing}
                 variant="primary"
                 size="lg"
                 endContent={<FiArrowRight className="group-hover:translate-x-1 transition-transform duration-300" />}
-                className="group"
+                className="group !border !border-gray-200"
               >
                 Book a Ride
               </CustomButton>
@@ -108,7 +93,7 @@ const HomeComponent = () => {
 
           <div className={`relative flex items-center justify-center ${mounted ? "animate-slide-from-right" : "opacity-0 translate-x-16"}`}
             style={{ animationDelay: "200ms" }}>
-            <div className="relative w-full max-w-[520px]">
+            <div className="relative w-full max-w-[580px]">
               <Image
                 src={CarBanner}
                 alt="Cabkn premium car service"
@@ -128,9 +113,7 @@ const HomeComponent = () => {
             </div>
           </div>
         </div>
-
-
-      </section >
+      </section>
 
       <SectionReveal>
         <div id="whyUs">

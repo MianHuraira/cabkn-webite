@@ -35,7 +35,7 @@ export function AuthShell({
             <div className="absolute inset-0 bg-gradient-to-tr from-slate-950 via-slate-900 to-slate-800" />
           )}
 
-          <div className="absolute inset-0 flex items-end p-10 xl:p-14">
+          {/* <div className="absolute inset-0 flex items-end p-10 xl:p-14">
             <div className="max-w-md animate-auth-fade motion-reduce:animate-none">
               {imageHeadline ? (
                 <h2 className="text-balance text-3xl font-semibold leading-tight tracking-tight text-white xl:text-4xl">
@@ -48,7 +48,7 @@ export function AuthShell({
                 </p>
               ) : null}
             </div>
-          </div>
+          </div> */}
         </div>
 
         <div className="flex w-full flex-col bg-gradient-to-b from-white to-slate-50 lg:w-1/2">

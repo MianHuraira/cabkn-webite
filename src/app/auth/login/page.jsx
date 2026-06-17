@@ -11,7 +11,7 @@ import axios from "axios";
 import { useApi } from "@/components/ApiFunction/ApiFunction";
 import ApiFile from "@/components/ApiFunction/ApiFile";
 import Link from "next/link";
-import { Eye, EyeOff, Google, LoginImg } from "@/components/assets/Images";
+import { Eye, EyeOff, Google, CarBanner, LoginImg } from "@/components/assets/Images";
 import { setAuthenticated, setUser } from "@/components/Redux/Slices/AuthSlice";
 import Image from "next/image";
 import { useRouter } from "next/navigation";
@@ -19,13 +19,12 @@ import toast from "react-hot-toast";
 import {
   AuthDivider,
   AuthInlineLink,
-  AuthPrimaryButton,
-  AuthSecondaryButton,
   AuthShell,
   AuthTextField,
 } from "@/components/auth/AuthShell";
+import CustomButton from "@/components/CustomButton";
 
-const page = () => {
+const Login = () => {
   const router = useRouter();
   const [inputType, setInputType] = useState("password");
   const [passwordVisible, setPasswordVisible] = useState(false);
@@ -147,8 +146,6 @@ const page = () => {
       subtitle="Welcome back. Sign in to continue."
       imageSrc={LoginImg}
       imageAlt="Login cover"
-      imageHeadline="Easily book your ride in just a few steps"
-      imageSubheadline="Professional, reliable taxi service you can trust."
       footer={
         <span>
           New here? <AuthInlineLink href="/auth/stepOne">Create an account</AuthInlineLink>
@@ -211,20 +208,27 @@ const page = () => {
               </AuthInlineLink>
             </div>
 
-            <AuthPrimaryButton type="submit" loading={loading}>
+            <CustomButton
+              type="submit"
+              loading={loading}
+              variant="primary"
+              className="w-full"
+            >
               Sign in
-            </AuthPrimaryButton>
+            </CustomButton>
 
             <AuthDivider label="or continue with" />
 
-            <AuthSecondaryButton
+            <CustomButton
               type="button"
               onClick={googlLogin}
-              disabled={GoogleLoading}
+              loading={GoogleLoading}
+              variant="secondary"
+              className="w-full !bg-white !text-slate-700 border border-slate-200 hover:!bg-slate-50"
+              startContent={<Image src={Google} alt="" className="h-5 w-5 mr-1" />}
             >
-              <Image src={Google} alt="" className="h-6 w-6" />
               {GoogleLoading ? "Signing in..." : "Google"}
-            </AuthSecondaryButton>
+            </CustomButton>
           </form>
         )}
       </Formik>
@@ -232,4 +236,4 @@ const page = () => {
   );
 };
 
-export default page;
+export default Login;
