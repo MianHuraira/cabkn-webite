@@ -31,7 +31,7 @@ const InnerHeader = () => {
   const handleClose = () => setShow(false);
 
 
-  const { getData, baseURL, userData } = ApiFunction();
+  const { getData, baseURL, userData, header1 } = ApiFunction();
   const dispatch = useDispatch();
   const router = useRouter();
   const pathname = usePathname();
@@ -81,10 +81,9 @@ const InnerHeader = () => {
 
   useEffect(() => {
     if (!userData?.token) return;
-    const h1 = { "Content-Type": "application/json", "x-auth-token": userData.token };
     const fetchNotifCount = async () => {
       try {
-        const res = await getData("notification/all/", h1);
+        const res = await getData("notification/all/", header1);
         if (res?.success) {
           const total = res?.notifications?.length || 0;
           if (notifLastTotalRef.current === -1) {
@@ -105,7 +104,7 @@ const InnerHeader = () => {
     fetchNotifCount();
     const interval = setInterval(fetchNotifCount, 30000);
     return () => clearInterval(interval);
-  }, [userData?.token]);
+  }, [userData?.token, header1]);
 
   const [driverModal, SetdriverModal] = useState(false);
   const handleClosedriver = () => SetdriverModal(false);

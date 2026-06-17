@@ -254,7 +254,7 @@ export default function EditProfile() {
                     document.getElementById("file-upload-profile").click()
                   }
                 >
-                  {image ? (
+                  {mounted && image ? (
                     <img
                       src={image}
                       alt="Profile"
