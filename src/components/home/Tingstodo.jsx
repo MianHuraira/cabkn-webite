@@ -10,6 +10,7 @@ import ThingstodoCard from "./ThingstodoCard";
 import { Button, Spinner } from "reactstrap";
 import Image from "next/image";
 import CustomButton from "../CustomButton";
+import EmptyState from "../EmptyState";
 import { NoshowData } from "../assets/Images";
 import { useApi } from "../ApiFunction/ApiFunction";
 import { useRouter } from "next/navigation";
@@ -231,7 +232,20 @@ export default function Tingstodo() {
   };
 
   const sectionRef = useRef(null);
+  const searchRef = useRef(null);
   const [inView, setInView] = useState(false);
+
+  useEffect(() => {
+    const handleClickOutside = (event) => {
+      if (searchRef.current && !searchRef.current.contains(event.target)) {
+        setPredictions([]);
+        setNoData(false);
+        setPridicLoading(false);
+      }
+    };
+    document.addEventListener("mousedown", handleClickOutside);
+    return () => document.removeEventListener("mousedown", handleClickOutside);
+  }, []);
 
   useEffect(() => {
     const el = sectionRef.current;
@@ -251,6 +265,13 @@ export default function Tingstodo() {
 
   const handleSearch = async (text) => {
     setSearchQuery(text);
+    if (!text || text.trim() === "") {
+      setPredictions([]);
+      setNoData(false);
+      setPridicLoading(false);
+      return;
+    }
+
     setPridicLoading(true);
 
     const loader = new Loader({
@@ -332,11 +353,13 @@ export default function Tingstodo() {
 
   return (
     <div ref={sectionRef}>
-      <div className={`d-flex container mx-auto flex-column flex-lg-row justify-content-between align-items-center mb-4 mt-10 reveal ${inView ? "visible" : ""}`} style={{ padding: "0 16px", gap: 12, transitionDelay: "50ms", position: "relative", zIndex: 100 }}>
-        <div style={{ textAlign: "left" }}>
-          <h1 className="feedBack" style={{ marginLeft: 0, textAlign: "left" }}>Our Tour Recommendations</h1>
+      <div className={`container mx-auto flex flex-col lg:flex-row justify-between items-start lg:items-center mb-8 mt-12 gap-5 reveal ${inView ? "visible" : ""}`} style={{ padding: "0 16px", transitionDelay: "50ms", position: "relative", zIndex: 100 }}>
+        <div className="flex flex-col text-left w-full lg:w-auto">
+          <h2 className="text-2xl sm:text-3xl lg:text-[34px] font-['Inter-Bold'] text-slate-800 tracking-tight m-0 leading-tight">
+            Our Tour Recommendations
+          </h2>
         </div>
-        <div className="w-full lg:w-[400px]" style={{ alignSelf: "flex-end", marginLeft: "auto", position: "relative", zIndex: 100 }}>
+        <div className="w-full lg:w-[400px] shrink-0 relative z-[100]" ref={searchRef}>
           <Controller
             name="name"
             control={control}
@@ -489,20 +512,12 @@ export default function Tingstodo() {
               </div>
             </>
           ) : (
-            <div className={`d-flex mt-5 flex-col justify-content-center align-items-center reveal ${inView ? "visible" : ""}`}>
-              <Image
-                src={NoshowData}
-                style={{
-                  width: "200px",
-                  height: "200px",
-                  objectFit: "cover",
-                  borderRadius: "5px",
-                  marginTop: "20px",
-                }}
-                alt="No data available"
-              />
-              <h1 className="font-medium text-xl mt-3">{"No Data Found!"}</h1>
-            </div>
+            <EmptyState
+              imageSrc={NoshowData}
+              inView={inView}
+              title="No Recommendations Found"
+              description="We couldn't find any tours or activities matching your selection. Try exploring other categories!"
+            />
           )}
       </div>
     </div>
