@@ -57,7 +57,7 @@ export default function RootLayout({ children }) {
           }}
         />
       </head>
-      <body style={{ fontFamily: "'Inter-Regular', sans-serif" }}>
+      <body style={{ fontFamily: "'Inter-Regular', sans-serif" }} suppressHydrationWarning>
         {/* Your Scripts */}
 
         {/* Your App Content */}

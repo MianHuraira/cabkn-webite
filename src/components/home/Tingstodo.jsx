@@ -12,7 +12,7 @@ import Image from "next/image";
 import CustomButton from "../CustomButton";
 import EmptyState from "../EmptyState";
 import { NoshowData } from "../assets/Images";
-import ApiFunction from "../ApiFunction/ApiFunction";
+import { useApi } from "../ApiFunction/ApiFunction";
 import { useRouter } from "next/navigation";
 import { Loader } from "@googlemaps/js-api-loader";
 import { Controller, useForm } from "react-hook-form";
@@ -35,7 +35,7 @@ const schema = yup.object().shape({
 export default function Tingstodo() {
   const [currentPage, setCurrentPage] = useState(0);
   const router = useRouter();
-  const { getData, header1, postData } = ApiFunction();
+  const { getData, header1, postData } = useApi();
   const [Category, setCategory] = useState([]);
   const [selectedCategoryId, setSelectedCategoryId] = useState(0);
   const [SubCategory, setSubCategory] = useState([]);
