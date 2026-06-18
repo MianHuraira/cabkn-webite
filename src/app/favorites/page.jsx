@@ -13,6 +13,9 @@ const Page = () => {
   const [favLoadingId, setFavLoadingId] = useState(null);
   const router = useRouter();
 
+  const [mounted, setMounted] = useState(false);
+  useEffect(() => { setMounted(true); }, []);
+
   const [gridCols, setGridCols] = useState(2);
 
   useEffect(() => {

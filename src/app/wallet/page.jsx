@@ -8,7 +8,7 @@ import {
   FaCheckCircle,
   FaTimesCircle,
 } from "react-icons/fa";
-import { Spinner } from "reactstrap";
+
 import Cards from "react-credit-cards-2";
 import "react-credit-cards-2/dist/es/styles-compiled.css";
 import { useDispatch, useSelector } from "react-redux";
@@ -21,6 +21,8 @@ import { setPaymentCards, setUser } from "@/components/Redux/Slices/AuthSlice";
 import { useSocket } from "@/components/ApiFunction/SoketProvider";
 import CustomButton from "@/components/CustomButton";
 import EmptyState from "@/components/EmptyState";
+import PhoneInput from "react-phone-input-2";
+import "react-phone-input-2/lib/style.css";
 const apiKey = "0FGR7.1720815360";
 const apiSecret =
   "6EF4CAFCD82E689DECA28EDFDE15ADB35D12BF5982B182E468758A9F8DD072DF";
@@ -50,10 +52,12 @@ const page = () => {
     phone: "",
   });
   const [loading, setLoading] = useState(false);
+  const [formErrors, setFormErrors] = useState({});
   const paymentCards = useSelector((state) => state.auth.paymentCards);
 
   const handleInputChange = (e) => {
     const { name, value } = e.target;
+    setFormErrors((prev) => ({ ...prev, [name]: undefined }));
     setCardDetails((prevDetails) => {
       const updatedDetails = { ...prevDetails, [name]: value };
       return updatedDetails;
@@ -143,11 +147,21 @@ const page = () => {
     }
   }
 
+  const validate = () => {
+    const errs = {};
+    if (!cardDetails.price || Number(cardDetails.price) <= 0 || Number(cardDetails.price) > 99999) errs.price = "Enter a valid amount ($1 - $99,999)";
+    if (!cardDetails.number || cardDetails.number.length < 13) errs.number = "Enter a valid card number";
+    if (!cardDetails.name) errs.name = "Card holder name is required";
+    if (!cardDetails.expiry || cardDetails.expiry.length < 4) errs.expiry = "Enter a valid expiry";
+    if (!cardDetails.cvc || cardDetails.cvc.length < 3) errs.cvc = "Enter a valid CVC";
+    if (!cardDetails.email) errs.email = "Email is required";
+    if (!cardDetails.phone || cardDetails.phone.length < 6) errs.phone = "Enter a valid phone number";
+    setFormErrors(errs);
+    return Object.keys(errs).length === 0;
+  };
+
   const jadAPiFunction = async () => {
-    if (!cardDetails.price || !cardDetails.number || !cardDetails.name || !cardDetails.expiry || !cardDetails.cvc || !cardDetails.email || !cardDetails.phone) {
-      message.warning("Please fill all required fields");
-      return;
-    }
+    if (!validate()) return;
     setLoading(true);
     const tokenResponse = await getToken();
     if (tokenResponse.result !== "Success") {
@@ -267,27 +281,35 @@ const page = () => {
         style={{
           padding: "28px 0 44px",
           animationDelay: "50ms",
+          position: "relative",
+          overflow: "hidden",
         }}
       >
-        <div style={{ maxWidth: 1200, margin: "0 auto", padding: "0 16px" }}>
-          <div style={{ color: "rgba(255,255,255,0.6)", fontSize: 13, marginBottom: 8 }}>
-            Home / Wallet
+        <div style={{ position: "absolute", top: -60, right: -60, width: 200, height: 200, borderRadius: "50%", background: "rgba(255,255,255,0.03)" }} />
+        <div style={{ position: "absolute", bottom: -40, left: -40, width: 160, height: 160, borderRadius: "50%", background: "rgba(255,255,255,0.03)" }} />
+        <div style={{ maxWidth: 1200, margin: "0 auto", padding: "0 16px", position: "relative" }}>
+          <div style={{ display: "flex", alignItems: "center", gap: 8, color: "rgba(255,255,255,0.5)", fontSize: 13, fontWeight: 500, marginBottom: 16 }}>
+            <a href="/" style={{ color: "rgba(255,255,255,0.5)", textDecoration: "none", transition: "color 0.2s" }}
+              onMouseEnter={(e) => e.currentTarget.style.color = "#fff"}
+              onMouseLeave={(e) => e.currentTarget.style.color = "rgba(255,255,255,0.5)"}>
+              Home
+            </a>
+            <span style={{ color: "rgba(255,255,255,0.3)" }}>/</span>
+            <span style={{ color: "rgba(255,255,255,0.8)" }}>Wallet</span>
           </div>
-          <h1
-            style={{
-              color: "#fff",
-              fontSize: "clamp(22px, 4vw, 28px)",
-              fontWeight: 700,
-              margin: 0,
-              letterSpacing: "-0.3px",
-              display: "flex",
-              alignItems: "center",
-              gap: 10,
-            }}
-          >
-            <FaWallet size={24} />
-            My Wallet
-          </h1>
+          <div style={{ display: "flex", alignItems: "center", gap: "clamp(10px, 2vw, 16px)" }}>
+            <div style={{ width: "clamp(40px, 6vw, 52px)", height: "clamp(40px, 6vw, 52px)", borderRadius: "clamp(12px, 2vw, 16px)", background: "rgba(255,255,255,0.12)", backdropFilter: "blur(8px)", display: "flex", alignItems: "center", justifyContent: "center", flexShrink: 0 }}>
+              <FaWallet size="clamp(18px, 3vw, 24px)" color="#fff" />
+            </div>
+            <div>
+              <h1 style={{ color: "#fff", fontSize: "clamp(20px, 5vw, 30px)", fontWeight: 700, margin: 0, letterSpacing: "-0.5px", lineHeight: 1.2, wordBreak: "break-word" }}>
+                My Wallet
+              </h1>
+              <p style={{ color: "rgba(255,255,255,0.55)", fontSize: "clamp(12px, 2vw, 14px)", margin: "2px 0 0", fontWeight: 400, wordBreak: "break-word" }}>
+                Manage your balance and transactions
+              </p>
+            </div>
+          </div>
         </div>
       </div>
 
@@ -351,11 +373,14 @@ const page = () => {
               </p>
               <p
                 style={{
-                  fontSize: "clamp(28px, 4vw, 36px)",
+                  fontSize: "clamp(20px, 3vw, 28px)",
                   fontWeight: 700,
                   margin: 0,
                   position: "relative",
                   zIndex: 1,
+                  whiteSpace: "nowrap",
+                  overflow: "hidden",
+                  textOverflow: "ellipsis",
                 }}
               >
                 ${userData?.amount?.toFixed(2) || "0.00"}
@@ -369,11 +394,12 @@ const page = () => {
                 borderRadius: 14,
                 border: "1px solid #f0f0f0",
                 padding: 6,
+                boxShadow: "0 1px 3px rgba(0,0,0,0.04)",
               }}
             >
               <div
                 onClick={() => setTab("Topup")}
-                className={Tab !== "Topup" ? 'hover:bg-gray-100' : ''}
+                className={Tab !== "Topup" ? 'hover:bg-slate-50' : ''}
                 style={{
                   display: "flex",
                   alignItems: "center",
@@ -381,23 +407,24 @@ const page = () => {
                   padding: "12px 14px",
                   borderRadius: 10,
                   cursor: "pointer",
-                  background: Tab === "Topup" ? "#f0f7ff" : "transparent",
+                  background: Tab === "Topup" ? "linear-gradient(135deg, #f0f7ff 0%, #e8f4fd 100%)" : "transparent",
                   color: Tab === "Topup" ? "#004a70" : "#4b5563",
                   fontWeight: Tab === "Topup" ? 600 : 500,
                   fontSize: 14,
-                  transition: "all 0.15s",
+                  transition: "all 0.2s",
                   marginBottom: 2,
+                  position: "relative",
                 }}
               >
-                <FaWallet size={16} color={Tab === "Topup" ? "#004a70" : "#9ca3af"} />
+                <div style={{ width: 28, height: 28, borderRadius: 8, background: Tab === "Topup" ? "#004a70" : "#f3f4f6", display: "flex", alignItems: "center", justifyContent: "center", flexShrink: 0, transition: "all 0.2s" }}>
+                  <FaWallet size={13} color={Tab === "Topup" ? "#fff" : "#9ca3af"} />
+                </div>
                 <span style={{ flex: 1 }}>Top Up</span>
-                <svg width={14} height={14} viewBox="0 0 24 24" fill="none" stroke={Tab === "Topup" ? "#004a70" : "#d1d5db"} strokeWidth={2}>
-                  <path strokeLinecap="round" strokeLinejoin="round" d="M9 5l7 7-7 7" />
-                </svg>
+                {Tab === "Topup" && <div style={{ width: 6, height: 6, borderRadius: "50%", background: "#004a70" }} />}
               </div>
               <div
                 onClick={() => setTab("History")}
-                className={Tab !== "History" ? 'hover:bg-gray-100' : ''}
+                className={Tab !== "History" ? 'hover:bg-slate-50' : ''}
                 style={{
                   display: "flex",
                   alignItems: "center",
@@ -405,18 +432,18 @@ const page = () => {
                   padding: "12px 14px",
                   borderRadius: 10,
                   cursor: "pointer",
-                  background: Tab === "History" ? "#f0f7ff" : "transparent",
+                  background: Tab === "History" ? "linear-gradient(135deg, #f0f7ff 0%, #e8f4fd 100%)" : "transparent",
                   color: Tab === "History" ? "#004a70" : "#4b5563",
                   fontWeight: Tab === "History" ? 600 : 500,
                   fontSize: 14,
-                  transition: "all 0.15s",
+                  transition: "all 0.2s",
                 }}
               >
-                <FaHistory size={16} color={Tab === "History" ? "#004a70" : "#9ca3af"} />
+                <div style={{ width: 28, height: 28, borderRadius: 8, background: Tab === "History" ? "#004a70" : "#f3f4f6", display: "flex", alignItems: "center", justifyContent: "center", flexShrink: 0, transition: "all 0.2s" }}>
+                  <FaHistory size={13} color={Tab === "History" ? "#fff" : "#9ca3af"} />
+                </div>
                 <span style={{ flex: 1 }}>History</span>
-                <svg width={14} height={14} viewBox="0 0 24 24" fill="none" stroke={Tab === "History" ? "#004a70" : "#d1d5db"} strokeWidth={2}>
-                  <path strokeLinecap="round" strokeLinejoin="round" d="M9 5l7 7-7 7" />
-                </svg>
+                {Tab === "History" && <div style={{ width: 6, height: 6, borderRadius: "50%", background: "#004a70" }} />}
               </div>
             </div>
           </div>
@@ -425,11 +452,13 @@ const page = () => {
           <div className={mounted ? 'animate-fade-in-up' : 'opacity-0'} style={{ flex: 1, minWidth: 0, animationDelay: "250ms" }}>
             {Tab === "Topup" ? (
               <div
+                className={mounted ? 'animate-fade-in-up' : 'opacity-0'}
                 style={{
                   background: "#fff",
                   borderRadius: 14,
                   border: "1px solid #f0f0f0",
                   padding: "clamp(20px, 3vw, 28px)",
+                  animationDelay: "300ms",
                 }}
               >
                 {/* Saved Cards */}
@@ -471,216 +500,200 @@ const page = () => {
                   </>
                 )}
 
-                <p style={{ fontSize: 15, fontWeight: 600, color: "#1f2937", margin: "0 0 16px" }}>
-                  Add Funds
-                </p>
+                {/* Step indicator */}
+                <div style={{ display: "flex", alignItems: "center", gap: 8, marginBottom: 24 }}>
+                  <div style={{ width: 8, height: 8, borderRadius: "50%", background: "#004a70" }} />
+                  <div style={{ flex: 1, height: 1, background: "#e5e7eb" }} />
+                  <div style={{ width: 8, height: 8, borderRadius: "50%", background: "#d1d5db" }} />
+                  <div style={{ flex: 1, height: 1, background: "#e5e7eb" }} />
+                  <div style={{ width: 8, height: 8, borderRadius: "50%", background: "#d1d5db" }} />
+                </div>
 
-                {/* Amount Input */}
+                {/* Step 1: Amount */}
                 <div style={{ marginBottom: 20 }}>
-                  <label style={{ fontSize: 13, fontWeight: 500, color: "#374151", display: "block", marginBottom: 6 }}>
-                    Amount
-                  </label>
+                  <div style={{ display: "flex", alignItems: "center", gap: 8, marginBottom: 12 }}>
+                    <div style={{ width: 24, height: 24, borderRadius: "50%", background: "#004a70", display: "flex", alignItems: "center", justifyContent: "center", flexShrink: 0 }}>
+                      <span style={{ color: "#fff", fontSize: 11, fontWeight: 700 }}>1</span>
+                    </div>
+                    <p style={{ fontSize: 14, fontWeight: 600, color: "#1f2937", margin: 0 }}>Enter Amount</p>
+                  </div>
                   <div style={{ position: "relative" }}>
-                    <span
-                      style={{
-                        position: "absolute",
-                        left: 14,
-                        top: "50%",
-                        transform: "translateY(-50%)",
-                        fontSize: 16,
-                        fontWeight: 600,
-                        color: "#9ca3af",
-                      }}
-                    >
-                      $
-                    </span>
+                    <span style={{ position: "absolute", left: 14, top: "50%", transform: "translateY(-50%)", fontSize: 16, fontWeight: 600, color: "#9ca3af", zIndex: 1 }}>$</span>
                     <input
                       name="price"
                       placeholder="0.00"
                       type="number"
+                      min="0"
                       value={cardDetails.price}
-                      onChange={handleInputChange}
+                      onChange={(e) => {
+                        const val = e.target.value;
+                        if (val.startsWith("-")) return;
+                        handleInputChange(e);
+                      }}
+                      className={`bg-gray-50 border-0 focus:ring-1 focus:ring-brand-600/30 focus:outline-none focus:bg-white${formErrors.price ? " ring-2 ring-red-400" : ""}`}
                       style={{
                         width: "100%",
                         padding: "12px 14px 12px 32px",
                         borderRadius: 10,
-                        border: "1px solid #d1d5db",
                         fontSize: 16,
                         fontWeight: 600,
-                        outline: "none",
                       }}
                     />
+                    {formErrors.price && <p style={{ fontSize: 12, color: "#ef4444", margin: "4px 0 0" }}>{formErrors.price}</p>}
+                  </div>
+                  <div style={{ display: "flex", gap: 8, marginTop: 10, flexWrap: "wrap" }}>
+                    {[10, 25, 50, 100].map((amt) => (
+                      <button
+                        key={amt}
+                        type="button"
+                        onClick={() => setCardDetails((prev) => ({ ...prev, price: amt }))}
+                        className={cardDetails.price == amt ? 'bg-brand-700 text-white border-brand-700' : 'hover:border-brand-700 hover:text-brand-700'}
+                        style={{
+                          padding: "6px 16px",
+                          borderRadius: 9999,
+                          border: cardDetails.price == amt ? "1px solid #004a70" : "1px solid #d1d5db",
+                          background: cardDetails.price == amt ? "#004a70" : "#fff",
+                          color: cardDetails.price == amt ? "#fff" : "#4b5563",
+                          fontSize: 13,
+                          fontWeight: 500,
+                          cursor: "pointer",
+                          transition: "all 0.15s",
+                        }}
+                      >
+                        ${amt}
+                      </button>
+                    ))}
                   </div>
                 </div>
 
-                {/* Card Preview + Fields */}
-                <div
-                  style={{
-                    display: "grid",
-                    gridTemplateColumns: isMobileSidebar ? "1fr" : "1fr 1fr",
-                    gap: 20,
-                    marginBottom: 20,
-                  }}
-                >
-                  <div>
-                    <Cards
-                      cvc={cardDetails.cvc}
-                      expiry={cardDetails.expiry}
-                      name={cardDetails.name}
-                      number={cardDetails.number}
-                    />
-                  </div>
+                {/* Divider */}
+                <div style={{ height: 1, background: "#f3f4f6", margin: "0 0 20px" }} />
 
-                  <div style={{ display: "flex", flexDirection: "column", gap: 12 }}>
+                {/* Step 2: Card Details */}
+                <div style={{ marginBottom: 20 }}>
+                  <div style={{ display: "flex", alignItems: "center", gap: 8, marginBottom: 16 }}>
+                    <div style={{ width: 24, height: 24, borderRadius: "50%", background: "#004a70", display: "flex", alignItems: "center", justifyContent: "center", flexShrink: 0 }}>
+                      <span style={{ color: "#fff", fontSize: 11, fontWeight: 700 }}>2</span>
+                    </div>
+                    <p style={{ fontSize: 14, fontWeight: 600, color: "#1f2937", margin: 0 }}>Card Information</p>
+                  </div>
+                  <div style={{ display: "grid", gridTemplateColumns: isMobileSidebar ? "1fr" : "1fr 1fr", gap: 20 }}>
                     <div>
-                      <label style={{ fontSize: 13, fontWeight: 500, color: "#374151", display: "block", marginBottom: 4 }}>
-                        Card Number
-                      </label>
-                      <input
-                        style={{
-                          width: "100%",
-                          padding: "11px 14px",
-                          borderRadius: 10,
-                          border: "1px solid #d1d5db",
-                          fontSize: 14,
-                          outline: "none",
-                        }}
-                        type="text"
-                        name="number"
-                        placeholder="1234 5678 9012 3456"
-                        value={cardDetails.number}
-                        onChange={handleInputChange}
-                        maxLength="16"
-                        required
+                      <Cards
+                        cvc={cardDetails.cvc}
+                        expiry={cardDetails.expiry}
+                        name={cardDetails.name}
+                        number={cardDetails.number}
                       />
                     </div>
-                    <div>
-                      <label style={{ fontSize: 13, fontWeight: 500, color: "#374151", display: "block", marginBottom: 4 }}>
-                        Card Holder Name
-                      </label>
-                      <input
-                        style={{
-                          width: "100%",
-                          padding: "11px 14px",
-                          borderRadius: 10,
-                          border: "1px solid #d1d5db",
-                          fontSize: 14,
-                          outline: "none",
-                        }}
-                        type="text"
-                        name="name"
-                        placeholder="John Doe"
-                        value={cardDetails.name}
-                        onChange={handleInputChange}
-                        required
-                      />
-                    </div>
-                    <div style={{ display: "flex", gap: 12 }}>
-                      <div style={{ flex: 1 }}>
-                        <label style={{ fontSize: 13, fontWeight: 500, color: "#374151", display: "block", marginBottom: 4 }}>
-                          Expiry
+                    <div style={{ display: "flex", flexDirection: "column", gap: 12 }}>
+                      <div>
+                        <label className="focus-within:text-brand-700" style={{ fontSize: 13, fontWeight: 500, color: "#374151", display: "block", marginBottom: 4, transition: "color 0.2s" }}>
+                          Card Number
                         </label>
                         <input
-                          style={{
-                            width: "100%",
-                            padding: "11px 14px",
-                            borderRadius: 10,
-                            border: "1px solid #d1d5db",
-                            fontSize: 14,
-                            outline: "none",
-                          }}
-                          type="text"
-                          name="expiry"
-                          placeholder="MM/YY"
-                          value={cardDetails.expiry}
-                          onChange={(e) => {
-                            let value = e.target.value.replace(/\D/g, "");
-                            if (value.length >= 3) {
-                              value = value.slice(0, 2) + "/" + value.slice(2, 4);
-                            }
-                            e.target.value = value.slice(0, 5);
-                            handleInputChange(e);
-                          }}
-                          maxLength="5"
-                          required
+                          className={`bg-gray-50 border-0 focus:ring-1 focus:ring-brand-600/30 focus:outline-none focus:bg-white${formErrors.number ? " ring-2 ring-red-400" : ""}`}
+                          style={{ width: "100%", padding: "11px 14px", borderRadius: 10, fontSize: 14 }}
+                          type="text" name="number" placeholder="1234 5678 9012 3456"
+                          value={cardDetails.number} onChange={handleInputChange} maxLength="16" required
                         />
+                        {formErrors.number && <p style={{ fontSize: 12, color: "#ef4444", margin: "4px 0 0" }}>{formErrors.number}</p>}
                       </div>
-                      <div style={{ flex: 1 }}>
+                      <div>
                         <label style={{ fontSize: 13, fontWeight: 500, color: "#374151", display: "block", marginBottom: 4 }}>
-                          CVC
+                          Card Holder Name
                         </label>
                         <input
-                          style={{
-                            width: "100%",
-                            padding: "11px 14px",
-                            borderRadius: 10,
-                            border: "1px solid #d1d5db",
-                            fontSize: 14,
-                            outline: "none",
-                          }}
-                          type="text"
-                          name="cvc"
-                          placeholder="123"
-                          value={cardDetails.cvc}
-                          onChange={handleInputChange}
-                          maxLength="3"
-                          required
+                          className={`bg-gray-50 border-0 focus:ring-1 focus:ring-brand-600/30 focus:outline-none focus:bg-white${formErrors.name ? " ring-2 ring-red-400" : ""}`}
+                          style={{ width: "100%", padding: "11px 14px", borderRadius: 10, fontSize: 14 }}
+                          type="text" name="name" placeholder="John Doe"
+                          value={cardDetails.name} onChange={handleInputChange} required
                         />
+                        {formErrors.name && <p style={{ fontSize: 12, color: "#ef4444", margin: "4px 0 0" }}>{formErrors.name}</p>}
+                      </div>
+                      <div style={{ display: "flex", gap: 12 }}>
+                        <div style={{ flex: 1 }}>
+                          <label style={{ fontSize: 13, fontWeight: 500, color: "#374151", display: "block", marginBottom: 4 }}>Expiry</label>
+                          <input
+                            className={`bg-gray-50 border-0 focus:ring-1 focus:ring-brand-600/30 focus:outline-none focus:bg-white${formErrors.expiry ? " ring-2 ring-red-400" : ""}`}
+                            style={{ width: "100%", padding: "11px 14px", borderRadius: 10, fontSize: 14 }}
+                            type="text" name="expiry" placeholder="MM/YY"
+                            value={cardDetails.expiry}
+                            onChange={(e) => {
+                              let value = e.target.value.replace(/\D/g, "");
+                              if (value.length >= 3) value = value.slice(0, 2) + "/" + value.slice(2, 4);
+                              e.target.value = value.slice(0, 5);
+                              handleInputChange(e);
+                            }}
+                            maxLength="5" required
+                          />
+                          {formErrors.expiry && <p style={{ fontSize: 12, color: "#ef4444", margin: "4px 0 0" }}>{formErrors.expiry}</p>}
+                        </div>
+                        <div style={{ flex: 1 }}>
+                          <label style={{ fontSize: 13, fontWeight: 500, color: "#374151", display: "block", marginBottom: 4 }}>CVC</label>
+                          <input
+                            className={`bg-gray-50 border-0 focus:ring-1 focus:ring-brand-600/30 focus:outline-none focus:bg-white${formErrors.cvc ? " ring-2 ring-red-400" : ""}`}
+                            style={{ width: "100%", padding: "11px 14px", borderRadius: 10, fontSize: 14 }}
+                            type="text" name="cvc" placeholder="123"
+                            value={cardDetails.cvc} onChange={handleInputChange} maxLength="3" required
+                          />
+                          {formErrors.cvc && <p style={{ fontSize: 12, color: "#ef4444", margin: "4px 0 0" }}>{formErrors.cvc}</p>}
+                        </div>
                       </div>
                     </div>
                   </div>
                 </div>
 
-                {/* Email & Phone */}
-                <div
-                  style={{
-                    display: "grid",
-                    gridTemplateColumns: isMobileSidebar ? "1fr" : "1fr 1fr",
-                    gap: 12,
-                    marginBottom: 20,
-                  }}
-                >
-                  <div>
-                    <label style={{ fontSize: 13, fontWeight: 500, color: "#374151", display: "block", marginBottom: 4 }}>
-                      Email
-                    </label>
-                    <input
-                      style={{
-                        width: "100%",
-                        padding: "11px 14px",
-                        borderRadius: 10,
-                        border: "1px solid #d1d5db",
-                        fontSize: 14,
-                        outline: "none",
-                      }}
-                      type="text"
-                      name="email"
-                      placeholder="email@example.com"
-                      value={cardDetails.email}
-                      onChange={handleInputChange}
-                      required
-                    />
+                {/* Divider */}
+                <div style={{ height: 1, background: "#f3f4f6", margin: "0 0 20px" }} />
+
+                {/* Step 3: Contact */}
+                <div style={{ marginBottom: 24 }}>
+                  <div style={{ display: "flex", alignItems: "center", gap: 8, marginBottom: 16 }}>
+                    <div style={{ width: 24, height: 24, borderRadius: "50%", background: "#004a70", display: "flex", alignItems: "center", justifyContent: "center", flexShrink: 0 }}>
+                      <span style={{ color: "#fff", fontSize: 11, fontWeight: 700 }}>3</span>
+                    </div>
+                    <p style={{ fontSize: 14, fontWeight: 600, color: "#1f2937", margin: 0 }}>Contact Details</p>
                   </div>
-                  <div>
-                    <label style={{ fontSize: 13, fontWeight: 500, color: "#374151", display: "block", marginBottom: 4 }}>
-                      Phone
-                    </label>
-                    <input
-                      style={{
-                        width: "100%",
-                        padding: "11px 14px",
-                        borderRadius: 10,
-                        border: "1px solid #d1d5db",
-                        fontSize: 14,
-                        outline: "none",
-                      }}
-                      type="text"
-                      name="phone"
-                      placeholder="+1 (___)-___-____"
-                      value={cardDetails.phone}
-                      onChange={handleInputChange}
-                      required
-                    />
+                  <div style={{ display: "grid", gridTemplateColumns: isMobileSidebar ? "1fr" : "1fr 1fr", gap: 12 }}>
+                    <div>
+                      <label style={{ fontSize: 13, fontWeight: 500, color: "#374151", display: "block", marginBottom: 4 }}>Email</label>
+                      <input
+                        className={`bg-gray-50 border-0 focus:ring-1 focus:ring-brand-600/30 focus:outline-none focus:bg-white${formErrors.email ? " ring-2 ring-red-400" : ""}`}
+                        style={{ width: "100%", padding: "11px 14px", borderRadius: 10, fontSize: 14 }}
+                        type="text" name="email" placeholder="email@example.com"
+                        value={cardDetails.email} onChange={handleInputChange} required
+                      />
+                      {formErrors.email && <p style={{ fontSize: 12, color: "#ef4444", margin: "4px 0 0" }}>{formErrors.email}</p>}
+                    </div>
+                    <div>
+                      <label style={{ fontSize: 13, fontWeight: 500, color: "#374151", display: "block", marginBottom: 4 }}>Phone</label>
+                      <PhoneInput
+                        country={"us"}
+                        value={cardDetails.phone}
+                        onChange={(value) => { setCardDetails((prev) => ({ ...prev, phone: value })); setFormErrors((prev) => ({ ...prev, phone: undefined })); }}
+                        inputStyle={{
+                          width: "100%",
+                          padding: "11px 14px 11px 50px",
+                          borderRadius: 10,
+                          border: "none",
+                          fontSize: 14,
+                          background: "#f9fafb",
+                          outline: "none",
+                        }}
+                        buttonStyle={{
+                          borderRadius: "10px 0 0 10px",
+                          border: "none",
+                          background: "#f3f4f6",
+                          padding: "11px 0 11px 8px",
+                          height: "auto",
+                        }}
+                        dropdownStyle={{ borderRadius: 10 }}
+                        containerStyle={{ borderRadius: 10, width: "100%" }}
+                        inputClass={`${formErrors.phone ? "ring-2 ring-red-400" : ""}`}
+                      />
+                      {formErrors.phone && <p style={{ fontSize: 12, color: "#ef4444", margin: "4px 0 0" }}>{formErrors.phone}</p>}
+                    </div>
                   </div>
                 </div>
 
@@ -692,7 +705,6 @@ const page = () => {
                   size="lg"
                   startContent={
                     <FaPlus size={14} style={{ marginRight: 6 }} />
-
                   }
                 >
                   Add Payment
@@ -700,20 +712,32 @@ const page = () => {
               </div>
             ) : (
               <div
+                className={mounted ? 'animate-fade-in-up' : 'opacity-0'}
                 style={{
                   background: "#fff",
                   borderRadius: 14,
                   border: "1px solid #f0f0f0",
                   padding: "clamp(20px, 3vw, 28px)",
+                  animationDelay: "350ms",
                 }}
               >
-                <p style={{ fontSize: 15, fontWeight: 600, color: "#1f2937", margin: "0 0 16px", paddingBottom: 12, borderBottom: "1px solid #f3f4f6" }}>
+                <p style={{ fontSize: 15, fontWeight: 600, color: "#1f2937", margin: "0 0 16px", paddingBottom: 12, borderBottom: "1px solid #f3f4f6", display: "flex", alignItems: "center", gap: 8 }}>
+                  <FaHistory size={15} color="#004a70" />
                   Transaction History
                 </p>
 
                 {TransLoading ? (
-                  <div style={{ display: "flex", justifyContent: "center", padding: "40px 0" }}>
-                    <Spinner style={{ color: "#004a70" }} />
+                  <div style={{ display: "flex", flexDirection: "column", gap: 12, padding: "8px 0" }}>
+                    {[1, 2, 3].map((item) => (
+                      <div key={item} className="animate-pulse" style={{ display: "flex", alignItems: "center", gap: 12, padding: "14px 0" }}>
+                        <div style={{ width: 36, height: 36, borderRadius: 10, background: "#e5e7eb", flexShrink: 0 }} />
+                        <div style={{ flex: 1 }}>
+                          <div style={{ height: 14, width: "40%", background: "#e5e7eb", borderRadius: 9999, marginBottom: 6 }} />
+                          <div style={{ height: 12, width: "25%", background: "#f3f4f6", borderRadius: 9999 }} />
+                        </div>
+                        <div style={{ height: 14, width: "15%", background: "#e5e7eb", borderRadius: 9999 }} />
+                      </div>
+                    ))}
                   </div>
                 ) : TransectionData?.length > 0 ? (
                   <div style={{ display: "flex", flexDirection: "column" }}>
