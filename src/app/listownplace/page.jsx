@@ -580,33 +580,42 @@ const page = () => {
     <div className={mounted ? "animate-fade-in" : "opacity-0"} style={{ minHeight: "100vh", background: "#f8fafc" }}>
       {/* Header */}
       <div
-        className={`bg-gradient-to-br from-brand-800 to-brand-950 ${mounted ? "animate-fade-in-down" : "opacity-0"}`}
+        className="bg-gradient-to-br from-brand-800 to-brand-950"
         style={{
           padding: "28px 0 44px",
-          animationDelay: "50ms",
+          position: "relative",
+          overflow: "hidden",
         }}
       >
-        <div style={{ maxWidth: 1200, margin: "0 auto", padding: "0 16px" }}>
-          <div style={{ color: "rgba(255,255,255,0.6)", fontSize: 13, marginBottom: 8 }}>
-            Home / List Own Place
+        <div style={{ position: "absolute", top: -60, right: -60, width: 200, height: 200, borderRadius: "50%", background: "rgba(255,255,255,0.03)" }} />
+        <div style={{ position: "absolute", bottom: -40, left: -40, width: 160, height: 160, borderRadius: "50%", background: "rgba(255,255,255,0.03)" }} />
+
+        <div style={{ maxWidth: 1200, margin: "0 auto", padding: "0 24px", position: "relative" }}>
+          <div style={{ display: "flex", alignItems: "center", gap: 8, color: "rgba(255,255,255,0.5)", fontSize: 13, fontWeight: 500, marginBottom: 16 }}>
+            <a href="/" style={{ color: "rgba(255,255,255,0.5)", textDecoration: "none", transition: "color 0.2s" }}
+              onMouseEnter={(e) => e.currentTarget.style.color = "#fff"}
+              onMouseLeave={(e) => e.currentTarget.style.color = "rgba(255,255,255,0.5)"}>
+              Home
+            </a>
+            <span style={{ color: "rgba(255,255,255,0.3)" }}>/</span>
+            <span style={{ color: "rgba(255,255,255,0.8)" }}>List Your Place</span>
           </div>
-          <h1
-            style={{
-              color: "#fff",
-              fontSize: "clamp(22px, 4vw, 28px)",
-              fontWeight: 700,
-              margin: 0,
-              letterSpacing: "-0.3px",
-              display: "flex",
-              alignItems: "center",
-              gap: 10,
-            }}
-          >
-            <svg width={24} height={24} viewBox="0 0 24 24" fill="none" stroke="#fff" strokeWidth={1.5}>
-              <path strokeLinecap="round" strokeLinejoin="round" d="M8.25 21v-4.875c0-.621.504-1.125 1.125-1.125h2.25c.621 0 1.125.504 1.125 1.125V21m0 0h4.5V3.545M12.75 21h7.5V10.75M2.25 21h1.5m18 0h-18M2.25 9l4.5-1.636M18.75 3l-1.5.545m0 6.205l3 1m1.5.5l-1.5-.5M6.75 7.364V3h-3v18m3-13.636l10.5-3.819" />
-            </svg>
-            List Your Place
-          </h1>
+
+          <div style={{ display: "flex", alignItems: "center", gap: "clamp(10px, 2vw, 16px)" }}>
+            <div style={{ width: "clamp(40px, 6vw, 52px)", height: "clamp(40px, 6vw, 52px)", borderRadius: "clamp(12px, 2vw, 16px)", background: "rgba(255,255,255,0.12)", backdropFilter: "blur(8px)", display: "flex", alignItems: "center", justifyContent: "center", flexShrink: 0 }}>
+              <svg width="clamp(20px, 3vw, 26px)" height="clamp(20px, 3vw, 26px)" viewBox="0 0 24 24" fill="none" stroke="#fff" strokeWidth={1.5} strokeLinecap="round" strokeLinejoin="round">
+                <path d="M8.25 21v-4.875c0-.621.504-1.125 1.125-1.125h2.25c.621 0 1.125.504 1.125 1.125V21m0 0h4.5V3.545M12.75 21h7.5V10.75M2.25 21h1.5m18 0h-18M2.25 9l4.5-1.636M18.75 3l-1.5.545m0 6.205l3 1m1.5.5l-1.5-.5M6.75 7.364V3h-3v18m3-13.636l10.5-3.819" />
+              </svg>
+            </div>
+            <div>
+              <h1 style={{ color: "#fff", fontSize: "clamp(20px, 5vw, 30px)", fontWeight: 700, margin: 0, letterSpacing: "-0.5px", lineHeight: 1.2, wordBreak: "break-word" }}>
+                List Your Place
+              </h1>
+              <p style={{ color: "rgba(255,255,255,0.55)", fontSize: "clamp(12px, 2vw, 14px)", margin: "2px 0 0", fontWeight: 400, wordBreak: "break-word" }}>
+                Register your property or service with us
+              </p>
+            </div>
+          </div>
         </div>
       </div>
 
@@ -622,6 +631,88 @@ const page = () => {
               animationDelay: "150ms",
             }}
           >
+
+            {/* Images - Top */}
+            <div style={{ marginBottom: 24 }}>
+              <p style={{ fontSize: 15, fontWeight: 600, color: "#1f2937", margin: "0 0 4px", display: "flex", alignItems: "center", gap: 8 }}>
+                <svg width={16} height={16} viewBox="0 0 24 24" fill="none" stroke="#004a70" strokeWidth={2} strokeLinecap="round" strokeLinejoin="round">
+                  <rect x="3" y="3" width="18" height="18" rx="2" ry="2" />
+                  <circle cx="8.5" cy="8.5" r="1.5" />
+                  <polyline points="21 15 16 10 5 21" />
+                </svg>
+                Images
+              </p>
+              <p style={{ fontSize: 13, color: "#9ca3af", margin: "0 0 12px", marginBottom: 10 }}>
+                Upload images of your place or service
+              </p>
+              <div
+                className="hover:border-brand-700 hover:bg-blue-50"
+                style={{
+                  border: "2px dashed #d1d5db",
+                  borderRadius: 12,
+                  padding: 32,
+                  textAlign: "center",
+                  cursor: "pointer",
+                  transition: "all 0.15s",
+                  background: "#fafafa",
+                  maxWidth: 300,
+                }}
+                onClick={() => document.getElementById("image-upload-input").click()}
+              >
+                <svg width={32} height={32} viewBox="0 0 24 24" fill="none" stroke="#9ca3af" strokeWidth={1.5}>
+                  <path strokeLinecap="round" strokeLinejoin="round" d="M2.25 15.75l5.159-5.159a2.25 2.25 0 0 1 3.182 0l5.159 5.159m-1.5-1.5l1.409-1.409a2.25 2.25 0 0 1 3.182 0l2.909 2.909M3.75 21h16.5A2.25 2.25 0 0 0 22.5 18.75V5.25A2.25 2.25 0 0 0 20.25 3H3.75A2.25 2.25 0 0 0 1.5 5.25v13.5A2.25 2.25 0 0 0 3.75 21Z" />
+                </svg>
+                <p style={{ fontSize: 14, color: "#6b7280", margin: "8px 0 0" }}>
+                  {imageLoading ? "Uploading..." : "Click or drag images here"}
+                </p>
+                <p style={{ fontSize: 12, color: "#9ca3af", margin: "4px 0 0" }}>
+                  JPG, PNG, SVG up to 1MB each
+                </p>
+                <Input
+                  id="image-upload-input"
+                  type="file"
+                  multiple
+                  accept="image/*"
+                  onChange={handleImagesChange}
+                  disabled={imageLoading}
+                  style={{ display: "none" }}
+                />
+              </div>
+
+              {imageUrls.length > 0 && (
+                <div style={{ display: "flex", flexWrap: "wrap", gap: 10, marginTop: 14 }}>
+                  {imageUrls.map((url, index) => (
+                    <div key={index} style={{ position: "relative", width: 100, height: 100, borderRadius: 10, overflow: "hidden" }}>
+                      <img src={url} alt={`Upload ${index + 1}`} style={{ width: "100%", height: "100%", objectFit: "cover" }} />
+                      <button
+                        type="button"
+                        onClick={() => handleRemoveImage(index)}
+                        style={{
+                          position: "absolute",
+                          top: 4,
+                          right: 4,
+                          width: 22,
+                          height: 22,
+                          borderRadius: "50%",
+                          background: "rgba(0,0,0,0.5)",
+                          border: "none",
+                          color: "#fff",
+                          fontSize: 12,
+                          cursor: "pointer",
+                          display: "flex",
+                          alignItems: "center",
+                          justifyContent: "center",
+                        }}
+                      >
+                        ✕
+                      </button>
+                    </div>
+                  ))}
+                </div>
+              )}
+            </div>
+
+            <div style={{ height: 1, background: "#f3f4f6", marginBottom: 24 }} />
 
             <div style={{ display: "grid", gridTemplateColumns: isMobile ? "1fr" : "1fr 1fr", gap: "12px 20px" }}>
               {/* Category */}
@@ -877,281 +968,211 @@ const page = () => {
               + Add Highlight
             </button>
 
-          {/* Excursion Section */}
-          {selectedCategory?.name === "Excursion" && (
-            <>
-              <div style={{ height: 1, background: "#f3f4f6", margin: "20px 0" }} />
-              <p style={{ fontSize: 15, fontWeight: 600, color: "#1f2937", margin: "0 0 12px" }}>
-                Excursion Details
-              </p>
-              <div style={{ display: "grid", gridTemplateColumns: isMobile ? "1fr" : "1fr 1fr", gap: "12px 20px", marginBottom: 16 }}>
-                <div>
+            {/* Excursion Section */}
+            {selectedCategory?.name === "Excursion" && (
+              <>
+                <div style={{ height: 1, background: "#f3f4f6", margin: "20px 0" }} />
+                <p style={{ fontSize: 15, fontWeight: 600, color: "#1f2937", margin: "0 0 12px" }}>
+                  Excursion Details
+                </p>
+                <div style={{ display: "grid", gridTemplateColumns: isMobile ? "1fr" : "1fr 1fr", gap: "12px 20px", marginBottom: 16 }}>
+                  <div>
+                    <Label style={{ fontSize: 13, fontWeight: 500, color: "#374151", display: "block", marginBottom: 4 }}>
+                      Travelers
+                    </Label>
+                    <Controller
+                      name="trevelers"
+                      control={control}
+                      render={({ field }) => (
+                        <Input {...field} required placeholder="Max travelers" style={inputStyle(errors.trevelers)} invalid={errors.trevelers && true} />
+                      )}
+                    />
+                    {errors.trevelers && <FormFeedback style={{ fontSize: 12, marginTop: 4, color: "#ef4444", display: "block" }}>{errors.trevelers.message}</FormFeedback>}
+                  </div>
+                  <div>
+                    <Label style={{ fontSize: 13, fontWeight: 500, color: "#374151", display: "block", marginBottom: 4 }}>
+                      Price Per Person ($)
+                    </Label>
+                    <Controller
+                      name="price_per_person"
+                      control={control}
+                      render={({ field }) => (
+                        <Input {...field} required type="number" placeholder="0.00" style={inputStyle(errors.price_per_person)} invalid={errors.price_per_person && true} />
+                      )}
+                    />
+                    {errors.price_per_person && <FormFeedback style={{ fontSize: 12, marginTop: 4, color: "#ef4444", display: "block" }}>{errors.price_per_person.message}</FormFeedback>}
+                  </div>
+                </div>
+                <p style={{ fontSize: 13, fontWeight: 500, color: "#374151", marginBottom: 8 }}>Time Slots</p>
+                {timeFields.map((field, index) => (
+                  <div key={field.id} style={{ display: "flex", gap: 8, marginBottom: 8 }}>
+                    <Controller
+                      name={`timeSlots.${index}`}
+                      control={control}
+                      render={({ field }) => (
+                        <Input
+                          {...field}
+                          type="time"
+                          value={field.value || ""}
+                          onChange={(e) => field.onChange(e.target.value)}
+                          style={{ ...inputStyle(errors?.timeSlots?.[index]), flex: 1 }}
+                        />
+                      )}
+                    />
+                    <button
+                      type="button"
+                      onClick={() => removeTime(index)}
+                      style={{
+                        width: 38,
+                        height: 38,
+                        borderRadius: 10,
+                        background: "#fef2f2",
+                        border: "1px solid #fecaca",
+                        color: "#ef4444",
+                        cursor: "pointer",
+                        display: "flex",
+                        alignItems: "center",
+                        justifyContent: "center",
+                        flexShrink: 0,
+                      }}
+                    >
+                      ✕
+                    </button>
+                  </div>
+                ))}
+                <button
+                  type="button"
+                  onClick={() => addTime("")}
+                  className="hover:bg-blue-100"
+                  style={{
+                    padding: "10px 20px",
+                    borderRadius: 10,
+                    background: "#f0f7ff",
+                    border: "1px dashed #004a70",
+                    color: "#004a70",
+                    fontSize: 13,
+                    fontWeight: 500,
+                    cursor: "pointer",
+                    transition: "all 0.15s",
+                  }}
+                >
+                  + Add Time Slot
+                </button>
+              </>)}
+
+            {/* Non-Excursion Price */}
+            {selectedCategory?.name !== "Excursion" && (
+              <>
+                <div style={{ height: 1, background: "#f3f4f6", margin: "20px 0" }} />
+                <div style={{ maxWidth: 300 }}>
                   <Label style={{ fontSize: 13, fontWeight: 500, color: "#374151", display: "block", marginBottom: 4 }}>
-                    Travelers
+                    Location Price ($)
                   </Label>
                   <Controller
-                    name="trevelers"
-                    control={control}
-                    render={({ field }) => (
-                      <Input {...field} required placeholder="Max travelers" style={inputStyle(errors.trevelers)} invalid={errors.trevelers && true} />
-                    )}
-                  />
-                  {errors.trevelers && <FormFeedback style={{ fontSize: 12, marginTop: 4, color: "#ef4444", display: "block" }}>{errors.trevelers.message}</FormFeedback>}
-                </div>
-                <div>
-                  <Label style={{ fontSize: 13, fontWeight: 500, color: "#374151", display: "block", marginBottom: 4 }}>
-                    Price Per Person ($)
-                  </Label>
-                  <Controller
-                    name="price_per_person"
-                    control={control}
-                    render={({ field }) => (
-                      <Input {...field} required type="number" placeholder="0.00" style={inputStyle(errors.price_per_person)} invalid={errors.price_per_person && true} />
-                    )}
-                  />
-                  {errors.price_per_person && <FormFeedback style={{ fontSize: 12, marginTop: 4, color: "#ef4444", display: "block" }}>{errors.price_per_person.message}</FormFeedback>}
-                </div>
-              </div>
-              <p style={{ fontSize: 13, fontWeight: 500, color: "#374151", marginBottom: 8 }}>Time Slots</p>
-              {timeFields.map((field, index) => (
-                <div key={field.id} style={{ display: "flex", gap: 8, marginBottom: 8 }}>
-                  <Controller
-                    name={`timeSlots.${index}`}
+                    name="location_price"
                     control={control}
                     render={({ field }) => (
                       <Input
                         {...field}
-                        type="time"
-                        value={field.value || ""}
-                        onChange={(e) => field.onChange(e.target.value)}
-                        style={{ ...inputStyle(errors?.timeSlots?.[index]), flex: 1 }}
+                        required
+                        placeholder="0.00"
+                        style={inputStyle(errors.location_price)}
+                        invalid={errors.location_price && true}
                       />
                     )}
                   />
-                  <button
-                    type="button"
-                    onClick={() => removeTime(index)}
-                    style={{
-                      width: 38,
-                      height: 38,
-                      borderRadius: 10,
-                      background: "#fef2f2",
-                      border: "1px solid #fecaca",
-                      color: "#ef4444",
-                      cursor: "pointer",
-                      display: "flex",
-                      alignItems: "center",
-                      justifyContent: "center",
-                      flexShrink: 0,
-                    }}
-                  >
-                    ✕
-                  </button>
+                  {errors.location_price && (
+                    <FormFeedback style={{ fontSize: 12, marginTop: 4, color: "#ef4444", display: "block" }}>
+                      {errors.location_price.message}
+                    </FormFeedback>
+                  )}
                 </div>
-              ))}
-              <button
-                type="button"
-                onClick={() => addTime("")}
-                className="hover:bg-blue-100"
+              </>
+            )}
+
+            {/* Payment Method */}
+            <div style={{ height: 1, background: "#f3f4f6", margin: "20px 0" }} />
+            <p style={{ fontSize: 15, fontWeight: 600, color: "#1f2937", margin: "0 0 12px" }}>
+              Payment Method
+            </p>
+            <p style={{ fontSize: 13, color: "#6b7280", margin: "0 0 14px" }}>
+              Listing fee: <strong>$40.00</strong>
+            </p>
+            <div style={{ display: "flex", gap: 12, flexWrap: "wrap" }}>
+              <div
+                onClick={() => selectMethod("jad")}
                 style={{
-                  padding: "10px 20px",
-                  borderRadius: 10,
-                  background: "#f0f7ff",
-                  border: "1px dashed #004a70",
-                  color: "#004a70",
-                  fontSize: 13,
-                  fontWeight: 500,
+                  flex: 1,
+                  minWidth: 160,
+                  padding: "16px 20px",
+                  borderRadius: 12,
+                  border: PaymentMethod === "jad" ? "2px solid #004a70" : "2px solid #e5e7eb",
+                  background: PaymentMethod === "jad" ? "#f0f7ff" : "#fff",
                   cursor: "pointer",
+                  display: "flex",
+                  alignItems: "center",
+                  gap: 12,
                   transition: "all 0.15s",
                 }}
               >
-                + Add Time Slot
-              </button>
-            </>)}
-
-          {/* Non-Excursion Price */}
-          {selectedCategory?.name !== "Excursion" && (
-            <>
-              <div style={{ height: 1, background: "#f3f4f6", margin: "20px 0" }} />
-              <div style={{ maxWidth: 300 }}>
-                <Label style={{ fontSize: 13, fontWeight: 500, color: "#374151", display: "block", marginBottom: 4 }}>
-                  Location Price ($)
-                </Label>
-                <Controller
-                  name="location_price"
-                  control={control}
-                  render={({ field }) => (
-                    <Input
-                      {...field}
-                      required
-                      placeholder="0.00"
-                      style={inputStyle(errors.location_price)}
-                      invalid={errors.location_price && true}
-                    />
-                  )}
-                />
-                {errors.location_price && (
-                  <FormFeedback style={{ fontSize: 12, marginTop: 4, color: "#ef4444", display: "block" }}>
-                    {errors.location_price.message}
-                  </FormFeedback>
-                )}
-              </div>
-            </>
-          )}
-
-          {/* Images */}
-          <div style={{ height: 1, background: "#f3f4f6", margin: "20px 0" }} />
-          <p style={{ fontSize: 15, fontWeight: 600, color: "#1f2937", margin: "0 0 12px" }}>
-            Images
-          </p>
-          <div
-            className="hover:border-brand-700 hover:bg-blue-50"
-            style={{
-              border: "2px dashed #d1d5db",
-              borderRadius: 12,
-              padding: 32,
-              textAlign: "center",
-              cursor: "pointer",
-              transition: "all 0.15s",
-              background: "#fafafa",
-            }}
-            onClick={() => document.getElementById("image-upload-input").click()}
-          >
-            <svg width={32} height={32} viewBox="0 0 24 24" fill="none" stroke="#9ca3af" strokeWidth={1.5}>
-              <path strokeLinecap="round" strokeLinejoin="round" d="M2.25 15.75l5.159-5.159a2.25 2.25 0 0 1 3.182 0l5.159 5.159m-1.5-1.5l1.409-1.409a2.25 2.25 0 0 1 3.182 0l2.909 2.909M3.75 21h16.5A2.25 2.25 0 0 0 22.5 18.75V5.25A2.25 2.25 0 0 0 20.25 3H3.75A2.25 2.25 0 0 0 1.5 5.25v13.5A2.25 2.25 0 0 0 3.75 21Z" />
-            </svg>
-            <p style={{ fontSize: 14, color: "#6b7280", margin: "8px 0 0" }}>
-              {imageLoading ? "Uploading..." : "Click or drag images here"}
-            </p>
-            <p style={{ fontSize: 12, color: "#9ca3af", margin: "4px 0 0" }}>
-              JPG, PNG, SVG up to 1MB each
-            </p>
-            <Input
-              id="image-upload-input"
-              type="file"
-              multiple
-              accept="image/*"
-              onChange={handleImagesChange}
-              disabled={imageLoading}
-              style={{ display: "none" }}
-            />
-          </div>
-
-          {imageUrls.length > 0 && (
-            <div style={{ display: "flex", flexWrap: "wrap", gap: 10, marginTop: 14 }}>
-              {imageUrls.map((url, index) => (
-                <div key={index} style={{ position: "relative", width: 100, height: 100, borderRadius: 10, overflow: "hidden" }}>
-                  <img src={url} alt={`Upload ${index + 1}`} style={{ width: "100%", height: "100%", objectFit: "cover" }} />
-                  <button
-                    type="button"
-                    onClick={() => handleRemoveImage(index)}
-                    style={{
-                      position: "absolute",
-                      top: 4,
-                      right: 4,
-                      width: 22,
-                      height: 22,
-                      borderRadius: "50%",
-                      background: "rgba(0,0,0,0.5)",
-                      border: "none",
-                      color: "#fff",
-                      fontSize: 12,
-                      cursor: "pointer",
-                      display: "flex",
-                      alignItems: "center",
-                      justifyContent: "center",
-                    }}
-                  >
-                    ✕
-                  </button>
+                <div style={{
+                  width: 40, height: 40, borderRadius: 10,
+                  background: PaymentMethod === "jad" ? "#004a70" : "#f3f4f6",
+                  display: "flex", alignItems: "center", justifyContent: "center", flexShrink: 0,
+                }}>
+                  <svg width={20} height={20} viewBox="0 0 24 24" fill={PaymentMethod === "jad" ? "#fff" : "#6b7280"}>
+                    <path d="M4 4h16c1.1 0 2 .9 2 2v12c0 1.1-.9 2-2 2H4c-1.1 0-2-.9-2-2V6c0-1.1.9-2 2-2zm0 2v12h16V6H4zm2 6h12v2H6v-2zm0-3h12v2H6V9zm0 6h8v2H6v-2z" />
+                  </svg>
                 </div>
-              ))}
+                <div>
+                  <p style={{ fontSize: 14, fontWeight: 600, color: "#1f2937", margin: 0 }}>Credit / Debit</p>
+                  <p style={{ fontSize: 12, color: "#9ca3af", margin: "2px 0 0" }}>Pay with card</p>
+                </div>
+              </div>
+              <div
+                onClick={() => selectMethod("wallet")}
+                style={{
+                  flex: 1,
+                  minWidth: 160,
+                  padding: "16px 20px",
+                  borderRadius: 12,
+                  border: PaymentMethod === "wallet" ? "2px solid #004a70" : "2px solid #e5e7eb",
+                  background: PaymentMethod === "wallet" ? "#f0f7ff" : "#fff",
+                  cursor: "pointer",
+                  display: "flex",
+                  alignItems: "center",
+                  gap: 12,
+                  transition: "all 0.15s",
+                }}
+              >
+                <div style={{
+                  width: 40, height: 40, borderRadius: 10,
+                  background: PaymentMethod === "wallet" ? "#004a70" : "#f3f4f6",
+                  display: "flex", alignItems: "center", justifyContent: "center", flexShrink: 0,
+                }}>
+                  <FaWallet size={18} color={PaymentMethod === "wallet" ? "#fff" : "#6b7280"} />
+                </div>
+                <div>
+                  <p style={{ fontSize: 14, fontWeight: 600, color: "#1f2937", margin: 0 }}>Wallet</p>
+                  <p style={{ fontSize: 12, color: "#9ca3af", margin: "2px 0 0" }}>Balance: ${userData?.amount?.toFixed(2) || "0.00"}</p>
+                </div>
+              </div>
             </div>
-          )}
 
-          {/* Payment Method */}
-          <div style={{ height: 1, background: "#f3f4f6", margin: "20px 0" }} />
-          <p style={{ fontSize: 15, fontWeight: 600, color: "#1f2937", margin: "0 0 12px" }}>
-            Payment Method
-          </p>
-          <p style={{ fontSize: 13, color: "#6b7280", margin: "0 0 14px" }}>
-            Listing fee: <strong>$40.00</strong>
-          </p>
-          <div style={{ display: "flex", gap: 12, flexWrap: "wrap" }}>
-            <div
-              onClick={() => selectMethod("jad")}
-              style={{
-                flex: 1,
-                minWidth: 160,
-                padding: "16px 20px",
-                borderRadius: 12,
-                border: PaymentMethod === "jad" ? "2px solid #004a70" : "2px solid #e5e7eb",
-                background: PaymentMethod === "jad" ? "#f0f7ff" : "#fff",
-                cursor: "pointer",
-                display: "flex",
-                alignItems: "center",
-                gap: 12,
-                transition: "all 0.15s",
-              }}
-            >
-              <div style={{
-                width: 40, height: 40, borderRadius: 10,
-                background: PaymentMethod === "jad" ? "#004a70" : "#f3f4f6",
-                display: "flex", alignItems: "center", justifyContent: "center", flexShrink: 0,
-              }}>
-                <svg width={20} height={20} viewBox="0 0 24 24" fill={PaymentMethod === "jad" ? "#fff" : "#6b7280"}>
-                  <path d="M4 4h16c1.1 0 2 .9 2 2v12c0 1.1-.9 2-2 2H4c-1.1 0-2-.9-2-2V6c0-1.1.9-2 2-2zm0 2v12h16V6H4zm2 6h12v2H6v-2zm0-3h12v2H6V9zm0 6h8v2H6v-2z"/>
-                </svg>
-              </div>
-              <div>
-                <p style={{ fontSize: 14, fontWeight: 600, color: "#1f2937", margin: 0 }}>Credit / Debit</p>
-                <p style={{ fontSize: 12, color: "#9ca3af", margin: "2px 0 0" }}>Pay with card</p>
-              </div>
-            </div>
-            <div
-              onClick={() => selectMethod("wallet")}
-              style={{
-                flex: 1,
-                minWidth: 160,
-                padding: "16px 20px",
-                borderRadius: 12,
-                border: PaymentMethod === "wallet" ? "2px solid #004a70" : "2px solid #e5e7eb",
-                background: PaymentMethod === "wallet" ? "#f0f7ff" : "#fff",
-                cursor: "pointer",
-                display: "flex",
-                alignItems: "center",
-                gap: 12,
-                transition: "all 0.15s",
-              }}
-            >
-              <div style={{
-                width: 40, height: 40, borderRadius: 10,
-                background: PaymentMethod === "wallet" ? "#004a70" : "#f3f4f6",
-                display: "flex", alignItems: "center", justifyContent: "center", flexShrink: 0,
-              }}>
-                <FaWallet size={18} color={PaymentMethod === "wallet" ? "#fff" : "#6b7280"} />
-              </div>
-              <div>
-                <p style={{ fontSize: 14, fontWeight: 600, color: "#1f2937", margin: 0 }}>Wallet</p>
-                <p style={{ fontSize: 12, color: "#9ca3af", margin: "2px 0 0" }}>Balance: ${userData?.amount?.toFixed(2) || "0.00"}</p>
-              </div>
+            {/* Submit */}
+            <div style={{ marginTop: 20, display: "flex", justifyContent: "flex-end" }}>
+              <CustomButton
+                type="submit"
+                loading={isLoading}
+                disabled={imageLoading}
+                style={{ padding: "12px 36px" }}
+                size="lg"
+              >
+                Submit Listing
+              </CustomButton>
             </div>
           </div>
-
-          {/* Submit */}
-          <div style={{ marginTop: 20, display: "flex", justifyContent: "flex-end" }}>
-            <CustomButton
-              type="submit"
-              loading={isLoading}
-              disabled={imageLoading}
-              style={{ padding: "12px 36px" }}
-              size="lg"
-            >
-              Submit Listing
-            </CustomButton>
-          </div>
-        </div>
-      </Form>
+        </Form>
       </div>
 
       {/* Payment Modal */}

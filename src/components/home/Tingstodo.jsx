@@ -39,6 +39,7 @@ export default function Tingstodo() {
   const [Category, setCategory] = useState([]);
   const [selectedCategoryId, setSelectedCategoryId] = useState(0);
   const [SubCategory, setSubCategory] = useState([]);
+  const [categoryLoading, setCategoryLoading] = useState(false);
 
   // const userData = useSelector((state) => state.auth.user?.user);
   const [loading, setloading] = useState(false);
@@ -85,6 +86,7 @@ export default function Tingstodo() {
   const [subCategoryError, setSubCategoryError] = useState(false);
 
   const getCategory = async () => {
+    setCategoryLoading(true);
     try {
       setCategoryError(false);
       const response = await getData("/webcat/all/1", header1);
@@ -100,6 +102,8 @@ export default function Tingstodo() {
       setCategoryError(true);
       // Set at least the "All" category to show something
       setCategory([{ _id: 0, name: "All" }]);
+    } finally {
+      setCategoryLoading(false);
     }
   };
 
@@ -179,7 +183,11 @@ export default function Tingstodo() {
   };
 
   useEffect(() => {
-    getCategory();
+    const loadData = async () => {
+      await getCategory();
+      getCategorydata();
+    };
+    loadData();
   }, []);
 
   const settings2 = {
@@ -418,54 +426,56 @@ export default function Tingstodo() {
       </div>
 
       <div className={`slider-container container mx-auto p-2 reveal ${inView ? "visible" : ""}`} style={{ transitionDelay: "150ms" }}>
-        <Slider {...settings2} key={Category.length}>
-          {Category.map((category, index) => {
-            const isSelected = selectedCategoryId === category._id;
-            return (
-              <div className="p-2" key={index}>
-                <div
-                  className={`CategoryMain text-center cursor-pointer capitalize transition-all duration-300 ${isSelected
-                    ? "text-white shadow-[0_2px_8px_rgba(0,74,112,0.25)]"
-                    : "text-slate-800 bg-white border border-slate-200 hover:border-brand-600 hover:bg-slate-100"
-                    }`}
-                  style={{
-                    padding: "10px 14px",
-                    background: isSelected
-                      ? "#004a70"
-                      : "",
-                    borderRadius: "9999px",
-                    minWidth: "120px",
-                    textAlign: "center",
-                    display: "flex",
-                    alignItems: "center",
-                    justifyContent: "center",
-                    border: isSelected ? "none" : "",
-                    margin: "0 auto",
-                    whiteSpace: "nowrap",
-                    fontSize: 14,
-                    fontWeight: 500,
-                    fontFamily: "Inter-Medium",
-                  }}
-                  onClick={() => setSelectedCategoryId(category._id)}
-                >
-                  <span style={{ fontSize: 13, fontFamily: "Inter-Medium" }}>{category?.name}</span>
+        {categoryLoading ? (
+          <div className="flex gap-4 overflow-x-auto py-2">
+            {[1, 2, 3, 4, 5, 6, 7, 8].map((item) => (
+              <div key={item} className="flex-shrink-0 w-32 h-11 bg-slate-200/70 rounded-full animate-pulse"></div>
+            ))}
+          </div>
+        ) : (
+          <Slider {...settings2} key={Category.length}>
+            {Category?.map((category, index) => {
+              const isSelected = selectedCategoryId === category._id;
+              return (
+                <div className="p-2" key={index}>
+                  <div
+                    className={`CategoryMain text-center cursor-pointer capitalize transition-all duration-300 ${isSelected
+                      ? "text-white shadow-[0_2px_8px_rgba(0,74,112,0.25)]"
+                      : "text-slate-800 bg-white border border-slate-200 hover:border-brand-600 hover:bg-slate-100"
+                      }`}
+                    style={{
+                      padding: "10px 14px",
+                      background: isSelected
+                        ? "#004a70"
+                        : "",
+                      borderRadius: "9999px",
+                      minWidth: "120px",
+                      textAlign: "center",
+                      display: "flex",
+                      alignItems: "center",
+                      justifyContent: "center",
+                      border: isSelected ? "none" : "",
+                      margin: "0 auto",
+                      whiteSpace: "nowrap",
+                      fontSize: 14,
+                      fontWeight: 500,
+                      fontFamily: "Inter-Medium",
+                    }}
+                    onClick={() => setSelectedCategoryId(category._id)}
+                  >
+                    <span style={{ fontSize: 13, fontFamily: "Inter-Medium" }}>{category?.name}</span>
+                  </div>
                 </div>
-              </div>
-            );
-          })}
-        </Slider>
+              );
+            })}
+          </Slider>
+        )}
       </div>
 
       <div className="slider-container container mx-auto p-3">
-        {/* Show spinner when location loading */}
-        {locationLoading ? (
+        {/* Show spinner when location loading or category loading */}
+        {locationLoading || loading ? (
             <div className="w-full py-4">
-              <div className="flex justify-center mb-8">
-                <div className="px-6 py-2.5 bg-brand-50 text-primary font-['Inter-Medium'] rounded-full text-sm animate-pulse border border-brand-100 flex items-center gap-3 shadow-sm">
-                  <Spinner size="sm" color="#004a70" />
-                  <span>Loading recommendations for your location...</span>
-                </div>
-              </div>
               <div className="grid grid-cols-1 sm:grid-cols-2 md:grid-cols-3 lg:grid-cols-4 gap-4">
                 {[1, 2, 3, 4].map((item) => (
                   <div key={item} className="bg-white rounded-[20px] overflow-hidden shadow-[0_4px_12px_rgba(0,0,0,0.03)] border border-slate-100 flex flex-col h-[380px] animate-pulse">
