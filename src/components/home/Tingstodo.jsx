@@ -457,15 +457,9 @@ export default function Tingstodo() {
       </div>
 
       <div className="slider-container container mx-auto p-3">
-        {/* Show spinner when location loading */}
-        {locationLoading ? (
+        {/* Show spinner when location loading or category loading */}
+        {locationLoading || loading ? (
             <div className="w-full py-4">
-              <div className="flex justify-center mb-8">
-                <div className="px-6 py-2.5 bg-brand-50 text-primary font-['Inter-Medium'] rounded-full text-sm animate-pulse border border-brand-100 flex items-center gap-3 shadow-sm">
-                  <Spinner size="sm" color="#004a70" />
-                  <span>Loading recommendations for your location...</span>
-                </div>
-              </div>
               <div className="grid grid-cols-1 sm:grid-cols-2 md:grid-cols-3 lg:grid-cols-4 gap-4">
                 {[1, 2, 3, 4].map((item) => (
                   <div key={item} className="bg-white rounded-[20px] overflow-hidden shadow-[0_4px_12px_rgba(0,0,0,0.03)] border border-slate-100 flex flex-col h-[380px] animate-pulse">
