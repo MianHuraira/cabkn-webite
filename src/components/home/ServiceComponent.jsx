@@ -26,12 +26,14 @@ export default function ServiceComponent() {
   const [SubCategory, setSubCategory] = useState([]);
   // const userData = useSelector((state) => state.auth.user?.user);
   const [loading, setloading] = useState(false);
+  const [catLoading, setCatLoading] = useState(true);
   const [Count, setCount] = useState(1);
   const [Pagelength, setPagelength] = useState("");
   const [MoreLoading, setMoreLoading] = useState(false);
   const [fetchError, setFetchError] = useState(false);
 
   const getCategory = async () => {
+    setCatLoading(true);
     try {
       const response = await getData("/servicecat/all/1", header1);
       const staticCategory = { _id: 0, name: "All" };
@@ -41,7 +43,9 @@ export default function ServiceComponent() {
       ];
 
       setCategory(updatedCategories);
+      setCatLoading(false);
     } catch (error) {
+      setCatLoading(false);
       console.log(error);
     }
   };
@@ -212,42 +216,52 @@ export default function ServiceComponent() {
       <div style={{ maxWidth: 1200, margin: "0 auto", padding: "20px 16px", width: "100%" }}>
         {/* Category Pills */}
         <div className="slider-container" style={{ marginBottom: 24 }}>
-          <Slider {...settings2} key={Category.length}>
-            {Category.map((category, index) => {
-              const isSelected = selectedCategoryId === category._id;
-              return (
-                <div className="p-2" key={index}>
-                  <div
-                    className={`CategoryMain text-center cursor-pointer capitalize ${!isSelected ? "hover:border-brand-700 hover:bg-slate-100" : ""}`}
-                    style={{
-                      padding: "10px 14px",
-                      background: isSelected
-                        ? "#004a70"
-                        : "#fff",
-                      color: isSelected ? "white" : "#1e293b",
-                      borderRadius: "9999px",
-                      minWidth: "120px",
-                      textAlign: "center",
-                      display: "flex",
-                      alignItems: "center",
-                      justifyContent: "center",
-                      transition: "all 0.3s ease",
-                      border: isSelected ? "none" : "1px solid #e2e8f0",
-                      boxShadow: isSelected ? "0 2px 8px rgba(0,74,112,0.25)" : "none",
-                      margin: "0 auto",
-                      whiteSpace: "nowrap",
-                      fontSize: 14,
-                      fontWeight: 500,
-                      fontFamily: "Inter-Medium",
-                    }}
-                    onClick={() => setSelectedCategoryId(category._id)}
-                  >
-                    <span style={{ fontSize: 13, fontFamily: "Inter-Medium" }}>{category?.name}</span>
-                  </div>
+          {catLoading ? (
+            <div style={{ display: "flex", gap: 10, overflow: "hidden" }}>
+              {[1, 2, 3, 4, 5, 6, 7, 8].map((item) => (
+                <div key={item} className="animate-pulse" style={{ flexShrink: 0, width: 120 }}>
+                  <div style={{ height: 42, borderRadius: 9999, background: "#e2e8f0" }} />
                 </div>
-              );
-            })}
-          </Slider>
+              ))}
+            </div>
+          ) : (
+            <Slider {...settings2} key={Category.length}>
+              {Category.map((category, index) => {
+                const isSelected = selectedCategoryId === category._id;
+                return (
+                  <div className="p-2" key={index}>
+                    <div
+                      className={`CategoryMain text-center cursor-pointer capitalize ${!isSelected ? "hover:border-brand-700 hover:bg-slate-100" : ""}`}
+                      style={{
+                        padding: "10px 14px",
+                        background: isSelected
+                          ? "#004a70"
+                          : "#fff",
+                        color: isSelected ? "white" : "#1e293b",
+                        borderRadius: "9999px",
+                        minWidth: "120px",
+                        textAlign: "center",
+                        display: "flex",
+                        alignItems: "center",
+                        justifyContent: "center",
+                        transition: "all 0.3s ease",
+                        border: isSelected ? "none" : "1px solid #e2e8f0",
+                        boxShadow: isSelected ? "0 2px 8px rgba(0,74,112,0.25)" : "none",
+                        margin: "0 auto",
+                        whiteSpace: "nowrap",
+                        fontSize: 14,
+                        fontWeight: 500,
+                        fontFamily: "Inter-Medium",
+                      }}
+                      onClick={() => setSelectedCategoryId(category._id)}
+                    >
+                      <span style={{ fontSize: 13, fontFamily: "Inter-Medium" }}>{category?.name}</span>
+                    </div>
+                  </div>
+                );
+              })}
+            </Slider>
+          )}
         </div>
 
         {/* Products Grid */}
@@ -263,7 +277,9 @@ export default function ServiceComponent() {
                       <div className="bg-slate-200/70 h-5 w-1/4 rounded-full"></div>
                     </div>
                     <div className="bg-slate-200/70 h-4 w-1/2 rounded-full"></div>
-                    <div className="mt-auto bg-slate-200/70 h-11 w-full rounded-[9999px]"></div>
+                    <div className="mt-auto pt-3">
+                      <div className="flex items-center gap-2 bg-slate-200/70 h-[38px] w-[135px] rounded-full" />
+                    </div>
                   </div>
                 </div>
               ))}
