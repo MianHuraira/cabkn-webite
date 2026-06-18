@@ -29,6 +29,7 @@ export default function ServiceComponent() {
   const [Count, setCount] = useState(1);
   const [Pagelength, setPagelength] = useState("");
   const [MoreLoading, setMoreLoading] = useState(false);
+  const [fetchError, setFetchError] = useState(false);
 
   const getCategory = async () => {
     try {
@@ -47,6 +48,7 @@ export default function ServiceComponent() {
 
   const getCategorydata = async () => {
     setloading(true);
+    setFetchError(false);
     try {
       const response = await getData(
         selectedCategoryId === 0
@@ -55,14 +57,30 @@ export default function ServiceComponent() {
         header1
       );
 
-      setSubCategory(response?.categories);
-      setPagelength(response?.count?.currentPageSize);
+      if (response) {
+        setSubCategory(response?.categories);
+        setPagelength(response?.count?.currentPageSize);
+      } else {
+        setFetchError(true);
+      }
       setloading(false);
     } catch (error) {
+      setFetchError(true);
       setloading(false);
       console.log(error);
     }
   };
+
+  useEffect(() => {
+    if (!loading) return;
+    const timer = setTimeout(() => {
+      if (loading) {
+        setloading(false);
+        setFetchError(true);
+      }
+    }, 12000);
+    return () => clearTimeout(timer);
+  }, [loading]);
 
   useEffect(() => {
     getCategorydata();
@@ -233,7 +251,49 @@ export default function ServiceComponent() {
         </div>
 
         {/* Products Grid */}
-        {SubCategory.length > 0 ? (
+        {loading ? (
+          <div className="w-full">
+            <div className="grid grid-cols-1 sm:grid-cols-2 md:grid-cols-3 lg:grid-cols-4 gap-3">
+              {[1, 2, 3, 4].map((item) => (
+                <div key={item} className="bg-white rounded-[20px] overflow-hidden shadow-[0_4px_12px_rgba(0,0,0,0.03)] border border-slate-100 flex flex-col h-[380px] animate-pulse">
+                  <div className="bg-slate-200/70 h-[180px] w-full"></div>
+                  <div className="p-4 flex-1 flex flex-col gap-4">
+                    <div className="flex justify-between items-center gap-4">
+                      <div className="bg-slate-200/70 h-5 w-3/4 rounded-full"></div>
+                      <div className="bg-slate-200/70 h-5 w-1/4 rounded-full"></div>
+                    </div>
+                    <div className="bg-slate-200/70 h-4 w-1/2 rounded-full"></div>
+                    <div className="mt-auto bg-slate-200/70 h-11 w-full rounded-[9999px]"></div>
+                  </div>
+                </div>
+              ))}
+            </div>
+          </div>
+        ) : fetchError ? (
+          <div className="py-10 text-center">
+            <EmptyState
+              showBg={false}
+              title="Couldn't load products"
+              description="Something went wrong while loading products. Please check your connection and try again."
+            />
+            <button
+              onClick={getCategorydata}
+              style={{
+                marginTop: 12,
+                padding: "10px 24px",
+                background: "#004a70",
+                color: "#fff",
+                border: "none",
+                borderRadius: 8,
+                fontSize: 14,
+                fontWeight: 500,
+                cursor: "pointer",
+              }}
+            >
+              Try Again
+            </button>
+          </div>
+        ) : SubCategory.length > 0 ? (
           <>
             <div className="grid grid-cols-1 sm:grid-cols-2 md:grid-cols-3 lg:grid-cols-4 gap-3">
               {SubCategory?.map((testimonial, index) => (
