@@ -30,19 +30,23 @@ export const useApi = () => {
   });
 
   const handleApiError = (error, method, endpoint) => {
-    // More robust error logging without excessive console errors
-    const errorInfo = {
-      method,
-      url: error.config?.url || endpoint,
-      status: error.response?.status,
-      message: error.message,
-    };
+    // Only log errors that have meaningful information
+    const isMeaningfulError = error && (error.message || error.response || error.config);
     
-    // Only log detailed errors in development
-    if (process.env.NODE_ENV === 'development') {
-      console.error(`API ${method} Error:`, errorInfo);
-    } else {
-      console.error(`API ${method} Error:`, error.message);
+    if (isMeaningfulError) {
+      const errorInfo = {
+        method,
+        url: error.config?.url || endpoint,
+        status: error.response?.status,
+        message: error.message,
+      };
+      
+      // Only log detailed errors in development
+      if (process.env.NODE_ENV === 'development') {
+        console.error(`API ${method} Error:`, errorInfo);
+      } else {
+        console.error(`API ${method} Error:`, error.message);
+      }
     }
     
     // Don't re-throw, return undefined
