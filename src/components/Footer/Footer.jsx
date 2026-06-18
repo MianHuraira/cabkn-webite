@@ -43,8 +43,13 @@ export default function Footer() {
     const el = sectionRef.current;
     if (!el) return;
     const observer = new IntersectionObserver(
-      ([entry]) => { if (entry.isIntersecting) { setInView(true); observer.disconnect(); } },
-      { threshold: 0.05 }
+      ([entry]) => {
+        if (entry.isIntersecting) {
+          setInView(true);
+          observer.disconnect();
+        }
+      },
+      { threshold: 0.05 },
     );
     observer.observe(el);
     return () => observer.disconnect();
@@ -58,93 +63,105 @@ export default function Footer() {
   ];
 
   return (
-    <footer ref={sectionRef} className="bg-gradient-to-br from-brand-700 to-brand-950">
+    <footer
+      ref={sectionRef}
+      className="bg-gradient-to-br from-brand-700 to-brand-950"
+    >
       <div className="max-w-[1320px] mx-auto px-4 sm:px-6 lg:px-8 pt-10 lg:pt-14 pb-8 lg:pb-10">
         {/* Main 3-Column Grid - Clean Layout */}
         <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-8 lg:gap-12">
-          
           {/* Left Section: Brand Area */}
-          <div className={`flex flex-col gap-4 items-center md:items-start reveal ${inView ? "visible" : ""}`}
-               style={{ transitionDelay: "50ms" }}>
-            
+          <div
+            className={`flex flex-col gap-4 items-center md:items-start reveal ${inView ? "visible" : ""}`}
+            style={{ transitionDelay: "50ms" }}
+          >
             {/* Logo */}
-            <Link href="/" className="inline-flex items-center gap-3 focus:outline-none">
+            <Link
+              href="/"
+              className="inline-flex items-center gap-3 focus:outline-none"
+            >
               <div className="flex items-center justify-center">
-                <Image 
-                  src={logoBlue} 
-                  alt="CabKN" 
-                  height={36} 
+                <Image
+                  src={logoBlue}
+                  alt="CabKN"
+                  height={36}
                   width={144}
                   className="h-9 w-auto"
                 />
               </div>
             </Link>
-            
+
             {/* Description */}
             <p className="text-white/80 text-sm leading-relaxed max-w-[300px] md:max-w-none text-center md:text-left">
-              {FooterData?.short_title || "Your reliable ride partner, connecting you to your destinations safely and comfortably."}
+              {FooterData?.short_title ||
+                "Your reliable ride partner, connecting you to your destinations safely and comfortably."}
             </p>
-            
+
             {/* CTA Button */}
             <CustomButton
               onClick={() => router.push(userData ? "/ride" : "/auth/login")}
               variant="primary"
               size="md"
-              endContent={<FiArrowRight size={14} className="group-hover:translate-x-0.5 transition-transform duration-300" />}
-              className="!bg-white !text-brand-700 !shadow-lg !shadow-black/12 !hover:shadow-xl !hover:-translate-y-0.5 !font-semibold"
+              endContent={
+                <FiArrowRight
+                  size={14}
+                  className="group-hover:translate-x-0.5 transition-transform duration-300"
+                />
+              }
+              style={{ color: "#000 !important" }}
+              className="!bg-white text-brand-700 !shadow-lg !shadow-black/12 !hover:shadow-xl !hover:-translate-y-0.5 !font-semibold !min-w-[160px]"
             >
               Request a driver
             </CustomButton>
-            
           </div>
 
           {/* Center Section: Contact Information - Simple Clean */}
-          <div className={`flex flex-col gap-4 items-center md:items-start reveal ${inView ? "visible" : ""}`}
-               style={{ transitionDelay: "150ms" }}>
-            
-            <h4 className="text-white text-sm font-semibold m-0">
-              Contact Us
-            </h4>
-            
+          <div
+            className={`flex flex-col gap-4 items-center md:items-start reveal ${inView ? "visible" : ""}`}
+            style={{ transitionDelay: "150ms" }}
+          >
+            <h4 className="text-white text-sm font-semibold m-0">Contact Us</h4>
+
             <div className="flex flex-col gap-2 items-center md:items-start">
-              
               {/* Phone */}
               {FooterData?.phone && (
-                <Link 
-                  href={`tel:${FooterData?.phone}`} 
+                <Link
+                  href={`tel:${FooterData?.phone}`}
                   className="group flex items-center gap-2.5 text-white/90 hover:text-white transition-colors"
                 >
                   <BsFillTelephoneFill size={14} className="text-white/70" />
                   <span className="text-sm">{FooterData?.phone}</span>
                 </Link>
               )}
-              
+
               {/* Email */}
               {FooterData?.emails && (
-                <Link 
-                  href={`mailto:${FooterData?.emails}`} 
+                <Link
+                  href={`mailto:${FooterData?.emails}`}
                   className="group flex items-center gap-2.5 text-white/90 hover:text-white transition-colors"
                 >
                   <AiOutlineMail size={15} className="text-white/70" />
                   <span className="text-sm">{FooterData?.emails}</span>
                 </Link>
               )}
-              
+
               {/* Location */}
               {FooterData?.location && (
                 <div className="group flex items-start gap-2.5 text-white/90">
                   <FiMapPin size={15} className="text-white/70 mt-0.5" />
-                  <span className="text-sm leading-relaxed text-center md:text-left max-w-[220px] md:max-w-none">{FooterData?.location}</span>
+                  <span className="text-sm leading-relaxed text-center md:text-left max-w-[220px] md:max-w-none">
+                    {FooterData?.location}
+                  </span>
                 </div>
               )}
-              
             </div>
           </div>
 
           {/* Right Section: Social & App Downloads */}
-          <div className={`flex flex-col gap-5 items-center md:items-start reveal ${inView ? "visible" : ""}`}
-               style={{ transitionDelay: "250ms" }}>
-            
+          <div
+            className={`flex flex-col gap-5 items-center md:items-start reveal ${inView ? "visible" : ""}`}
+            style={{ transitionDelay: "250ms" }}
+          >
             {/* Social Media - Clean */}
             <div className="flex flex-col gap-2.5 items-center md:items-start">
               <h4 className="text-white text-sm font-semibold m-0">
@@ -162,7 +179,7 @@ export default function Footer() {
                 ))}
               </div>
             </div>
-            
+
             {/* App Downloads */}
             <div className="flex flex-col gap-2.5 items-center md:items-start">
               <h4 className="text-white text-sm font-semibold m-0">
@@ -171,7 +188,7 @@ export default function Footer() {
               <p className="text-white/70 text-sm leading-relaxed max-w-[220px] md:max-w-none text-center md:text-left">
                 Book rides on the go with our mobile app.
               </p>
-              
+
               {/* App Store Buttons */}
               <div className="flex flex-col sm:flex-row gap-2 pt-0.5 items-center sm:items-start">
                 <Link
@@ -204,7 +221,6 @@ export default function Footer() {
                 </Link>
               </div>
             </div>
-            
           </div>
         </div>
       </div>
@@ -217,11 +233,17 @@ export default function Footer() {
               &copy; {new Date().getFullYear()} CabKN. All rights reserved.
             </p>
             <div className="flex items-center gap-3 sm:gap-4">
-              <Link href="/privacy" className="text-white/60 text-[12px] cursor-pointer hover:text-white transition-colors duration-300">
+              <Link
+                href="/privacy"
+                className="text-white/60 text-[12px] cursor-pointer hover:text-white transition-colors duration-300"
+              >
                 Privacy Policy
               </Link>
               <span className="text-white/30 text-[12px]">·</span>
-              <Link href="/terms" className="text-white/60 text-[12px] cursor-pointer hover:text-white transition-colors duration-300">
+              <Link
+                href="/terms"
+                className="text-white/60 text-[12px] cursor-pointer hover:text-white transition-colors duration-300"
+              >
                 Terms &amp; Conditions
               </Link>
             </div>
