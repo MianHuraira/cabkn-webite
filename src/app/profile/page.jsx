@@ -615,32 +615,92 @@ export default function EditProfile() {
     <div className={mounted ? 'animate-fade-in' : 'opacity-0'} style={{ minHeight: "100vh", background: "#f8fafc" }}>
       {/* Header */}
       <div
-        className={mounted ? 'animate-fade-in-down' : 'opacity-0'}
         style={{
-          background: "linear-gradient(135deg, #004a70 0%, #002d47 100%)",
-          padding: "28px 0 44px",
-          animationDelay: "50ms",
+          background: "linear-gradient(135deg, #0a2540 0%, #004a70 40%, #005f8a 100%)",
+          padding: "clamp(20px, 4vw, 32px) 0 clamp(40px, 6vw, 56px)",
+          position: "relative",
+          overflow: "hidden",
         }}
       >
-        <div style={{ maxWidth: 1200, margin: "0 auto", padding: "0 16px" }}>
-          <div style={{ color: "rgba(255,255,255,0.6)", fontSize: 13, marginBottom: 8 }}>
-            Home / Profile
-          </div>
-          <h1
+        <div
+          style={{
+            position: "absolute",
+            top: -60,
+            right: -60,
+            width: 200,
+            height: 200,
+            borderRadius: "50%",
+            background: "rgba(255,255,255,0.03)",
+          }}
+        />
+        <div
+          style={{
+            position: "absolute",
+            bottom: -40,
+            left: -40,
+            width: 160,
+            height: 160,
+            borderRadius: "50%",
+            background: "rgba(255,255,255,0.03)",
+          }}
+        />
+
+        <div style={{ maxWidth: 1200, margin: "0 auto", padding: "0 clamp(12px, 3vw, 24px)", position: "relative" }}>
+          <div
             style={{
-              color: "#fff",
-              fontSize: "clamp(22px, 4vw, 28px)",
-              fontWeight: 700,
-              margin: 0,
-              letterSpacing: "-0.3px",
               display: "flex",
               alignItems: "center",
-              gap: 10,
+              gap: 8,
+              color: "rgba(255,255,255,0.5)",
+              fontSize: 13,
+              fontWeight: 500,
+              marginBottom: 16,
             }}
           >
-            <FaUserCircle size={26} />
-            My Profile
-          </h1>
+            <a href="/" style={{ color: "rgba(255,255,255,0.5)", textDecoration: "none", transition: "color 0.2s" }}
+               onMouseEnter={(e) => e.currentTarget.style.color = "#fff"}
+               onMouseLeave={(e) => e.currentTarget.style.color = "rgba(255,255,255,0.5)"}>
+              Home
+            </a>
+            <span style={{ color: "rgba(255,255,255,0.3)" }}>/</span>
+            <span style={{ color: "rgba(255,255,255,0.8)" }}>Profile</span>
+          </div>
+
+          <div style={{ display: "flex", alignItems: "center", gap: "clamp(10px, 2vw, 16px)" }}>
+            <div
+              style={{
+                width: "clamp(40px, 6vw, 52px)",
+                height: "clamp(40px, 6vw, 52px)",
+                borderRadius: "clamp(12px, 2vw, 16px)",
+                background: "rgba(255,255,255,0.12)",
+                backdropFilter: "blur(8px)",
+                display: "flex",
+                alignItems: "center",
+                justifyContent: "center",
+                flexShrink: 0,
+              }}
+            >
+              <FaUserCircle size="clamp(20px, 3vw, 26px)" color="#fff" />
+            </div>
+            <div>
+              <h1
+                style={{
+                  color: "#fff",
+                  fontSize: "clamp(20px, 5vw, 30px)",
+                  fontWeight: 700,
+                  margin: 0,
+                  letterSpacing: "-0.5px",
+                  lineHeight: 1.2,
+                  wordBreak: "break-word",
+                }}
+              >
+                My Profile
+              </h1>
+              <p style={{ color: "rgba(255,255,255,0.55)", fontSize: "clamp(12px, 2vw, 14px)", margin: "2px 0 0", fontWeight: 400, wordBreak: "break-word" }}>
+                Manage your account settings
+              </p>
+            </div>
+          </div>
         </div>
       </div>
 
