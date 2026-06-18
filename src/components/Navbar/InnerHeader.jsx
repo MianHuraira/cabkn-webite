@@ -31,7 +31,7 @@ const InnerHeader = () => {
   const handleClose = () => setShow(false);
 
 
-  const { getData, baseURL, userData } = ApiFunction();
+  const { getData, baseURL, userData, header1 } = ApiFunction();
   const dispatch = useDispatch();
   const router = useRouter();
   const pathname = usePathname();
@@ -81,10 +81,9 @@ const InnerHeader = () => {
 
   useEffect(() => {
     if (!userData?.token) return;
-    const h1 = { "Content-Type": "application/json", "x-auth-token": userData.token };
     const fetchNotifCount = async () => {
       try {
-        const res = await getData("notification/all/", h1);
+        const res = await getData("notification/all/", header1);
         if (res?.success) {
           const total = res?.notifications?.length || 0;
           if (notifLastTotalRef.current === -1) {
@@ -105,11 +104,12 @@ const InnerHeader = () => {
     fetchNotifCount();
     const interval = setInterval(fetchNotifCount, 30000);
     return () => clearInterval(interval);
-  }, [userData?.token]);
+  }, [userData?.token, header1]);
 
   const [driverModal, SetdriverModal] = useState(false);
   const handleClosedriver = () => SetdriverModal(false);
   const [userMenuOpen, setUserMenuOpen] = useState(false);
+  const [mobileProfileOpen, setMobileProfileOpen] = useState(false);
   const [mounted, setMounted] = useState(false);
 
   useEffect(() => { setMounted(true); }, []);
@@ -157,8 +157,8 @@ const InnerHeader = () => {
     { label: "List Own Place", href: "/listownplace" },
     { label: "Shop", href: "/serviceLocations" },
     { label: "Wallet", href: "/wallet" },
-    { label: "Chat", href: "/chat" },
-    { label: "Favorites", href: "/favorites" },
+    // { label: "Chat", href: "/chat" },
+    // { label: "Favorites", href: "/favorites" },
     { label: "Offers", href: "/coupon" },
     { label: "Reviews", href: "/userreviews" },
   ];
@@ -180,6 +180,16 @@ const InnerHeader = () => {
       label: "Profile",
       key: "1",
       to: "/profile",
+    },
+    {
+      label: "Chat",
+      key: "4",
+      to: "/chat",
+    },
+    {
+      label: "Favorites",
+      key: "5",
+      to: "/favorites",
     },
     {
       label: "Signup as Driver",
@@ -289,14 +299,6 @@ const InnerHeader = () => {
 
           {/* Right: Icons + User */}
           <div className="d-none d-xl-flex animate-fade-in" style={{ alignItems: "center", gap: 6, flexShrink: 0, animationDelay: "150ms" }}>
-            <Badge count={unreadCount} size="small" offset={[-2, 2]} style={{ backgroundColor: "#ef4444" }}>
-              <button
-                onClick={handleChatUser}
-                className="w-[34px] h-[34px] rounded-lg bg-gray-100 flex items-center justify-center cursor-pointer transition-all duration-200 text-gray-600 hover:bg-brand-600 hover:text-white hover:scale-110 border-0"
-              >
-                <HiOutlineChatBubbleOvalLeft size={16} />
-              </button>
-            </Badge>
             <Badge count={notifUnreadCount} size="small" offset={[-2, 2]} style={{ backgroundColor: "#ef4444" }}>
               <button
                 onClick={() => { dispatch(setNotifUnreadCount(0)); Route("notifications"); }}
@@ -305,12 +307,6 @@ const InnerHeader = () => {
                 <MdNotificationsActive size={16} />
               </button>
             </Badge>
-            <button
-              onClick={() => Route("favorites")}
-              className="w-[34px] h-[34px] rounded-lg bg-gray-100 flex items-center justify-center cursor-pointer transition-all duration-200 text-gray-600 hover:bg-brand-600 hover:text-white hover:scale-110 border-0"
-            >
-              <IoHeart size={16} />
-            </button>
 
             <div ref={userMenuRef} style={{ position: "relative" }}>
               <button
@@ -446,8 +442,7 @@ const InnerHeader = () => {
             <Image
               src={logoBlue}
               alt="Cabkn"
-              width={75}
-              height={26}
+             className="w-[4rem] h-[4rem] object-contain"
               style={{ objectFit: "contain" }}
             />
           </Link>
@@ -466,6 +461,7 @@ const InnerHeader = () => {
               fontSize: 16,
               color: "#6b7280",
               flexShrink: 0,
+              marginLeft: "auto",
             }}
           >
             ✕
@@ -473,8 +469,144 @@ const InnerHeader = () => {
         </Offcanvas.Header>
         <Offcanvas.Body style={{ padding: "12px 16px" }}>
           <div style={{ display: "flex", flexDirection: "column", gap: 2 }}>
+            {/* Profile Dropdown */}
+            <div className="animate-fade-in" style={{ animationDelay: "0ms" }}>
+              <div
+                onClick={() => setMobileProfileOpen(!mobileProfileOpen)}
+                className="transition-all duration-150 hover:bg-gray-100"
+                style={{
+                  padding: "11px 12px",
+                  borderRadius: 10,
+                  cursor: "pointer",
+                  color: "#374151",
+                  fontSize: 14,
+                  fontWeight: 500,
+                  display: "flex",
+                  alignItems: "center",
+                  justifyContent: "space-between",
+                  gap: 12,
+                }}
+              >
+                <div style={{ display: "flex", alignItems: "center", gap: 12 }}>
+                  {/* Avatar */}
+                  <div
+                    style={{
+                      width: 40,
+                      height: 40,
+                      borderRadius: "50%",
+                      backgroundColor: "#f3f4f6",
+                      display: "flex",
+                      alignItems: "center",
+                      justifyContent: "center",
+                      overflow: "hidden",
+                      flexShrink: 0,
+                    }}
+                  >
+                    {userData?.user?.image ? (
+                      <Image
+                        width={40}
+                        height={40}
+                        src={userData.user.image}
+                        style={{
+                          width: 40,
+                          height: 40,
+                          borderRadius: "50%",
+                          objectFit: "cover",
+                        }}
+                        alt="userImage"
+                      />
+                    ) : (
+                      <FaUser size={18} color="#6b7280" />
+                    )}
+                  </div>
+                  {/* User info */}
+                  <div>
+                    <div style={{ fontSize: 14, fontWeight: 600, color: "#1f2937" }}>
+                      {userData?.user?.name || "Profile"}
+                    </div>
+                    <div style={{ fontSize: 12, color: "#6b7280" }}>
+                      Profile actions
+                    </div>
+                  </div>
+                </div>
+                {/* Chevron */}
+                <span style={{
+                  transform: mobileProfileOpen ? "rotate(180deg)" : "rotate(0deg)",
+                  transition: "transform 0.2s",
+                  color: "#6b7280",
+                  fontSize: 14,
+                }}>
+                  ▼
+                </span>
+              </div>
+              {mobileProfileOpen && (
+                <div style={{ paddingLeft: 12, marginTop: 4 }}>
+                  {AuthDrop.map((item, idx) => (
+                    <div key={item.key} className="animate-fade-in" style={{ animationDelay: `${idx * 20}ms` }}>
+                      {item.to ? (
+                        <div
+                          onClick={() => {
+                            item.onClick?.();
+                            Route(item.to === "/" ? "" : item.to.slice(1));
+                          }}
+                          className="transition-all duration-150 hover:bg-gray-100"
+                          style={{
+                            padding: "8px 12px",
+                            borderRadius: 8,
+                            cursor: "pointer",
+                            color: item.label === "Logout" ? "#ef4444" : "#374151",
+                            fontSize: 13,
+                            fontWeight: 500,
+                          }}
+                        >
+                          {item.label}
+                        </div>
+                      ) : (
+                        <div
+                          onClick={() => {
+                            item.onClick?.();
+                          }}
+                          className="transition-all duration-150 hover:bg-gray-100"
+                          style={{
+                            padding: "8px 12px",
+                            borderRadius: 8,
+                            cursor: "pointer",
+                            color: "#374151",
+                            fontSize: 13,
+                            fontWeight: 500,
+                          }}
+                        >
+                          {item.label}
+                        </div>
+                      )}
+                    </div>
+                  ))}
+                  <div className="animate-fade-in" style={{ animationDelay: `${AuthDrop.length * 20}ms` }}>
+                    <div
+                      onClick={() => {
+                        dispatch(setNotifUnreadCount(0));
+                        Route("notifications");
+                      }}
+                      className="transition-all duration-150 hover:bg-gray-100"
+                      style={{
+                        padding: "8px 12px",
+                        borderRadius: 8,
+                        cursor: "pointer",
+                        color: "#374151",
+                        fontSize: 13,
+                        fontWeight: 500,
+                      }}
+                    >
+                      Notifications
+                    </div>
+                  </div>
+                </div>
+              )}
+            </div>
+
+            {/* Navigation Links */}
             {navLinks.map((link, index) => (
-              <div key={link.href} className="animate-fade-in" style={{ animationDelay: `${index * 40}ms` }}>
+              <div key={link.href} className="animate-fade-in" style={{ animationDelay: `${(index + 1) * 40}ms` }}>
                 <MobileNavItem
                   label={link.label}
                   active={isActive(link.href)}
@@ -482,34 +614,6 @@ const InnerHeader = () => {
                 />
               </div>
             ))}
-
-            <div style={{ borderTop: "1px solid #f0f0f0", margin: "12px 0", paddingTop: 12 }}>
-              <div className="animate-fade-in" style={{ animationDelay: "500ms" }}>
-                <MobileNavItem
-                  label="Profile"
-                  onClick={() => Route("profile")}
-                />
-              </div>
-              <div className="animate-fade-in" style={{ animationDelay: "550ms" }}>
-                <MobileNavItem
-                  label="Notifications"
-                  onClick={() => Route("notifications")}
-                />
-              </div>
-              <div className="animate-fade-in" style={{ animationDelay: "600ms" }}>
-                <MobileNavItem
-                  label="Signup as Driver"
-                  onClick={HandleModal}
-                />
-              </div>
-              <div className="animate-fade-in" style={{ animationDelay: "650ms" }}>
-                <MobileNavItem
-                  label="Logout"
-                  onClick={handleLogout}
-                  danger
-                />
-              </div>
-            </div>
           </div>
         </Offcanvas.Body>
       </Offcanvas>
@@ -697,7 +801,7 @@ const InnerHeader = () => {
                 fill="currentColor"
                 style={{ flexShrink: 0 }}
               >
-                <path d="M4.98 3.5C4.36 3.5 3.8 3.88 3.6 4.5c-.32.98-.3 2.1-.3 3.5v8c0 1.4-.02 2.52.3 3.5.2.62.77 1 1.4 1 .3 0 .55-.1.77-.28l10.8-7.5c.45-.35.7-.88.7-1.43 0-.55-.25-1.08-.7-1.43L5.74 3.78c-.22-.18-.46-.28-.76-.28z" />
+                <path d="M4.98 3.5C4.36 3.5 3.8 3.88 3.6 4.5c-.32.98-.3 2.1-.3 3.5v8c0 1.4-.02 2.52.3 3.5.2.62.77 1 1.4 1.3 0 .55-.1.77-.28l10.8-7.5c.45-.35.7-.88.7-1.43 0-.55-.25-1.08-.7-1.43L5.74 3.78c-.22-.18-.46-.28-.76-.28z" />
               </svg>
               <div>
                 <p

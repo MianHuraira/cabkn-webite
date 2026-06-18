@@ -206,7 +206,7 @@ export default function ServiceComponent() {
               return (
                 <div className="p-2" key={index}>
                   <div
-                    className={`CategoryMain text-center cursor-pointer ${!isSelected ? "hover:border-brand-700 hover:bg-slate-100" : ""}`}
+                    className={`CategoryMain text-center cursor-pointer capitalize ${!isSelected ? "hover:border-brand-700 hover:bg-slate-100" : ""}`}
                     style={{
                       padding: "10px 14px",
                       background: isSelected
@@ -261,8 +261,9 @@ export default function ServiceComponent() {
               {Pagelength > 1 ? (
                 <CustomButton
                   onClick={ShowMoreDAta}
+                  variant="primary"
+                  size="md"
                   loading={MoreLoading}
-                  style={{ minWidth: 140 }}
                 >
                   See more
                 </CustomButton>

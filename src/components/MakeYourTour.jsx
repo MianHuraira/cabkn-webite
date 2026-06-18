@@ -31,6 +31,7 @@ import ThingstodoCard from "@/components/home/ThingstodoCard";
 import ApiFunction from "@/components/ApiFunction/ApiFunction";
 import { useRouter } from "next/navigation";
 import Slider from "react-slick";
+import CustomButton from "./CustomButton";
 
 // const frontendBaseURL = "https://cabkn.com/popular";
 
@@ -807,9 +808,10 @@ function MakeYourTour() {
 
                 <CustomButton
                   type="submit"
+                  variant="primary"
+                  size="md"
                   loading={isLoading}
-                  style={{ width: "100%" }}
-                  size="lg"
+                  className="!w-full !h-12"
                 >
                   Next
                 </CustomButton>
@@ -841,7 +843,7 @@ function MakeYourTour() {
                     return (
                       <div className="p-2" key={index}>
                         <div
-                          className={`CategoryMain text-center cursor-pointer ${!isSelected ? "hover:border-brand-700 hover:bg-slate-100" : ""}`}
+                          className={`CategoryMain text-center cursor-pointer capitalize ${!isSelected ? "hover:border-brand-700 hover:bg-slate-100" : ""}`}
                           style={{
                             padding: "10px 14px",
                             background: isSelected
@@ -898,8 +900,9 @@ function MakeYourTour() {
                     {Pagelength > 0 ? (
                       <CustomButton
                         onClick={ShowMoreDAta}
+                        variant="primary"
+                        size="md"
                         loading={MoreLoading}
-                        style={{ minWidth: 140 }}
                       >
                         See more
                       </CustomButton>

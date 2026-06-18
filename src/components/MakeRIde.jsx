@@ -24,6 +24,7 @@ import { IoMdAddCircleOutline } from "react-icons/io";
 import { BiCurrentLocation } from "react-icons/bi";
 import ApiFunction from "@/components/ApiFunction/ApiFunction";
 import { useRouter, useSearchParams } from "next/navigation";
+import CustomButton from "./CustomButton";
 
 const RidePage = () => {
   const searchParams = useSearchParams();
@@ -1047,31 +1048,15 @@ const RidePage = () => {
               <div style={{ height: 1, background: "#f3f4f6", margin: "20px 0" }} />
 
               {/* Submit */}
-              <button
+              <CustomButton
                 type="submit"
-                disabled={isLoading}
-                className={!isLoading ? "hover:shadow-lg hover:-translate-y-0.5" : ""}
-                style={{
-                  width: "100%",
-                  height: 48,
-                  border: "none",
-                  borderRadius: "9999px",
-                   background: isLoading ? "#9ca3af" : "#004a70",
-                  color: "#fff",
-                  fontFamily: "Inter-SemiBold",
-                  fontSize: 15,
-                  cursor: isLoading ? "not-allowed" : "pointer",
-                  display: "flex",
-                  alignItems: "center",
-                  justifyContent: "center",
-                  gap: 8,
-                  boxShadow: isLoading ? "none" : "0 4px 14px rgba(0,74,112,0.25)",
-                  transition: "all 0.2s",
-                  marginTop: 8,
-                }}
+                variant="primary"
+                size="md"
+                loading={isLoading}
+                className="!w-full !h-12 !mt-2"
               >
-                {isLoading ? <Spinner size="sm" style={{ color: "#fff" }} /> : "Next"}
-              </button>
+                Next
+              </CustomButton>
             </form>
           </div>
 
@@ -1112,17 +1097,13 @@ const RidePage = () => {
               >
                 Cancel
               </button>
-              <button
+              <CustomButton
                 onClick={handlePermissionGuide}
-                className="hover:opacity-90"
-                style={{
-                  padding: "10px 24px", borderRadius: "9999px", background: "linear-gradient(135deg, #004a70 0%, #002d47 100%)", border: "none",
-                  color: "#fff", fontSize: 14, fontWeight: 600, cursor: "pointer",
-                  transition: "opacity 0.2s",
-                }}
+                variant="primary"
+                size="md"
               >
                 Show Instructions
-              </button>
+              </CustomButton>
             </div>
           </div>
         </div>

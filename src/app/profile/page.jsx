@@ -54,6 +54,7 @@ export default function EditProfile() {
   });
   const dispatch = useDispatch();
 
+
   const [isMobile, setIsMobile] = useState(false);
   const [mounted, setMounted] = useState(false);
   useEffect(() => { setMounted(true); }, []);
@@ -119,11 +120,14 @@ export default function EditProfile() {
       if (res?.success) {
         setisLoading(false);
         getProfile();
-        message.success(res?.message);
+        message.success(res?.message || "Profile updated successfully");
+      } else {
+        setisLoading(false);
+        message.error(res?.message || "Failed to update profile");
       }
     } catch (error) {
       setisLoading(false);
-      message.success(error.response?.data?.message);
+      message.error(error?.response?.data?.message || "Something went wrong");
     }
   };
 
@@ -255,7 +259,7 @@ export default function EditProfile() {
                     document.getElementById("file-upload-profile").click()
                   }
                 >
-                  {image ? (
+                  {mounted && image ? (
                     <img
                       src={image}
                       alt="Profile"
@@ -281,7 +285,7 @@ export default function EditProfile() {
                   )}
                 </div>
                 <div>
-                  <p
+                  <h5
                     style={{
                       fontWeight: 600,
                       fontSize: 18,
@@ -289,17 +293,18 @@ export default function EditProfile() {
                       margin: 0,
                     }}
                   >
-                    {userData?.user?.name || "Your Name"}
-                  </p>
-                  <p
+                    {mounted ? (userData?.user?.name || "Your Name") : "Your Name"}
+                  </h5>
+                  <span
                     style={{
                       fontSize: 13,
                       color: "#6b7280",
                       margin: "4px 0 0",
                     }}
                   >
-                    {userData?.user?.email || "email@example.com"}
-                  </p>
+                    {mounted ? (userData?.user?.email || "email@example.com") : "email@example.com"}
+                  </span>
+                  <br />
                   <button
                     onClick={() =>
                       document.getElementById("file-upload-profile").click()
@@ -517,7 +522,7 @@ export default function EditProfile() {
                     borderTop: "1px solid #f3f4f6",
                   }}
                 >
-                <CustomButton
+                  <CustomButton
                     type="submit"
                     loading={isLoading}
                     style={{ minWidth: 140 }}
@@ -609,25 +614,85 @@ export default function EditProfile() {
           animationDelay: "50ms",
         }}
       >
-        <div style={{ maxWidth: 1200, margin: "0 auto", padding: "0 16px" }}>
-          <div style={{ color: "rgba(255,255,255,0.6)", fontSize: 13, marginBottom: 8 }}>
-            Home / Profile
-          </div>
-          <h1
+        <div
+          style={{
+            position: "absolute",
+            top: -60,
+            right: -60,
+            width: 200,
+            height: 200,
+            borderRadius: "50%",
+            background: "rgba(255,255,255,0.03)",
+          }}
+        />
+        <div
+          style={{
+            position: "absolute",
+            bottom: -40,
+            left: -40,
+            width: 160,
+            height: 160,
+            borderRadius: "50%",
+            background: "rgba(255,255,255,0.03)",
+          }}
+        />
+
+        <div style={{ maxWidth: 1200, margin: "0 auto", padding: "0 clamp(12px, 3vw, 24px)", position: "relative" }}>
+          <div
             style={{
-              color: "#fff",
-              fontSize: "clamp(22px, 4vw, 28px)",
-              fontWeight: 700,
-              margin: 0,
-              letterSpacing: "-0.3px",
               display: "flex",
               alignItems: "center",
-              gap: 10,
+              gap: 8,
+              color: "rgba(255,255,255,0.5)",
+              fontSize: 13,
+              fontWeight: 500,
+              marginBottom: 16,
             }}
           >
-            <FaUserCircle size={26} />
-            My Profile
-          </h1>
+            <a href="/" style={{ color: "rgba(255,255,255,0.5)", textDecoration: "none", transition: "color 0.2s" }}
+              onMouseEnter={(e) => e.currentTarget.style.color = "#fff"}
+              onMouseLeave={(e) => e.currentTarget.style.color = "rgba(255,255,255,0.5)"}>
+              Home
+            </a>
+            <span style={{ color: "rgba(255,255,255,0.3)" }}>/</span>
+            <span style={{ color: "rgba(255,255,255,0.8)" }}>Profile</span>
+          </div>
+
+          <div style={{ display: "flex", alignItems: "center", gap: "clamp(10px, 2vw, 16px)" }}>
+            <div
+              style={{
+                width: "clamp(40px, 6vw, 52px)",
+                height: "clamp(40px, 6vw, 52px)",
+                borderRadius: "clamp(12px, 2vw, 16px)",
+                background: "rgba(255,255,255,0.12)",
+                backdropFilter: "blur(8px)",
+                display: "flex",
+                alignItems: "center",
+                justifyContent: "center",
+                flexShrink: 0,
+              }}
+            >
+              <FaUserCircle size="clamp(20px, 3vw, 26px)" color="#fff" />
+            </div>
+            <div>
+              <h1
+                style={{
+                  color: "#fff",
+                  fontSize: "clamp(20px, 5vw, 30px)",
+                  fontWeight: 700,
+                  margin: 0,
+                  letterSpacing: "-0.5px",
+                  lineHeight: 1.2,
+                  wordBreak: "break-word",
+                }}
+              >
+                My Profile
+              </h1>
+              <p style={{ color: "rgba(255,255,255,0.55)", fontSize: "clamp(12px, 2vw, 14px)", margin: "2px 0 0", fontWeight: 400, wordBreak: "break-word" }}>
+                Manage your account settings
+              </p>
+            </div>
+          </div>
         </div>
       </div>
 

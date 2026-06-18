@@ -57,7 +57,7 @@ const Header = () => {
 
   const isActive = (href) => {
     if (href === "/") return pathname === "/";
-    return pathname === `/${href}` || pathname.startsWith(`/${href}/`);
+    return pathname === `/${href}` || pathname.startsWith(`/${href}`);
   };
 
   const linkStyle = (id) => ({
@@ -279,6 +279,7 @@ const Header = () => {
               fontSize: 16,
               color: "#6b7280",
               flexShrink: 0,
+              marginLeft: "auto",
             }}
           >
             ✕
@@ -297,14 +298,14 @@ const Header = () => {
           ))}
 
           <div style={{ borderTop: "1px solid #f0f0f0", margin: "12px 0", paddingTop: 12 }}>
-            <div className="animate-fade-in" style={{ animationDelay: "400ms" }}>
+            <div className="animate-fade-in" style={{ animationDelay: "500ms" }}>
               <MobileNavItem label="Login" onClick={() => { handleClose(); router.push("/auth/login"); }} />
             </div>
-            <div className="animate-fade-in" style={{ animationDelay: "450ms" }}>
+            <div className="animate-fade-in" style={{ animationDelay: "550ms" }}>
               <MobileNavItem label="Sign Up" onClick={() => { handleClose(); router.push("/auth/stepOne"); }} />
             </div>
-            <div className="animate-fade-in" style={{ animationDelay: "500ms" }}>
-              <MobileNavItem label="Sign Up as Driver" onClick={() => { SetdriverModal(true); handleClose(); }} />
+            <div className="animate-fade-in" style={{ animationDelay: "600ms" }}>
+              <MobileNavItem label="Signup as Driver" onClick={() => { SetdriverModal(true); handleClose(); }} />
             </div>
           </div>
         </div>
@@ -428,7 +429,7 @@ const Header = () => {
               onMouseLeave={(e) => { e.currentTarget.style.background = "#0a1f2e"; e.currentTarget.style.transform = "translateY(0)"; }}
             >
               <svg width={22} height={22} viewBox="0 0 24 24" fill="currentColor" style={{ flexShrink: 0 }}>
-                <path d="M4.98 3.5C4.36 3.5 3.8 3.88 3.6 4.5c-.32.98-.3 2.1-.3 3.5v8c0 1.4-.02 2.52.3 3.5.2.62.77 1 1.4 1 .3 0 .55-.1.77-.28l10.8-7.5c.45-.35.7-.88.7-1.43 0-.55-.25-1.08-.7-1.43L5.74 3.78c-.22-.18-.46-.28-.76-.28z" />
+                <path d="M4.98 3.5C4.36 3.5 3.8 3.88 3.6 4.5c-.32.98-.3 2.1-.3 3.5v8c0 1.4-.02 2.52.3 3.5.2.62.77 1 1.4 1.3 0 .55-.1.77-.28l10.8-7.5c.45-.35.7-.88.7-1.43 0-.55-.25-1.08-.7-1.43L5.74 3.78c-.22-.18-.46-.28-.76-.28z" />
               </svg>
               <div>
                 <p style={{ fontSize: 9, color: "rgba(255,255,255,0.5)", margin: 0, lineHeight: 1, letterSpacing: 1, textTransform: "uppercase" }}>Get it on</p>

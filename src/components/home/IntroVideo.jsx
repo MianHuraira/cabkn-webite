@@ -2,21 +2,24 @@
 "use client"
 import React, { useEffect, useState } from "react";
 import { Container, Spinner } from "react-bootstrap";
-import ApiFunction from "../ApiFunction/ApiFunction";
+import { useApi } from "../ApiFunction/ApiFunction";
 
 function IntroVideo() {
-  const { header1, getData } = ApiFunction();
+  const { header1, getData } = useApi();
   const [FooterData, setFooterData] = useState(null);
   const [isLoading, setIsLoading] = useState(true);
   const [loaded, setLoaded] = useState(false);
+  const [hasError, setHasError] = useState(false);
 
   const getProfile = async () => {
     try {
+      setHasError(false);
       const response = await getData("users/footer", header1);
       setFooterData(response?.footer);
-      setIsLoading(false);
     } catch (error) {
-      console.log(error);
+      console.error("Failed to load footer data:", error);
+      setHasError(true);
+    } finally {
       setIsLoading(false);
     }
   };

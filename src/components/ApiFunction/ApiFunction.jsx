@@ -29,6 +29,26 @@ export const useApi = () => {
     baseURL,
   });
 
+  const handleApiError = (error, method, endpoint) => {
+    // More robust error logging without excessive console errors
+    const errorInfo = {
+      method,
+      url: error.config?.url || endpoint,
+      status: error.response?.status,
+      message: error.message,
+    };
+    
+    // Only log detailed errors in development
+    if (process.env.NODE_ENV === 'development') {
+      console.error(`API ${method} Error:`, errorInfo);
+    } else {
+      console.error(`API ${method} Error:`, error.message);
+    }
+    
+    // Don't re-throw, return undefined
+    return undefined;
+  };
+
   const getData = async (endpoint, headers = {}) => {
     try {
       const response = await axiosInstance.get(endpoint, {
@@ -38,8 +58,7 @@ export const useApi = () => {
       });
       return response.data;
     } catch (error) {
-      console.error("Error in GET request:", error);
-      throw error;
+      handleApiError(error, 'GET', endpoint);
     }
   };
 
@@ -52,8 +71,7 @@ export const useApi = () => {
       });
       return response.data;
     } catch (error) {
-      console.error("Error in POST request:", error);
-      throw error;
+      handleApiError(error, 'POST', endpoint);
     }
   };
 
@@ -66,8 +84,7 @@ export const useApi = () => {
       });
       return response.data;
     } catch (error) {
-      console.error("Error in DELETE request:", error);
-      throw error;
+      handleApiError(error, 'DELETE', endpoint);
     }
   };
 
@@ -80,8 +97,7 @@ export const useApi = () => {
       });
       return response.data;
     } catch (error) {
-      console.error("Error in PUT request:", error);
-      throw error;
+      handleApiError(error, 'PUT', endpoint);
     }
   };
 
