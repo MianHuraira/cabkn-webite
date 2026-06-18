@@ -149,46 +149,40 @@ export default function ServiceComponent() {
     <div className={mounted ? "animate-fade-in" : "opacity-0"}>
       {/* Blue Gradient Header */}
       <div
-        className={`bg-gradient-to-br from-brand-800 to-brand-950 ${mounted ? "animate-fade-in-down" : "opacity-0"}`}
+        className="bg-gradient-to-br from-brand-800 to-brand-950"
         style={{
           padding: "28px 0 44px",
-          animationDelay: "50ms",
+          position: "relative",
+          overflow: "hidden",
         }}
       >
-        <div style={{ maxWidth: 1320, margin: "0 auto", padding: "0 16px" }}>
-          <div style={{ color: "rgba(255,255,255,0.6)", fontSize: 13, marginBottom: 8 }}>
-            Home / Our Products
+        <div style={{ position: "absolute", top: -60, right: -60, width: 200, height: 200, borderRadius: "50%", background: "rgba(255,255,255,0.03)" }} />
+        <div style={{ position: "absolute", bottom: -40, left: -40, width: 160, height: 160, borderRadius: "50%", background: "rgba(255,255,255,0.03)" }} />
+
+        <div style={{ maxWidth: 1200, margin: "0 auto", padding: "0 24px", position: "relative" }}>
+          <div style={{ display: "flex", alignItems: "center", gap: 8, color: "rgba(255,255,255,0.5)", fontSize: 13, fontWeight: 500, marginBottom: 16 }}>
+            <a href="/" style={{ color: "rgba(255,255,255,0.5)", textDecoration: "none", transition: "color 0.2s" }}
+              onMouseEnter={(e) => e.currentTarget.style.color = "#fff"}
+              onMouseLeave={(e) => e.currentTarget.style.color = "rgba(255,255,255,0.5)"}>
+              Home
+            </a>
+            <span style={{ color: "rgba(255,255,255,0.3)" }}>/</span>
+            <span style={{ color: "rgba(255,255,255,0.8)" }}>Shop</span>
           </div>
-          <div
-            style={{
-              display: "flex",
-              alignItems: "center",
-              justifyContent: "space-between",
-              flexWrap: "wrap",
-              gap: 12,
-            }}
-          >
+
+          <div style={{ display: "flex", alignItems: "center", gap: "clamp(10px, 2vw, 16px)" }}>
+            <div style={{ width: "clamp(40px, 6vw, 52px)", height: "clamp(40px, 6vw, 52px)", borderRadius: "clamp(12px, 2vw, 16px)", background: "rgba(255,255,255,0.12)", backdropFilter: "blur(8px)", display: "flex", alignItems: "center", justifyContent: "center", flexShrink: 0 }}>
+              <svg width="clamp(20px, 3vw, 26px)" height="clamp(20px, 3vw, 26px)" viewBox="0 0 24 24" fill="none" stroke="#fff" strokeWidth={1.5} strokeLinecap="round" strokeLinejoin="round">
+                <path d="M6 2L3 6v14a2 2 0 0 0 2 2h14a2 2 0 0 0 2-2V6l-3-4z" />
+                <line x1="3" y1="6" x2="21" y2="6" />
+                <path d="M16 10a4 4 0 0 1-8 0" />
+              </svg>
+            </div>
             <div>
-              <h1
-                style={{
-                  color: "#fff",
-                  fontSize: "clamp(22px, 4vw, 28px)",
-                  fontWeight: 700,
-                  margin: 0,
-                  letterSpacing: "-0.3px",
-                  display: "flex",
-                  alignItems: "center",
-                  gap: 10,
-                }}
-              >
-                <svg width={26} height={26} viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth={2} strokeLinecap="round" strokeLinejoin="round">
-                  <path d="M6 2L3 6v14a2 2 0 0 0 2 2h14a2 2 0 0 0 2-2V6l-3-4z" />
-                  <line x1="3" y1="6" x2="21" y2="6" />
-                  <path d="M16 10a4 4 0 0 1-8 0" />
-                </svg>
+              <h1 style={{ color: "#fff", fontSize: "clamp(20px, 5vw, 30px)", fontWeight: 700, margin: 0, letterSpacing: "-0.5px", lineHeight: 1.2, wordBreak: "break-word" }}>
                 Our Products
               </h1>
-              <p style={{ color: "rgba(255,255,255,0.6)", fontSize: 14, margin: "4px 0 0" }}>
+              <p style={{ color: "rgba(255,255,255,0.55)", fontSize: "clamp(12px, 2vw, 14px)", margin: "2px 0 0", fontWeight: 400, wordBreak: "break-word" }}>
                 Browse our collection of products and services
               </p>
             </div>
@@ -197,7 +191,7 @@ export default function ServiceComponent() {
       </div>
 
       {/* Content */}
-      <div style={{ maxWidth: 1320, margin: "0 auto", padding: "20px 16px", width: "100%" }}>
+      <div style={{ maxWidth: 1200, margin: "0 auto", padding: "20px 16px", width: "100%" }}>
         {/* Category Pills */}
         <div className="slider-container" style={{ marginBottom: 24 }}>
           <Slider {...settings2} key={Category.length}>
