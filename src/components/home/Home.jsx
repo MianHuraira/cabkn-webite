@@ -58,7 +58,7 @@ const HomeComponent = () => {
 
         <div className="relative z-10 w-full max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 grid grid-cols-1 lg:grid-cols-2 gap-12 lg:gap-20 items-center">
           <div className="flex flex-col gap-5 sm:gap-7">
-            <div className={`inline-flex items-center gap-3 bg-white/10 hover:bg-white/15 border border-white/20 rounded-full px-5 py-2.5 text-white text-[11px] sm:text-xs uppercase tracking-[0.15em] font-['Inter-SemiBold'] w-fit backdrop-blur-md transition-all duration-300 shadow-[0_8px_32px_rgba(0,0,0,0.15)] cursor-default ${mounted ? "animate-fade-in-down" : "opacity-0"}`}
+            <div className={`inline-flex items-center gap-3 bg-white/10 hover:bg-white/15 border border-white/20 rounded-full px-3 py-2.5 text-white text-[11px] sm:text-xs uppercase tracking-[0.15em] font-['Inter-SemiBold'] w-fit backdrop-blur-md transition-all duration-300 shadow-[0_8px_32px_rgba(0,0,0,0.15)] cursor-default ${mounted ? "animate-fade-in-down" : "opacity-0"}`}
               style={{ animationDelay: "100ms" }}>
               <span className="relative flex h-2.5 w-2.5">
                 <span className="animate-ping absolute inline-flex h-full w-full rounded-full bg-green-400 opacity-75"></span>
