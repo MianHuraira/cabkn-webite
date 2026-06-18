@@ -12,7 +12,8 @@ import Image from "next/image";
 import { NoshowData } from "../assets/Images";
 import ApiFunction from "../ApiFunction/ApiFunction";
 import { useRouter } from "next/navigation";
-import CustomButton from "../CustomButton";
+import CustomButton from "@/components/CustomButton";
+import EmptyState from "@/components/EmptyState";
 
 export default function ServiceComponent() {
   const [currentPage, setCurrentPage] = useState(0);
@@ -148,9 +149,8 @@ export default function ServiceComponent() {
     <div className={mounted ? "animate-fade-in" : "opacity-0"}>
       {/* Blue Gradient Header */}
       <div
-        className={mounted ? "animate-fade-in-down" : "opacity-0"}
+        className={`bg-gradient-to-br from-brand-800 to-brand-950 ${mounted ? "animate-fade-in-down" : "opacity-0"}`}
         style={{
-          background: "linear-gradient(135deg, #004a70 0%, #002d47 100%)",
           padding: "28px 0 44px",
           animationDelay: "50ms",
         }}
@@ -271,18 +271,12 @@ export default function ServiceComponent() {
             </div>
           </>
         ) : (
-          <div className="d-flex flex-column align-items-center" style={{ padding: "40px 0" }}>
-            <Image
-              src={NoshowData}
-              style={{
-                width: 180,
-                height: 180,
-                objectFit: "cover",
-                borderRadius: 12,
-              }}
-              alt="No data available"
+          <div className="py-10">
+            <EmptyState
+              title="No Products Found"
+              showBg={false}
+              description="We couldn't find any products matching your selected category."
             />
-            <h1 className="font-medium text-lg mt-3" style={{ color: "#94a3b8" }}>{"No Data Found!"}</h1>
           </div>
         )}
       </div>

@@ -20,6 +20,7 @@ import { FaUser, FaUserCircle, FaLock, FaGift, FaHeadset, FaShieldAlt, FaFileCon
 import Referrals from "./Referrals";
 import ApiFunction from "@/components/ApiFunction/ApiFunction";
 import { setUser } from "@/components/Redux/Slices/AuthSlice";
+import CustomButton from "@/components/CustomButton";
 
 const schema = yup.object().shape({
   name: yup.string().required("Name is required"),
@@ -52,7 +53,7 @@ export default function EditProfile() {
     lng: null,
   });
   const dispatch = useDispatch();
-  
+
 
   const [isMobile, setIsMobile] = useState(false);
   const [mounted, setMounted] = useState(false);
@@ -140,7 +141,7 @@ export default function EditProfile() {
         user: response?.user,
       };
       dispatch(setUser(responseBody));
-    } catch (error) {}
+    } catch (error) { }
   };
 
   const handleSearch = async (text) => {
@@ -521,21 +522,13 @@ export default function EditProfile() {
                     borderTop: "1px solid #f3f4f6",
                   }}
                 >
-                  <Button
+                  <CustomButton
                     type="submit"
-                    disabled={isLoading}
-                    style={{
-                      padding: "10px 32px",
-                      borderRadius: 10,
-                      background: "#004a70",
-                      border: "none",
-                      fontWeight: 600,
-                      fontSize: 14,
-                      minWidth: 140,
-                    }}
+                    loading={isLoading}
+                    style={{ minWidth: 140 }}
                   >
-                    {isLoading ? <Spinner size="sm" style={{ color: "#fff" }} /> : "Update Profile"}
-                  </Button>
+                    Update Profile
+                  </CustomButton>
                 </div>
               </Form>
             </div>
@@ -615,11 +608,10 @@ export default function EditProfile() {
     <div className={mounted ? 'animate-fade-in' : 'opacity-0'} style={{ minHeight: "100vh", background: "#f8fafc" }}>
       {/* Header */}
       <div
+        className={`bg-gradient-to-br from-brand-800 to-brand-950 ${mounted ? 'animate-fade-in-down' : 'opacity-0'}`}
         style={{
-          background: "linear-gradient(135deg, #0a2540 0%, #004a70 40%, #005f8a 100%)",
-          padding: "clamp(20px, 4vw, 32px) 0 clamp(40px, 6vw, 56px)",
-          position: "relative",
-          overflow: "hidden",
+          padding: "28px 0 44px",
+          animationDelay: "50ms",
         }}
       >
         <div
@@ -658,8 +650,8 @@ export default function EditProfile() {
             }}
           >
             <a href="/" style={{ color: "rgba(255,255,255,0.5)", textDecoration: "none", transition: "color 0.2s" }}
-               onMouseEnter={(e) => e.currentTarget.style.color = "#fff"}
-               onMouseLeave={(e) => e.currentTarget.style.color = "rgba(255,255,255,0.5)"}>
+              onMouseEnter={(e) => e.currentTarget.style.color = "#fff"}
+              onMouseLeave={(e) => e.currentTarget.style.color = "rgba(255,255,255,0.5)"}>
               Home
             </a>
             <span style={{ color: "rgba(255,255,255,0.3)" }}>/</span>

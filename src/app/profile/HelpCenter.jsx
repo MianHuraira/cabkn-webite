@@ -3,12 +3,13 @@ import React, { useEffect, useState } from "react";
 import { Controller, useForm } from "react-hook-form";
 import { yupResolver } from "@hookform/resolvers/yup";
 import * as yup from "yup";
-import { Button, Form } from "react-bootstrap";
-import { FormFeedback, Input, Label, Spinner } from "reactstrap";
+import { Form } from "react-bootstrap";
+import { message } from "antd";
+import CustomButton from "@/components/CustomButton";
 
 const schema = yup.object().shape({
-  title: yup.string().required("Title Password is required"),
-  Des: yup.string().required("Description Password  is required"),
+  title: yup.string().required("Title is required"),
+  Des: yup.string().required("Description is required"),
 });
 
 export default function HelpCenter() {
@@ -19,7 +20,6 @@ export default function HelpCenter() {
     handleSubmit,
     control,
     reset,
-    setValue,
     formState: { errors },
   } = useForm({
     resolver: yupResolver(schema),
@@ -29,67 +29,68 @@ export default function HelpCenter() {
     },
   });
 
-  const onSubmit = (data) => {};
-  return (
-    <div className={mounted ? 'animate-fade-in-up' : 'opacity-0'}>
-      <Form onSubmit={handleSubmit(onSubmit)} className="mt-3">
-        <h2 className="font-medium text-lg">Help Center</h2>
+  const onSubmit = (data) => {
+    // submit logic
+  };
 
-        <div className="flex-1 grid grid-cols-1 md:grid-cols-2 gap-4 mt-3">
+  return (
+    <div className={mounted ? "animate-fade-in-up" : "opacity-0"}>
+      <Form onSubmit={handleSubmit(onSubmit)} className="mt-3">
+        <h2 className="font-semibold text-lg text-gray-900 mb-4">Help Center</h2>
+
+        <div className="flex flex-col gap-4">
+          {/* Title - full width */}
           <div>
-            <div className="mt-2">
-              <Label for="startLocation">Title</Label>
-              <Controller
-                name="title"
-                control={control}
-                render={({ field }) => (
-                  <Input
-                    {...field}
-                    placeholder="Enter Full Name"
-                    className="w-full p-3 border rounded-lg hideFocus2"
-                    invalid={errors.title && true}
-                  />
-                )}
-              />
-              {errors.title && (
-                <FormFeedback>{errors.title.message}</FormFeedback>
+            <label className="text-sm font-medium text-gray-700 mb-1 block">Title</label>
+            <Controller
+              name="title"
+              control={control}
+              render={({ field }) => (
+                <input
+                  {...field}
+                  placeholder="Enter title"
+                  className={`w-full px-4 py-3 border rounded-xl text-sm outline-none transition-colors focus:border-brand-600 ${
+                    errors.title ? "border-red-400 bg-red-50" : "border-gray-200 hover:border-gray-300"
+                  }`}
+                />
               )}
-            </div>
-            <div className="mt-3">
-              <Label for="startLocation">Description</Label>
-              <Controller
-                name="Des"
-                control={control}
-                render={({ field }) => (
-                  <Input
-                    type="textarea"
-                    {...field}
-                    placeholder="Enter Full Name "
-                    className="w-full p-3 border rounded-lg hideFocus2 h-100"
-                    invalid={errors.Des && true}
-                  />
-                )}
-              />
-              {errors.Des && <FormFeedback>{errors.Des.message}</FormFeedback>}
-            </div>
+            />
+            {errors.title && (
+              <p className="text-red-500 text-xs mt-1">{errors.title.message}</p>
+            )}
+          </div>
+
+          {/* Description - full width */}
+          <div>
+            <label className="text-sm font-medium text-gray-700 mb-1 block">Description</label>
+            <Controller
+              name="Des"
+              control={control}
+              render={({ field }) => (
+                <textarea
+                  {...field}
+                  rows={5}
+                  placeholder="Describe your issue or question..."
+                  className={`w-full px-4 py-3 border rounded-xl text-sm outline-none transition-colors focus:border-brand-600 resize-none ${
+                    errors.Des ? "border-red-400 bg-red-50" : "border-gray-200 hover:border-gray-300"
+                  }`}
+                />
+              )}
+            />
+            {errors.Des && (
+              <p className="text-red-500 text-xs mt-1">{errors.Des.message}</p>
+            )}
           </div>
         </div>
 
-        <div
-          style={{
-            width: "100%",
-            display: "flex",
-          }}
-        >
-          <Button
-            style={{ width: "30%" }}
+        <div className="mt-6">
+          <CustomButton
             type="submit"
-            className="btnForm mt-5"
-            color="primary"
-            disabled={isLoading}
+            loading={isLoading}
+            style={{ minWidth: 140 }}
           >
-            {isLoading ? <Spinner size="sm" /> : "Save"}
-          </Button>
+            Submit
+          </CustomButton>
         </div>
       </Form>
     </div>

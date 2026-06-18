@@ -7,6 +7,7 @@ const EmptyState = ({
   imageSrc,
   className = "",
   inView = true, // pass false if using custom reveal logic
+  showBg = true,
 }) => {
   return (
     <div

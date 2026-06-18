@@ -48,7 +48,8 @@ const page = () => {
        const res = await postData("users/forget-password", body, header1);
        const resData = {
            token : res?.token,
-          isForgot: "true",
+           isForgot: "true",
+           email: values?.email,
        }
 
        const encodedData = encodeURIComponent(JSON.stringify(resData));

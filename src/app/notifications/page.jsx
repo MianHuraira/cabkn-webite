@@ -96,11 +96,10 @@ const Page = () => {
     <div style={{ minHeight: "100vh", background: "#f6f8fc" }}>
       {/* Header */}
       <div
+        className="bg-gradient-to-br from-brand-800 to-brand-950"
         style={{
-          background: "linear-gradient(135deg, #0a2540 0%, #004a70 40%, #005f8a 100%)",
-          padding: "clamp(20px, 4vw, 32px) 0 clamp(40px, 6vw, 56px)",
-          position: "relative",
-          overflow: "hidden",
+
+          padding: "28px 0 44px",
         }}
       >
         {/* Decorative circles */}

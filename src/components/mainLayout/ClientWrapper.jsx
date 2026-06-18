@@ -14,6 +14,16 @@ const ClientWrapper = ({ children }) => {
   const pathname = usePathname();
 
   useEffect(() => {
+    if (pathname) {
+      const allowedRoutes = ["/auth/signup", "/auth/stepOne", "/auth/optCode"];
+      const isSignupFlow = allowedRoutes.some(route => pathname.startsWith(route));
+      if (!isSignupFlow) {
+        sessionStorage.removeItem("signup_draft");
+      }
+    }
+  }, [pathname]);
+
+  useEffect(() => {
     const checkTidio = () => {
       if (typeof window.tidioChatApi !== "undefined") {
         if (pathname && pathname.startsWith("/rider-request/")) {

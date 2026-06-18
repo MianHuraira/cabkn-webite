@@ -30,7 +30,32 @@ const page = () => {
   const [loading, setLoading] = useState(false);
   const [userdata, setUserdata] = useState([]);
   const [GoogleLoading, setGoogleLoading] = useState(false);
+  const [emailChecking, setEmailChecking] = useState(false);
+  const [emailChecked, setEmailChecked] = useState(false);
   const router = useRouter();
+
+  const handleCheckEmail = async (email, setFieldError, setFieldTouched) => {
+    if (!email) return;
+    const isValidEmail = /^[^\s@]+@[^\s@]+\.[^\s@]+$/.test(email);
+    if (!isValidEmail) return;
+
+    try {
+      setEmailChecking(true);
+      const body = {
+        email: email.trim(),
+        type: "customer"
+      };
+      await postData("users/check-email", body, header3);
+      setEmailChecking(false);
+      setEmailChecked(true);
+    } catch (error) {
+      setEmailChecking(false);
+      setEmailChecked(false);
+      const errMsg = error.response?.data?.message || "Email already existed";
+      setFieldError("email", errMsg);
+      setFieldTouched("email", true, false);
+    }
+  };
 
   const [profile, setProfile] = useState([]);
 
@@ -44,10 +69,25 @@ const page = () => {
     setInputType(passwordVisible ? "password" : "text");
   };
 
-  const initialValues = {
+  const [initialValues, setInitialValues] = useState({
     email: "",
     password: "",
-  };
+  });
+
+  useEffect(() => {
+    const draft = sessionStorage.getItem("signup_draft");
+    if (draft) {
+      try {
+        const parsed = JSON.parse(draft);
+        setInitialValues({
+          email: parsed.email || "",
+          password: parsed.password || "",
+        });
+      } catch (e) {
+        console.error(e);
+      }
+    }
+  }, []);
 
   const validationSchema = Yup.object().shape({
     email: Yup.string()
@@ -113,7 +153,33 @@ const page = () => {
       });
   };
 
-  const handleSubmit = (values) => {
+  const handleSubmit = async (values, { setFieldError, setFieldTouched }) => {
+    if (emailChecking) return;
+
+    // Save to draft
+    const draft = JSON.parse(sessionStorage.getItem("signup_draft") || "{}");
+    draft.email = values.email;
+    draft.password = values.password;
+    sessionStorage.setItem("signup_draft", JSON.stringify(draft));
+
+    if (!emailChecked) {
+      try {
+        setLoading(true);
+        const body = {
+          email: values.email.trim(),
+          type: "customer"
+        };
+        await postData("users/check-email", body, header3);
+        setEmailChecked(true);
+      } catch (error) {
+        setLoading(false);
+        const errMsg = error.response?.data?.message || "Email already existed";
+        setFieldError("email", errMsg);
+        setFieldTouched("email", true, false);
+        return;
+      }
+    }
+
     const apiData = {
       email: values?.email,
       password: values?.password,
@@ -141,11 +207,12 @@ const page = () => {
       }
     >
       <Formik
+        enableReinitialize={true}
         initialValues={initialValues}
         validationSchema={validationSchema}
-        onSubmit={(values) => handleSubmit(values)}
+        onSubmit={(values, helpers) => handleSubmit(values, helpers)}
       >
-        {({ values, errors, touched, handleChange, handleBlur, handleSubmit }) => (
+        {({ values, errors, touched, handleChange, handleBlur, handleSubmit, setFieldError, setFieldTouched }) => (
           <form onSubmit={handleSubmit} className="space-y-4">
             <AuthTextField
               id="email"
@@ -154,10 +221,21 @@ const page = () => {
               label="Email address"
               placeholder="name@company.com"
               value={values.email}
-              onChange={handleChange}
-              onBlur={handleBlur}
+              onChange={(e) => {
+                handleChange(e);
+                setEmailChecked(false);
+              }}
+              onBlur={(e) => {
+                handleBlur(e);
+                handleCheckEmail(values.email, setFieldError, setFieldTouched);
+              }}
               autoComplete="email"
               error={touched.email ? errors.email : ""}
+              rightAdornment={
+                emailChecking ? (
+                  <div className="h-4 w-4 animate-spin rounded-full border-2 border-slate-200 border-t-brand-600" />
+                ) : null
+              }
             />
 
             <AuthTextField

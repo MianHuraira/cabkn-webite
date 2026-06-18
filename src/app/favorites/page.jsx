@@ -64,14 +64,13 @@ const Page = () => {
   }, []);
 
   return (
-    <div style={{ minHeight: "100vh", background: "#f6f8fc" }}>
+    <div className={`${mounted ? 'animate-fade-in' : 'opacity-0'} `} style={{ minHeight: "100vh", background: "#f8fafc" }}>
       {/* Header */}
       <div
+        className={`${mounted ? 'animate-fade-in-down' : 'opacity-0'} bg-gradient-to-br from-brand-800 to-brand-950`}
         style={{
-          background: "linear-gradient(135deg, #0a2540 0%, #004a70 40%, #005f8a 100%)",
-          padding: "clamp(20px, 4vw, 32px) 0 clamp(40px, 6vw, 56px)",
-          position: "relative",
-          overflow: "hidden",
+          padding: "28px 0 44px",
+          animationDelay: "50ms",
         }}
       >
         <div
@@ -337,91 +336,91 @@ const Page = () => {
                   }}
                 >
                   {/* Top: Avatar + Info + Heart */}
-                    <div style={{ display: "flex", justifyContent: "space-between", alignItems: "flex-start" }}>
-                      <div style={{ display: "flex", alignItems: "center", gap: 12 }}>
-                        <div
-                          style={{
-                            width: 50,
-                            height: 50,
-                            borderRadius: 12,
-                            overflow: "hidden",
-                            flexShrink: 0,
-                            background: "#f3f4f6",
-                            display: "flex",
-                            alignItems: "center",
-                            justifyContent: "center",
-                            border: "2px solid #f0f0f0",
-                          }}
-                        >
-                          {item?.image ? (
-                            <img
-                              src={item?.image}
-                              alt={item?.name}
-                              style={{ width: "100%", height: "100%", objectFit: "cover" }}
-                            />
-                          ) : (
-                            <FaUser size={20} color="#9ca3af" />
-                          )}
-                        </div>
-                        <div>
-                          <p style={{ fontWeight: 600, fontSize: 15, color: "#1f2937", margin: 0 }}>
-                            {item?.name}
-                          </p>
-                          <div style={{ display: "flex", alignItems: "center", gap: 3, marginTop: 3 }}>
-                            <FaStar size={12} color="#f59e0b" />
-                            <span style={{ fontSize: 12, color: "#6b7280", fontWeight: 500 }}>
-                              {item?.rating || "0.0"}
-                            </span>
-                          </div>
-                        </div>
-                      </div>
-
-                      {/* Heart toggle */}
+                  <div style={{ display: "flex", justifyContent: "space-between", alignItems: "flex-start" }}>
+                    <div style={{ display: "flex", alignItems: "center", gap: 12 }}>
                       <div
-                        onClick={() => onAddFavorite(item)}
                         style={{
-                          width: 32,
-                          height: 32,
-                          borderRadius: 8,
-                          background: isFavorite ? "#fef2f2" : "#f3f4f6",
+                          width: 50,
+                          height: 50,
+                          borderRadius: 12,
+                          overflow: "hidden",
+                          flexShrink: 0,
+                          background: "#f3f4f6",
                           display: "flex",
                           alignItems: "center",
                           justifyContent: "center",
-                          cursor: "pointer",
-                          transition: "all 0.2s",
-                          flexShrink: 0,
-                        }}
-                        onMouseEnter={(e) => {
-                          if (!isFavorite) {
-                            e.currentTarget.style.background = "#fee2e2";
-                            e.currentTarget.style.transform = "scale(1.05)";
-                          }
-                        }}
-                        onMouseLeave={(e) => {
-                          if (!isFavorite) {
-                            e.currentTarget.style.background = "#f3f4f6";
-                            e.currentTarget.style.transform = "scale(1)";
-                          }
+                          border: "2px solid #f0f0f0",
                         }}
                       >
-                        {favLoadingId === item?._id ? (
-                          <div
-                            style={{
-                              width: 14,
-                              height: 14,
-                              border: "2px solid #004a70",
-                              borderTopColor: "transparent",
-                              borderRadius: "50%",
-                              animation: "spin 0.6s linear infinite",
-                            }}
+                        {item?.image ? (
+                          <img
+                            src={item?.image}
+                            alt={item?.name}
+                            style={{ width: "100%", height: "100%", objectFit: "cover" }}
                           />
-                        ) : isFavorite ? (
-                          <FaHeart color="#e11d48" size={14} />
                         ) : (
-                          <FaRegHeart color="#9ca3af" size={14} />
+                          <FaUser size={20} color="#9ca3af" />
                         )}
                       </div>
+                      <div>
+                        <p style={{ fontWeight: 600, fontSize: 15, color: "#1f2937", margin: 0 }}>
+                          {item?.name}
+                        </p>
+                        <div style={{ display: "flex", alignItems: "center", gap: 3, marginTop: 3 }}>
+                          <FaStar size={12} color="#f59e0b" />
+                          <span style={{ fontSize: 12, color: "#6b7280", fontWeight: 500 }}>
+                            {item?.rating || "0.0"}
+                          </span>
+                        </div>
+                      </div>
                     </div>
+
+                    {/* Heart toggle */}
+                    <div
+                      onClick={() => onAddFavorite(item)}
+                      style={{
+                        width: 32,
+                        height: 32,
+                        borderRadius: 8,
+                        background: isFavorite ? "#fef2f2" : "#f3f4f6",
+                        display: "flex",
+                        alignItems: "center",
+                        justifyContent: "center",
+                        cursor: "pointer",
+                        transition: "all 0.2s",
+                        flexShrink: 0,
+                      }}
+                      onMouseEnter={(e) => {
+                        if (!isFavorite) {
+                          e.currentTarget.style.background = "#fee2e2";
+                          e.currentTarget.style.transform = "scale(1.05)";
+                        }
+                      }}
+                      onMouseLeave={(e) => {
+                        if (!isFavorite) {
+                          e.currentTarget.style.background = "#f3f4f6";
+                          e.currentTarget.style.transform = "scale(1)";
+                        }
+                      }}
+                    >
+                      {favLoadingId === item?._id ? (
+                        <div
+                          style={{
+                            width: 14,
+                            height: 14,
+                            border: "2px solid #004a70",
+                            borderTopColor: "transparent",
+                            borderRadius: "50%",
+                            animation: "spin 0.6s linear infinite",
+                          }}
+                        />
+                      ) : isFavorite ? (
+                        <FaHeart color="#e11d48" size={14} />
+                      ) : (
+                        <FaRegHeart color="#9ca3af" size={14} />
+                      )}
+                    </div>
+                  </div>
 
                   {/* Bottom: Request button */}
                   <div style={{ marginTop: 16, paddingTop: 16, borderTop: "1px solid #f3f4f6", display: "flex", justifyContent: "flex-end" }}>

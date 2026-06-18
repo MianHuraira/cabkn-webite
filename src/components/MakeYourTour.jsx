@@ -14,7 +14,7 @@ import {
   ListGroup,
   ListGroupItem,
 } from "reactstrap";
-import { Button, Form, Offcanvas, Spinner } from "react-bootstrap";
+import { Form, Offcanvas, Spinner } from "react-bootstrap";
 import { FaLocationDot } from "react-icons/fa6";
 import { MdOutlineMyLocation } from "react-icons/md";
 import { message } from "antd";
@@ -25,6 +25,7 @@ import { IoMdCloseCircle } from "react-icons/io";
 import { BiCurrentLocation } from "react-icons/bi";
 import { NoshowData } from "@/components/assets/Images";
 import Image from "next/image";
+import EmptyState from "@/components/EmptyState";
 import ThingstodoCard from "@/components/home/ThingstodoCard";
 import ApiFunction from "@/components/ApiFunction/ApiFunction";
 import { useRouter } from "next/navigation";
@@ -597,9 +598,8 @@ function MakeYourTour() {
     <div className={mounted ? "animate-fade-in" : "opacity-0"} style={{ background: "#f8fafc", minHeight: "100vh" }}>
       {/* Blue Gradient Header */}
       <div
-        className={mounted ? "animate-fade-in-down" : "opacity-0"}
+        className={`bg-gradient-to-br from-brand-800 to-brand-950 ${mounted ? "animate-fade-in-down" : "opacity-0"}`}
         style={{
-          background: "linear-gradient(135deg, #004a70 0%, #002d47 100%)",
           padding: "28px 0 44px",
           animationDelay: "50ms",
         }}
@@ -670,7 +670,7 @@ function MakeYourTour() {
 
               <Form onSubmit={handleSubmit(onSubmit)}>
                 <div style={{ marginBottom: 18 }}>
-                  <div style={{ fontFamily: "Inter-Medium", fontSize: 13, color: "#374151", marginBottom: 6 }}>
+                  <div className="d-flex align-items-center" style={{ fontFamily: "Inter-Medium", fontSize: 13, color: "#374151", marginBottom: 6 }}>
                     <FaLocationDot size={12} color="#004a70" style={{ marginRight: 4 }} />
                     Start Location
                   </div>
@@ -741,7 +741,7 @@ function MakeYourTour() {
                 </div>
 
                 <div style={{ marginBottom: 24 }}>
-                  <div style={{ fontFamily: "Inter-Medium", fontSize: 13, color: "#374151", marginBottom: 6 }}>
+                  <div className="d-flex align-items-center" style={{ fontFamily: "Inter-Medium", fontSize: 13, color: "#374151", marginBottom: 6 }}>
                     <MdOutlineMyLocation size={14} color="#004a70" style={{ marginRight: 4 }} />
                     End Location
                   </div>
@@ -874,7 +874,15 @@ function MakeYourTour() {
                 </Slider>
               </div>
 
-              {SubCategory.length > 0 ? (
+              {loading ? (
+                <div className="py-16 flex flex-col justify-center items-center">
+                  <div className="relative w-10 h-10 mb-3">
+                    <div className="absolute inset-0 rounded-full border-4 border-slate-100"></div>
+                    <div className="absolute inset-0 rounded-full border-4 border-brand-700 border-t-transparent animate-spin"></div>
+                  </div>
+                  <p className="text-slate-400 font-medium text-sm">Loading places...</p>
+                </div>
+              ) : SubCategory.length > 0 ? (
                 <>
                   <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-3 gap-3">
                     {SubCategory?.map((testimonial, index) => (
@@ -901,13 +909,12 @@ function MakeYourTour() {
                   </div>
                 </>
               ) : (
-                <div className="d-flex flex-column align-items-center" style={{ padding: "40px 0" }}>
-                  <Image
-                    src={NoshowData}
-                    style={{ width: 180, height: 180, objectFit: "cover", borderRadius: 12 }}
-                    alt="No data available"
+                <div className="py-10">
+                  <EmptyState
+                    title="No Places Found"
+                    showBg={false}
+                    description="We couldn't find any places matching your selected category."
                   />
-                  <h1 className="font-medium text-lg mt-3" style={{ color: "#94a3b8" }}>No Data Found!</h1>
                 </div>
               )}
             </div>
