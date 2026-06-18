@@ -127,7 +127,7 @@ const Page = () => {
           }}
         />
 
-        <div style={{ maxWidth: 1060, margin: "0 auto", padding: "0 24px", position: "relative" }}>
+        <div style={{ maxWidth: 1200, margin: "0 auto", padding: "0 24px", position: "relative" }}>
           {/* Breadcrumb */}
           <div
             style={{
@@ -141,8 +141,8 @@ const Page = () => {
             }}
           >
             <a href="/" style={{ color: "rgba(255,255,255,0.5)", textDecoration: "none", transition: "color 0.2s" }}
-               onMouseEnter={(e) => e.currentTarget.style.color = "#fff"}
-               onMouseLeave={(e) => e.currentTarget.style.color = "rgba(255,255,255,0.5)"}>
+              onMouseEnter={(e) => e.currentTarget.style.color = "#fff"}
+              onMouseLeave={(e) => e.currentTarget.style.color = "rgba(255,255,255,0.5)"}>
               Home
             </a>
             <span style={{ color: "rgba(255,255,255,0.3)" }}>/</span>
@@ -222,7 +222,7 @@ const Page = () => {
       </div>
 
       {/* Content */}
-      <div style={{ maxWidth: 1060, margin: "-32px auto 0", padding: "0 clamp(12px, 3vw, 24px) clamp(40px, 6vw, 64px)" }}>
+      <div style={{ maxWidth: 1200, margin: "-32px auto 0", padding: "0 clamp(12px, 3vw, 24px) clamp(40px, 6vw, 64px)" }}>
         {/* Loading state */}
         {loading ? (
           <div style={{ display: "grid", gridTemplateColumns: `repeat(${gridCols}, 1fr)`, gap: 12 }}>
