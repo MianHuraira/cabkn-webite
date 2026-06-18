@@ -11,6 +11,8 @@ import ChangePassword from "./ChangePassword";
 import HelpCenter from "./HelpCenter";
 import { Loader } from "@googlemaps/js-api-loader";
 import mapboxgl from "mapbox-gl";
+import PhoneInput from "react-phone-input-2";
+import "react-phone-input-2/lib/style.css";
 
 import { message } from "antd";
 
@@ -71,6 +73,7 @@ export default function EditProfile() {
   }, []);
 
   const [image, setImage] = useState(userData?.user?.image || "");
+  const [isUploadingImage, setIsUploadingImage] = useState(false);
 
   const handleImageUpload = (e) => {
     const selectedFile = e.target.files[0];
@@ -83,11 +86,15 @@ export default function EditProfile() {
     if (!file) return;
     const formData = new FormData();
     try {
+      setIsUploadingImage(true);
       formData.append("image", file);
+      console.log(file, '------------------------------------');
       const res = await postData("image/upload", formData, header2);
       setImage(res?.image);
     } catch (error) {
       console.error("Error uploading image:", error);
+    } finally {
+      setIsUploadingImage(false);
     }
   };
 
@@ -252,11 +259,11 @@ export default function EditProfile() {
                     borderRadius: "50%",
                     overflow: "hidden",
                     border: "3px solid #e5e7eb",
-                    cursor: "pointer",
+                    cursor: isUploadingImage ? "not-allowed" : "pointer",
                     flexShrink: 0,
                   }}
                   onClick={() =>
-                    document.getElementById("file-upload-profile").click()
+                    !isUploadingImage && document.getElementById("file-upload-profile").click()
                   }
                 >
                   {mounted && image ? (
@@ -283,6 +290,28 @@ export default function EditProfile() {
                       <FaUser size={32} color="#004a70" />
                     </div>
                   )}
+                  {isUploadingImage && (
+                    <div
+                      style={{
+                        position: "absolute",
+                        top: 0,
+                        left: 0,
+                        width: "100%",
+                        height: "100%",
+                        backgroundColor: "rgba(0, 0, 0, 0.4)",
+                        display: "flex",
+                        alignItems: "center",
+                        justifyContent: "center",
+                        zIndex: 2,
+                      }}
+                    >
+                      <Spinner
+                        size="sm"
+                        color="light"
+                        style={{ width: "1.5rem", height: "1.5rem" }}
+                      />
+                    </div>
+                  )}
                 </div>
                 <div>
                   <h5
@@ -307,20 +336,21 @@ export default function EditProfile() {
                   <br />
                   <button
                     onClick={() =>
-                      document.getElementById("file-upload-profile").click()
+                      !isUploadingImage && document.getElementById("file-upload-profile").click()
                     }
+                    disabled={isUploadingImage}
                     style={{
                       marginTop: 8,
                       background: "none",
                       border: "none",
-                      color: "#004a70",
+                      color: isUploadingImage ? "#9ca3af" : "#004a70",
                       fontSize: 13,
                       fontWeight: 600,
-                      cursor: "pointer",
+                      cursor: isUploadingImage ? "not-allowed" : "pointer",
                       padding: 0,
                     }}
                   >
-                    Change Photo
+                    {isUploadingImage ? "Uploading..." : "Change Photo"}
                   </button>
                 </div>
                 <input
@@ -390,19 +420,33 @@ export default function EditProfile() {
                       name="phone"
                       control={control}
                       render={({ field }) => (
-                        <Input
-                          {...field}
-                          readOnly
-                          placeholder="Enter Phone"
-                          style={{
-                            borderRadius: 10,
+                        <PhoneInput
+                          country={"us"}
+                          value={field.value}
+                          onChange={(value) => field.onChange(value)}
+                          onBlur={field.onBlur}
+                          disabled={true}
+                          inputStyle={{
+                            width: "100%",
+                            padding: "10px 14px 10px 48px",
+                            borderRadius: "10px",
                             border: errors.phone ? "1px solid #ef4444" : "1px solid #d1d5db",
-                            padding: "10px 14px",
-                            fontSize: 14,
-                            marginTop: 6,
+                            fontSize: "14px",
+                            marginTop: "6px",
                             background: "#f9fafb",
+                            height: "42px",
+                            color: "#374151",
                           }}
-                          invalid={errors.phone && true}
+                          buttonStyle={{
+                            border: "none",
+                            background: "transparent",
+                            borderRadius: "10px 0 0 10px",
+                            paddingLeft: "8px",
+                            marginTop: "6px",
+                          }}
+                          dropdownStyle={{
+                            borderRadius: "10px",
+                          }}
                         />
                       )}
                     />
