@@ -9,11 +9,12 @@ import { Spinner } from "react-bootstrap";
 import { FaLocationDot } from "react-icons/fa6";
 import { MdOutlineMyLocation, MdOutlineCalendarMonth } from "react-icons/md";
 import { IoWallet } from "react-icons/io5";
-import { MdPayment, MdOutlineBookOnline } from "react-icons/md";
+import { MdPayment, MdOutlineBookOnline, MdListAlt, MdForwardToInbox, MdOutlineSchedule, MdCheckCircleOutline, MdDoneAll, MdHighlightOff } from "react-icons/md";
 import Image from "next/image";
 import { tableMap } from "@/components/assets/Images";
 import ApiFunction from "@/components/ApiFunction/ApiFunction";
 import ProductTable from "@/components/dataTable/productTable";
+import EmptyState from "@/components/EmptyState";
 import { useRouter } from "next/navigation";
 import { Button, message, Rate } from "antd";
 import { X } from "react-feather";
@@ -109,7 +110,7 @@ function Page() {
         message.success("Add Not Added");
       }
     } catch (error) {
-      console.log(res?.data?.response?.message , "error");
+      console.log(res?.data?.response?.message, "error");
     }
   };
 
@@ -323,10 +324,10 @@ function Page() {
         activeTab === "completed" || activeTab === "cancelled"
           ? `order/customer/${activeTab}/${lastId}`
           : activeTab === "upcoming" || activeTab === "active"
-          ? `order/customer/accepted/${lastId}`
-          : activeTab === "requested"
-          ? `order/customer/pending/${lastId}`
-          : `order/customer/${activeTab}/${lastId}`;
+            ? `order/customer/accepted/${lastId}`
+            : activeTab === "requested"
+              ? `order/customer/pending/${lastId}`
+              : `order/customer/${activeTab}/${lastId}`;
 
       const res = await postData(endpoint, body, header1);
       setCount(res?.count?.totalPage);
@@ -565,7 +566,7 @@ function Page() {
             gap: 6,
           }}
         >
-          <svg width={14} height={14} viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth={2}><path d="M12 2v20M2 12h20"/></svg>
+          <svg width={14} height={14} viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth={2}><path d="M12 2v20M2 12h20" /></svg>
           {row?.tip === 1 ? "Tipped" : "Tip"}
         </Button>
       ),
@@ -601,9 +602,8 @@ function Page() {
     <div className={mounted ? "animate-fade-in" : "opacity-0"}>
       {/* Blue Gradient Header - matching other pages */}
       <div
-        className={mounted ? "animate-fade-in-down" : "opacity-0"}
+        className={`bg-gradient-to-br from-brand-800 to-brand-950 ${mounted ? "animate-fade-in-down" : "opacity-0"}`}
         style={{
-          background: "linear-gradient(135deg, #004a70 0%, #002d47 100%)",
           padding: "28px 0 44px",
           animationDelay: "50ms",
         }}
@@ -675,36 +675,27 @@ function Page() {
             borderBottom: "1px solid #f1f5f9",
             overflowX: "auto",
           }}>
-            <div style={{ display: "flex", gap: 4, minWidth: "max-content" }}>
+            <div style={{ display: "flex", gap: 8, minWidth: "max-content", paddingBottom: "2px" }}>
               {[
-                { key: "all", label: "All Bookings", icon: "📋" },
-                { key: "requested", label: "Requested", icon: "📨" },
-                { key: "upcoming", label: "Upcoming", icon: "📅" },
-                { key: "accepted", label: "Accepted", icon: "✅" },
-                { key: "completed", label: "Completed", icon: "🎉" },
-                { key: "cancelled", label: "Cancelled", icon: "❌" },
+                { key: "all", label: "All Bookings", icon: <MdListAlt size={18} /> },
+                { key: "requested", label: "Requested", icon: <MdForwardToInbox size={18} /> },
+                { key: "upcoming", label: "Upcoming", icon: <MdOutlineSchedule size={18} /> },
+                { key: "accepted", label: "Accepted", icon: <MdCheckCircleOutline size={18} /> },
+                { key: "completed", label: "Completed", icon: <MdDoneAll size={18} /> },
+                { key: "cancelled", label: "Cancelled", icon: <MdHighlightOff size={18} /> },
               ].map((tab) => (
                 <button
                   key={tab.key}
                   onClick={() => handleTabSelect(tab.key)}
-                  className={activeTab !== tab.key ? "hover:bg-gray-100 hover:text-brand-700" : ""}
-                  style={{
-                    padding: "10px 18px",
-                    borderRadius: "10px 10px 0 0",
-                    border: "none",
-                    background: activeTab === tab.key ? "#004a70" : "transparent",
-                    color: activeTab === tab.key ? "#fff" : "#64748b",
-                    fontFamily: "Inter-Medium",
-                    fontSize: 13,
-                    cursor: "pointer",
-                    transition: "all 0.2s",
-                    display: "flex",
-                    alignItems: "center",
-                    gap: 6,
-                    whiteSpace: "nowrap",
-                  }}
+                  className={`flex items-center gap-2 px-4 py-2.5 rounded-t-xl font-medium text-[14px] transition-all duration-300 border-b-2 ${activeTab === tab.key
+                    ? "text-brand-700 bg-brand-50/50 border-brand-700"
+                    : "text-slate-500 border-transparent hover:text-brand-600 hover:bg-slate-50"
+                    }`}
+                  style={{ whiteSpace: "nowrap" }}
                 >
-                  <span>{tab.icon}</span>
+                  <span className={`${activeTab === tab.key ? "text-brand-700" : "text-slate-400"}`}>
+                    {tab.icon}
+                  </span>
                   {tab.label}
                 </button>
               ))}
@@ -712,22 +703,41 @@ function Page() {
           </div>
 
           {/* Table Section */}
-          <div>
+          <div className="min-h-[400px] relative">
             <div style={{ padding: "16px 20px", borderBottom: "1px solid #f1f5f9", display: "flex", alignItems: "center", justifyContent: "space-between" }}>
-              <h3 className="medium-font" style={{ fontSize: 15, color: "#0f172a", margin: 0 }}>
+              <h3 className="font-semibold" style={{ fontSize: 16, color: "#0f172a", margin: 0 }}>
                 {activeTab === "all" ? "All" : activeTab.charAt(0).toUpperCase() + activeTab.slice(1)} Bookings
               </h3>
-              <span style={{ fontSize: 12, color: "#94a3b8", fontFamily: "Inter-Regular" }}>
+              <span style={{ fontSize: 13, color: "#64748b", fontWeight: 500 }}>
                 {Orders?.length || 0} booking{Orders?.length !== 1 ? "s" : ""}
               </span>
             </div>
-            <ProductTable
-              loading={isLoading}
-              columns={columns}
-              setLastId={setLastId}
-              count={count}
-              data={Orders}
-            />
+
+            {isLoading ? (
+              <div className="absolute inset-0 flex flex-col items-center justify-center bg-white/80 backdrop-blur-sm z-10 min-h-[300px]">
+                <div className="relative w-10 h-10">
+                  <div className="absolute inset-0 rounded-full border-2 border-slate-100"></div>
+                  <div className="absolute inset-0 rounded-full border-2 border-brand-600 border-t-transparent animate-spin"></div>
+                </div>
+                <p className="mt-4 text-slate-500 font-medium text-sm animate-pulse">Loading bookings...</p>
+              </div>
+            ) : Orders?.length === 0 ? (
+              <div className="py-16">
+                <EmptyState
+                  title={`No ${activeTab === 'all' ? '' : activeTab} bookings found`}
+                  message="You don't have any bookings in this category yet."
+                  showBg={false}
+                />
+              </div>
+            ) : (
+              <ProductTable
+                loading={isLoading}
+                columns={columns}
+                setLastId={setLastId}
+                count={count}
+                data={Orders}
+              />
+            )}
           </div>
         </div>
       </div>

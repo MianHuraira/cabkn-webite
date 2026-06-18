@@ -12,6 +12,8 @@ import Image from "next/image";
 import { NoshowData } from "../assets/Images";
 import ApiFunction from "../ApiFunction/ApiFunction";
 import { useRouter } from "next/navigation";
+import CustomButton from "@/components/CustomButton";
+import EmptyState from "@/components/EmptyState";
 
 export default function ServiceComponent() {
   const [currentPage, setCurrentPage] = useState(0);
@@ -147,9 +149,8 @@ export default function ServiceComponent() {
     <div className={mounted ? "animate-fade-in" : "opacity-0"}>
       {/* Blue Gradient Header */}
       <div
-        className={mounted ? "animate-fade-in-down" : "opacity-0"}
+        className={`bg-gradient-to-br from-brand-800 to-brand-950 ${mounted ? "animate-fade-in-down" : "opacity-0"}`}
         style={{
-          background: "linear-gradient(135deg, #004a70 0%, #002d47 100%)",
           padding: "28px 0 44px",
           animationDelay: "50ms",
         }}
@@ -209,7 +210,7 @@ export default function ServiceComponent() {
                     style={{
                       padding: "10px 14px",
                       background: isSelected
-                        ? "linear-gradient(179.02deg, rgb(0, 74, 112) -69.5%, rgb(177, 176, 176) 99.16%)"
+                        ? "#004a70"
                         : "#fff",
                       color: isSelected ? "white" : "#1e293b",
                       borderRadius: "9999px",
@@ -258,45 +259,23 @@ export default function ServiceComponent() {
             </div>
             <div className="flex justify-center items-center mt-6 mb-8">
               {Pagelength > 1 ? (
-                <Button
+                <CustomButton
                   onClick={ShowMoreDAta}
-                  className="hover:shadow-lg hover:-translate-y-0.5"
-                  style={{
-                    minWidth: 140,
-                    padding: "10px 28px",
-                    background: "linear-gradient(179.02deg, rgb(0, 74, 112) -69.5%, rgb(177, 176, 176) 99.16%)",
-                    border: "none",
-                    borderRadius: "9999px",
-                    color: "#fff",
-                    fontFamily: "Inter-Medium",
-                    fontSize: 14,
-                    cursor: "pointer",
-                    display: "inline-flex",
-                    alignItems: "center",
-                    justifyContent: "center",
-                    gap: 8,
-                    boxShadow: "0 4px 14px rgba(0,74,112,0.25)",
-                    transition: "all 0.2s",
-                  }}
+                  loading={MoreLoading}
+                  style={{ minWidth: 140 }}
                 >
-                  {MoreLoading ? <Spinner size={"sm"} color="#fff" /> : "See more"}
-                </Button>
+                  See more
+                </CustomButton>
               ) : null}
             </div>
           </>
         ) : (
-          <div className="d-flex flex-column align-items-center" style={{ padding: "40px 0" }}>
-            <Image
-              src={NoshowData}
-              style={{
-                width: 180,
-                height: 180,
-                objectFit: "cover",
-                borderRadius: 12,
-              }}
-              alt="No data available"
+          <div className="py-10">
+            <EmptyState
+              title="No Products Found"
+              showBg={false}
+              description="We couldn't find any products matching your selected category."
             />
-            <h1 className="font-medium text-lg mt-3" style={{ color: "#94a3b8" }}>{"No Data Found!"}</h1>
           </div>
         )}
       </div>

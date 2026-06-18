@@ -19,6 +19,7 @@ const Otp =() =>{
   const { postData, header1 } = ApiFunction();
   const [code, setCode] = useState(["", "", "", ""]);
   const [timer, setTimer] = useState(20);
+  const [timerActive, setTimerActive] = useState(true);
   const [Image, setImage] = useState(false);
   const [SginUpdata, setSginUpdata] = useState([]);
 
@@ -37,18 +38,31 @@ const Otp =() =>{
   };
 
   const handleInputChange = (index, value) => {
-    const next = value.replace(/\D/g, "").slice(0, 1);
+    // Only allow single digit
+    const digit = value.replace(/\D/g, "").slice(-1);
     const newCode = [...code];
-    newCode[index] = next;
+    newCode[index] = digit;
     setCode(newCode);
-    if (next && index < 3) {
+    // Auto-advance to next field when a digit is entered
+    if (digit && index < 3) {
       document.getElementById(`otp-${index + 1}`)?.focus();
     }
   };
 
   const handleKeyDown = (index, e) => {
-    if (e.key === "Backspace" && !code[index] && index > 0) {
-      document.getElementById(`otp-${index - 1}`)?.focus();
+    if (e.key === "Backspace") {
+      e.preventDefault();
+      const newCode = [...code];
+      if (newCode[index]) {
+        // Current field has value — clear it
+        newCode[index] = "";
+        setCode(newCode);
+      } else if (index > 0) {
+        // Current field is empty — move back and clear previous
+        newCode[index - 1] = "";
+        setCode(newCode);
+        document.getElementById(`otp-${index - 1}`)?.focus();
+      }
     }
     if (e.key === "Enter") {
       e.preventDefault();
@@ -90,12 +104,38 @@ const Otp =() =>{
   }, []);
 
   useEffect(() => {
+    if (!timerActive) return;
+    if (timer === 0) { setTimerActive(false); return; }
     const interval = setInterval(() => {
       setTimer((prev) => (prev > 0 ? prev - 1 : 0));
     }, 1000);
-
     return () => clearInterval(interval);
-  }, []);
+  }, [timer, timerActive]);
+
+  const handleResend = async () => {
+    if (timerActive || Loading) return;
+    try {
+      setLoading(true);
+      const body = {
+        email: rowdata?.email,
+        type: "customer",
+      };
+      const res = await postData("users/forget-password", body, header1);
+      if (res?.token) {
+        toast.success("Verification code resent!");
+        setCode(["", "", "", ""]);
+        setTimer(30);
+        setTimerActive(true);
+        document.getElementById("otp-0")?.focus();
+      } else {
+        toast.error(res?.message || "Failed to resend code.");
+      }
+    } catch (err) {
+      toast.error("Something went wrong.");
+    } finally {
+      setLoading(false);
+    }
+  };
 
   const handlePass = () => {
     if (rowdata?.isForgot == "true") {
@@ -165,6 +205,7 @@ const Otp =() =>{
     postData("users/signup/customer", apiData, header1)
       .then((res) => {
         if (res?.success) {
+          sessionStorage.removeItem("signup_draft");
           dispatch(setUser(res));
           dispatch(setAuthenticated(true));
           localStorage.setItem("isLogin", true);
@@ -183,9 +224,37 @@ const Otp =() =>{
       });
   };
 
+  const handleBack = () => {
+    if (encodedData) {
+      router.push(`/auth/signup?data=${encodeURIComponent(encodedData)}`);
+    } else {
+      router.push("/auth/signup");
+    }
+  };
+
   return (
     <AuthShell
-      title="Verification code"
+      title={
+        <div className="flex items-center gap-2 -ml-2">
+          <button
+            type="button"
+            onClick={handleBack}
+            className="inline-flex h-8 w-8 items-center justify-center rounded-lg text-slate-500 hover:bg-slate-100 hover:text-slate-900 transition"
+          >
+            <svg
+              xmlns="http://www.w3.org/2000/svg"
+              fill="none"
+              viewBox="0 0 24 24"
+              strokeWidth="2.5"
+              stroke="currentColor"
+              className="h-5 w-5"
+            >
+              <path strokeLinecap="round" strokeLinejoin="round" d="M15 19l-7-7 7-7" />
+            </svg>
+          </button>
+          <span>Verification code</span>
+        </div>
+      }
       subtitle="Enter the 4‑digit code we sent you to continue."
       imageSrc={otpImage}
       imageAlt="OTP cover"
@@ -238,10 +307,21 @@ const Otp =() =>{
         </div>
 
         <p className="text-sm mt-2 text-slate-600">
-          Didn’t get a code?{" "}
-          <span className="font-semibold text-brand-700">{`Resend in 0:${timer
-            .toString()
-            .padStart(2, "0")}`}</span>
+          Didn't get a code?{" "}
+          {timer === 0 ? (
+            <button
+              type="button"
+              onClick={handleResend}
+              disabled={Loading}
+              className="font-semibold text-brand-700 hover:text-brand-900 underline underline-offset-2 cursor-pointer bg-transparent border-none p-0 transition-colors disabled:opacity-50"
+            >
+              Resend code
+            </button>
+          ) : (
+            <span className="font-semibold text-brand-700">{`Resend in 0:${timer
+              .toString()
+              .padStart(2, "0")}`}</span>
+          )}
         </p>
       </div>
     </AuthShell>

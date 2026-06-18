@@ -7,11 +7,13 @@ const EmptyState = ({
   imageSrc,
   className = "",
   inView = true, // pass false if using custom reveal logic
+  showBg = true,
 }) => {
   return (
     <div
-      className={`flex mt-10 mb-8 flex-col justify-center items-center reveal ${inView ? "visible" : ""
-        } w-full py-16 px-4 bg-slate-50/50 rounded-[32px] border border-slate-100 shadow-[inset_0_2px_20px_rgba(0,0,0,0.02)] ${className}`}
+      className={`flex mt-10 mb-8 flex-col justify-center items-center reveal ${inView ? "visible" : ""} w-full py-16 px-4 ${
+        showBg ? "bg-slate-50/50 rounded-[32px] border border-slate-100 shadow-[inset_0_2px_20px_rgba(0,0,0,0.02)]" : ""
+      } ${className}`}
     >
       <div className="relative mb-6 transform transition-transform duration-500 hover:scale-105">
         {imageSrc && (

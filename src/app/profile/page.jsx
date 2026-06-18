@@ -20,6 +20,7 @@ import { FaUser, FaUserCircle, FaLock, FaGift, FaHeadset, FaShieldAlt, FaFileCon
 import Referrals from "./Referrals";
 import ApiFunction from "@/components/ApiFunction/ApiFunction";
 import { setUser } from "@/components/Redux/Slices/AuthSlice";
+import CustomButton from "@/components/CustomButton";
 
 const schema = yup.object().shape({
   name: yup.string().required("Name is required"),
@@ -136,7 +137,7 @@ export default function EditProfile() {
         user: response?.user,
       };
       dispatch(setUser(responseBody));
-    } catch (error) {}
+    } catch (error) { }
   };
 
   const handleSearch = async (text) => {
@@ -516,21 +517,13 @@ export default function EditProfile() {
                     borderTop: "1px solid #f3f4f6",
                   }}
                 >
-                  <Button
+                <CustomButton
                     type="submit"
-                    disabled={isLoading}
-                    style={{
-                      padding: "10px 32px",
-                      borderRadius: 10,
-                      background: "#004a70",
-                      border: "none",
-                      fontWeight: 600,
-                      fontSize: 14,
-                      minWidth: 140,
-                    }}
+                    loading={isLoading}
+                    style={{ minWidth: 140 }}
                   >
-                    {isLoading ? <Spinner size="sm" style={{ color: "#fff" }} /> : "Update Profile"}
-                  </Button>
+                    Update Profile
+                  </CustomButton>
                 </div>
               </Form>
             </div>
@@ -610,9 +603,8 @@ export default function EditProfile() {
     <div className={mounted ? 'animate-fade-in' : 'opacity-0'} style={{ minHeight: "100vh", background: "#f8fafc" }}>
       {/* Header */}
       <div
-        className={mounted ? 'animate-fade-in-down' : 'opacity-0'}
+        className={`bg-gradient-to-br from-brand-800 to-brand-950 ${mounted ? 'animate-fade-in-down' : 'opacity-0'}`}
         style={{
-          background: "linear-gradient(135deg, #004a70 0%, #002d47 100%)",
           padding: "28px 0 44px",
           animationDelay: "50ms",
         }}

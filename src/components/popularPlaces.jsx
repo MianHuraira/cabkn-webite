@@ -17,6 +17,8 @@ import { Rate } from "antd";
 import ApiFile from "./ApiFunction/ApiFile";
 import toast from "react-hot-toast";
 import { FiArrowRight } from "react-icons/fi";
+import CustomButton from "@/components/CustomButton";
+import EmptyState from "@/components/EmptyState";
 
 const SampleNextArrow = (props) => {
   const { onClick } = props;
@@ -311,7 +313,7 @@ const PopularAA = () => {
   return (
     <div className={mounted ? "animate-fade-in" : "opacity-0"} style={{ minHeight: "100vh", background: "#f8fafc" }}>
       {/* Blue Gradient Header - matching other pages pattern */}
-      <div className={mounted ? "animate-fade-in-down" : "opacity-0"} style={{ background: "linear-gradient(135deg, #004a70 0%, #002d47 100%)", padding: "28px 0 44px", animationDelay: "50ms" }}>
+      <div className={`bg-gradient-to-br from-brand-800 to-brand-950 ${mounted ? "animate-fade-in-down" : "opacity-0"}`} style={{ padding: "28px 0 44px", animationDelay: "50ms" }}>
         <div style={{ maxWidth: 1200, margin: "0 auto", padding: "0 16px" }}>
           <div style={{ color: "rgba(255,255,255,0.6)", fontSize: 13, marginBottom: 8 }}>
             Home / Popular Places / {SubcatData?.title || "Detail"}
@@ -511,12 +513,13 @@ const PopularAA = () => {
                     </span>
                   )}
                 </h3>
-                <button
+                <CustomButton
                   onClick={handleShow}
-                  className="inline-flex items-center justify-center gap-2 bg-brand-600 text-white text-sm font-medium px-5 py-2.5 rounded-full hover:bg-brand-700 transition-all duration-200 border-none cursor-pointer shadow-sm hover:shadow-md w-full sm:w-auto"
+                  style={{ padding: "10px 20px" }}
+                  className="w-full sm:w-auto"
                 >
                   Leave a Review
-                </button>
+                </CustomButton>
               </div>
 
               {isLoading ? (
@@ -584,20 +587,24 @@ const PopularAA = () => {
                       ))}
                       {ratingLength > 0 && ratingData?.length < ratingLength && (
                         <div className="flex justify-center pt-2">
-                          <button
-                            disabled={pagiLoading}
+                          <CustomButton
                             onClick={getRatingData}
-                            className="inline-flex items-center gap-2 text-brand-600 font-medium text-sm px-6 py-2.5 rounded-full border border-brand-600/20 hover:bg-brand-600/5 transition-all duration-200 bg-white cursor-pointer"
+                            loading={pagiLoading}
+                            style={{ padding: "10px 24px", background: "white", color: "#004a70", border: "1px solid #004a70" }}
+                            className="hover:bg-brand-600/5"
                           >
-                            {pagiLoading ? <Spinner size="sm" className="!w-4 !h-4" /> : "See More Reviews"}
-                          </button>
+                            See More Reviews
+                          </CustomButton>
                         </div>
                       )}
                     </div>
                   ) : (
-                    <div className="text-center py-12 bg-white rounded-xl border border-gray-100 shadow-sm">
-                      <HiOutlineChatBubbleLeftRight className="text-4xl text-gray-200 mx-auto mb-3" />
-                      <p className="text-gray-400 font-Regular">No reviews yet. Be the first to review!</p>
+                    <div className="py-6">
+                      <EmptyState
+                        title="No Reviews Yet"
+                        description="Be the first to share your experience!"
+                        showBg={false}
+                      />
                     </div>
                   )}
                 </>
@@ -654,13 +661,13 @@ const PopularAA = () => {
                 </div>
               )}
 
-              <button
+              <CustomButton
                 onClick={HandleClick}
-                className="w-full inline-flex items-center justify-center gap-2 bg-brand-600 text-white font-semibold text-sm px-6 py-3.5 rounded-full hover:bg-brand-700 transition-all duration-200 border-none cursor-pointer shadow-md hover:shadow-lg hover:-translate-y-0.5"
+                style={{ width: "100%", padding: "14px" }}
+                endContent={<FiArrowRight className="text-sm" />}
               >
                 Book a Ride
-                <FiArrowRight className="text-sm" />
-              </button>
+              </CustomButton>
 
               <p className="text-[11px] text-gray-400 font-Regular text-center mt-3">
                 No cancellation fees • Instant confirmation
@@ -683,13 +690,13 @@ const PopularAA = () => {
             </span>
           </div>
         </div>
-        <button
+        <CustomButton
           onClick={HandleClick}
-          className="w-full inline-flex items-center justify-center gap-2 bg-brand-600 text-white font-semibold text-sm px-6 py-3.5 rounded-full hover:bg-brand-700 transition-all duration-200 border-none cursor-pointer shadow-md"
+          style={{ width: "100%", padding: "14px" }}
+          endContent={<FiArrowRight className="text-sm" />}
         >
           Book a Ride
-          <FiArrowRight className="text-sm" />
-        </button>
+        </CustomButton>
       </div>
 
       {/* Review Modal */}
@@ -760,13 +767,13 @@ const PopularAA = () => {
                   />
                 </div>
 
-                <button
-                  disabled={ratingLoading}
+                <CustomButton
                   type="submit"
-                  className="w-full inline-flex items-center justify-center gap-2 bg-brand-600 text-white font-semibold text-sm px-6 py-3 rounded-full hover:bg-brand-700 transition-all duration-200 border-none cursor-pointer shadow-sm disabled:opacity-50 disabled:cursor-not-allowed"
+                  loading={ratingLoading}
+                  style={{ width: "100%", padding: "12px" }}
                 >
-                  {ratingLoading ? <Spinner size="sm" /> : "Submit Review"}
-                </button>
+                  Submit Review
+                </CustomButton>
               </Form>
             )}
           </Formik>

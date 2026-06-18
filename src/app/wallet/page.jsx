@@ -19,6 +19,8 @@ import ApiFunction from "@/components/ApiFunction/ApiFunction";
 import moment from "moment";
 import { setPaymentCards, setUser } from "@/components/Redux/Slices/AuthSlice";
 import { useSocket } from "@/components/ApiFunction/SoketProvider";
+import CustomButton from "@/components/CustomButton";
+import EmptyState from "@/components/EmptyState";
 const apiKey = "0FGR7.1720815360";
 const apiSecret =
   "6EF4CAFCD82E689DECA28EDFDE15ADB35D12BF5982B182E468758A9F8DD072DF";
@@ -245,7 +247,7 @@ const page = () => {
         phone: "",
         countary: "",
       });
-    } catch (error) {}
+    } catch (error) { }
   };
 
   const [isMobileSidebar, setIsMobileSidebar] = useState(false);
@@ -261,9 +263,8 @@ const page = () => {
     <div className={mounted ? 'animate-fade-in' : 'opacity-0'} style={{ minHeight: "100vh", background: "#f8fafc" }}>
       {/* Header */}
       <div
-        className={mounted ? 'animate-fade-in-down' : 'opacity-0'}
+        className={`bg-gradient-to-br from-brand-800 to-brand-950 ${mounted ? 'animate-fade-in-down' : 'opacity-0'}`}
         style={{
-          background: "linear-gradient(135deg, #004a70 0%, #002d47 100%)",
           padding: "28px 0 44px",
           animationDelay: "50ms",
         }}
@@ -494,9 +495,9 @@ const page = () => {
                       $
                     </span>
                     <input
-                      type="text"
                       name="price"
                       placeholder="0.00"
+                      type="number"
                       value={cardDetails.price}
                       onChange={handleInputChange}
                       style={{
@@ -684,39 +685,18 @@ const page = () => {
                 </div>
 
                 {/* Submit */}
-                <button
+                <CustomButton
                   onClick={jadAPiFunction}
-                  disabled={loading}
-                  className={!loading ? 'hover:bg-brand-800 hover:shadow-lg' : ''}
-                  style={{
-                    width: "100%",
-                    padding: "14px",
-                    borderRadius: 12,
-                    background: loading ? "#9ca3af" : "#004a70",
-                    border: "none",
-                    color: "#fff",
-                    fontSize: 15,
-                    fontWeight: 600,
-                    cursor: loading ? "not-allowed" : "pointer",
-                    transition: "all 0.2s",
-                    display: "flex",
-                    alignItems: "center",
-                    justifyContent: "center",
-                    gap: 8,
-                  }}
+                  loading={loading}
+                  style={{ width: "100%" }}
+                  size="lg"
+                  startContent={
+                    <FaPlus size={14} style={{ marginRight: 6 }} />
+
+                  }
                 >
-                  {loading ? (
-                    <>
-                      <Spinner size="sm" style={{ color: "#fff" }} />
-                      Processing...
-                    </>
-                  ) : (
-                    <>
-                      <FaPlus size={14} />
-                      Add Payment
-                    </>
-                  )}
-                </button>
+                  Add Payment
+                </CustomButton>
               </div>
             ) : (
               <div
@@ -790,9 +770,12 @@ const page = () => {
                     ))}
                   </div>
                 ) : (
-                  <div style={{ textAlign: "center", padding: "40px 0" }}>
-                    <FaHistory size={32} color="#d1d5db" />
-                    <p style={{ fontSize: 14, color: "#9ca3af", margin: "8px 0 0" }}>No transactions yet</p>
+                  <div className="py-10">
+                    <EmptyState
+                      title="No Transactions Yet"
+                      showBg={false}
+                      description="You haven't made any transactions."
+                    />
                   </div>
                 )}
               </div>

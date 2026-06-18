@@ -49,8 +49,9 @@ const Page = () => {
     <div style={{ minHeight: "100vh", background: "#f8fafc" }}>
       {/* Header */}
       <div
+        className="bg-gradient-to-br from-brand-800 to-brand-950"
         style={{
-          background: "linear-gradient(135deg, #004a70 0%, #002d47 100%)",
+
           padding: "28px 0 44px",
         }}
       >

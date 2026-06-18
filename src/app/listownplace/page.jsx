@@ -16,6 +16,7 @@ import {
   ListGroupItem,
 } from "reactstrap";
 import { Container, Form } from "react-bootstrap";
+import CustomButton from "@/components/CustomButton";
 import ApiFunction from "@/components/ApiFunction/ApiFunction";
 import { Loader } from "@googlemaps/js-api-loader";
 import { message } from "antd";
@@ -579,9 +580,8 @@ const page = () => {
     <div className={mounted ? "animate-fade-in" : "opacity-0"} style={{ minHeight: "100vh", background: "#f8fafc" }}>
       {/* Header */}
       <div
-        className={mounted ? "animate-fade-in-down" : "opacity-0"}
+        className={`bg-gradient-to-br from-brand-800 to-brand-950 ${mounted ? "animate-fade-in-down" : "opacity-0"}`}
         style={{
-          background: "linear-gradient(135deg, #004a70 0%, #002d47 100%)",
           padding: "28px 0 44px",
           animationDelay: "50ms",
         }}
@@ -1140,28 +1140,15 @@ const page = () => {
 
           {/* Submit */}
           <div style={{ marginTop: 20, display: "flex", justifyContent: "flex-end" }}>
-            <button
+            <CustomButton
               type="submit"
-              disabled={isLoading || imageLoading}
-              className={!isLoading && !imageLoading ? "hover:bg-brand-800 hover:shadow-lg" : ""}
-              style={{
-                padding: "12px 36px",
-                borderRadius: 12,
-                background: isLoading || imageLoading ? "#9ca3af" : "#004a70",
-                border: "none",
-                color: "#fff",
-                fontSize: 15,
-                fontWeight: 600,
-                cursor: isLoading || imageLoading ? "not-allowed" : "pointer",
-                transition: "all 0.2s",
-                display: "flex",
-                alignItems: "center",
-                gap: 8,
-              }}
+              loading={isLoading}
+              disabled={imageLoading}
+              style={{ padding: "12px 36px" }}
+              size="lg"
             >
-              {isLoading ? <Spinner size="sm" style={{ color: "#fff" }} /> : null}
-              {isLoading ? "Processing..." : "Submit Listing"}
-            </button>
+              Submit Listing
+            </CustomButton>
           </div>
         </div>
       </Form>
@@ -1253,21 +1240,15 @@ const page = () => {
             <div><label style={{ fontSize: 12, fontWeight: 500, color: "#374151", display: "block", marginBottom: 3 }}>Phone</label><input type="text" name="phone" placeholder="+1 (___)-___-____" value={cardDetails.phone} onChange={handleInputChange} required style={modalInputStyle} /></div>
             <div><label style={{ fontSize: 12, fontWeight: 500, color: "#374151", display: "block", marginBottom: 3 }}>Email</label><input type="text" name="email" placeholder="email@example.com" value={cardDetails.email} onChange={handleInputChange} required style={modalInputStyle} /></div>
           </div>
-          <button
+          <CustomButton
             onClick={jadAPiFunction}
+            loading={loading}
             disabled={!areAllFieldsFilled()}
-            className={areAllFieldsFilled() ? "hover:bg-brand-800 hover:shadow-lg" : ""}
-            style={{
-              width: "100%", padding: "14px", borderRadius: 12,
-              background: !areAllFieldsFilled() ? "#d1d5db" : "#004a70",
-              border: "none", color: "#fff", fontSize: 15, fontWeight: 600,
-              cursor: !areAllFieldsFilled() ? "not-allowed" : "pointer",
-              transition: "all 0.2s", marginTop: 20,
-              display: "flex", alignItems: "center", justifyContent: "center", gap: 8,
-            }}
+            style={{ width: "100%", marginTop: 20 }}
+            size="lg"
           >
-            {loading ? <Spinner size="sm" style={{ color: "#fff" }} /> : "Pay $40.00"}
-          </button>
+            Pay $40.00
+          </CustomButton>
         </div>
       </Modal>
 
@@ -1284,17 +1265,12 @@ const page = () => {
           </div>
           <h2 style={{ fontSize: 20, fontWeight: 700, color: "#1f2937", margin: "0 0 4px" }}>Payment Successful!</h2>
           <p style={{ fontSize: 14, color: "#6b7280", margin: "0 0 24px" }}>Your listing has been submitted</p>
-          <button
+          <CustomButton
             onClick={() => { setShow1(false); router.push("/") }}
-            className="hover:bg-brand-800"
-            style={{
-              padding: "12px 32px", borderRadius: 10, background: "#004a70",
-              border: "none", color: "#fff", fontSize: 14, fontWeight: 600, cursor: "pointer",
-              transition: "background 0.2s",
-            }}
+            style={{ padding: "12px 32px" }}
           >
             Back to Home
-          </button>
+          </CustomButton>
         </div>
       </Modal>
     </div>
