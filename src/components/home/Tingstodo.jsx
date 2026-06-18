@@ -419,7 +419,7 @@ export default function Tingstodo() {
 
       <div className={`slider-container container mx-auto p-2 reveal ${inView ? "visible" : ""}`} style={{ transitionDelay: "150ms" }}>
         <Slider {...settings2} key={Category.length}>
-          {Category.map((category, index) => {
+          {Category?.map((category, index) => {
             const isSelected = selectedCategoryId === category._id;
             return (
               <div className="p-2" key={index}>
