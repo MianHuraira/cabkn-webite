@@ -359,24 +359,24 @@ export default function Tingstodo() {
             Our Tour Recommendations
           </h2>
         </div>
-        <div className="w-full lg:w-[400px] shrink-0 relative z-[100]" ref={searchRef}>
+        <div className="w-full lg:w-[280px] shrink-0 relative z-[100]" ref={searchRef}>
           <Controller
             name="name"
             control={control}
             render={({ field }) => (
               <div className="relative group w-full">
-                <div className="flex items-center w-full px-3 py-0.5 bg-white border border-slate-200 rounded-[9999px] shadow-[0_2px_12px_rgba(0,0,0,0.04)] transition-all duration-300 hover:shadow-[0_6px_20px_rgba(0,74,112,0.1)] hover:border-brand-300 focus-within:!border-primary focus-within:!ring-4 focus-within:!ring-brand-100">
-                  <FaSearch className="text-slate-400 group-focus-within:text-primary transition-colors duration-300 w-4 h-4 ml-2" />
+                <div className="flex items-center w-full px-2 bg-white border border-slate-200 rounded-[10px] shadow-sm transition-all duration-300 hover:shadow-md hover:border-brand-200 focus-within:!border-primary focus-within:!ring-3 focus-within:!ring-brand-100">
+                  <FaSearch className="text-slate-400 group-focus-within:text-primary transition-colors duration-300 w-3.5 h-3.5" />
                   <Input
                     {...field}
                     placeholder="Search locations..."
                     value={searchQuery}
-                    className="flex-1 !border-none !shadow-none !outline-none !ring-0 !bg-transparent !py-1.5 !px-3 text-slate-700 font-['Inter-Medium'] placeholder:text-slate-400 placeholder:font-normal text-sm"
+                    className="flex-1 !border-none !shadow-none !outline-none !ring-0 !bg-transparent !py-0 !px-2.5 text-slate-700 font-['Inter-Medium'] placeholder:text-slate-400 placeholder:font-normal text-xs"
                     onChange={(e) => handleSearch(e.target.value)}
                     invalid={errors.name && true}
                     style={{ boxShadow: 'none', background: 'transparent', border: 'none', minHeight: 'unset' }}
                   />
-                  {PridicLoading && <Spinner size="sm" color="#004a70" className="mr-2" />}
+                  {PridicLoading && <Spinner size="sm" color="#004a70" />}
                 </div>
 
                 {predictions.length > 0 && (
@@ -459,43 +459,43 @@ export default function Tingstodo() {
       <div className="slider-container container mx-auto p-3">
         {/* Show spinner when location loading */}
         {locationLoading ? (
-          <div className="w-full py-4">
-            <div className="flex justify-center mb-8">
-              <div className="px-6 py-2.5 bg-brand-50 text-primary font-['Inter-Medium'] rounded-full text-sm animate-pulse border border-brand-100 flex items-center gap-3 shadow-sm">
-                <Spinner size="sm" color="#004a70" />
-                <span>Loading recommendations for your location...</span>
-              </div>
-            </div>
-            <div className="grid grid-cols-1 sm:grid-cols-2 md:grid-cols-3 lg:grid-cols-4 gap-2 md:gap-3">
-              {[1, 2, 3, 4].map((item) => (
-                <div key={item} className="bg-white rounded-[20px] overflow-hidden shadow-[0_4px_12px_rgba(0,0,0,0.03)] border border-slate-100 flex flex-col h-[340px] animate-pulse">
-                  <div className="bg-slate-200/70 h-[210px] w-full"></div>
-                  <div className="p-4 flex-1 flex flex-col gap-4">
-                    <div className="flex justify-between items-center gap-4">
-                      <div className="bg-slate-200/70 h-5 w-3/4 rounded-full"></div>
-                      <div className="bg-slate-200/70 h-5 w-1/4 rounded-full"></div>
-                    </div>
-                    <div className="bg-slate-200/70 h-4 w-1/2 rounded-full"></div>
-                    <div className="mt-auto bg-slate-200/70 h-11 w-full rounded-[9999px]"></div>
-                  </div>
+            <div className="w-full py-4">
+              <div className="flex justify-center mb-8">
+                <div className="px-6 py-2.5 bg-brand-50 text-primary font-['Inter-Medium'] rounded-full text-sm animate-pulse border border-brand-100 flex items-center gap-3 shadow-sm">
+                  <Spinner size="sm" color="#004a70" />
+                  <span>Loading recommendations for your location...</span>
                 </div>
-              ))}
-            </div>
-          </div>
-        ) : /* Show content when not loading */
-          SubCategory.length > 0 ? (
-            <>
-              <div className="grid grid-cols-1 sm:grid-cols-2 md:grid-cols-3 lg:grid-cols-4 gap-2 md:gap-3">
-                {SubCategory?.map((testimonial, index) => (
-                  <div key={index} className={`reveal ${inView ? "visible" : ""}`} style={{ transitionDelay: `${index * 60}ms` }}>
-                    <ThingstodoCard
-                      testimonial={testimonial}
-                      onClick={() => handleItemClick(testimonial)}
-                      onClick2={() => handleSelection(testimonial)}
-                    />
+              </div>
+              <div className="grid grid-cols-1 sm:grid-cols-2 md:grid-cols-3 lg:grid-cols-4 gap-4">
+                {[1, 2, 3, 4].map((item) => (
+                  <div key={item} className="bg-white rounded-[20px] overflow-hidden shadow-[0_4px_12px_rgba(0,0,0,0.03)] border border-slate-100 flex flex-col h-[380px] animate-pulse">
+                    <div className="bg-slate-200/70 h-[180px] w-full"></div>
+                    <div className="p-4 flex-1 flex flex-col gap-4">
+                      <div className="flex justify-between items-center gap-4">
+                        <div className="bg-slate-200/70 h-5 w-3/4 rounded-full"></div>
+                        <div className="bg-slate-200/70 h-5 w-1/4 rounded-full"></div>
+                      </div>
+                      <div className="bg-slate-200/70 h-4 w-1/2 rounded-full"></div>
+                      <div className="mt-auto bg-slate-200/70 h-11 w-full rounded-[9999px]"></div>
+                    </div>
                   </div>
                 ))}
               </div>
+            </div>
+          ) : /* Show content when not loading */
+            SubCategory.length > 0 ? (
+              <>
+                <div className="grid grid-cols-1 sm:grid-cols-2 md:grid-cols-3 lg:grid-cols-4 gap-4">
+                  {SubCategory?.map((testimonial, index) => (
+                    <div key={index} className={`reveal ${inView ? "visible" : ""} flex`} style={{ transitionDelay: `${index * 60}ms` }}>
+                      <ThingstodoCard
+                        testimonial={testimonial}
+                        onClick={() => handleItemClick(testimonial)}
+                        onClick2={() => handleSelection(testimonial)}
+                      />
+                    </div>
+                  ))}
+                </div>
               <div className={`flex justify-center items-center mt-5 reveal ${inView ? "visible" : ""}`} style={{ transitionDelay: "400ms" }}>
                 {Pagelength > 0 ? (
                   <>
