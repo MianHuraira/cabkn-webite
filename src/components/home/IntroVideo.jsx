@@ -1,7 +1,7 @@
 
 "use client"
 import React, { useEffect, useState } from "react";
-import { Container, Spinner } from "react-bootstrap";
+import { Spinner } from "react-bootstrap";
 import { useApi } from "../ApiFunction/ApiFunction";
 
 function IntroVideo() {
@@ -29,7 +29,7 @@ function IntroVideo() {
   }, []);
 
   return (
-    <Container>
+    <div style={{ maxWidth: 1200, margin: "0 auto", padding: "0 16px" }}>
       <div
         className={`video-container mt-5 d-flex justify-content-center align-items-center ${loaded ? "animate-fade-in" : "opacity-0"}`}
         style={{ minHeight: "300px" }}
@@ -45,7 +45,7 @@ function IntroVideo() {
           )
         )}
       </div>
-    </Container>
+    </div>
   );
 }
 

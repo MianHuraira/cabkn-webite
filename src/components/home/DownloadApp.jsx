@@ -37,8 +37,8 @@ export default function DownloadApp() {
       }}
     >
       <Row
-        className="max-w-7xl mx-auto align-items-center g-0"
-        style={{ minHeight: 520, padding: "2rem 0" }}
+        className="mx-auto align-items-center g-0"
+        style={{ maxWidth: 1200, minHeight: 520, padding: "2rem 0" }}
       >
         <Col lg={6} className="p-5 lg:p-8">
           <div className="d-flex flex-column gap-4">

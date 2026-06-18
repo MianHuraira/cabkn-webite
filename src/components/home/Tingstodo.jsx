@@ -361,7 +361,7 @@ export default function Tingstodo() {
 
   return (
     <div ref={sectionRef}>
-      <div className={`max-w-7xl mx-auto flex flex-col lg:flex-row justify-between items-start lg:items-center mb-8 mt-12 gap-5 reveal ${inView ? "visible" : ""}`} style={{ padding: "0 16px", transitionDelay: "50ms", position: "relative", zIndex: 100 }}>
+      <div className={`mx-auto flex flex-col lg:flex-row justify-between items-start lg:items-center mb-8 mt-12 gap-5 reveal ${inView ? "visible" : ""}`} style={{ maxWidth: 1200, padding: "0 16px", transitionDelay: "50ms", position: "relative", zIndex: 100 }}>
         <div className="flex flex-col text-left w-full lg:w-auto">
           <h2 className="text-2xl sm:text-3xl lg:text-[34px] font-['Inter-Bold'] text-slate-800 tracking-tight m-0 leading-tight">
             Our Tour Recommendations
@@ -425,7 +425,7 @@ export default function Tingstodo() {
         </div>
       </div>
 
-      <div className={`slider-container max-w-7xl mx-auto p-2 reveal ${inView ? "visible" : ""}`} style={{ transitionDelay: "150ms" }}>
+      <div className={`slider-container mx-auto p-2 reveal ${inView ? "visible" : ""}`} style={{ maxWidth: 1200, transitionDelay: "150ms" }}>
         {categoryLoading ? (
           <div className="flex gap-4 overflow-x-auto py-2">
             {[1, 2, 3, 4, 5, 6, 7, 8].map((item) => (
@@ -472,7 +472,7 @@ export default function Tingstodo() {
         )}
       </div>
 
-      <div className="slider-container max-w-7xl mx-auto p-3">
+      <div className="slider-container mx-auto p-3" style={{ maxWidth: 1200 }}>
         {/* Show spinner when location loading or category loading */}
         {locationLoading || loading ? (
           <div className="w-full py-4">

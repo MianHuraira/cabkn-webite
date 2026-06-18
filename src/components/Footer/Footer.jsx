@@ -67,7 +67,7 @@ export default function Footer() {
       ref={sectionRef}
       className="bg-gradient-to-br from-brand-700 to-brand-950"
     >
-      <div className="max-w-[1320px] mx-auto px-4 sm:px-6 lg:px-8 pt-10 lg:pt-14 pb-8 lg:pb-10">
+      <div className="mx-auto px-4 sm:px-6 lg:px-8 pt-10 lg:pt-14 pb-8 lg:pb-10" style={{ maxWidth: 1200 }}>
         {/* Main 3-Column Grid - Clean Layout */}
         <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-8 lg:gap-12">
           {/* Left Section: Brand Area */}
@@ -227,7 +227,7 @@ export default function Footer() {
 
       {/* Footer Bottom Bar - Clean */}
       <div className="bg-brand-950/80 border-t border-white/10">
-        <div className="max-w-[1320px] mx-auto px-4 sm:px-6 lg:px-8 py-3.5 sm:py-4">
+        <div className="mx-auto px-4 sm:px-6 lg:px-8 py-3.5 sm:py-4" style={{ maxWidth: 1200 }}>
           <div className="flex flex-col sm:flex-row items-center justify-between gap-2">
             <p className="text-white/60 text-[12px] m-0 text-center sm:text-left">
               &copy; {new Date().getFullYear()} CabKN. All rights reserved.
