@@ -224,7 +224,7 @@ const Login = () => {
               onClick={googlLogin}
               loading={GoogleLoading}
               variant="secondary"
-              className="w-full !bg-white !text-slate-700 border border-slate-200 hover:!bg-slate-50"
+              className="w-full !bg-white !text-slate-700 text-black border border-slate-200 hover:!bg-slate-50"
               startContent={<Image src={Google} alt="" className="h-5 w-5 mr-1" />}
             >
               {GoogleLoading ? "Signing in..." : "Google"}

@@ -878,42 +878,42 @@ function MakeYourTour() {
                   </div>
                 ) : (
                   <Slider {...settings2} key={Category.length}>
-                  {Category.map((category, index) => {
-                    const isSelected = selectedCategoryId === category._id;
-                    return (
-                      <div className="p-2" key={index}>
-                        <div
-                          className={`cursor-pointer capitalize`}
-                          style={{
-                            padding: "10px 16px",
-                            background: isSelected ? "#004a70" : "#f8fafc",
-                            color: isSelected ? "white" : "#1e293b",
-                            borderRadius: "9999px",
-                            minWidth: "120px",
-                            textAlign: "center",
-                            display: "flex",
-                            alignItems: "center",
-                            justifyContent: "center",
-                            transition: "all 0.3s ease",
-                            border: isSelected ? "none" : "1px solid #e2e8f0",
-                            boxShadow: isSelected ? "0 2px 8px rgba(0,74,112,0.25)" : "none",
-                            margin: "0 auto",
-                            whiteSpace: "nowrap",
-                            fontSize: 14,
-                            fontWeight: 500,
-                            fontFamily: "Inter-Medium",
-                            cursor: "pointer",
-                          }}
-                          onClick={() => setSelectedCategoryId(category._id)}
-                          onMouseEnter={(e) => { if (!isSelected) { e.currentTarget.style.background = "#f1f5f9"; e.currentTarget.style.borderColor = "#004a70"; }}}
-                          onMouseLeave={(e) => { if (!isSelected) { e.currentTarget.style.background = "#f8fafc"; e.currentTarget.style.borderColor = "#e2e8f0"; }}}
-                        >
-                          <span style={{ fontSize: 13, fontFamily: "Inter-Medium" }}>{category?.name}</span>
+                    {Category.map((category, index) => {
+                      const isSelected = selectedCategoryId === category._id;
+                      return (
+                        <div className="p-2" key={index}>
+                          <div
+                            className={`cursor-pointer capitalize`}
+                            style={{
+                              padding: "10px 16px",
+                              background: isSelected ? "#004a70" : "#f8fafc",
+                              color: isSelected ? "white" : "#1e293b",
+                              borderRadius: "9999px",
+                              minWidth: "120px",
+                              textAlign: "center",
+                              display: "flex",
+                              alignItems: "center",
+                              justifyContent: "center",
+                              transition: "all 0.3s ease",
+                              border: isSelected ? "none" : "1px solid #e2e8f0",
+                              boxShadow: isSelected ? "0 2px 8px rgba(0,74,112,0.25)" : "none",
+                              margin: "0 auto",
+                              whiteSpace: "nowrap",
+                              fontSize: 14,
+                              fontWeight: 500,
+                              fontFamily: "Inter-Medium",
+                              cursor: "pointer",
+                            }}
+                            onClick={() => setSelectedCategoryId(category._id)}
+                            onMouseEnter={(e) => { if (!isSelected) { e.currentTarget.style.background = "#f1f5f9"; e.currentTarget.style.borderColor = "#004a70"; } }}
+                            onMouseLeave={(e) => { if (!isSelected) { e.currentTarget.style.background = "#f8fafc"; e.currentTarget.style.borderColor = "#e2e8f0"; } }}
+                          >
+                            <span style={{ fontSize: 13, fontFamily: "Inter-Medium" }}>{category?.name}</span>
+                          </div>
                         </div>
-                      </div>
-                    );
-                  })}
-                </Slider>
+                      );
+                    })}
+                  </Slider>
                 )}
               </div>
 
