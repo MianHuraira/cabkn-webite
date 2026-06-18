@@ -25,7 +25,6 @@ import { IoMdCloseCircle } from "react-icons/io";
 import { BiCurrentLocation } from "react-icons/bi";
 import { NoshowData } from "@/components/assets/Images";
 import Image from "next/image";
-import CustomButton from "@/components/CustomButton";
 import EmptyState from "@/components/EmptyState";
 import ThingstodoCard from "@/components/home/ThingstodoCard";
 import ApiFunction from "@/components/ApiFunction/ApiFunction";
