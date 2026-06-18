@@ -2,7 +2,7 @@ import React, { useEffect, useState, useRef } from "react";
 import { Col, Row } from "reactstrap";
 import { mobiledown } from "../assets/Images";
 import Image from "next/image";
-import { TiVendorApple  } from "react-icons/ti";
+import { TiVendorApple } from "react-icons/ti";
 
 import { FaGooglePlay } from "react-icons/fa";
 
@@ -37,7 +37,7 @@ export default function DownloadApp() {
       }}
     >
       <Row
-        className="container mx-auto align-items-center g-0"
+        className="max-w-7xl mx-auto align-items-center g-0"
         style={{ minHeight: 520, padding: "2rem 0" }}
       >
         <Col lg={6} className="p-5 lg:p-8">
@@ -105,7 +105,7 @@ export default function DownloadApp() {
                   fontFamily: "Inter-SemiBold",
                 }}
               >
-                <FaGooglePlay size={32}  />
+                <FaGooglePlay size={32} />
                 <div className="flex flex-col text-left">
                   <span style={{ fontSize: 10, lineHeight: 1.2 }}>
                     GET IT ON
@@ -133,7 +133,7 @@ export default function DownloadApp() {
                   fontFamily: "Inter-SemiBold",
                 }}
               >
-                <TiVendorApple  size={36}  />
+                <TiVendorApple size={36} />
                 <div className="flex flex-col text-left">
                   <span style={{ fontSize: 10, lineHeight: 1.2 }}>
                     Download on the

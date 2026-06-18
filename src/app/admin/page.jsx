@@ -609,7 +609,7 @@ function Page() {
         <div style={{ position: "absolute", top: -60, right: -60, width: 200, height: 200, borderRadius: "50%", background: "rgba(255,255,255,0.03)" }} />
         <div style={{ position: "absolute", bottom: -40, left: -40, width: 160, height: 160, borderRadius: "50%", background: "rgba(255,255,255,0.03)" }} />
 
-        <div style={{ maxWidth: 1320, margin: "0 auto", padding: "0 24px", position: "relative" }}>
+        <div style={{ maxWidth: 1200, margin: "0 auto", padding: "0 24px", position: "relative" }}>
           {/* Breadcrumb */}
           <div style={{ display: "flex", alignItems: "center", gap: 8, color: "rgba(255,255,255,0.5)", fontSize: 13, fontWeight: 500, marginBottom: 16 }}>
             <a href="/" style={{ color: "rgba(255,255,255,0.5)", textDecoration: "none", transition: "color 0.2s" }}
@@ -655,7 +655,7 @@ function Page() {
       </div>
 
       {/* Tabs - Separate from Table */}
-      <div ref={contentRef} style={{ maxWidth: 1320, margin: "-24px auto 0", padding: "0 16px 48px" }}>
+      <div ref={contentRef} style={{ maxWidth: 1200, margin: "-24px auto 0", padding: "0 16px 48px" }}>
         <div className={`reveal ${contentInView ? "visible" : ""}`} style={{
           background: "#fff",
           borderRadius: 16,

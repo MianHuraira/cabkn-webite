@@ -241,7 +241,7 @@ const InnerHeader = () => {
         <div
           style={{
             width: "100%",
-            maxWidth: 1400,
+            maxWidth: 1200,
             margin: "0 auto",
             display: "flex",
             alignItems: "center",
