@@ -67,3 +67,7 @@
   100% { opacity: 0.6; transform: scale(1); }
 }
 
+.driver-modal-sm .modal-dialog {
+  max-width: 360px;
+}
+
