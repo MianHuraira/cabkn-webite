@@ -34,7 +34,7 @@ const Reset = () => {
 
   const dispatch = useDispatch();
   const api = ApiFunction();
-  const { postData, header3, header1 } = api;
+  const { putData } = api;
   const { loginApi } = ApiFile;
   const initialValues = {
     npassword: "",
@@ -70,21 +70,27 @@ const Reset = () => {
 
   const handleSubmit = async (values) => {
     const body = {
-      token: Rowdata?.token,
       password: values.npassword,
       code: Rowdata?.code,
-      type: "customer",
+      token: Rowdata?.token,
+    };
+
+    const headers = {
+      "x-auth-token": Rowdata?.token,
     };
 
     try {
       setLoading(true);
-      const res = await postData("users/forget-password", body, header3);
-      router.push("/auth/login");
-      setLoading(false);
+      const res = await putData("users/update-password", body, headers);
+      if (res?.success) {
+        toast.success(res?.message || "Password updated successfully");
+        router.push("/auth/login");
+      } else {
+        toast.error(res?.message || "Failed to update password");
+      }
     } catch (error) {
-      setLoading(false);
-      toast.error(error?.response?.data?.message);
-      console.log("==========error: ", error?.response?.data?.message);
+      toast.error(error?.response?.data?.message || "Something went wrong");
+      console.log("==========error: ", error);
     } finally {
       setLoading(false);
     }

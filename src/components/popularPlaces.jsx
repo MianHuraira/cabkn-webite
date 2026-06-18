@@ -7,6 +7,7 @@ import { FaLocationDot, FaStar, FaChevronLeft, FaChevronRight } from "react-icon
 import { HiOutlineCalendarDays, HiOutlineClock, HiOutlineMapPin, HiOutlineCheckCircle, HiOutlineStar, HiOutlineChatBubbleLeftRight } from "react-icons/hi2";
 import Slider from "react-slick";
 import mapboxgl from "mapbox-gl";
+import "mapbox-gl/dist/mapbox-gl.css";
 import moment from "moment";
 import { message, Skeleton } from "antd";
 import ApiFunction from "@/components/ApiFunction/ApiFunction";
@@ -171,17 +172,37 @@ const PopularAA = () => {
       mapRef.current.remove();
     }
 
-    mapRef.current = new mapboxgl.Map({
+    const map = new mapboxgl.Map({
       container: mapContainerRef.current,
       style: "mapbox://styles/mapbox/streets-v11",
       center: start,
       zoom: 12,
       attributionControl: false,
     });
+
+    mapRef.current = map;
+
+    map.on("load", () => {
+      map.resize();
+    });
+
+    setTimeout(() => {
+      map.resize();
+    }, 100);
+
+    setTimeout(() => {
+      map.resize();
+    }, 500);
   };
 
   useEffect(() => {
-    mapRef.current?.resize();
+    const handleResize = () => {
+      mapRef.current?.resize();
+    };
+    window.addEventListener("resize", handleResize);
+    return () => {
+      window.removeEventListener("resize", handleResize);
+    };
   }, []);
 
   const HandleClick = () => {
@@ -404,33 +425,33 @@ const PopularAA = () => {
           <div className="lg:col-span-2 space-y-8">
             {/* Upcoming Events */}
             {SubcatData?.category?.name == "Upcoming Events" && SubcatData.start_date && (
-                <div className={`bg-gradient-to-r from-brand-600/5 to-brand-500/5 rounded-xl p-4 sm:p-5 border border-brand-600/10 reveal ${contentInView ? "visible" : ""}`} style={{ transitionDelay: "50ms" }}>
-                  <div className="flex flex-col sm:flex-row flex-wrap items-start sm:items-center gap-4 sm:gap-6">
-                    <div className="flex items-center gap-3">
-                      <div className="w-10 h-10 rounded-full bg-brand-600/10 flex items-center justify-center flex-shrink-0">
-                        <HiOutlineCalendarDays className="text-brand-600 text-lg" />
-                      </div>
-                      <div className="min-w-0">
-                        <p className="text-xs text-brand-600/60 font-Regular uppercase tracking-wide">Date</p>
-                        <p className="text-sm font-medium text-brand-600 truncate">
-                          {moment(SubcatData.start_date).format("dddd, MMMM Do, YYYY")}
-                        </p>
-                      </div>
+              <div className={`bg-gradient-to-r from-brand-600/5 to-brand-500/5 rounded-xl p-4 sm:p-5 border border-brand-600/10 reveal ${contentInView ? "visible" : ""}`} style={{ transitionDelay: "50ms" }}>
+                <div className="flex flex-col sm:flex-row flex-wrap items-start sm:items-center gap-4 sm:gap-6">
+                  <div className="flex items-center gap-3">
+                    <div className="w-10 h-10 rounded-full bg-brand-600/10 flex items-center justify-center flex-shrink-0">
+                      <HiOutlineCalendarDays className="text-brand-600 text-lg" />
                     </div>
-                    <div className="w-px h-10 bg-brand-600/10 hidden sm:block flex-shrink-0" />
-                    <div className="flex items-center gap-3">
-                      <div className="w-10 h-10 rounded-full bg-brand-600/10 flex items-center justify-center flex-shrink-0">
-                        <HiOutlineClock className="text-brand-600 text-lg" />
-                      </div>
-                      <div className="min-w-0">
-                        <p className="text-xs text-brand-600/60 font-Regular uppercase tracking-wide">Time</p>
-                        <p className="text-sm font-medium text-brand-600">
-                          {moment(SubcatData.start_time, "HH:mm").format("hh:mm A")}
-                        </p>
-                      </div>
+                    <div className="min-w-0">
+                      <p className="text-xs text-brand-600/60 font-Regular uppercase tracking-wide">Date</p>
+                      <p className="text-sm font-medium text-brand-600 truncate">
+                        {moment(SubcatData.start_date).format("dddd, MMMM Do, YYYY")}
+                      </p>
+                    </div>
+                  </div>
+                  <div className="w-px h-10 bg-brand-600/10 hidden sm:block flex-shrink-0" />
+                  <div className="flex items-center gap-3">
+                    <div className="w-10 h-10 rounded-full bg-brand-600/10 flex items-center justify-center flex-shrink-0">
+                      <HiOutlineClock className="text-brand-600 text-lg" />
+                    </div>
+                    <div className="min-w-0">
+                      <p className="text-xs text-brand-600/60 font-Regular uppercase tracking-wide">Time</p>
+                      <p className="text-sm font-medium text-brand-600">
+                        {moment(SubcatData.start_time, "HH:mm").format("hh:mm A")}
+                      </p>
                     </div>
                   </div>
                 </div>
+              </div>
             )}
 
             {/* Schedule */}
@@ -474,14 +495,17 @@ const PopularAA = () => {
               <div className={`reveal ${contentInView ? "visible" : ""}`} style={{ transitionDelay: "200ms" }}>
                 <h3 className="text-lg font-bold text-gray-900 mb-3">Highlights</h3>
                 <div className="bg-white rounded-xl border border-gray-100 shadow-sm p-5">
-                  <ul className="space-y-3">
+                  <div className="flex flex-wrap gap-3">
                     {SubcatData?.heighlights.map((item, index) => (
-                      <li key={index} className="flex items-start gap-3">
-                        <HiOutlineCheckCircle className="text-brand-600 text-lg mt-0.5 flex-shrink-0" />
-                        <span className="text-gray-600 font-Regular text-[15px]">{item}</span>
-                      </li>
+                      <div
+                        key={index}
+                        className="inline-flex items-center gap-2 px-4 py-2.5 rounded-xl bg-brand-600/[0.06] text-brand-800 text-sm font-semibold border border-brand-600/10 transition-all duration-200 hover:bg-brand-600/[0.1] hover:scale-[1.02]"
+                      >
+                        <HiOutlineCheckCircle className="text-brand-600 text-lg flex-shrink-0" />
+                        <span>{item}</span>
+                      </div>
                     ))}
-                  </ul>
+                  </div>
                 </div>
               </div>
             )}
@@ -492,10 +516,16 @@ const PopularAA = () => {
                 <HiOutlineMapPin className="text-brand-600" />
                 Location
               </h3>
-              <div className="rounded-xl overflow-hidden border border-gray-100 shadow-sm">
+              <div className="rounded-xl overflow-hidden border border-gray-100 shadow-sm relative">
+                <style>{`
+                  #map-container canvas {
+                    width: 100% !important;
+                    height: 100% !important;
+                  }
+                `}</style>
                 <div
                   id="map-container"
-                  className="w-full h-[300px] md:h-[350px]"
+                  className="w-full h-[300px] md:h-[350px] relative overflow-hidden"
                   ref={mapContainerRef}
                 />
               </div>
@@ -702,6 +732,26 @@ const PopularAA = () => {
       {/* Review Modal */}
       <Modal centered backdrop="static" show={show} onHide={handleClose} style={{ zIndex: 2000 }} className="!mx-2 sm:!mx-0">
         <div className="p-4 sm:p-6">
+          <style>{`
+            .review-modal-rate .ant-rate-star {
+              margin-right: 8px !important;
+              transition: transform 0.15s ease !important;
+            }
+            .review-modal-rate .ant-rate-star:hover {
+              transform: scale(1.2);
+            }
+            .review-modal-rate .ant-rate-star-first,
+            .review-modal-rate .ant-rate-star-second {
+              color: #cbd5e1 !important;
+            }
+            .review-modal-rate .ant-rate-star-full .ant-rate-star-first,
+            .review-modal-rate .ant-rate-star-full .ant-rate-star-second {
+              color: #fbbf24 !important;
+            }
+            .review-modal-rate .ant-rate-star-half .ant-rate-star-first {
+              color: #fbbf24 !important;
+            }
+          `}</style>
           <div className="flex items-center justify-between mb-6">
             <h3 className="text-xl font-bold text-gray-900">Leave a Review</h3>
             <button
@@ -734,7 +784,7 @@ const PopularAA = () => {
                       setFieldValue("rating", val);
                     }}
                     value={value}
-                    className="starDiv !text-2xl"
+                    className="review-modal-rate !text-3xl"
                   />
                   <ErrorMessage
                     name="rating"
@@ -751,12 +801,11 @@ const PopularAA = () => {
                   </label>
                   <Field
                     as="textarea"
-                    rows="5"
-                    type="text"
+                    rows="4"
                     placeholder="Share your experience..."
                     id="comment"
                     name="comment"
-                    className="w-full px-4 py-3 text-sm border border-gray-200 rounded-xl focus:border-brand-600 outline-none font-Regular resize-none transition-colors"
+                    className="w-full px-4 py-3 text-sm border border-slate-200 rounded-xl focus:border-brand-500 focus:ring-4 focus:ring-brand-100/50 outline-none font-Regular resize-none transition-all duration-200"
                     onChange={handleChange}
                     onBlur={handleBlur}
                   />
