@@ -3,7 +3,6 @@ import React from "react";
 
 export const dynamic = "force-dynamic";
 export const dynamicParams = true;
-// clinet side url
 
 const frontendBaseURL = "https://cabkn.com/popular";
 
