@@ -12,7 +12,7 @@ import {
   AuthShell,
 } from "@/components/auth/AuthShell";
 
-const Otp =() =>{
+const Otp = () => {
 
   const searchParams = useSearchParams();
   const encodedData = searchParams.get("data");
@@ -225,8 +225,12 @@ const Otp =() =>{
   };
 
   const handleBack = () => {
-    if (encodedData) {
+    if (rowdata?.isForgot !== "true" && encodedData) {
       router.push(`/auth/signup?data=${encodeURIComponent(encodedData)}`);
+    } else if (rowdata?.isForgot == "true") {
+      router.push("/auth/forgotpss");
+    } else if (rowdata?.isLogin == "true") {
+      router.push("/auth/login");
     } else {
       router.push("/auth/signup");
     }
@@ -329,8 +333,8 @@ const Otp =() =>{
 }
 
 
-const page = () =>{
-   return (
+const page = () => {
+  return (
     <Suspense
       fallback={
         <div className="grid min-h-screen place-items-center bg-white">
@@ -338,10 +342,10 @@ const page = () =>{
         </div>
       }
     >
-        <Otp/>
-      </Suspense>
-   )
-   
+      <Otp />
+    </Suspense>
+  )
+
 }
 
 

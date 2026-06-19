@@ -31,6 +31,9 @@ import discount from "./discount.png"
 import forgotpass from "./forgotpass.png"
 import StaticUser from "./noShow.png"
 import dummy from "./imresizer-1739827932527.jpg"
+import loginGlowingWave from "./login_glowing_wave.png";
+import loginGlowingRide from "./login_glowing_ride.png";
+import loginFullBg from "./login_full_bg.png";
 
 
 
@@ -69,5 +72,8 @@ export {
   discount, 
   forgotpass,
   StaticUser,
-  dummy
+  dummy,
+  loginGlowingWave,
+  loginGlowingRide,
+  loginFullBg
 };

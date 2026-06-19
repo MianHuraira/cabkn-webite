@@ -45,7 +45,15 @@ const page = () => {
         email: email.trim(),
         type: "customer"
       };
-      await postData("users/check-email", body, header3);
+      const res = await postData("users/check-email", body, header3);
+      if (!res || res.success === false) {
+        setEmailChecking(false);
+        setEmailChecked(false);
+        const errMsg = res?.message || "Email already existed";
+        setFieldError("email", errMsg);
+        setFieldTouched("email", true, false);
+        return;
+      }
       setEmailChecking(false);
       setEmailChecked(true);
     } catch (error) {
@@ -162,22 +170,28 @@ const page = () => {
     draft.password = values.password;
     sessionStorage.setItem("signup_draft", JSON.stringify(draft));
 
-    if (!emailChecked) {
-      try {
-        setLoading(true);
-        const body = {
-          email: values.email.trim(),
-          type: "customer"
-        };
-        await postData("users/check-email", body, header3);
-        setEmailChecked(true);
-      } catch (error) {
+    try {
+      setLoading(true);
+      const body = {
+        email: values.email.trim(),
+        type: "customer"
+      };
+      const res = await postData("users/check-email", body, header3);
+      if (!res || res.success === false) {
         setLoading(false);
-        const errMsg = error.response?.data?.message || "Email already existed";
+        setEmailChecked(false);
+        const errMsg = res?.message || "Email already existed";
         setFieldError("email", errMsg);
         setFieldTouched("email", true, false);
         return;
       }
+      setEmailChecked(true);
+    } catch (error) {
+      setLoading(false);
+      const errMsg = error.response?.data?.message || "Email already existed";
+      setFieldError("email", errMsg);
+      setFieldTouched("email", true, false);
+      return;
     }
 
     const apiData = {

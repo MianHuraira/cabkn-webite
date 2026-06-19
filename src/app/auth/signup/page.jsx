@@ -53,7 +53,15 @@ const Signup = () => {
       const body = {
         phone: phone.trim()
       };
-      await postData("users/check-phone", body, header1);
+      const res = await postData("users/check-phone", body, header1);
+      if (!res || res.success === false) {
+        setPhoneChecking(false);
+        setPhoneChecked(false);
+        const errMsg = res?.message || "Phone already existed";
+        setFieldError("phone", errMsg);
+        setFieldTouched("phone", true, false);
+        return;
+      }
       setPhoneChecking(false);
       setPhoneChecked(true);
     } catch (error) {
@@ -191,38 +199,57 @@ const Signup = () => {
     const row = encodedData;
 
     if (row) {
-      data = JSON.parse(row);
-      setRowdata(data);
-    }
-
-    // Load draft
-    const draftStr = sessionStorage.getItem("signup_draft");
-    if (draftStr) {
       try {
-        const draftObj = JSON.parse(draftStr);
-        setInitialValues({
-          fullname: draftObj.fullname || "",
-          date: draftObj.date || "",
-          address: draftObj.address || "",
-          phone: draftObj.phone || "",
-          code: draftObj.code || "",
-        });
-        if (draftObj.image) {
-          setImage(draftObj.image);
-        }
-        if (!data && (draftObj.email || draftObj.password)) {
-          setRowdata({
-            email: draftObj.email,
-            password: draftObj.password,
-            type: draftObj.type || "customer",
-            fcmtoken: draftObj.fcmtoken || "",
+        data = JSON.parse(row);
+        setRowdata(data);
+        if (data.signupData) {
+          const signupObj = JSON.parse(data.signupData);
+          setInitialValues({
+            fullname: signupObj.fullname || "",
+            date: signupObj.date || "",
+            address: signupObj.address || "",
+            phone: signupObj.phone || "",
+            code: signupObj.code || "",
           });
+          if (data.image) {
+            setImage(data.image);
+          }
         }
       } catch (e) {
         console.error(e);
       }
     }
-  }, []);
+
+    // Load draft fallback if not loaded from URL data
+    if (!data || !data.signupData) {
+      const draftStr = sessionStorage.getItem("signup_draft");
+      if (draftStr) {
+        try {
+          const draftObj = JSON.parse(draftStr);
+          setInitialValues({
+            fullname: draftObj.fullname || "",
+            date: draftObj.date || "",
+            address: draftObj.address || "",
+            phone: draftObj.phone || "",
+            code: draftObj.code || "",
+          });
+          if (draftObj.image) {
+            setImage(draftObj.image);
+          }
+          if (!data && (draftObj.email || draftObj.password)) {
+            setRowdata({
+              email: draftObj.email,
+              password: draftObj.password,
+              type: draftObj.type || "customer",
+              fcmtoken: draftObj.fcmtoken || "",
+            });
+          }
+        } catch (e) {
+          console.error(e);
+        }
+      }
+    }
+  }, [encodedData]);
 
   const handleBack = (values) => {
     const draft = JSON.parse(sessionStorage.getItem("signup_draft") || "{}");
@@ -244,22 +271,39 @@ const Signup = () => {
   const handleSubmit = async (values, { setFieldError, setFieldTouched }) => {
     if (phoneChecking) return;
 
-    if (!phoneChecked) {
-      try {
-        setLoading(true);
-        const body = {
-          phone: values.phone.trim(),
-        };
-        await postData("users/check-phone", body, header1);
-        setPhoneChecked(true);
-      } catch (error) {
+    try {
+      setLoading(true);
+      const body = {
+        phone: values.phone.trim(),
+      };
+      const res = await postData("users/check-phone", body, header1);
+      if (!res || res.success === false) {
         setLoading(false);
-        const errMsg = error.response?.data?.message || "Phone already existed";
+        setPhoneChecked(false);
+        const errMsg = res?.message || "Phone already existed";
         setFieldError("phone", errMsg);
         setFieldTouched("phone", true, false);
         return;
       }
-    }
+      setPhoneChecked(true);
+    } catch (error) {
+      setLoading(false);
+      const errMsg = error.response?.data?.message || "Phone already existed";
+      setFieldError("phone", errMsg);
+      setFieldTouched("phone", true, false);
+      return;
+    }    // Save to draft fallback
+    const draft = JSON.parse(sessionStorage.getItem("signup_draft") || "{}");
+    const updatedDraft = {
+      ...draft,
+      fullname: values.fullname,
+      date: values.date,
+      address: values.address,
+      phone: values.phone,
+      code: values.code,
+      image: image,
+    };
+    sessionStorage.setItem("signup_draft", JSON.stringify(updatedDraft));
 
     const body = {
       email: Rowdata?.email,
@@ -406,6 +450,8 @@ const Signup = () => {
                 id="date"
                 name="date"
                 type="date"
+                // not future dates 
+                max={new Date().toISOString().split("T")[0]}
                 label="Date of birth"
                 value={values.date}
                 onChange={handleChange}
@@ -435,8 +481,8 @@ const Signup = () => {
                     setFieldTouched("address", true);
                   }}
                   className={`block w-full rounded-xl border bg-white px-4 py-3 text-[15px] text-slate-900 shadow-sm outline-none transition placeholder:text-slate-400 focus:ring-4 ${touched.address && errors.address
-                      ? "border-rose-300 focus:border-rose-400 focus:ring-rose-100"
-                      : "border-slate-200 focus:border-brand-500 focus:ring-brand-100"
+                    ? "border-rose-300 focus:border-rose-400 focus:ring-rose-100"
+                    : "border-slate-200 focus:border-brand-500 focus:ring-brand-100"
                     }`}
                   autoComplete="street-address"
                 />
