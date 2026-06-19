@@ -361,7 +361,7 @@ export default function Tingstodo() {
 
   return (
     <div ref={sectionRef}>
-      <div className={`container mx-auto flex flex-col lg:flex-row justify-between items-start lg:items-center mb-8 mt-12 gap-5 reveal ${inView ? "visible" : ""}`} style={{ padding: "0 16px", transitionDelay: "50ms", position: "relative", zIndex: 100 }}>
+      <div className={`mx-auto flex flex-col lg:flex-row justify-between items-start lg:items-center mb-8 mt-12 gap-5 reveal ${inView ? "visible" : ""}`} style={{ maxWidth: 1200, padding: "0 16px", transitionDelay: "50ms", position: "relative", zIndex: 100 }}>
         <div className="flex flex-col text-left w-full lg:w-auto">
           <h2 className="text-2xl sm:text-3xl lg:text-[34px] font-['Inter-Bold'] text-slate-800 tracking-tight m-0 leading-tight">
             Our Tour Recommendations
@@ -425,7 +425,7 @@ export default function Tingstodo() {
         </div>
       </div>
 
-      <div className={`slider-container container mx-auto p-2 reveal ${inView ? "visible" : ""}`} style={{ transitionDelay: "150ms" }}>
+      <div className={`slider-container mx-auto p-2 reveal ${inView ? "visible" : ""}`} style={{ maxWidth: 1200, transitionDelay: "150ms" }}>
         {categoryLoading ? (
           <div className="flex gap-4 overflow-x-auto py-2">
             {[1, 2, 3, 4, 5, 6, 7, 8].map((item) => (
@@ -472,40 +472,40 @@ export default function Tingstodo() {
         )}
       </div>
 
-      <div className="slider-container container mx-auto p-3">
+      <div className="slider-container mx-auto p-3" style={{ maxWidth: 1200 }}>
         {/* Show spinner when location loading or category loading */}
         {locationLoading || loading ? (
-            <div className="w-full py-4">
-              <div className="grid grid-cols-1 sm:grid-cols-2 md:grid-cols-3 lg:grid-cols-4 gap-4">
-                {[1, 2, 3, 4].map((item) => (
-                  <div key={item} className="bg-white rounded-[20px] overflow-hidden shadow-[0_4px_12px_rgba(0,0,0,0.03)] border border-slate-100 flex flex-col h-[380px] animate-pulse">
-                    <div className="bg-slate-200/70 h-[180px] w-full"></div>
-                    <div className="p-4 flex-1 flex flex-col gap-4">
-                      <div className="flex justify-between items-center gap-4">
-                        <div className="bg-slate-200/70 h-5 w-3/4 rounded-full"></div>
-                        <div className="bg-slate-200/70 h-5 w-1/4 rounded-full"></div>
-                      </div>
-                      <div className="bg-slate-200/70 h-4 w-1/2 rounded-full"></div>
-                      <div className="mt-auto bg-slate-200/70 h-11 w-full rounded-[9999px]"></div>
+          <div className="w-full py-4">
+            <div className="grid grid-cols-1 sm:grid-cols-2 md:grid-cols-3 lg:grid-cols-4 gap-4">
+              {[1, 2, 3, 4].map((item) => (
+                <div key={item} className="bg-white rounded-[20px] overflow-hidden shadow-[0_4px_12px_rgba(0,0,0,0.03)] border border-slate-100 flex flex-col h-[380px] animate-pulse">
+                  <div className="bg-slate-200/70 h-[180px] w-full"></div>
+                  <div className="p-4 flex-1 flex flex-col gap-4">
+                    <div className="flex justify-between items-center gap-4">
+                      <div className="bg-slate-200/70 h-5 w-3/4 rounded-full"></div>
+                      <div className="bg-slate-200/70 h-5 w-1/4 rounded-full"></div>
                     </div>
+                    <div className="bg-slate-200/70 h-4 w-1/2 rounded-full"></div>
+                    <div className="mt-auto bg-slate-200/70 h-11 w-full rounded-[9999px]"></div>
+                  </div>
+                </div>
+              ))}
+            </div>
+          </div>
+        ) : /* Show content when not loading */
+          SubCategory.length > 0 ? (
+            <>
+              <div className="grid grid-cols-1 sm:grid-cols-2 md:grid-cols-3 lg:grid-cols-4 gap-3">
+                {SubCategory?.map((testimonial, index) => (
+                  <div key={index} className={`reveal ${inView ? "visible" : ""} flex`} style={{ transitionDelay: `${index * 60}ms` }}>
+                    <ThingstodoCard
+                      testimonial={testimonial}
+                      onClick={() => handleItemClick(testimonial)}
+                      onClick2={() => handleSelection(testimonial)}
+                    />
                   </div>
                 ))}
               </div>
-            </div>
-          ) : /* Show content when not loading */
-            SubCategory.length > 0 ? (
-              <>
-                <div className="grid grid-cols-1 sm:grid-cols-2 md:grid-cols-3 lg:grid-cols-4 gap-4">
-                  {SubCategory?.map((testimonial, index) => (
-                    <div key={index} className={`reveal ${inView ? "visible" : ""} flex`} style={{ transitionDelay: `${index * 60}ms` }}>
-                      <ThingstodoCard
-                        testimonial={testimonial}
-                        onClick={() => handleItemClick(testimonial)}
-                        onClick2={() => handleSelection(testimonial)}
-                      />
-                    </div>
-                  ))}
-                </div>
               <div className={`flex justify-center items-center mt-5 reveal ${inView ? "visible" : ""}`} style={{ transitionDelay: "400ms" }}>
                 {Pagelength > 0 ? (
                   <>

@@ -5,7 +5,7 @@ import { MdEmail } from "react-icons/md";
 
 export default function ContactUs() {
   return (
-    <div className="bg-white p-8 mx-auto max-w-4xl" style={{ marginTop: 100 }}>
+    <div className="bg-white p-8 mx-auto" style={{ maxWidth: 1200, marginTop: 100 }}>
       <div className="text-start">
         <h1 className="font-bold" style={{ fontSize: 50 }}>
           Get in{" "}

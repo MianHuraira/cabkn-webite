@@ -384,7 +384,7 @@ const Signup = () => {
                   </div>
                 )}
               </div>
-              
+
               <input
                 id="file-upload"
                 type="file"
@@ -403,7 +403,7 @@ const Signup = () => {
               </div>
             </div>
 
-            <div className="grid grid-cols-1 gap-4 sm:grid-cols-2">
+            <div className="grid grid-cols-1 gap-4 sm:grid-cols-1">
               <AuthTextField
                 id="fullname"
                 name="fullname"
@@ -448,11 +448,10 @@ const Signup = () => {
                     }, 200);
                     setFieldTouched("address", true);
                   }}
-                  className={`block w-full rounded-xl border bg-white px-4 py-3 text-[15px] text-slate-900 shadow-sm outline-none transition placeholder:text-slate-400 focus:ring-4 ${
-                    touched.address && errors.address
+                  className={`block w-full rounded-xl border bg-white px-4 py-3 text-[15px] text-slate-900 shadow-sm outline-none transition placeholder:text-slate-400 focus:ring-4 ${touched.address && errors.address
                       ? "border-rose-300 focus:border-rose-400 focus:ring-rose-100"
                       : "border-slate-200 focus:border-brand-500 focus:ring-brand-100"
-                  }`}
+                    }`}
                   autoComplete="street-address"
                 />
                 {pridicLoading && (
@@ -461,7 +460,7 @@ const Signup = () => {
                   </div>
                 )}
               </div>
-              
+
               {predictions.length > 0 && (
                 <div className="absolute z-50 left-0 right-0 mt-1 max-h-60 overflow-y-auto rounded-xl border border-slate-200 bg-white py-1 shadow-lg">
                   {predictions.map((prediction, idx) => (
@@ -475,13 +474,13 @@ const Signup = () => {
                   ))}
                 </div>
               )}
-              
+
               {noData && (
                 <div className="absolute z-50 left-0 right-0 mt-1 rounded-xl border border-slate-200 bg-white py-2.5 px-4 shadow-lg text-[14px] text-slate-500">
                   No results found
                 </div>
               )}
-              
+
               {touched.address && errors.address ? (
                 <p className="text-sm leading-5 text-rose-600">{errors.address}</p>
               ) : null}

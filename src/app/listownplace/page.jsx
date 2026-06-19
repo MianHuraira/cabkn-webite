@@ -634,7 +634,7 @@ const page = () => {
 
             {/* Images - Top */}
             <div style={{ marginBottom: 24 }}>
-              <p style={{ fontSize: 15, fontWeight: 600, color: "#1f2937", margin: "0 0 4px", display: "flex", alignItems: "center", gap: 8 }}>
+              <p style={{ fontSize: 15, fontWeight: 600, color: "#1f2937", margin: "0 0 12px", display: "flex", alignItems: "center", gap: 8 }}>
                 <svg width={16} height={16} viewBox="0 0 24 24" fill="none" stroke="#004a70" strokeWidth={2} strokeLinecap="round" strokeLinejoin="round">
                   <rect x="3" y="3" width="18" height="18" rx="2" ry="2" />
                   <circle cx="8.5" cy="8.5" r="1.5" />
@@ -879,9 +879,15 @@ const page = () => {
 
             {/* Description */}
             <div style={{ marginTop: 16 }}>
-              <Label style={{ fontSize: 13, fontWeight: 500, color: "#374151", display: "block", marginBottom: 4 }}>
+              <p style={{ fontSize: 15, fontWeight: 600, color: "#1f2937", margin: "0 0 12px", display: "flex", alignItems: "center", gap: 8 }}>
+                <svg width={16} height={16} viewBox="0 0 24 24" fill="none" stroke="#004a70" strokeWidth={2} strokeLinecap="round" strokeLinejoin="round">
+                  <path d="M14 2H6a2 2 0 0 0-2 2v16a2 2 0 0 0 2 2h12a2 2 0 0 0 2-2V8z" />
+                  <polyline points="14 2 14 8 20 8" />
+                  <line x1="16" y1="13" x2="8" y2="13" />
+                  <line x1="16" y1="17" x2="8" y2="17" />
+                </svg>
                 Description <span style={{ color: "#ef4444" }}>*</span>
-              </Label>
+              </p>
               <Controller
                 name="description"
                 control={control}
@@ -904,7 +910,10 @@ const page = () => {
 
             <div style={{ height: 1, background: "#f3f4f6", margin: "20px 0" }} />
 
-            <p style={{ fontSize: 15, fontWeight: 600, color: "#1f2937", margin: "0 0 12px" }}>
+            <p style={{ fontSize: 15, fontWeight: 600, color: "#1f2937", margin: "0 0 12px", display: "flex", alignItems: "center", gap: 8 }}>
+              <svg width={16} height={16} viewBox="0 0 24 24" fill="none" stroke="#004a70" strokeWidth={2} strokeLinecap="round" strokeLinejoin="round">
+                <polygon points="12 2 15.09 8.26 22 9.27 17 14.14 18.18 21.02 12 17.77 5.82 21.02 7 14.14 2 9.27 8.91 8.26 12 2" />
+              </svg>
               Highlights
             </p>
             {highlightFields.map((field, index) => (
@@ -972,7 +981,11 @@ const page = () => {
             {selectedCategory?.name === "Excursion" && (
               <>
                 <div style={{ height: 1, background: "#f3f4f6", margin: "20px 0" }} />
-                <p style={{ fontSize: 15, fontWeight: 600, color: "#1f2937", margin: "0 0 12px" }}>
+                <p style={{ fontSize: 15, fontWeight: 600, color: "#1f2937", margin: "0 0 12px", display: "flex", alignItems: "center", gap: 8 }}>
+                  <svg width={16} height={16} viewBox="0 0 24 24" fill="none" stroke="#004a70" strokeWidth={2} strokeLinecap="round" strokeLinejoin="round">
+                    <circle cx="12" cy="12" r="10" />
+                    <path d="M12 6v6l4 2" />
+                  </svg>
                   Excursion Details
                 </p>
                 <div style={{ display: "grid", gridTemplateColumns: isMobile ? "1fr" : "1fr 1fr", gap: "12px 20px", marginBottom: 16 }}>
@@ -1003,7 +1016,13 @@ const page = () => {
                     {errors.price_per_person && <FormFeedback style={{ fontSize: 12, marginTop: 4, color: "#ef4444", display: "block" }}>{errors.price_per_person.message}</FormFeedback>}
                   </div>
                 </div>
-                <p style={{ fontSize: 13, fontWeight: 500, color: "#374151", marginBottom: 8 }}>Time Slots</p>
+                <p style={{ fontSize: 13, fontWeight: 600, color: "#374151", marginBottom: 8, display: "flex", alignItems: "center", gap: 6 }}>
+                  <svg width={14} height={14} viewBox="0 0 24 24" fill="none" stroke="#004a70" strokeWidth={2} strokeLinecap="round" strokeLinejoin="round">
+                    <circle cx="12" cy="12" r="10" />
+                    <polyline points="12 6 12 12 16 14" />
+                  </svg>
+                  Time Slots
+                </p>
                 {timeFields.map((field, index) => (
                   <div key={field.id} style={{ display: "flex", gap: 8, marginBottom: 8 }}>
                     <Controller
@@ -1065,9 +1084,13 @@ const page = () => {
               <>
                 <div style={{ height: 1, background: "#f3f4f6", margin: "20px 0" }} />
                 <div style={{ maxWidth: 300 }}>
-                  <Label style={{ fontSize: 13, fontWeight: 500, color: "#374151", display: "block", marginBottom: 4 }}>
+                  <p style={{ fontSize: 13, fontWeight: 600, color: "#374151", margin: "0 0 4px", display: "flex", alignItems: "center", gap: 6 }}>
+                    <svg width={14} height={14} viewBox="0 0 24 24" fill="none" stroke="#004a70" strokeWidth={2} strokeLinecap="round" strokeLinejoin="round">
+                      <line x1="12" y1="1" x2="12" y2="23" />
+                      <path d="M17 5H9.5a3.5 3.5 0 0 0 0 7h5a3.5 3.5 0 0 1 0 7H6" />
+                    </svg>
                     Location Price ($)
-                  </Label>
+                  </p>
                   <Controller
                     name="location_price"
                     control={control}
@@ -1092,33 +1115,44 @@ const page = () => {
 
             {/* Payment Method */}
             <div style={{ height: 1, background: "#f3f4f6", margin: "20px 0" }} />
-            <p style={{ fontSize: 15, fontWeight: 600, color: "#1f2937", margin: "0 0 12px" }}>
+            <p style={{ fontSize: 15, fontWeight: 600, color: "#1f2937", margin: "0 0 12px", display: "flex", alignItems: "center", gap: 8 }}>
+              <svg width={16} height={16} viewBox="0 0 24 24" fill="none" stroke="#004a70" strokeWidth={2} strokeLinecap="round" strokeLinejoin="round">
+                <rect x="1" y="4" width="22" height="16" rx="2" ry="2" />
+                <line x1="1" y1="10" x2="23" y2="10" />
+              </svg>
               Payment Method
             </p>
-            <p style={{ fontSize: 13, color: "#6b7280", margin: "0 0 14px" }}>
-              Listing fee: <strong>$40.00</strong>
+            <p style={{ fontSize: 13, color: "#6b7280", margin: "0 0 14px", display: "flex", alignItems: "center", gap: 6 }}>
+              <svg width={14} height={14} viewBox="0 0 24 24" fill="none" stroke="#9ca3af" strokeWidth={2} strokeLinecap="round" strokeLinejoin="round">
+                <line x1="12" y1="1" x2="12" y2="23" />
+                <path d="M17 5H9.5a3.5 3.5 0 0 0 0 7h5a3.5 3.5 0 0 1 0 7H6" />
+              </svg>
+              Listing fee: <strong style={{ color: "#004a70" }}>$40.00</strong>
             </p>
             <div style={{ display: "flex", gap: 12, flexWrap: "wrap" }}>
               <div
                 onClick={() => selectMethod("jad")}
+                className="hover:shadow-md"
                 style={{
                   flex: 1,
-                  minWidth: 160,
+                  minWidth: 180,
                   padding: "16px 20px",
                   borderRadius: 12,
-                  border: PaymentMethod === "jad" ? "2px solid #004a70" : "2px solid #e5e7eb",
+                  border: PaymentMethod === "jad" ? "2px solid #004a70" : "1px solid #e5e7eb",
                   background: PaymentMethod === "jad" ? "#f0f7ff" : "#fff",
                   cursor: "pointer",
                   display: "flex",
                   alignItems: "center",
                   gap: 12,
-                  transition: "all 0.15s",
+                  transition: "all 0.2s",
+                  boxShadow: PaymentMethod === "jad" ? "0 2px 8px rgba(0,74,112,0.12)" : "0 1px 3px rgba(0,0,0,0.04)",
                 }}
               >
                 <div style={{
                   width: 40, height: 40, borderRadius: 10,
                   background: PaymentMethod === "jad" ? "#004a70" : "#f3f4f6",
                   display: "flex", alignItems: "center", justifyContent: "center", flexShrink: 0,
+                  transition: "all 0.2s",
                 }}>
                   <svg width={20} height={20} viewBox="0 0 24 24" fill={PaymentMethod === "jad" ? "#fff" : "#6b7280"}>
                     <path d="M4 4h16c1.1 0 2 .9 2 2v12c0 1.1-.9 2-2 2H4c-1.1 0-2-.9-2-2V6c0-1.1.9-2 2-2zm0 2v12h16V6H4zm2 6h12v2H6v-2zm0-3h12v2H6V9zm0 6h8v2H6v-2z" />
@@ -1131,24 +1165,27 @@ const page = () => {
               </div>
               <div
                 onClick={() => selectMethod("wallet")}
+                className="hover:shadow-md"
                 style={{
                   flex: 1,
-                  minWidth: 160,
+                  minWidth: 180,
                   padding: "16px 20px",
                   borderRadius: 12,
-                  border: PaymentMethod === "wallet" ? "2px solid #004a70" : "2px solid #e5e7eb",
+                  border: PaymentMethod === "wallet" ? "2px solid #004a70" : "1px solid #e5e7eb",
                   background: PaymentMethod === "wallet" ? "#f0f7ff" : "#fff",
                   cursor: "pointer",
                   display: "flex",
                   alignItems: "center",
                   gap: 12,
-                  transition: "all 0.15s",
+                  transition: "all 0.2s",
+                  boxShadow: PaymentMethod === "wallet" ? "0 2px 8px rgba(0,74,112,0.12)" : "0 1px 3px rgba(0,0,0,0.04)",
                 }}
               >
                 <div style={{
                   width: 40, height: 40, borderRadius: 10,
                   background: PaymentMethod === "wallet" ? "#004a70" : "#f3f4f6",
                   display: "flex", alignItems: "center", justifyContent: "center", flexShrink: 0,
+                  transition: "all 0.2s",
                 }}>
                   <FaWallet size={18} color={PaymentMethod === "wallet" ? "#fff" : "#6b7280"} />
                 </div>

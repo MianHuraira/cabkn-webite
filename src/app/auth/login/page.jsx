@@ -23,6 +23,7 @@ import {
   AuthShell,
   AuthTextField,
 } from "@/components/auth/AuthShell";
+import CustomButton from "@/components/CustomButton";
 
 const Login = () => {
   const router = useRouter();
@@ -229,19 +230,17 @@ const Login = () => {
             <AuthDivider label="or continue with" />
 
             {/* Google Login Button */}
-            <button
+            <CustomButton
               type="button"
               onClick={googlLogin}
-              disabled={GoogleLoading}
-              className="w-full bg-white border border-slate-300 hover:bg-slate-50 active:scale-[0.995] text-slate-700 py-3 rounded-xl font-bold text-sm transition flex items-center justify-center gap-3 shadow-sm disabled:opacity-75"
+              loading={GoogleLoading}
+              variant="secondary"
+              className="w-full flex !bg-white !text-slate-700 text-black border border-slate-200 hover:!bg-slate-50"
+              startContent={<Image src={Google} alt="" className="h-5 w-5 mr-1" />}
             >
-              {GoogleLoading ? (
-                <div className="h-4 w-4 animate-spin rounded-full border-2 border-slate-300 border-t-slate-600" />
-              ) : (
-                <Image src={Google} alt="" className="h-5 w-5" />
-              )}
+
               <span>Sign In with Google</span>
-            </button>
+            </CustomButton>
           </form>
         )}
       </Formik>

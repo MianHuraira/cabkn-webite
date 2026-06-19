@@ -8,13 +8,11 @@ import { Controller, useForm } from "react-hook-form";
 import { yupResolver } from "@hookform/resolvers/yup";
 import * as yup from "yup";
 import {
-  FormFeedback,
   Input,
-  Label,
   ListGroup,
   ListGroupItem,
 } from "reactstrap";
-import { Form, Offcanvas, Spinner } from "react-bootstrap";
+import { Form, Offcanvas } from "react-bootstrap";
 import { FaLocationDot } from "react-icons/fa6";
 import { MdOutlineMyLocation } from "react-icons/md";
 import { message } from "antd";
@@ -132,6 +130,7 @@ function MakeYourTour() {
   const [SubCategory, setSubCategory] = useState([]);
 
   const [loading, setloading] = useState(false);
+  const [catLoading, setCatLoading] = useState(false);
   const [Pagelength, setPagelength] = useState("");
   const [MutiRides, setMutiRides] = useState([]);
   const [Category, setCategory] = useState([]);
@@ -160,6 +159,7 @@ function MakeYourTour() {
   const { token } = theme.useToken();
 
   const getCategory = async () => {
+    setCatLoading(true);
     try {
       const response = await getData("/webcat/all/1", header1);
       const staticCategory = { _id: 0, name: "All" };
@@ -169,8 +169,10 @@ function MakeYourTour() {
       ];
 
       setCategory(updatedCategories);
+      setCatLoading(false);
     } catch (error) {
       console.log(error);
+      setCatLoading(false);
     }
   };
 
@@ -595,18 +597,37 @@ function MakeYourTour() {
   };
 
   return (
-    <div className={mounted ? "animate-fade-in" : "opacity-0"} style={{ background: "#f8fafc", minHeight: "100vh" }}>
+    <div className={`${mounted ? "animate-fade-in" : "opacity-0"}`} style={{ background: "#f8fafc", minHeight: "100vh" }}>
+      <style>{`
+        .make-tour-input input,
+        .make-tour-input .form-control {
+          background: #f9fafb !important;
+          border: none !important;
+          outline: none !important;
+        }
+        .make-tour-input input:focus,
+        .make-tour-input .form-control:focus {
+          box-shadow: 0 0 0 2px rgba(0,74,112,0.3) !important;
+          background: #fff !important;
+          border-color: transparent !important;
+          outline: none !important;
+        }
+      `}</style>
       {/* Blue Gradient Header */}
       <div
-        className={`bg-gradient-to-br from-brand-800 to-brand-950 ${mounted ? "animate-fade-in-down" : "opacity-0"}`}
-        style={{
-          padding: "28px 0 44px",
-          animationDelay: "50ms",
-        }}
+        className={`bg-gradient-to-br from-brand-800 to-brand-950 ${mounted ? "animate-fade-in-down" : "opacity-0"} overflow-hidden`}
+        style={{ padding: "28px 0 44px", position: "relative", animationDelay: "50ms" }}
       >
-        <div style={{ maxWidth: 1320, margin: "0 auto", padding: "0 16px" }}>
-          <div style={{ color: "rgba(255,255,255,0.6)", fontSize: 13, marginBottom: 8 }}>
-            Home / Make Your Own Tour
+        {/* Decorative circles */}
+        <div style={{ position: "absolute", top: -80, right: -40, width: 260, height: 260, borderRadius: "50%", background: "rgba(255,255,255,0.03)", pointerEvents: "none" }} />
+        <div style={{ position: "absolute", bottom: -60, left: -20, width: 200, height: 200, borderRadius: "50%", background: "rgba(255,255,255,0.03)", pointerEvents: "none" }} />
+        <div style={{ position: "absolute", top: 10, right: 200, width: 100, height: 100, borderRadius: "50%", background: "rgba(255,255,255,0.04)", pointerEvents: "none" }} />
+
+        <div style={{ maxWidth: 1320, margin: "0 auto", padding: "0 16px", position: "relative", zIndex: 1 }}>
+          <div className="hover:opacity-80 transition-opacity" style={{ color: "rgba(255,255,255,0.6)", fontSize: 13, marginBottom: 12 }}>
+            <a href="/" style={{ color: "rgba(255,255,255,0.5)", textDecoration: "none" }} className="hover:text-white/80 transition-colors">Home</a>
+            <span style={{ margin: "0 6px" }}>/</span>
+            <span style={{ color: "rgba(255,255,255,0.8)" }}>Make Your Own Tour</span>
           </div>
           <div
             style={{
@@ -617,29 +638,36 @@ function MakeYourTour() {
               gap: 12,
             }}
           >
-            <div>
-              <h1
-                style={{
-                  color: "#fff",
-                  fontSize: "clamp(22px, 4vw, 28px)",
-                  fontWeight: 700,
-                  margin: 0,
-                  letterSpacing: "-0.3px",
-                  display: "flex",
-                  alignItems: "center",
-                  gap: 10,
-                }}
-              >
-                <svg width={26} height={26} viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth={2} strokeLinecap="round" strokeLinejoin="round">
+            <div style={{ display: "flex", alignItems: "center", gap: 16 }}>
+              <div style={{
+                width: 48, height: 48, borderRadius: 14,
+                background: "rgba(255,255,255,0.12)",
+                backdropFilter: "blur(8px)",
+                display: "flex", alignItems: "center", justifyContent: "center",
+                flexShrink: 0,
+              }}>
+                <svg width={24} height={24} viewBox="0 0 24 24" fill="none" stroke="#fff" strokeWidth={2} strokeLinecap="round" strokeLinejoin="round">
                   <circle cx="12" cy="12" r="10" />
                   <path d="M2 12h20" />
                   <path d="M12 2a15.3 15.3 0 0 1 4 10 15.3 15.3 0 0 1-4 10 15.3 15.3 0 0 1-4-10 15.3 15.3 0 0 1 4-10z" />
                 </svg>
-                Make Your Own Tour
-              </h1>
-              <p style={{ color: "rgba(255,255,255,0.6)", fontSize: 14, margin: "4px 0 0" }}>
-                Create a custom itinerary for your perfect trip
-              </p>
+              </div>
+              <div>
+                <h1
+                  style={{
+                    color: "#fff",
+                    fontSize: "clamp(22px, 4vw, 28px)",
+                    fontWeight: 700,
+                    margin: 0,
+                    letterSpacing: "-0.3px",
+                  }}
+                >
+                  Make Your Own Tour
+                </h1>
+                <p style={{ color: "rgba(255,255,255,0.6)", fontSize: 14, margin: "4px 0 0" }}>
+                  Create a custom itinerary for your perfect trip
+                </p>
+              </div>
             </div>
           </div>
         </div>
@@ -651,7 +679,7 @@ function MakeYourTour() {
           {/* Left: Create Your Tour Form */}
           <div className="lg:col-span-4">
             <div
-              className={`section-card ${mounted ? "animate-fade-in-up" : "opacity-0"}`}
+              className={`make-tour-input ${mounted ? "animate-fade-in-up" : "opacity-0"}`}
               style={{
                 background: "#fff",
                 borderRadius: 16,
@@ -659,7 +687,10 @@ function MakeYourTour() {
                 boxShadow: "0 1px 3px rgba(0,0,0,0.04)",
                 padding: 24,
                 animationDelay: "150ms",
+                transition: "all 0.2s",
               }}
+              onMouseEnter={(e) => { e.currentTarget.style.boxShadow = "0 4px 12px rgba(0,0,0,0.08)"; e.currentTarget.style.transform = "translateY(-2px)"; }}
+              onMouseLeave={(e) => { e.currentTarget.style.boxShadow = "0 1px 3px rgba(0,0,0,0.04)"; e.currentTarget.style.transform = "none"; }}
             >
               <h2 style={{ fontFamily: "Inter-Bold", fontSize: 18, color: "#0f172a", margin: "0 0 6px", textAlign: "center" }}>
                 Create Your Tour
@@ -685,11 +716,11 @@ function MakeYourTour() {
                             placeholder="Enter start location"
                             value={searchQuery}
                             onChange={(e) => handleSearch(e.target.value)}
-                            invalid={errors.name && true}
-                            style={{ borderRadius: 10, height: 46, fontSize: 13, borderColor: errors.name ? "#ef4444" : "#e2e8f0" }}
+                            style={{ width: "100%", padding: "11px 14px", borderRadius: 10, fontSize: 14 }}
+                            className={`bg-gray-50 border-0 focus:ring-1 focus:ring-brand-600/30 focus:outline-none focus:bg-white${errors.name ? " ring-2 ring-red-400" : ""}`}
                           />
                           {errors.name && (
-                            <FormFeedback>{errors.name.message}</FormFeedback>
+                            <p style={{ fontSize: 12, color: "#ef4444", margin: "4px 0 0" }}>{errors.name.message}</p>
                           )}
                           {PridicLoading && <div style={{ fontSize: 12, color: "#94a3b8", marginTop: 4 }}>Loading...</div>}
                           {predictions.length > 0 && (
@@ -732,7 +763,7 @@ function MakeYourTour() {
                         cursor: "pointer",
                         flexShrink: 0,
                         transition: "all 0.2s",
-                        border: "1px solid #e2e8f0",
+                        border: "none",
                       }}
                     >
                       <BiCurrentLocation size={22} color="#004a70" />
@@ -755,11 +786,11 @@ function MakeYourTour() {
                           placeholder="Enter end location"
                           value={SearchQueryEnd}
                           onChange={(e) => HandleEndSearch(e.target.value)}
-                          invalid={errors.metaTitle && true}
-                          style={{ borderRadius: 10, height: 46, fontSize: 13, borderColor: errors.metaTitle ? "#ef4444" : "#e2e8f0" }}
+                          style={{ width: "100%", padding: "11px 14px", borderRadius: 10, fontSize: 14 }}
+                          className={`bg-gray-50 border-0 focus:ring-1 focus:ring-brand-600/30 focus:outline-none focus:bg-white${errors.metaTitle ? " ring-2 ring-red-400" : ""}`}
                         />
                         {errors.metaTitle && (
-                          <FormFeedback>{errors.metaTitle.message}</FormFeedback>
+                          <p style={{ fontSize: 12, color: "#ef4444", margin: "4px 0 0" }}>{errors.metaTitle.message}</p>
                         )}
                         {PridicLoadingEnd && <div style={{ fontSize: 12, color: "#94a3b8", marginTop: 4 }}>Loading...</div>}
                         {EndPredictions.length > 0 && (
@@ -821,7 +852,7 @@ function MakeYourTour() {
           {/* Right: Add Places Section */}
           <div className="lg:col-span-8">
             <div
-              className={`section-card ${mounted ? "animate-fade-in-up" : "opacity-0"}`}
+              className={`${mounted ? "animate-fade-in-up" : "opacity-0"}`}
               style={{
                 background: "#fff",
                 borderRadius: 16,
@@ -829,58 +860,86 @@ function MakeYourTour() {
                 boxShadow: "0 1px 3px rgba(0,0,0,0.04)",
                 padding: 24,
                 animationDelay: "250ms",
+                transition: "all 0.2s",
               }}
+              onMouseEnter={(e) => { e.currentTarget.style.boxShadow = "0 4px 12px rgba(0,0,0,0.08)"; e.currentTarget.style.transform = "translateY(-2px)"; }}
+              onMouseLeave={(e) => { e.currentTarget.style.boxShadow = "0 1px 3px rgba(0,0,0,0.04)"; e.currentTarget.style.transform = "none"; }}
             >
               <h2 style={{ fontFamily: "Inter-Bold", fontSize: 18, color: "#0f172a", margin: "0 0 16px" }}>
                 Add places to your itinerary
               </h2>
 
               <div className="slider-container" style={{ marginBottom: 20 }}>
-                <Slider {...settings2} key={Category.length}>
-                  {Category.map((category, index) => {
-                    const isSelected = selectedCategoryId === category._id;
-                    return (
-                      <div className="p-2" key={index}>
-                        <div
-                          className={`CategoryMain text-center cursor-pointer capitalize ${!isSelected ? "hover:border-brand-700 hover:bg-slate-100" : ""}`}
-                          style={{
-                            padding: "10px 14px",
-                            background: isSelected
-                              ? "#004a70"
-                              : "#fff",
-                            color: isSelected ? "white" : "#1e293b",
-                            borderRadius: "9999px",
-                            minWidth: "120px",
-                            textAlign: "center",
-                            display: "flex",
-                            alignItems: "center",
-                            justifyContent: "center",
-                            transition: "all 0.3s ease",
-                            border: isSelected ? "none" : "1px solid #e2e8f0",
-                            boxShadow: isSelected ? "0 2px 8px rgba(0,74,112,0.25)" : "none",
-                            margin: "0 auto",
-                            whiteSpace: "nowrap",
-                            fontSize: 14,
-                            fontWeight: 500,
-                            fontFamily: "Inter-Medium",
-                          }}
-                          onClick={() => setSelectedCategoryId(category._id)}
-                        >
-                          <span style={{ fontSize: 13, fontFamily: "Inter-Medium" }}>{category?.name}</span>
+                {catLoading ? (
+                  <div style={{ display: "flex", gap: 8, overflow: "hidden", paddingBottom: 4 }}>
+                    {[1, 2, 3, 4, 5].map((s) => (
+                      <div key={s} className="animate-pulse" style={{ minWidth: 120, padding: "10px 16px", borderRadius: "9999px", background: "#f1f5f9", height: 42 }} />
+                    ))}
+                  </div>
+                ) : (
+                  <Slider {...settings2} key={Category.length}>
+                    {Category.map((category, index) => {
+                      const isSelected = selectedCategoryId === category._id;
+                      return (
+                        <div className="p-2" key={index}>
+                          <div
+                            className={`cursor-pointer capitalize`}
+                            style={{
+                              padding: "10px 16px",
+                              background: isSelected ? "#004a70" : "#f8fafc",
+                              color: isSelected ? "white" : "#1e293b",
+                              borderRadius: "9999px",
+                              minWidth: "120px",
+                              textAlign: "center",
+                              display: "flex",
+                              alignItems: "center",
+                              justifyContent: "center",
+                              transition: "all 0.3s ease",
+                              border: isSelected ? "none" : "1px solid #e2e8f0",
+                              boxShadow: isSelected ? "0 2px 8px rgba(0,74,112,0.25)" : "none",
+                              margin: "0 auto",
+                              whiteSpace: "nowrap",
+                              fontSize: 14,
+                              fontWeight: 500,
+                              fontFamily: "Inter-Medium",
+                              cursor: "pointer",
+                            }}
+                            onClick={() => setSelectedCategoryId(category._id)}
+                            onMouseEnter={(e) => { if (!isSelected) { e.currentTarget.style.background = "#f1f5f9"; e.currentTarget.style.borderColor = "#004a70"; } }}
+                            onMouseLeave={(e) => { if (!isSelected) { e.currentTarget.style.background = "#f8fafc"; e.currentTarget.style.borderColor = "#e2e8f0"; } }}
+                          >
+                            <span style={{ fontSize: 13, fontFamily: "Inter-Medium" }}>{category?.name}</span>
+                          </div>
                         </div>
-                      </div>
-                    );
-                  })}
-                </Slider>
+                      );
+                    })}
+                  </Slider>
+                )}
               </div>
 
               {loading ? (
-                <div className="py-16 flex flex-col justify-center items-center">
-                  <div className="relative w-10 h-10 mb-3">
-                    <div className="absolute inset-0 rounded-full border-4 border-slate-100"></div>
-                    <div className="absolute inset-0 rounded-full border-4 border-brand-700 border-t-transparent animate-spin"></div>
-                  </div>
-                  <p className="text-slate-400 font-medium text-sm">Loading places...</p>
+                <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-3 gap-3">
+                  {[1, 2, 3, 4, 5, 6].map((s) => (
+                    <div
+                      key={s}
+                      className="animate-pulse"
+                      style={{
+                        borderRadius: 12,
+                        border: "1px solid #e2e8f0",
+                        overflow: "hidden",
+                        background: "#fff",
+                      }}
+                    >
+                      <div className="shimmer" style={{ height: 140, width: "100%", background: "#f1f5f9" }} />
+                      <div style={{ padding: "12px 14px" }}>
+                        <div className="shimmer" style={{ height: 14, width: "70%", borderRadius: 6, marginBottom: 8, background: "#f1f5f9" }} />
+                        <div className="shimmer" style={{ height: 14, width: "40%", borderRadius: 6, background: "#f1f5f9" }} />
+                      </div>
+                      <div style={{ padding: "0 14px 12px" }}>
+                        <div className="shimmer" style={{ height: 36, width: "100%", borderRadius: 8, background: "#f1f5f9" }} />
+                      </div>
+                    </div>
+                  ))}
                 </div>
               ) : SubCategory.length > 0 ? (
                 <>
@@ -928,71 +987,73 @@ function MakeYourTour() {
         placement="bottom"
         show={show}
         onHide={handleClose}
+        style={{ borderTopLeftRadius: 16, borderTopRightRadius: 16 }}
       >
-        <Offcanvas.Header style={{ paddingBottom: 0 }} closeButton>
-          <Offcanvas.Title className="font-medium">
+        <Offcanvas.Header style={{ padding: "16px 20px 0", borderBottom: "1px solid #f1f5f9" }} closeButton>
+          <Offcanvas.Title className="font-medium" style={{ fontSize: 16, fontWeight: 600, color: "#0f172a" }}>
             Your Itinerary
           </Offcanvas.Title>
         </Offcanvas.Header>
-        <Offcanvas.Body>
-          <div className="pb-2" style={{ borderBottom: "1px solid #e5e5e5" }}>
-            {MutiRides?.map((item, index) => {
-              return (
-                <>
-                  <div className="flex items-center justify-between">
-                    <div className="mt-1 flex items-center gap-2">
-                      <FaLocationDot />
-                      <p className="font-medium  text-xl text-[#004a70]  truncate-text mt-0 ">
-                        {item?.title}
-                      </p>
-                      <p className="font-medium  text-xl text-[#004a70]  truncate-text mt-0 ">
-                        {`$ ${item?.location_price}`}
-                      </p>
+        <Offcanvas.Body style={{ padding: "12px 20px 20px" }}>
+          {MutiRides?.length > 0 ? (
+            <>
+              <div style={{ marginBottom: 12 }}>
+                {MutiRides?.map((item, index) => (
+                  <div key={index} style={{ display: "flex", alignItems: "center", justifyContent: "space-between", padding: "10px 0", borderBottom: "1px solid #f8fafc" }}>
+                    <div style={{ display: "flex", alignItems: "center", gap: 10 }}>
+                      <FaLocationDot size={14} color="#004a70" />
+                      <div>
+                        <p style={{ fontSize: 14, fontWeight: 500, color: "#0f172a", margin: 0, overflow: "hidden", textOverflow: "ellipsis", whiteSpace: "nowrap", maxWidth: 220 }}>{item?.title}</p>
+                        <p style={{ fontSize: 13, fontWeight: 600, color: "#004a70", margin: "2px 0 0" }}>{`$${item?.location_price}`}</p>
+                      </div>
                     </div>
                     <IoMdCloseCircle
                       onClick={() => removeIndex(index, item)}
-                      className="cursor-pointer"
+                      style={{ cursor: "pointer", color: "#9ca3af", flexShrink: 0 }}
                       size={20}
                     />
                   </div>
-                </>
-              );
-            })}
-          </div>
-          <div className="flex justify-between">
-            <p className="font-medium  text-xl text-[#004a70]  truncate-text mt-3 ">
-              Total Price
-            </p>
-
-            <p className="font-Bold  text-xl text-[#004a70]  truncate-text mt-3 ">
-              {`$ ${TotalPrice}`}
-            </p>
-          </div>
+                ))}
+              </div>
+              <div style={{ display: "flex", justifyContent: "space-between", alignItems: "center", padding: "12px 0 0", borderTop: "2px solid #f1f5f9" }}>
+                <p style={{ fontSize: 15, fontWeight: 600, color: "#0f172a", margin: 0 }}>Total Price</p>
+                <p style={{ fontSize: 15, fontWeight: 700, color: "#004a70", margin: 0 }}>{`$${TotalPrice}`}</p>
+              </div>
+            </>
+          ) : (
+            <p style={{ fontSize: 13, color: "#94a3b8", textAlign: "center", margin: "20px 0" }}>No items in your itinerary yet</p>
+          )}
         </Offcanvas.Body>
       </Offcanvas>
 
       {ShowPermissionDialog && (
-        <div className={`fixed inset-0 bg-black bg-opacity-50 flex items-center justify-center p-4 ${mounted ? "animate-fade-in" : "opacity-0"}`}>
-          <div className={`bg-white rounded-lg max-w-md w-full p-6 space-y-4 ${mounted ? "animate-fade-in-up" : "opacity-0"}`} style={{ animationDelay: "50ms" }}>
-            <div className="space-y-2">
-              <h2 className="text-xl font-semibold text-gray-900">
-                Location Access Required
-              </h2>
-              <p className="font-Regular text-gray-600">
-                Please enable location access to use this feature. You can
-                enable it in your browser settings.
-              </p>
+        <div className={`fixed inset-0 bg-black bg-opacity-50 flex items-center justify-center p-4 ${mounted ? "animate-fade-in" : "opacity-0"}`} style={{ zIndex: 9999 }}>
+          <div className={`bg-white rounded-2xl max-w-md w-full p-6 space-y-4 ${mounted ? "animate-fade-in-up" : "opacity-0"}`} style={{ animationDelay: "50ms", boxShadow: "0 20px 60px rgba(0,0,0,0.15)" }}>
+            <div style={{ display: "flex", alignItems: "center", gap: 12, marginBottom: 8 }}>
+              <div style={{ width: 40, height: 40, borderRadius: 10, background: "#eff6ff", display: "flex", alignItems: "center", justifyContent: "center" }}>
+                <svg width={20} height={20} viewBox="0 0 24 24" fill="none" stroke="#004a70" strokeWidth={2}>
+                  <path d="M12 2a7 7 0 0 0-7 7c0 5.25 7 13 7 13s7-7.75 7-13a7 7 0 0 0-7-7z" />
+                  <circle cx="12" cy="9" r="2.5" />
+                </svg>
+              </div>
+              <div>
+                <h2 style={{ fontSize: 16, fontWeight: 600, color: "#0f172a", margin: 0 }}>Location Access Required</h2>
+                <p style={{ fontSize: 13, color: "#64748b", margin: "2px 0 0" }}>Enable location to use this feature</p>
+              </div>
             </div>
-            <div className="flex justify-end space-x-3">
+            <p style={{ fontSize: 13, color: "#64748b", margin: 0, lineHeight: 1.5 }}>
+              Please enable location access in your browser settings to automatically fill your start location.
+            </p>
+            <div style={{ display: "flex", justifyContent: "flex-end", gap: 8, marginTop: 8 }}>
               <button
                 onClick={() => handlePermissionGuide(false)}
-                className="px-4 py-2 text-gray-600 hover:bg-gray-100 rounded-lg transition-colors duration-200 font-Regular"
+                style={{ padding: "8px 16px", fontSize: 13, fontWeight: 500, color: "#64748b", background: "#f1f5f9", border: "none", borderRadius: 8, cursor: "pointer" }}
               >
                 Cancel
               </button>
               <button
                 onClick={handlePermissionGuide}
-                className="px-4 py-2 bg-[#005081]  text-white rounded transition-colors duration-200 font-Regular"
+                style={{ padding: "8px 16px", fontSize: 13, fontWeight: 500, color: "#fff", background: "#004a70", border: "none", borderRadius: 8, cursor: "pointer" }}
               >
                 Show Instructions
               </button>
