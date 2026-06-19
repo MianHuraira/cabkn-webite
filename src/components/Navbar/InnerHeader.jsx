@@ -5,7 +5,8 @@
 "use client";
 import React, { useEffect, useState, useRef } from "react";
 import { Nav, Navbar, Form, Offcanvas, Modal } from "react-bootstrap";
-import { FaUser } from "react-icons/fa";
+import { FaUser, FaCheckDouble, FaExclamationCircle, FaCheckCircle, FaInfoCircle, FaTimes } from "react-icons/fa";
+import { IoMdTime } from "react-icons/io";
 
 import { message } from "antd";
 
@@ -13,8 +14,9 @@ import { useDispatch, useSelector } from "react-redux";
 import { Badge } from "antd";
 import { AiOutlineMenuFold } from "react-icons/ai";
 import { HiOutlineChatBubbleOvalLeft } from "react-icons/hi2";
-import { MdNotificationsActive } from "react-icons/md";
+import { MdNotificationsActive, MdNotificationsNone } from "react-icons/md";
 import { IoHeart } from "react-icons/io5";
+import moment from "moment";
 
 import Link from "next/link";
 import { AppStore, GooglePlay, logoBlue } from "../assets/Images";
@@ -111,6 +113,71 @@ const InnerHeader = () => {
   const [userMenuOpen, setUserMenuOpen] = useState(false);
   const [mobileProfileOpen, setMobileProfileOpen] = useState(false);
   const [mounted, setMounted] = useState(false);
+
+  const [notifShow, setNotifShow] = useState(false);
+  const [notifications, setNotifications] = useState([]);
+  const [notifFilter, setNotifFilter] = useState("all");
+  const [notifLoading, setNotifLoading] = useState(false);
+
+  useEffect(() => {
+    if (!notifShow) return;
+    const fetchNotifs = async () => {
+      if (!userData?.token) return;
+      setNotifLoading(true);
+      try {
+        const res = await getData("notification/all/", header1);
+        if (res?.success) {
+          setNotifications(res?.notifications || []);
+        } else {
+          setNotifications([]);
+        }
+      } catch (e) { /* ignore */ }
+      setNotifLoading(false);
+    };
+    fetchNotifs();
+  }, [notifShow]);
+
+  const getNotifIcon = (type) => {
+    switch (type) {
+      case "error": return <FaExclamationCircle size={14} />;
+      case "success": return <FaCheckCircle size={14} />;
+      case "info": return <FaInfoCircle size={14} />;
+      default: return <MdNotificationsActive size={16} />;
+    }
+  };
+
+  const getNotifColor = (type) => {
+    switch (type) {
+      case "error": return { bg: "#fef2f2", icon: "#ef4444", border: "#fecaca" };
+      case "success": return { bg: "#f0fdf4", icon: "#22c55e", border: "#bbf7d0" };
+      case "info": return { bg: "#eff6ff", icon: "#3b82f6", border: "#bfdbfe" };
+      default: return { bg: "#f0f7ff", icon: "#004a70", border: "#b8d4e3" };
+    }
+  };
+
+  const formatTime = (date) => {
+    const now = moment();
+    const notifDate = moment(date);
+    const diffHours = now.diff(notifDate, "hours");
+    if (diffHours < 1) return notifDate.fromNow();
+    if (diffHours < 24) return notifDate.fromNow();
+    if (diffHours < 168) return notifDate.format("dddd [at] h:mm A");
+    return notifDate.format("MMM D, YYYY [at] h:mm A");
+  };
+
+  const getTimeColor = (date) => {
+    const diffHours = moment().diff(moment(date), "hours");
+    if (diffHours < 1) return "#22c55e";
+    if (diffHours < 24) return "#f59e0b";
+    return "#9ca3af";
+  };
+
+  const filteredNotifs = notifications.filter((n) => {
+    if (notifFilter === "all") return true;
+    if (notifFilter === "read") return n.isRead;
+    if (notifFilter === "unread") return !n.isRead;
+    return true;
+  });
 
   useEffect(() => { setMounted(true); }, []);
 
@@ -301,7 +368,7 @@ const InnerHeader = () => {
           <div className="d-none d-xl-flex animate-fade-in" style={{ alignItems: "center", gap: 6, flexShrink: 0, animationDelay: "150ms" }}>
             <Badge count={notifUnreadCount} size="small" offset={[-2, 2]} style={{ backgroundColor: "#ef4444" }}>
               <button
-                onClick={() => { dispatch(setNotifUnreadCount(0)); Route("notifications"); }}
+                onClick={() => { setNotifShow(true); }}
                 className="w-[34px] h-[34px] rounded-lg bg-gray-100 flex items-center justify-center cursor-pointer transition-all duration-200 text-gray-600 hover:bg-brand-600 hover:text-white hover:scale-110 border-0"
               >
                 <MdNotificationsActive size={16} />
@@ -584,8 +651,8 @@ const InnerHeader = () => {
                   <div className="animate-fade-in" style={{ animationDelay: `${AuthDrop.length * 20}ms` }}>
                     <div
                       onClick={() => {
-                        dispatch(setNotifUnreadCount(0));
-                        Route("notifications");
+                        setNotifShow(true);
+                        handleClose();
                       }}
                       className="transition-all duration-150 hover:bg-gray-100"
                       style={{
@@ -824,6 +891,265 @@ const InnerHeader = () => {
           </div>
         </div>
       </Modal>
+
+      {/* Notification Drawer - Right Side */}
+      <Offcanvas
+        show={notifShow}
+        onHide={() => setNotifShow(false)}
+        placement="end"
+        style={{
+          width: 380,
+          maxWidth: "90vw",
+          borderRight: "1px solid rgba(0,0,0,0.06)",
+        }}
+      >
+        <div style={{ height: "100%", display: "flex", flexDirection: "column" }}>
+          {/* Header */}
+          <div
+            style={{
+              padding: "20px 20px 16px",
+              borderBottom: "1px solid #f0f0f0",
+              display: "flex",
+              alignItems: "center",
+              justifyContent: "space-between",
+              flexShrink: 0,
+            }}
+          >
+            <div style={{ display: "flex", alignItems: "center", gap: 10 }}>
+              <div
+                style={{
+                  width: 36,
+                  height: 36,
+                  borderRadius: 10,
+                  background: "#f0f7ff",
+                  display: "flex",
+                  alignItems: "center",
+                  justifyContent: "center",
+                }}
+              >
+                <MdNotificationsActive size={18} color="#004a70" />
+              </div>
+              <div>
+                <h3 style={{ margin: 0, fontSize: 16, fontWeight: 700, color: "#1f2937", lineHeight: 1.3 }}>
+                  Notifications
+                </h3>
+                <p style={{ margin: 0, fontSize: 12, color: "#9ca3af", fontWeight: 500 }}>
+                  {notifications.length} {notifications.length === 1 ? "notification" : "notifications"}
+                </p>
+              </div>
+            </div>
+            <button
+              onClick={() => setNotifShow(false)}
+              style={{
+                width: 30,
+                height: 30,
+                borderRadius: 8,
+                border: "none",
+                background: "#f3f4f6",
+                color: "#6b7280",
+                cursor: "pointer",
+                display: "flex",
+                alignItems: "center",
+                justifyContent: "center",
+                fontSize: 14,
+                transition: "all 0.15s",
+              }}
+              onMouseEnter={(e) => { e.currentTarget.style.background = "#e5e7eb"; }}
+              onMouseLeave={(e) => { e.currentTarget.style.background = "#f3f4f6"; }}
+            >
+              ✕
+            </button>
+          </div>
+
+          {/* Filter Buttons */}
+          <div
+            style={{
+              display: "flex",
+              gap: 6,
+              padding: "12px 20px",
+              borderBottom: "1px solid #f0f0f0",
+              flexShrink: 0,
+            }}
+          >
+            {[
+              { key: "all", label: "All" },
+              { key: "unread", label: "Unread" },
+              { key: "read", label: "Read" },
+            ].map((btn) => {
+              const isActive = notifFilter === btn.key;
+              const count = btn.key === "all"
+                ? notifications.length
+                : btn.key === "unread"
+                  ? notifications.filter((n) => !n.isRead).length
+                  : notifications.filter((n) => n.isRead).length;
+              return (
+                <button
+                  key={btn.key}
+                  onClick={() => setNotifFilter(btn.key)}
+                  style={{
+                    padding: "5px 14px",
+                    borderRadius: 8,
+                    border: "none",
+                    fontSize: 12,
+                    fontWeight: isActive ? 600 : 500,
+                    cursor: "pointer",
+                    transition: "all 0.15s",
+                    background: isActive ? "#004a70" : "#f3f4f6",
+                    color: isActive ? "#fff" : "#6b7280",
+                  }}
+                  onMouseEnter={(e) => {
+                    if (!isActive) {
+                      e.currentTarget.style.background = "#e5e7eb";
+                    }
+                  }}
+                  onMouseLeave={(e) => {
+                    if (!isActive) {
+                      e.currentTarget.style.background = "#f3f4f6";
+                    }
+                  }}
+                >
+                  {btn.label} {count > 0 && `(${count})`}
+                </button>
+              );
+            })}
+          </div>
+
+          {/* Notification List */}
+          <div style={{ flex: 1, overflowY: "auto", padding: "8px 0" }}>
+            {notifLoading ? (
+              <div style={{ padding: "20px" }}>
+                {[1, 2, 3].map((i) => (
+                  <div key={i} style={{ display: "flex", gap: 12, padding: "12px 20px", alignItems: "flex-start" }}>
+                    <div style={{ width: 36, height: 36, borderRadius: 10, background: "#f0f0f0", flexShrink: 0, animation: "pulse 1.5s infinite" }} />
+                    <div style={{ flex: 1 }}>
+                      <div style={{ height: 12, width: "70%", background: "#f0f0f0", borderRadius: 6, marginBottom: 8, animation: "pulse 1.5s infinite" }} />
+                      <div style={{ height: 10, width: "90%", background: "#f0f0f0", borderRadius: 6, marginBottom: 6, animation: "pulse 1.5s infinite" }} />
+                      <div style={{ height: 8, width: "30%", background: "#f0f0f0", borderRadius: 6, animation: "pulse 1.5s infinite" }} />
+                    </div>
+                  </div>
+                ))}
+              </div>
+            ) : filteredNotifs.length === 0 ? (
+              <div style={{ padding: "60px 20px", textAlign: "center" }}>
+                <div
+                  style={{
+                    width: 64,
+                    height: 64,
+                    borderRadius: 16,
+                    background: "#f0f7ff",
+                    display: "flex",
+                    alignItems: "center",
+                    justifyContent: "center",
+                    margin: "0 auto 16px",
+                  }}
+                >
+                  <MdNotificationsNone size={30} color="#004a70" opacity={0.35} />
+                </div>
+                <p style={{ fontSize: 14, fontWeight: 600, color: "#6b7280", margin: 0 }}>
+                  {notifFilter === "all"
+                    ? "No notifications yet"
+                    : notifFilter === "unread"
+                      ? "No unread notifications"
+                      : "No read notifications"}
+                </p>
+                <p style={{ fontSize: 12, color: "#9ca3af", margin: "4px 0 0" }}>
+                  {notifFilter === "all"
+                    ? "When you receive notifications, they'll show up here."
+                    : "Try switching the filter."}
+                </p>
+              </div>
+            ) : (
+              filteredNotifs.map((notification, index) => {
+                const colors = getNotifColor(notification.type);
+                return (
+                  <div
+                    key={notification.id || index}
+                    className="notif-item"
+                    style={{
+                      padding: "14px 20px",
+                      borderBottom: "1px solid #f0f0f0",
+                      display: "flex",
+                      gap: 12,
+                      alignItems: "flex-start",
+                      cursor: "default",
+                      transition: "all 0.2s ease",
+                      background: notification.isRead ? "#fff" : "#f8faff",
+                    }}
+                    onMouseEnter={(e) => { e.currentTarget.style.background = "#f0f4ff"; e.currentTarget.style.paddingLeft = "24px"; }}
+                    onMouseLeave={(e) => {
+                      e.currentTarget.style.background = notification.isRead ? "#fff" : "#f8faff";
+                      e.currentTarget.style.paddingLeft = "20px";
+                    }}
+                  >
+                    <div
+                      style={{
+                        width: 38,
+                        height: 38,
+                        borderRadius: 12,
+                        background: colors.bg,
+                        display: "flex",
+                        alignItems: "center",
+                        justifyContent: "center",
+                        flexShrink: 0,
+                        color: colors.icon,
+                        marginTop: 2,
+                      }}
+                    >
+                      {notification.image ? (
+                        <img
+                          src={notification.image}
+                          alt=""
+                          style={{ width: "100%", height: "100%", borderRadius: 12, objectFit: "cover" }}
+                        />
+                      ) : (
+                        getNotifIcon(notification.type)
+                      )}
+                    </div>
+                    <div style={{ flex: 1, minWidth: 0 }}>
+                      <div style={{ display: "flex", alignItems: "center", gap: 6 }}>
+                        {!notification.isRead && (
+                          <span style={{ width: 7, height: 7, borderRadius: "50%", background: colors.icon, flexShrink: 0, display: "inline-block" }} />
+                        )}
+                        <p style={{
+                          margin: 0,
+                          fontWeight: notification.isRead ? 500 : 650,
+                          fontSize: 13,
+                          color: notification.isRead ? "#4b5563" : "#111827",
+                          lineHeight: 1.4,
+                          overflow: "hidden",
+                          textOverflow: "ellipsis",
+                          whiteSpace: "nowrap",
+                        }}>
+                          {notification.title}
+                        </p>
+                      </div>
+                      {notification.description && (
+                        <p style={{
+                          margin: "4px 0 0",
+                          fontSize: 12,
+                          color: notification.isRead ? "#9ca3af" : "#6b7280",
+                          lineHeight: 1.4,
+                          overflow: "hidden",
+                          textOverflow: "ellipsis",
+                          whiteSpace: "nowrap",
+                        }}>
+                          {notification.description}
+                        </p>
+                      )}
+                      <div style={{ display: "flex", alignItems: "center", gap: 4, marginTop: 5 }}>
+                        <IoMdTime size={11} color={getTimeColor(notification.createdAt)} />
+                        <span style={{ fontSize: 11, fontWeight: 500, color: getTimeColor(notification.createdAt) }}>
+                          {formatTime(notification.createdAt)}
+                        </span>
+                      </div>
+                    </div>
+                  </div>
+                );
+              })
+            )}
+          </div>
+        </div>
+      </Offcanvas>
     </>
   );
 };
