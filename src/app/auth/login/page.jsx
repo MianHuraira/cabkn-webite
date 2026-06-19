@@ -11,7 +11,7 @@ import axios from "axios";
 import { useApi } from "@/components/ApiFunction/ApiFunction";
 import ApiFile from "@/components/ApiFunction/ApiFile";
 import Link from "next/link";
-import { Eye, EyeOff, Google, CarBanner, LoginImg } from "@/components/assets/Images";
+import { Eye, EyeOff, Google, otpImage } from "@/components/assets/Images";
 import { setAuthenticated, setUser } from "@/components/Redux/Slices/AuthSlice";
 import Image from "next/image";
 import { useRouter } from "next/navigation";
@@ -19,6 +19,7 @@ import toast from "react-hot-toast";
 import {
   AuthDivider,
   AuthInlineLink,
+  AuthPrimaryButton,
   AuthShell,
   AuthTextField,
 } from "@/components/auth/AuthShell";
@@ -31,7 +32,6 @@ const Login = () => {
   const [loading, setLoading] = useState(false);
   const [userdata, setUserdata] = useState([]);
   const [GoogleLoading, setGoogleLoading] = useState(false);
-  const [profile, setProfile] = useState([]);
 
   const dispatch = useDispatch();
   const { postData, header3 } = useApi();
@@ -75,7 +75,7 @@ const Login = () => {
           }
         )
         .then((res) => {
-          loginWithGoogle(res.data); // Define this function to handle user data
+          loginWithGoogle(res.data);
         })
         .catch((err) => console.log("Error fetching user info:", err));
     }
@@ -95,7 +95,7 @@ const Login = () => {
           dispatch(setUser(res));
           dispatch(setAuthenticated(true));
           router.push("/");
-          toast.success("Log in Sucessfully");
+          toast.success("Log in Successfully");
           setGoogleLoading(false);
         } else {
           toast.error(res?.message);
@@ -127,7 +127,7 @@ const Login = () => {
           localStorage.setItem("isLogin", true);
           localStorage.setItem("Cabkn-token", res?.token);
           router.push("/");
-          toast.success("Log in Sucessfully");
+          toast.success("Log in Successfully");
         } else {
           toast.error(res?.message);
         }
@@ -142,13 +142,14 @@ const Login = () => {
 
   return (
     <AuthShell
-      title="Login"
-      subtitle="Welcome back. Sign in to continue."
-      imageSrc={LoginImg}
-      imageAlt="Login cover"
+      title="Welcome Back"
+      subtitle="Enter your email and password to access your account"
+      imageSrc={otpImage}
+      imageAlt="Premium Ride Booking"
       footer={
         <span>
-          New here? <AuthInlineLink href="/auth/stepOne">Create an account</AuthInlineLink>
+          Don't have an account?{" "}
+          <AuthInlineLink href="/auth/stepOne">Sign Up</AuthInlineLink>
         </span>
       }
     >
@@ -158,13 +159,14 @@ const Login = () => {
         onSubmit={(values) => handleSubmit(values)}
       >
         {({ values, errors, touched, handleChange, handleBlur, handleSubmit }) => (
-          <form onSubmit={handleSubmit} className="space-y-4">
+          <form onSubmit={handleSubmit} className="space-y-5">
+            {/* Email Input */}
             <AuthTextField
               id="email"
               name="email"
               type="email"
-              label="Email address"
-              placeholder="name@company.com"
+              label="Email"
+              placeholder="Enter your email"
               value={values.email}
               onChange={handleChange}
               onBlur={handleBlur}
@@ -172,6 +174,7 @@ const Login = () => {
               error={touched.email ? errors.email : ""}
             />
 
+            {/* Password Input */}
             <AuthTextField
               id="password"
               name="password"
@@ -187,47 +190,56 @@ const Login = () => {
                 <button
                   type="button"
                   onClick={togglePasswordVisibility}
-                  className="rounded-lg p-2 text-slate-500 transition hover:text-slate-800 focus:outline-none focus-visible:ring-4 focus-visible:ring-brand-200"
+                  className="rounded-lg p-2 text-slate-400 hover:text-slate-600 transition focus:outline-none"
                   aria-label={passwordVisible ? "Hide password" : "Show password"}
                 >
                   <Image
                     src={passwordVisible ? Eye : EyeOff}
                     alt=""
-                    className="h-5 w-5"
+                    className="h-5 w-5 opacity-70"
                   />
                 </button>
               }
             />
 
-            <div className="flex items-center justify-end">
-              <AuthInlineLink
+            {/* Checkbox and Forgot Password Link */}
+            <div className="flex items-center justify-between text-xs lg:text-sm mt-3 pt-1">
+              <label className="flex items-center gap-2 text-slate-500 hover:text-slate-800 cursor-pointer select-none">
+                <input
+                  type="checkbox"
+                  className="rounded border-slate-400 text-brand-600 focus:ring-brand-500 w-4 h-4 cursor-pointer"
+                />
+                <span className="font-bold text-slate-500 hover:text-slate-700 transition">
+                  Remember me
+                </span>
+              </label>
+              <Link
                 href="/auth/forgotpss"
-                className="text-sm font-semibold text-slate-700 hover:text-brand-700"
+                className="font-bold text-brand-600 hover:text-brand-800 transition hover:underline"
               >
-                Forgot password?
-              </AuthInlineLink>
+                Forgot Password
+              </Link>
             </div>
 
-            <CustomButton
-              type="submit"
-              loading={loading}
-              variant="primary"
-              className="w-full"
-            >
-              Sign in
-            </CustomButton>
+            {/* Submit Button */}
+            <AuthPrimaryButton type="submit" loading={loading}>
+              Sign In
+            </AuthPrimaryButton>
 
+            {/* Custom Divider */}
             <AuthDivider label="or continue with" />
 
+            {/* Google Login Button */}
             <CustomButton
               type="button"
               onClick={googlLogin}
               loading={GoogleLoading}
               variant="secondary"
-              className="w-full !bg-white !text-slate-700 text-black border border-slate-200 hover:!bg-slate-50"
+              className="w-full flex !bg-white !text-slate-700 text-black border border-slate-200 hover:!bg-slate-50"
               startContent={<Image src={Google} alt="" className="h-5 w-5 mr-1" />}
             >
-              {GoogleLoading ? "Signing in..." : "Google"}
+
+              <span>Sign In with Google</span>
             </CustomButton>
           </form>
         )}
