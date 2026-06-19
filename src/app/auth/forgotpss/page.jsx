@@ -21,7 +21,7 @@ import {
 } from "@/components/auth/AuthShell";
 
 const page = () => {
-  const [loading, setLoading] = useState(false); 
+  const [loading, setLoading] = useState(false);
   const router = useRouter();
   const dispatch = useDispatch();
   const api = ApiFunction();
@@ -38,32 +38,32 @@ const page = () => {
       .required("Email is required"),
   });
 
-   const handleSubmit = async (values) => {
-     const body = {
-       email: values?.email,
-       type: "customer",
-     };
-     try {
-       setLoading(true);
-       const res = await postData("users/forget-password", body, header1);
-       const resData = {
-           token : res?.token,
-           isForgot: "true",
-           email: values?.email,
-       }
+  const handleSubmit = async (values) => {
+    const body = {
+      email: values?.email,
+      type: "customer",
+    };
+    try {
+      setLoading(true);
+      const res = await postData("users/forget-password", body, header1);
+      const resData = {
+        token: res?.token,
+        isForgot: "true",
+        email: values?.email,
+      }
 
-       const encodedData = encodeURIComponent(JSON.stringify(resData));
-       router.push(`/auth/optCode?data=${encodedData}`);
-  
-       setLoading(false);
-     } catch (error) {
-       setLoading(false);
+      const encodedData = encodeURIComponent(JSON.stringify(resData));
+      router.push(`/auth/optCode?data=${encodedData}`);
+
+      setLoading(false);
+    } catch (error) {
+      setLoading(false);
       toast.error(error?.response?.data?.message);
-       console.log("==========error: ", error?.response?.data?.message);
-     } finally {
-       setLoading(false);
-     }
-   };
+      console.log("==========error: ", error?.response?.data?.message);
+    } finally {
+      setLoading(false);
+    }
+  };
   return (
     <AuthShell
       title="Forgot password?"

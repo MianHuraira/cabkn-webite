@@ -15,17 +15,15 @@ export function AuthShell({
   imageAlt = "Authentication image",
   imageHeadline,
   imageSubheadline,
+  isShow = false
 }) {
   return (
-    <div className="min-h-screen w-full bg-[#050505] flex items-center justify-center p-4 md:p-8 lg:p-12 relative overflow-hidden">
-      {/* Soft dark/light blur backdrop layer */}
-      <div className="absolute inset-0 bg-white/90 backdrop-blur-[3px] pointer-events-none" />
-
+    <div className="min-h-screen w-full !bg-white md:!bg-[#f1f5f9] flex items-center justify-center p-0 md:p-8 lg:p-12 relative overflow-hidden">
       {/* Main Card Container */}
-      <div className="w-full max-w-[1140px] bg-white rounded-[32px] overflow-hidden flex flex-col lg:flex-row relative z-10 !border !border-white/90 shadow-[0_24px_80px_rgba(0,0,0,0.25)]">
+      <div className="w-full max-w-[1540px] !bg-white rounded-none md:rounded-[32px] overflow-hidden flex flex-col md:flex-row relative z-10 border-0 md:border md:border-slate-200/80 shadow-none md:shadow-[0_24px_60px_rgba(0,0,0,0.12)] min-h-screen md:min-h-0">
 
         {/* Left Column: Cover & Brand Messaging */}
-        <div className="relative m-3 rounded-[24px] overflow-hidden !border !border-white/25 lg:w-[48%] flex flex-col justify-between p-8 md:p-12 text-white min-h-[460px] lg:min-h-[640px]">
+        <div className="relative m-3 rounded-[24px] overflow-hidden !border !border-black/25 hidden md:flex md:w-[48%] flex-col justify-between p-8 md:p-12 text-white min-h-[460px] md:min-h-[640px]">
           {/* Background cover image */}
           <Image
             src={imageSrc}
@@ -49,8 +47,7 @@ export function AuthShell({
             </Link>
           </div>
 
-          {/* Left Footer Headline & Subheadline */}
-          <div className="relative z-10 max-w-md">
+          {isShow && <div className="relative z-10 max-w-md">
             <h2 className="text-3xl lg:text-4xl font-extrabold leading-tight tracking-tight text-white mb-4">
               {imageHeadline || (
                 <>
@@ -62,11 +59,11 @@ export function AuthShell({
             <p className="text-xs lg:text-sm leading-relaxed text-white/85 font-normal max-w-sm">
               {imageSubheadline || "We provide professional taxi services for you"}
             </p>
-          </div>
+          </div>}
         </div>
 
         {/* Right Column: Dynamic Form Area */}
-        <div className="lg:w-[52%] flex flex-col justify-between p-8 md:p-12 lg:p-16 bg-white rounded-b-[32px] lg:rounded-b-none lg:rounded-r-[32px]">
+        <div className="w-full md:w-[52%] flex flex-col justify-between p-5 md:p-8 bg-white rounded-none md:rounded-r-[32px] min-h-screen md:min-h-0">
           {/* Centered Brand Logo */}
           <div className="flex justify-center mb-8 lg:mb-12">
             <Link href="/">
@@ -80,7 +77,7 @@ export function AuthShell({
           </div>
 
           {/* Heading & Child Inputs */}
-          <div className="w-full max-w-[390px] mx-auto flex-1 flex flex-col justify-center">
+          <div className="!w-full max-w-lg  mx-auto flex-1 flex flex-col justify-center">
             <div className="text-center mb-8">
               <h1 className="text-3xl lg:text-[34px] font-bold tracking-tight text-slate-900 mb-2">
                 {title}

@@ -143,6 +143,7 @@ const Login = () => {
   return (
     <AuthShell
       title="Welcome Back"
+      isShow={true}
       subtitle="Enter your email and password to access your account"
       imageSrc={otpImage}
       imageAlt="Premium Ride Booking"
