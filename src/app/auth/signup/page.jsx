@@ -53,7 +53,15 @@ const Signup = () => {
       const body = {
         phone: phone.trim()
       };
-      await postData("users/check-phone", body, header1);
+      const res = await postData("users/check-phone", body, header1);
+      if (!res || res.success === false) {
+        setPhoneChecking(false);
+        setPhoneChecked(false);
+        const errMsg = res?.message || "Phone already existed";
+        setFieldError("phone", errMsg);
+        setFieldTouched("phone", true, false);
+        return;
+      }
       setPhoneChecking(false);
       setPhoneChecked(true);
     } catch (error) {
@@ -244,21 +252,27 @@ const Signup = () => {
   const handleSubmit = async (values, { setFieldError, setFieldTouched }) => {
     if (phoneChecking) return;
 
-    if (!phoneChecked) {
-      try {
-        setLoading(true);
-        const body = {
-          phone: values.phone.trim(),
-        };
-        await postData("users/check-phone", body, header1);
-        setPhoneChecked(true);
-      } catch (error) {
+    try {
+      setLoading(true);
+      const body = {
+        phone: values.phone.trim(),
+      };
+      const res = await postData("users/check-phone", body, header1);
+      if (!res || res.success === false) {
         setLoading(false);
-        const errMsg = error.response?.data?.message || "Phone already existed";
+        setPhoneChecked(false);
+        const errMsg = res?.message || "Phone already existed";
         setFieldError("phone", errMsg);
         setFieldTouched("phone", true, false);
         return;
       }
+      setPhoneChecked(true);
+    } catch (error) {
+      setLoading(false);
+      const errMsg = error.response?.data?.message || "Phone already existed";
+      setFieldError("phone", errMsg);
+      setFieldTouched("phone", true, false);
+      return;
     }
 
     const body = {
