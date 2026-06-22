@@ -23,7 +23,7 @@ const PasswordField = ({ label, name, placeholder, control, errors }) => {
   const [show, setShow] = useState(false);
   return (
     <div className="mt-3 first:mt-0">
-      <Label className="text-sm font-medium text-gray-700 mb-1 block">
+      <Label className="text-sm font-family-medium text-gray-700 mb-1 block">
         {label}
       </Label>
       <Controller
@@ -101,7 +101,7 @@ export default function ChangePassword() {
   return (
     <div className={mounted ? "animate-fade-in-up" : "opacity-0"}>
       <Form onSubmit={handleSubmit(onSubmit)} className="mt-3">
-        <h2 className="font-semibold text-lg text-gray-900 mb-4">Change Password</h2>
+        <h2 className="font-family-semibold text-lg text-gray-900 mb-4">Change Password</h2>
 
         <div className="grid grid-cols-1 md:grid-cols-2 gap-x-6 gap-y-1">
           {/* Left col */}

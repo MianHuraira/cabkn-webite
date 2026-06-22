@@ -100,14 +100,13 @@ const Page = () => {
         />
 
         <div style={{ maxWidth: 1200, margin: "0 auto", padding: "0 clamp(12px, 3vw, 24px)", position: "relative" }}>
-          <div
+          <div className="font-family-medium"
             style={{
               display: "flex",
               alignItems: "center",
               gap: 8,
               color: "rgba(255,255,255,0.5)",
               fontSize: 13,
-              fontWeight: 500,
               marginBottom: 16,
             }}
           >
@@ -146,11 +145,10 @@ const Page = () => {
                 <FaHeart size="clamp(18px, 2.5vw, 24px)" color="#f87171" />
               </div>
               <div>
-                <h1
+                <h1 className="font-family-bold"
                   style={{
                     color: "#fff",
                     fontSize: "clamp(20px, 5vw, 30px)",
-                    fontWeight: 700,
                     margin: 0,
                     letterSpacing: "-0.5px",
                     lineHeight: 1.2,
@@ -159,7 +157,7 @@ const Page = () => {
                 >
                   My Favorites
                 </h1>
-                <p style={{ color: "rgba(255,255,255,0.55)", fontSize: "clamp(12px, 2vw, 14px)", margin: "2px 0 0", fontWeight: 400, wordBreak: "break-word" }}>
+                <p className="font-family-regular" style={{ color: "rgba(255,255,255,0.55)", fontSize: "clamp(12px, 2vw, 14px)", margin: "2px 0 0", wordBreak: "break-word" }}>
                   {favorites.length} saved {favorites.length === 1 ? "driver" : "drivers"}
                 </p>
               </div>
@@ -181,7 +179,7 @@ const Page = () => {
                 }}
               >
                 <FaHeart size={12} color="#f87171" />
-                <span style={{ color: "#fff", fontSize: 13, fontWeight: 600, whiteSpace: "nowrap" }}>
+                <span className="font-family-semibold" style={{ color: "#fff", fontSize: 13, whiteSpace: "nowrap" }}>
                   {favorites.length} saved
                 </span>
               </div>
@@ -297,10 +295,10 @@ const Page = () => {
                 <FaTimes size={10} color="#9ca3af" />
               </div>
             </div>
-            <h3 style={{ fontSize: "clamp(18px, 4vw, 22px)", fontWeight: 700, color: "#1f2937", margin: "0 0 8px", letterSpacing: "-0.3px", wordBreak: "break-word" }}>
+            <h3 className="font-family-bold" style={{ fontSize: "clamp(18px, 4vw, 22px)", color: "#1f2937", margin: "0 0 8px", letterSpacing: "-0.3px", wordBreak: "break-word" }}>
               No favorites yet
             </h3>
-            <p style={{ fontSize: "clamp(13px, 2.5vw, 14px)", color: "#9ca3af", margin: "0 auto", maxWidth: 400, padding: "0 12px", lineHeight: 1.6, wordBreak: "break-word" }}>
+            <p className="font-family-regular" style={{ fontSize: "clamp(13px, 2.5vw, 14px)", color: "#9ca3af", margin: "0 auto", maxWidth: 400, padding: "0 12px", lineHeight: 1.6, wordBreak: "break-word" }}>
               Start adding drivers to your favorites and they will appear here for quick booking.
             </p>
           </div>
@@ -366,12 +364,12 @@ const Page = () => {
                         )}
                       </div>
                       <div>
-                        <p style={{ fontWeight: 600, fontSize: 15, color: "#1f2937", margin: 0 }}>
+                        <p className="font-family-semibold" style={{ fontSize: 15, color: "#1f2937", margin: 0 }}>
                           {item?.name}
                         </p>
                         <div style={{ display: "flex", alignItems: "center", gap: 3, marginTop: 3 }}>
                           <FaStar size={12} color="#f59e0b" />
-                          <span style={{ fontSize: 12, color: "#6b7280", fontWeight: 500 }}>
+                          <span className="font-family-medium" style={{ fontSize: 12, color: "#6b7280" }}>
                             {item?.rating || "0.0"}
                           </span>
                         </div>
@@ -440,11 +438,11 @@ const Page = () => {
                         border: "none",
                         color: "#fff",
                         fontSize: 13,
-                        fontWeight: 600,
                         cursor: "pointer",
                         transition: "all 0.2s ease",
                         whiteSpace: "nowrap",
                       }}
+                      className="font-family-semibold"
                       onMouseEnter={(e) => {
                         e.currentTarget.style.background = "#003c5a";
                         e.currentTarget.style.transform = "translateY(-1px)";

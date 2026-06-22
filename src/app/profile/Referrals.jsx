@@ -59,15 +59,15 @@ export default function Referrals() {
 
   return (
     <div className={mounted ? 'animate-fade-in-up' : 'opacity-0'}>
-      <h2 className="font-semibold text-lg text-gray-900 mb-4">Referrals</h2>
+      <h2 className="font-family-semibold text-lg text-gray-900 mb-4">Referrals</h2>
       <div className="flex items-center justify-between bg-gradient-to-r from-slate-50 to-blue-50 border border-slate-100 p-4 rounded-xl shadow-sm mt-2 mb-4">
         <div className="flex items-center gap-3">
           <div className="w-10 h-10 rounded-xl bg-brand-600/10 flex items-center justify-center flex-shrink-0">
             <svg width={18} height={18} viewBox="0 0 24 24" fill="none" stroke="#004a70" strokeWidth={2}><path d="M17 21v-2a4 4 0 0 0-4-4H5a4 4 0 0 0-4 4v2" /><circle cx="9" cy="7" r="4" /><path d="M23 21v-2a4 4 0 0 0-3-3.87M16 3.13a4 4 0 0 1 0 7.75" /></svg>
           </div>
           <div>
-            <h3 className="text-sm font-semibold text-gray-800 mb-0">Referral Code</h3>
-            <p className="text-sm font-bold text-brand-600 mb-0">{userData?.user?.referral_code || "—"}</p>
+            <h3 className="text-sm font-family-semibold text-gray-800 mb-0">Referral Code</h3>
+            <p className="text-sm font-family-bold text-brand-600 mb-0">{userData?.user?.referral_code || "—"}</p>
           </div>
         </div>
         <CustomButton onClick={handleShow} style={{ padding: "8px 20px" }}>
@@ -93,8 +93,8 @@ export default function Referrals() {
                 <path strokeLinecap="round" strokeLinejoin="round" d="M7.217 10.907a2.25 2.25 0 100 2.186m0-2.186c.18.324.283.696.283 1.093s-.103.77-.283 1.093m0-2.186l9.566-5.314m-9.566 7.5l9.566 5.314m0 0a2.25 2.25 0 103.935 2.186 2.25 2.25 0 00-3.935-2.186zm0-12.814a2.25 2.25 0 103.933-2.185 2.25 2.25 0 00-3.933 2.185z" />
               </svg>
             </div>
-            <h3 className="text-white font-bold text-lg mb-1">Share & Earn</h3>
-            <p className="text-white/70 text-sm">Invite friends with your referral code</p>
+            <h3 className="text-white font-family-bold text-lg mb-1">Share & Earn</h3>
+            <p className="text-white/70 text-sm font-family-regular">Invite friends with your referral code</p>
           </div>
 
           {/* Modal Body */}
@@ -104,7 +104,7 @@ export default function Referrals() {
               <input
                 id="myInput"
                 type="text"
-                className="flex-grow bg-transparent border-none outline-none text-sm font-medium text-gray-700 min-w-0"
+                className="flex-grow bg-transparent border-none outline-none text-sm font-family-medium text-gray-700 min-w-0"
                 value={shareText}
                 readOnly
               />
@@ -117,7 +117,7 @@ export default function Referrals() {
             </div>
 
             {/* Social share grid */}
-            <p className="text-xs font-medium text-gray-400 uppercase tracking-wider mb-3">Share via</p>
+            <p className="text-xs font-family-medium text-gray-400 uppercase tracking-wider mb-3">Share via</p>
             <div className="grid grid-cols-4 gap-3 mb-5">
               {[
                 { icon: <FaWhatsapp size={20} color="#25D366" />, label: "WhatsApp", onClick: () => openShareLink(`https://api.whatsapp.com/send?text=${encodeURIComponent(shareText + " " + shareUrl)}`) },
@@ -129,13 +129,13 @@ export default function Referrals() {
                   <div className="w-11 h-11 rounded-xl bg-slate-50 border border-slate-100 flex items-center justify-center group-hover:scale-105 transition-transform">
                     {item.icon}
                   </div>
-                  <span className="text-xs text-gray-500">{item.label}</span>
+                  <span className="text-xs text-gray-500 font-family-regular">{item.label}</span>
                 </div>
               ))}
             </div>
 
             {/* App download buttons - side by side */}
-            <p className="text-xs font-medium text-gray-400 uppercase tracking-wider mb-3">Get the App</p>
+            <p className="text-xs font-family-medium text-gray-400 uppercase tracking-wider mb-3">Get the App</p>
             <div className="flex flex-row gap-3">
               <div
                 onClick={() => openShareLink("https://play.google.com/store/apps/details?id=com.cabkn.app")}

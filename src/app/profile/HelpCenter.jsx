@@ -36,12 +36,12 @@ export default function HelpCenter() {
   return (
     <div className={mounted ? "animate-fade-in-up" : "opacity-0"}>
       <Form onSubmit={handleSubmit(onSubmit)} className="mt-3">
-        <h2 className="font-semibold text-lg text-gray-900 mb-4">Help Center</h2>
+        <h2 className="font-family-semibold text-lg text-gray-900 mb-4">Help Center</h2>
 
         <div className="flex flex-col gap-4">
           {/* Title - full width */}
           <div>
-            <label className="text-sm font-medium text-gray-700 mb-1 block">Title</label>
+            <label className="text-sm font-family-medium text-gray-700 mb-1 block">Title</label>
             <Controller
               name="title"
               control={control}
@@ -62,7 +62,7 @@ export default function HelpCenter() {
 
           {/* Description - full width */}
           <div>
-            <label className="text-sm font-medium text-gray-700 mb-1 block">Description</label>
+            <label className="text-sm font-family-medium text-gray-700 mb-1 block">Description</label>
             <Controller
               name="Des"
               control={control}
