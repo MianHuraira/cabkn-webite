@@ -138,6 +138,7 @@ export default function Testimonials() {
               Hear from the people who ride with us every day.
             </p>
           </div>
+
           <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-6">
             {testimonials.map((t, i) => (
               <SectionReveal key={i} delay={i * 80}>
@@ -199,10 +200,10 @@ export default function Testimonials() {
                 </CustomButton>
                 <button
                   onClick={() => router.push('/ride')}
-className="inline-flex items-center gap-2 px-6 py-3 rounded-full border border-white/20 text-white/80 hover:text-white hover:bg-white/10 transition-all duration-300 font-family-medium text-sm"
-            >
-              Book a Ride
-            </button>
+                  className="inline-flex items-center gap-2 px-6 py-3 rounded-full border border-white/20 text-white/80 hover:text-white hover:bg-white/10 transition-all duration-300 font-family-medium text-sm"
+                >
+                  Book a Ride
+                </button>
               </div>
             </div>
           </div>
