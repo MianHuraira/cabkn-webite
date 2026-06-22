@@ -66,12 +66,12 @@ const ProductTable = ({
         previousLabel={
           <div className="flex text-sm items-center gap-2 btnpgination ">
             <FaArrowLeft color="#000" />
-            <span className="medium-font">Previous</span>
+            <span className="font-family-medium">Previous</span>
           </div>
         }
         nextLabel={
           <div className="flex text-sm items-center gap-2 btnpgination">
-            <span className="medium-font">Next</span>
+            <span className="font-family-medium">Next</span>
             <FaArrowRight color="#000" />
           </div>
         }
@@ -95,10 +95,10 @@ const ProductTable = ({
     </div>
   );
   return (
-    <Fragment>
+    <div className="font-poppins">
       {rowHeading && (
         <CardHeader className="flex items-center justify-between mb-3">
-          <CardTitle className="bold-font" tag={"h4"}>
+          <CardTitle className="font-family-bold" tag={"h4"}>
             {rowHeading}
           </CardTitle>
           {setSearch && (
@@ -158,7 +158,7 @@ const ProductTable = ({
           data={data}
         />
       </div>
-    </Fragment>
+    </div>
   );
 };
 

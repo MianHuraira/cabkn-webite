@@ -624,10 +624,10 @@ function MakeYourTour() {
         <div style={{ position: "absolute", top: 10, right: 200, width: 100, height: 100, borderRadius: "50%", background: "rgba(255,255,255,0.04)", pointerEvents: "none" }} />
 
         <div style={{ maxWidth: 1320, margin: "0 auto", padding: "0 16px", position: "relative", zIndex: 1 }}>
-          <div className="hover:opacity-80 transition-opacity" style={{ color: "rgba(255,255,255,0.6)", fontSize: 13, marginBottom: 12 }}>
+          <div className="font-family-medium hover:opacity-80 transition-opacity" style={{ color: "rgba(255,255,255,0.6)", fontSize: 13, marginBottom: 12 }}>
             <a href="/" style={{ color: "rgba(255,255,255,0.5)", textDecoration: "none" }} className="hover:text-white/80 transition-colors">Home</a>
             <span style={{ margin: "0 6px" }}>/</span>
-            <span style={{ color: "rgba(255,255,255,0.8)" }}>Make Your Own Tour</span>
+            <span className="font-family-medium" style={{ color: "rgba(255,255,255,0.8)" }}>Make Your Own Tour</span>
           </div>
           <div
             style={{
@@ -653,18 +653,10 @@ function MakeYourTour() {
                 </svg>
               </div>
               <div>
-                <h1
-                  style={{
-                    color: "#fff",
-                    fontSize: "clamp(22px, 4vw, 28px)",
-                    fontWeight: 700,
-                    margin: 0,
-                    letterSpacing: "-0.3px",
-                  }}
-                >
+                <h1 className="font-family-bold" style={{ color: "#fff", fontSize: "clamp(22px, 4vw, 28px)", margin: 0, letterSpacing: "-0.3px", }}>
                   Make Your Own Tour
                 </h1>
-                <p style={{ color: "rgba(255,255,255,0.6)", fontSize: 14, margin: "4px 0 0" }}>
+                <p className="font-family-regular" style={{ color: "rgba(255,255,255,0.6)", fontSize: 14, margin: "4px 0 0" }}>
                   Create a custom itinerary for your perfect trip
                 </p>
               </div>
@@ -692,16 +684,16 @@ function MakeYourTour() {
               onMouseEnter={(e) => { e.currentTarget.style.boxShadow = "0 4px 12px rgba(0,0,0,0.08)"; e.currentTarget.style.transform = "translateY(-2px)"; }}
               onMouseLeave={(e) => { e.currentTarget.style.boxShadow = "0 1px 3px rgba(0,0,0,0.04)"; e.currentTarget.style.transform = "none"; }}
             >
-              <h2 style={{ fontFamily: "Inter-Bold", fontSize: 18, color: "#0f172a", margin: "0 0 6px", textAlign: "center" }}>
+              <h2 className="font-family-bold" style={{ fontSize: 18, color: "#0f172a", margin: "0 0 6px", textAlign: "center" }}>
                 Create Your Tour
               </h2>
-              <p style={{ fontFamily: "Inter-Regular", fontSize: 13, color: "#64748b", textAlign: "center", margin: "0 0 20px" }}>
+              <p className="font-family-regular" style={{ fontSize: 13, color: "#64748b", textAlign: "center", margin: "0 0 20px" }}>
                 Set your start and end locations
               </p>
 
               <Form onSubmit={handleSubmit(onSubmit)}>
                 <div style={{ marginBottom: 18 }}>
-                  <div className="d-flex align-items-center" style={{ fontFamily: "Inter-Medium", fontSize: 13, color: "#374151", marginBottom: 6 }}>
+                  <div className="font-family-medium d-flex align-items-center" style={{ fontSize: 13, color: "#374151", marginBottom: 6 }}>
                     <FaLocationDot size={12} color="#004a70" style={{ marginRight: 4 }} />
                     Start Location
                   </div>
@@ -720,9 +712,9 @@ function MakeYourTour() {
                             className={`bg-gray-50 border-0 focus:ring-1 focus:ring-brand-600/30 focus:outline-none focus:bg-white${errors.name ? " ring-2 ring-red-400" : ""}`}
                           />
                           {errors.name && (
-                            <p style={{ fontSize: 12, color: "#ef4444", margin: "4px 0 0" }}>{errors.name.message}</p>
+                            <p className="font-family-medium" style={{ fontSize: 12, color: "#ef4444", margin: "4px 0 0" }}>{errors.name.message}</p>
                           )}
-                          {PridicLoading && <div style={{ fontSize: 12, color: "#94a3b8", marginTop: 4 }}>Loading...</div>}
+                          {PridicLoading && <div className="font-family-regular" style={{ fontSize: 12, color: "#94a3b8", marginTop: 4 }}>Loading...</div>}
                           {predictions.length > 0 && (
                             <ListGroup style={{
                               position: "absolute",
@@ -745,7 +737,7 @@ function MakeYourTour() {
                               ))}
                             </ListGroup>
                           )}
-                          {noData && <div style={{ fontSize: 12, color: "#94a3b8", marginTop: 4 }}>No results found</div>}
+                          {noData && <div className="font-family-regular" style={{ fontSize: 12, color: "#94a3b8", marginTop: 4 }}>No results found</div>}
                         </div>
                       )}
                     />
@@ -772,7 +764,7 @@ function MakeYourTour() {
                 </div>
 
                 <div style={{ marginBottom: 24 }}>
-                  <div className="d-flex align-items-center" style={{ fontFamily: "Inter-Medium", fontSize: 13, color: "#374151", marginBottom: 6 }}>
+                  <div className="font-family-medium d-flex align-items-center" style={{ fontSize: 13, color: "#374151", marginBottom: 6 }}>
                     <MdOutlineMyLocation size={14} color="#004a70" style={{ marginRight: 4 }} />
                     End Location
                   </div>
@@ -790,9 +782,9 @@ function MakeYourTour() {
                           className={`bg-gray-50 border-0 focus:ring-1 focus:ring-brand-600/30 focus:outline-none focus:bg-white${errors.metaTitle ? " ring-2 ring-red-400" : ""}`}
                         />
                         {errors.metaTitle && (
-                          <p style={{ fontSize: 12, color: "#ef4444", margin: "4px 0 0" }}>{errors.metaTitle.message}</p>
-                        )}
-                        {PridicLoadingEnd && <div style={{ fontSize: 12, color: "#94a3b8", marginTop: 4 }}>Loading...</div>}
+                          <p className="font-family-medium" style={{ fontSize: 12, color: "#ef4444", margin: "4px 0 0" }}>{errors.metaTitle.message}</p>
+                          )}
+                          {PridicLoadingEnd && <div className="font-family-regular" style={{ fontSize: 12, color: "#94a3b8", marginTop: 4 }}>Loading...</div>}
                         {EndPredictions.length > 0 && (
                           <ListGroup style={{
                             position: "absolute",
@@ -815,7 +807,7 @@ function MakeYourTour() {
                             ))}
                           </ListGroup>
                         )}
-                        {noData && <div style={{ fontSize: 12, color: "#94a3b8", marginTop: 4 }}>No results found</div>}
+                          {noData && <div className="font-family-regular" style={{ fontSize: 12, color: "#94a3b8", marginTop: 4 }}>No results found</div>}
                       </div>
                     )}
                   />
@@ -830,7 +822,7 @@ function MakeYourTour() {
                     marginBottom: 16,
                     border: "1px solid #bbf7d0",
                   }}>
-                    <span style={{ fontFamily: "Inter-Medium", fontSize: 13, color: "#16a34a" }}>
+                    <span className="font-family-medium" style={{ fontSize: 13, color: "#16a34a" }}>
                       Distance: {distance} km
                     </span>
                   </div>
@@ -841,7 +833,7 @@ function MakeYourTour() {
                   variant="primary"
                   size="md"
                   loading={isLoading}
-                  className="!w-full !h-12"
+                  className="!w-full !h-12 font-family-medium"
                 >
                   Next
                 </CustomButton>
@@ -865,7 +857,7 @@ function MakeYourTour() {
               onMouseEnter={(e) => { e.currentTarget.style.boxShadow = "0 4px 12px rgba(0,0,0,0.08)"; e.currentTarget.style.transform = "translateY(-2px)"; }}
               onMouseLeave={(e) => { e.currentTarget.style.boxShadow = "0 1px 3px rgba(0,0,0,0.04)"; e.currentTarget.style.transform = "none"; }}
             >
-              <h2 style={{ fontFamily: "Inter-Bold", fontSize: 18, color: "#0f172a", margin: "0 0 16px" }}>
+              <h2 className="font-family-bold" style={{ fontSize: 18, color: "#0f172a", margin: "0 0 16px" }}>
                 Add places to your itinerary
               </h2>
 
@@ -883,7 +875,7 @@ function MakeYourTour() {
                       return (
                         <div className="p-2" key={index}>
                           <div
-                            className={`cursor-pointer capitalize`}
+                            className={`cursor-pointer capitalize font-family-medium`}
                             style={{
                               padding: "10px 16px",
                               background: isSelected ? "#004a70" : "#f8fafc",
@@ -900,15 +892,13 @@ function MakeYourTour() {
                               margin: "0 auto",
                               whiteSpace: "nowrap",
                               fontSize: 14,
-                              fontWeight: 500,
-                              fontFamily: "Inter-Medium",
                               cursor: "pointer",
                             }}
                             onClick={() => setSelectedCategoryId(category._id)}
                             onMouseEnter={(e) => { if (!isSelected) { e.currentTarget.style.background = "#f1f5f9"; e.currentTarget.style.borderColor = "#004a70"; } }}
                             onMouseLeave={(e) => { if (!isSelected) { e.currentTarget.style.background = "#f8fafc"; e.currentTarget.style.borderColor = "#e2e8f0"; } }}
                           >
-                            <span style={{ fontSize: 13, fontFamily: "Inter-Medium" }}>{category?.name}</span>
+                            <span className="font-family-medium" style={{ fontSize: 13 }}>{category?.name}</span>
                           </div>
                         </div>
                       );
@@ -961,6 +951,7 @@ function MakeYourTour() {
                         variant="primary"
                         size="md"
                         loading={MoreLoading}
+                        className="font-family-medium"
                       >
                         See more
                       </CustomButton>
@@ -990,7 +981,7 @@ function MakeYourTour() {
         style={{ borderTopLeftRadius: 16, borderTopRightRadius: 16 }}
       >
         <Offcanvas.Header style={{ padding: "16px 20px 0", borderBottom: "1px solid #f1f5f9" }} closeButton>
-          <Offcanvas.Title className="font-medium" style={{ fontSize: 16, fontWeight: 600, color: "#0f172a" }}>
+          <Offcanvas.Title className="font-family-semibold" style={{ fontSize: 16, color: "#0f172a" }}>
             Your Itinerary
           </Offcanvas.Title>
         </Offcanvas.Header>
@@ -1003,8 +994,8 @@ function MakeYourTour() {
                     <div style={{ display: "flex", alignItems: "center", gap: 10 }}>
                       <FaLocationDot size={14} color="#004a70" />
                       <div>
-                        <p style={{ fontSize: 14, fontWeight: 500, color: "#0f172a", margin: 0, overflow: "hidden", textOverflow: "ellipsis", whiteSpace: "nowrap", maxWidth: 220 }}>{item?.title}</p>
-                        <p style={{ fontSize: 13, fontWeight: 600, color: "#004a70", margin: "2px 0 0" }}>{`$${item?.location_price}`}</p>
+                        <p className="font-family-medium" style={{ fontSize: 14, color: "#0f172a", margin: 0, overflow: "hidden", textOverflow: "ellipsis", whiteSpace: "nowrap", maxWidth: 220 }}>{item?.title}</p>
+                        <p className="font-family-semibold" style={{ fontSize: 13, color: "#004a70", margin: "2px 0 0" }}>{`$${item?.location_price}`}</p>
                       </div>
                     </div>
                     <IoMdCloseCircle
@@ -1016,12 +1007,12 @@ function MakeYourTour() {
                 ))}
               </div>
               <div style={{ display: "flex", justifyContent: "space-between", alignItems: "center", padding: "12px 0 0", borderTop: "2px solid #f1f5f9" }}>
-                <p style={{ fontSize: 15, fontWeight: 600, color: "#0f172a", margin: 0 }}>Total Price</p>
-                <p style={{ fontSize: 15, fontWeight: 700, color: "#004a70", margin: 0 }}>{`$${TotalPrice}`}</p>
+                <p className="font-family-semibold" style={{ fontSize: 15, color: "#0f172a", margin: 0 }}>Total Price</p>
+                <p className="font-family-bold" style={{ fontSize: 15, color: "#004a70", margin: 0 }}>{`$${TotalPrice}`}</p>
               </div>
             </>
           ) : (
-            <p style={{ fontSize: 13, color: "#94a3b8", textAlign: "center", margin: "20px 0" }}>No items in your itinerary yet</p>
+            <p className="font-family-regular" style={{ fontSize: 13, color: "#94a3b8", textAlign: "center", margin: "20px 0" }}>No items in your itinerary yet</p>
           )}
         </Offcanvas.Body>
       </Offcanvas>
@@ -1037,23 +1028,25 @@ function MakeYourTour() {
                 </svg>
               </div>
               <div>
-                <h2 style={{ fontSize: 16, fontWeight: 600, color: "#0f172a", margin: 0 }}>Location Access Required</h2>
-                <p style={{ fontSize: 13, color: "#64748b", margin: "2px 0 0" }}>Enable location to use this feature</p>
+                <h2 className="font-family-semibold" style={{ fontSize: 16, color: "#0f172a", margin: 0 }}>Location Access Required</h2>
+                <p className="font-family-regular" style={{ fontSize: 13, color: "#64748b", margin: "2px 0 0" }}>Enable location to use this feature</p>
               </div>
             </div>
-            <p style={{ fontSize: 13, color: "#64748b", margin: 0, lineHeight: 1.5 }}>
+            <p className="font-family-regular" style={{ fontSize: 13, color: "#64748b", margin: 0, lineHeight: 1.5 }}>
               Please enable location access in your browser settings to automatically fill your start location.
             </p>
             <div style={{ display: "flex", justifyContent: "flex-end", gap: 8, marginTop: 8 }}>
               <button
                 onClick={() => handlePermissionGuide(false)}
-                style={{ padding: "8px 16px", fontSize: 13, fontWeight: 500, color: "#64748b", background: "#f1f5f9", border: "none", borderRadius: 8, cursor: "pointer" }}
+                className="font-family-medium"
+                style={{ padding: "8px 16px", fontSize: 13, color: "#64748b", background: "#f1f5f9", border: "none", borderRadius: 8, cursor: "pointer" }}
               >
                 Cancel
               </button>
               <button
                 onClick={handlePermissionGuide}
-                style={{ padding: "8px 16px", fontSize: 13, fontWeight: 500, color: "#fff", background: "#004a70", border: "none", borderRadius: 8, cursor: "pointer" }}
+                className="font-family-medium"
+                style={{ padding: "8px 16px", fontSize: 13, color: "#fff", background: "#004a70", border: "none", borderRadius: 8, cursor: "pointer" }}
               >
                 Show Instructions
               </button>

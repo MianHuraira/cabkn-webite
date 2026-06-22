@@ -424,7 +424,7 @@ function Page() {
       name: "#",
       width: "50px",
       selector: (row, index) => (
-        <span className="medium-font" style={{ color: "#9ca3af", fontSize: 13 }}>
+        <span className="font-family-medium" style={{ color: "#9ca3af", fontSize: 13 }}>
           {String(index + 1).padStart(2, "0")}
         </span>
       ),
@@ -454,10 +454,10 @@ function Page() {
               <MdOutlineMyLocation color="#004a70" size={14} />
             </div>
             <div style={{ flex: 1, minWidth: 0 }}>
-              <p style={{ fontSize: 12, color: "#374151", margin: 0, lineHeight: 1.3, whiteSpace: "nowrap", overflow: "hidden", textOverflow: "ellipsis" }}>
+              <p className="font-family-medium" style={{ fontSize: 12, color: "#374151", margin: 0, lineHeight: 1.3, whiteSpace: "nowrap", overflow: "hidden", textOverflow: "ellipsis" }}>
                 {row?.start_address}
               </p>
-              <p style={{ fontSize: 12, color: "#6b7280", margin: "12px 0 0", lineHeight: 1.3, whiteSpace: "nowrap", overflow: "hidden", textOverflow: "ellipsis" }}>
+              <p className="font-family-regular" style={{ fontSize: 12, color: "#6b7280", margin: "12px 0 0", lineHeight: 1.3, whiteSpace: "nowrap", overflow: "hidden", textOverflow: "ellipsis" }}>
                 {row?.end_address}
               </p>
             </div>
@@ -469,7 +469,7 @@ function Page() {
       name: "Pincode",
       width: "100px",
       selector: (row) => (
-        <span className="medium-font" style={{ fontSize: 13, color: "#374151" }}>{row?.pincode}</span>
+        <span className="font-family-medium" style={{ fontSize: 13, color: "#374151" }}>{row?.pincode}</span>
       ),
     },
     {
@@ -487,8 +487,8 @@ function Page() {
             />
           </div>
           <div>
-            <p className="medium-font" style={{ fontSize: 13, color: "#1f2937", margin: 0 }}>{row?.to_id?.name || "N/A"}</p>
-            <p style={{ fontSize: 11, color: "#9ca3af", margin: "2px 0 0" }}>{row?.to_id?.email || ""}</p>
+            <p className="font-family-medium" style={{ fontSize: 13, color: "#1f2937", margin: 0 }}>{row?.to_id?.name || "N/A"}</p>
+            <p className="font-family-regular" style={{ fontSize: 11, color: "#9ca3af", margin: "2px 0 0" }}>{row?.to_id?.email || ""}</p>
           </div>
         </div>
       ),
@@ -498,10 +498,10 @@ function Page() {
       width: "140px",
       selector: (row) => (
         <div>
-          <p className="medium-font" style={{ fontSize: 13, color: "#374151", margin: 0 }}>
+          <p className="font-family-medium" style={{ fontSize: 13, color: "#374151", margin: 0 }}>
             {moment(row?.createdAt).format("DD MMM, YYYY")}
           </p>
-          <p style={{ fontSize: 11, color: "#9ca3af", margin: "2px 0 0" }}>
+          <p className="font-family-regular" style={{ fontSize: 11, color: "#9ca3af", margin: "2px 0 0" }}>
             {moment(row?.createdAt).format("hh:mm A")}
           </p>
         </div>
@@ -511,7 +511,7 @@ function Page() {
       name: "Fare",
       width: "100px",
       selector: (row) => (
-        <span className="bold-font" style={{ fontSize: 14, color: "#059669" }}>
+        <span className="font-family-bold" style={{ fontSize: 14, color: "#059669" }}>
           ${row?.price || 0}
         </span>
       ),
@@ -523,10 +523,10 @@ function Page() {
         const st = getStatusStyle(row?.status);
         return (
           <div
+            className="font-family-medium"
             style={{
               padding: "4px 14px",
               fontSize: 12,
-              fontFamily: "Inter-Medium",
               borderRadius: 20,
               background: st.bg,
               color: st.text,
@@ -549,11 +549,10 @@ function Page() {
         <Button
           disabled={row?.tip === 1}
           onClick={() => { openModal(true); setTipOrderId(row?._id); }}
-          className={row?.tip !== 1 ? "hover:bg-brand-700 hover:text-white" : ""}
+          className={`${row?.tip !== 1 ? "hover:bg-brand-700 hover:text-white" : ""} font-family-medium`}
           style={{
             height: 34,
             fontSize: 12,
-            fontFamily: "Inter-Medium",
             borderRadius: 8,
             border: row?.tip === 1 ? "1px solid #e5e7eb" : "1px solid #004a70",
             background: row?.tip === 1 ? "#f9fafb" : "transparent",
@@ -567,7 +566,7 @@ function Page() {
           }}
         >
           <svg width={14} height={14} viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth={2}><path d="M12 2v20M2 12h20" /></svg>
-          {row?.tip === 1 ? "Tipped" : "Tip"}
+          <span className="font-family-medium">{row?.tip === 1 ? "Tipped" : "Tip"}</span>
         </Button>
       ),
     },
@@ -599,7 +598,7 @@ function Page() {
   ];
 
   return (
-    <div className={mounted ? "animate-fade-in" : "opacity-0"}>
+    <div className={`font-poppins ${mounted ? "animate-fade-in" : "opacity-0"}`}>
       {/* Header - matching notifications pattern */}
       <div
         className={`bg-gradient-to-br from-brand-800 to-brand-950 ${mounted ? "animate-fade-in-down" : "opacity-0"}`}
@@ -681,7 +680,7 @@ function Page() {
                 <button
                   key={tab.key}
                   onClick={() => handleTabSelect(tab.key)}
-                  className={`flex items-center gap-2 px-4 py-2.5 rounded-t-xl font-medium text-[14px] transition-all duration-300 border-b-2 ${activeTab === tab.key
+                  className={`flex items-center gap-2 px-4 py-2.5 rounded-t-xl text-[14px] transition-all duration-300 border-b-2 ${activeTab === tab.key
                     ? "text-brand-700 bg-brand-50/50 border-brand-700"
                     : "text-slate-500 border-transparent hover:text-brand-600 hover:bg-slate-50"
                     }`}
@@ -690,7 +689,7 @@ function Page() {
                   <span className={`${activeTab === tab.key ? "text-brand-700" : "text-slate-400"}`}>
                     {tab.icon}
                   </span>
-                  {tab.label}
+                  <span className="font-family-medium">{tab.label}</span>
                 </button>
               ))}
             </div>
@@ -699,10 +698,10 @@ function Page() {
           {/* Table Section */}
           <div className="min-h-[400px] relative">
             <div style={{ padding: "16px 20px", borderBottom: "1px solid #f1f5f9", display: "flex", alignItems: "center", justifyContent: "space-between" }}>
-              <h3 className="font-semibold" style={{ fontSize: 16, color: "#0f172a", margin: 0 }}>
+              <h3 className="font-family-bold" style={{ fontSize: 16, color: "#0f172a", margin: 0 }}>
                 {activeTab === "all" ? "All" : activeTab.charAt(0).toUpperCase() + activeTab.slice(1)} Bookings
               </h3>
-              <span style={{ fontSize: 13, color: "#64748b", fontWeight: 500 }}>
+              <span className="font-family-medium" style={{ fontSize: 13, color: "#64748b" }}>
                 {Orders?.length || 0} booking{Orders?.length !== 1 ? "s" : ""}
               </span>
             </div>
@@ -811,10 +810,10 @@ function Page() {
                   <path strokeLinecap="round" strokeLinejoin="round" d="M8 12h8" />
                 </svg>
               </div>
-              <h3 style={{ color: "#fff", fontSize: 20, fontFamily: "Inter-Bold", margin: 0 }}>
+<h3 className="font-family-bold" style={{ color: "#fff", fontSize: 20, margin: 0 }}>
                 Add a Tip
               </h3>
-              <p style={{ color: "rgba(255,255,255,0.6)", fontSize: 13, fontFamily: "Inter-Regular", margin: "6px 0 0" }}>
+<p className="font-family-regular" style={{ color: "rgba(255,255,255,0.6)", fontSize: 13, margin: "6px 0 0" }}>
                 Show appreciation for great service
               </p>
             </div>
@@ -823,23 +822,23 @@ function Page() {
             <div style={{ padding: "24px 28px 28px" }}>
               {CustomAmount && (
                 <div style={{ marginBottom: 16 }}>
-                  <label style={{ fontSize: 13, fontFamily: "Inter-Medium", color: "#374151", display: "block", marginBottom: 6 }}>
+                  <label className="font-family-medium" style={{ fontSize: 13, color: "#374151", display: "block", marginBottom: 6 }}>
                     Enter amount
                   </label>
-                  <input
-                    style={{
-                      width: "100%",
-                      padding: "12px 16px",
-                      border: "1.5px solid #e2e8f0",
-                      borderRadius: 12,
-                      fontSize: 16,
-                      fontFamily: "Inter-Medium",
-                      color: "#0f172a",
-                      outline: "none",
-                      transition: "border-color 0.2s",
-                    }}
-                    type="text"
-                    name="price"
+              <input
+                className="font-family-medium"
+                style={{
+                  width: "100%",
+                  padding: "12px 16px",
+                  border: "1.5px solid #e2e8f0",
+                  borderRadius: 12,
+                  fontSize: 16,
+                  color: "#0f172a",
+                  outline: "none",
+                  transition: "border-color 0.2s",
+                }}
+                type="text"
+                name="price"
                     placeholder="Enter amount"
                     value={tipAmount}
                     onChange={(e) => setTipAmount(e.target.value)}
@@ -852,7 +851,7 @@ function Page() {
               )}
               {!CustomAmount && (
                 <>
-                  <p style={{ fontSize: 13, fontFamily: "Inter-Medium", color: "#64748b", margin: "0 0 12px" }}>
+                  <p className="font-family-medium" style={{ fontSize: 13, color: "#64748b", margin: "0 0 12px" }}>
                     Quick select
                   </p>
                   <div style={{ display: "grid", gridTemplateColumns: "repeat(5, 1fr)", gap: 8, marginBottom: 12 }}>
@@ -860,13 +859,13 @@ function Page() {
                       <button
                         key={amount}
                         onClick={() => handleTipSelection(amount)}
+                        className="font-family-semibold"
                         style={{
                           padding: "12px 8px",
                           borderRadius: 12,
                           border: tipAmount === amount ? "1.5px solid #004a70" : "1.5px solid #e2e8f0",
                           background: tipAmount === amount ? "#eef2ff" : "#fff",
                           color: tipAmount === amount ? "#004a70" : "#64748b",
-                          fontFamily: "Inter-SemiBold",
                           fontSize: 15,
                           cursor: "pointer",
                           transition: "all 0.2s",
@@ -889,13 +888,13 @@ function Page() {
                       </button>
                     ))}
                   </div>
-                  <button
+                    <button
                     onClick={handleChangeCustom}
+                    className="font-family-medium"
                     style={{
                       background: "none",
                       border: "none",
                       color: "#004a70",
-                      fontFamily: "Inter-Medium",
                       fontSize: 13,
                       cursor: "pointer",
                       padding: "8px 0",
@@ -915,6 +914,7 @@ function Page() {
               <div style={{ marginTop: 20, display: "flex", flexDirection: "column", gap: 10 }}>
                 <button
                   onClick={() => { setShow(true); setIsModalOpen(false); }}
+                  className="font-family-semibold"
                   style={{
                     width: "100%",
                     height: 48,
@@ -922,7 +922,6 @@ function Page() {
                     border: "none",
                     background: "linear-gradient(135deg, #004a70 0%, #003353 100%)",
                     color: "#fff",
-                    fontFamily: "Inter-SemiBold",
                     fontSize: 14,
                     cursor: "pointer",
                     display: "flex",
@@ -939,6 +938,7 @@ function Page() {
                 </button>
                 <button
                   onClick={handlePay}
+                  className="font-family-semibold"
                   style={{
                     width: "100%",
                     height: 48,
@@ -946,7 +946,6 @@ function Page() {
                     border: "1.5px solid #e2e8f0",
                     background: "#fff",
                     color: "#0f172a",
-                    fontFamily: "Inter-SemiBold",
                     fontSize: 14,
                     cursor: "pointer",
                     display: "flex",
@@ -982,7 +981,7 @@ function Page() {
             alignItems: "center",
             justifyContent: "space-between",
           }}>
-            <h3 style={{ fontSize: 18, fontFamily: "Inter-Bold", color: "#0f172a", margin: 0 }}>
+            <h3 className="font-family-bold" style={{ fontSize: 18, color: "#0f172a", margin: 0 }}>
               <MdPayment size={20} style={{ marginRight: 8, verticalAlign: "middle" }} />
               Payment Details
             </h3>
@@ -998,7 +997,7 @@ function Page() {
           <div style={{ padding: "24px 24px 28px" }}>
             {paymentCards?.length ? (
               <div style={{ marginBottom: 20 }}>
-                <p style={{ fontSize: 14, fontFamily: "Inter-Bold", color: "#0f172a", marginBottom: 12 }}>
+                <p className="font-family-bold" style={{ fontSize: 14, color: "#0f172a", marginBottom: 12 }}>
                   Saved Cards
                 </p>
                 <div style={{ display: "flex", flexDirection: "column", gap: 8 }}>
@@ -1021,12 +1020,12 @@ function Page() {
                       onMouseLeave={(e) => e.currentTarget.style.borderColor = "#e2e8f0"}
                     >
                       <div>
-                        <p style={{ fontSize: 12, color: "#94a3b8", fontFamily: "Inter-Regular", margin: "0 0 2px" }}>Email</p>
-                        <p style={{ fontSize: 14, fontFamily: "Inter-SemiBold", color: "#0f172a", margin: 0 }}>{item?.email}</p>
+                        <p className="font-family-regular" style={{ fontSize: 12, color: "#94a3b8", margin: "0 0 2px" }}>Email</p>
+                        <p className="font-family-semibold" style={{ fontSize: 14, color: "#0f172a", margin: 0 }}>{item?.email}</p>
                       </div>
                       <div style={{ textAlign: "right" }}>
-                        <p style={{ fontSize: 12, color: "#94a3b8", fontFamily: "Inter-Regular", margin: "0 0 2px" }}>Card</p>
-                        <p style={{ fontSize: 14, fontFamily: "Inter-SemiBold", color: "#0f172a", margin: 0 }}>
+                        <p className="font-family-regular" style={{ fontSize: 12, color: "#94a3b8", margin: "0 0 2px" }}>Card</p>
+                        <p className="font-family-semibold" style={{ fontSize: 14, color: "#0f172a", margin: 0 }}>
                           •••• {item?.cardnumber?.slice(-4) || item?.cardnumber}
                         </p>
                       </div>
@@ -1036,7 +1035,7 @@ function Page() {
               </div>
             ) : null}
 
-            <p style={{ fontSize: 16, fontFamily: "Inter-Bold", color: "#0f172a", marginBottom: 16 }}>
+            <p className="font-family-bold" style={{ fontSize: 16, color: "#0f172a", marginBottom: 16 }}>
               {paymentCards?.length ? "Add New Card" : "Card Information"}
             </p>
 
@@ -1051,17 +1050,17 @@ function Page() {
               </div>
               <div style={{ display: "flex", flexDirection: "column", gap: 10 }}>
                 <input
-                  style={{
-                    padding: "10px 14px",
-                    border: "1.5px solid #e2e8f0",
-                    borderRadius: 10,
-                    fontSize: 13,
-                    fontFamily: "Inter-Regular",
-                    outline: "none",
-                    transition: "border-color 0.2s",
-                  }}
-                  type="text"
-                  name="number"
+                className="font-family-regular"
+                style={{
+                  padding: "10px 14px",
+                  border: "1.5px solid #e2e8f0",
+                  borderRadius: 10,
+                  fontSize: 13,
+                  outline: "none",
+                  transition: "border-color 0.2s",
+                }}
+                type="text"
+                name="number"
                   placeholder="Card Number"
                   value={cardDetails.number}
                   onChange={handleInputChange}
@@ -1071,17 +1070,17 @@ function Page() {
                   onBlur={(e) => e.currentTarget.style.borderColor = "#e2e8f0"}
                 />
                 <input
-                  style={{
-                    padding: "10px 14px",
-                    border: "1.5px solid #e2e8f0",
-                    borderRadius: 10,
-                    fontSize: 13,
-                    fontFamily: "Inter-Regular",
-                    outline: "none",
-                    transition: "border-color 0.2s",
-                  }}
-                  type="text"
-                  name="name"
+                className="font-family-regular"
+                style={{
+                  padding: "10px 14px",
+                  border: "1.5px solid #e2e8f0",
+                  borderRadius: 10,
+                  fontSize: 13,
+                  outline: "none",
+                  transition: "border-color 0.2s",
+                }}
+                type="text"
+                name="name"
                   placeholder="Cardholder Name"
                   value={cardDetails.name}
                   onChange={handleInputChange}
@@ -1091,17 +1090,17 @@ function Page() {
                 />
                 <div style={{ display: "grid", gridTemplateColumns: "1fr 1fr", gap: 8 }}>
                   <input
-                    style={{
-                      padding: "10px 14px",
-                      border: "1.5px solid #e2e8f0",
-                      borderRadius: 10,
-                      fontSize: 13,
-                      fontFamily: "Inter-Regular",
-                      outline: "none",
-                      transition: "border-color 0.2s",
-                    }}
-                    type="text"
-                    name="expiry"
+                      className="font-family-regular"
+                      style={{
+                        padding: "10px 14px",
+                        border: "1.5px solid #e2e8f0",
+                        borderRadius: 10,
+                        fontSize: 13,
+                        outline: "none",
+                        transition: "border-color 0.2s",
+                      }}
+                      type="text"
+                      name="expiry"
                     placeholder="MM/YY"
                     value={cardDetails.expiry}
                     onChange={(e) => {
@@ -1118,17 +1117,17 @@ function Page() {
                     onBlur={(e) => e.currentTarget.style.borderColor = "#e2e8f0"}
                   />
                   <input
-                    style={{
-                      padding: "10px 14px",
-                      border: "1.5px solid #e2e8f0",
-                      borderRadius: 10,
-                      fontSize: 13,
-                      fontFamily: "Inter-Regular",
-                      outline: "none",
-                      transition: "border-color 0.2s",
-                    }}
-                    type="text"
-                    name="cvc"
+                      className="font-family-regular"
+                      style={{
+                        padding: "10px 14px",
+                        border: "1.5px solid #e2e8f0",
+                        borderRadius: 10,
+                        fontSize: 13,
+                        outline: "none",
+                        transition: "border-color 0.2s",
+                      }}
+                      type="text"
+                      name="cvc"
                     placeholder="CVC"
                     value={cardDetails.cvc}
                     onChange={handleInputChange}
@@ -1143,12 +1142,12 @@ function Page() {
 
             <div style={{ display: "grid", gridTemplateColumns: "1fr 1fr", gap: 12, marginTop: 14 }}>
               <input
+                className="font-family-regular"
                 style={{
                   padding: "10px 14px",
                   border: "1.5px solid #e2e8f0",
                   borderRadius: 10,
                   fontSize: 13,
-                  fontFamily: "Inter-Regular",
                   outline: "none",
                   transition: "border-color 0.2s",
                 }}
@@ -1162,12 +1161,12 @@ function Page() {
                 onBlur={(e) => e.currentTarget.style.borderColor = "#e2e8f0"}
               />
               <input
+                className="font-family-regular"
                 style={{
                   padding: "10px 14px",
                   border: "1.5px solid #e2e8f0",
                   borderRadius: 10,
                   fontSize: 13,
-                  fontFamily: "Inter-Regular",
                   outline: "none",
                   transition: "border-color 0.2s",
                 }}
@@ -1185,6 +1184,7 @@ function Page() {
             <button
               onClick={jadAPiFunction}
               disabled={!areAllFieldsFilled()}
+              className="font-family-semibold"
               style={{
                 width: "100%",
                 height: 50,
@@ -1193,7 +1193,6 @@ function Page() {
                 marginTop: 20,
                 background: !areAllFieldsFilled() ? "#e2e8f0" : "linear-gradient(135deg, #004a70 0%, #003353 100%)",
                 color: !areAllFieldsFilled() ? "#94a3b8" : "#fff",
-                fontFamily: "Inter-SemiBold",
                 fontSize: 14,
                 cursor: !areAllFieldsFilled() ? "not-allowed" : "pointer",
                 display: "flex",
@@ -1238,14 +1237,15 @@ function Page() {
                 <path d="M5 13l4 4L19 7" />
               </svg>
             </div>
-            <h2 style={{ fontSize: 22, fontFamily: "Inter-Bold", color: "#0f172a", margin: "0 0 8px" }}>
+            <h2 className="font-family-bold" style={{ fontSize: 22, color: "#0f172a", margin: "0 0 8px" }}>
               Payment Successful!
             </h2>
-            <p style={{ fontSize: 14, fontFamily: "Inter-Regular", color: "#64748b", margin: "0 0 28px", lineHeight: 1.5 }}>
+            <p className="font-family-regular" style={{ fontSize: 14, color: "#64748b", margin: "0 0 28px", lineHeight: 1.5 }}>
               Your transaction has been completed successfully
             </p>
             <button
               onClick={() => { setShow1(false); router.push("/"); }}
+              className="font-family-semibold"
               style={{
                 width: "100%",
                 height: 50,
@@ -1253,7 +1253,6 @@ function Page() {
                 border: "none",
                 background: "linear-gradient(135deg, #004a70 0%, #003353 100%)",
                 color: "#fff",
-                fontFamily: "Inter-SemiBold",
                 fontSize: 14,
                 cursor: "pointer",
                 display: "flex",
@@ -1313,10 +1312,10 @@ function Page() {
             }}>
               <FaStar size={26} color="#f59e0b" />
             </div>
-            <h3 style={{ color: "#fff", fontSize: 20, fontFamily: "Inter-Bold", margin: 0 }}>
+            <h3 className="font-family-bold" style={{ color: "#fff", fontSize: 20, margin: 0 }}>
               Write a Review
             </h3>
-            <p style={{ color: "rgba(255,255,255,0.6)", fontSize: 13, fontFamily: "Inter-Regular", margin: "6px 0 0" }}>
+            <p className="font-family-regular" style={{ color: "rgba(255,255,255,0.6)", fontSize: 13, margin: "6px 0 0" }}>
               Share your experience with {selectedOrder?.to_id?.name || "the driver"}
             </p>
           </div>
@@ -1345,16 +1344,16 @@ function Page() {
                   }}
                 />
                 <div>
-                  <p className="medium-font" style={{ fontSize: 14, color: "#0f172a", margin: 0 }}>
+                  <p className="font-family-medium" style={{ fontSize: 14, color: "#0f172a", margin: 0 }}>
                     {selectedOrder?.to_id?.name || "N/A"}
                   </p>
-                  <p style={{ fontSize: 12, color: "#94a3b8", margin: "2px 0 0" }}>
+                  <p className="font-family-regular" style={{ fontSize: 12, color: "#94a3b8", margin: "2px 0 0" }}>
                     {selectedOrder?.start_address?.slice(0, 30)}...
                   </p>
                 </div>
                 <div style={{ marginLeft: "auto", textAlign: "right" }}>
-                  <p style={{ fontSize: 12, color: "#94a3b8", margin: 0 }}>Booking</p>
-                  <p className="medium-font" style={{ fontSize: 13, color: "#004a70", margin: "2px 0 0" }}>
+                  <p className="font-family-regular" style={{ fontSize: 12, color: "#94a3b8", margin: 0 }}>Booking</p>
+                  <p className="font-family-medium" style={{ fontSize: 13, color: "#004a70", margin: "2px 0 0" }}>
                     #{selectedOrder?._id?.slice(-6)}
                   </p>
                 </div>
@@ -1363,7 +1362,7 @@ function Page() {
 
             {/* Rating */}
             <div style={{ textAlign: "center", marginBottom: 20 }}>
-              <p style={{ fontSize: 13, fontFamily: "Inter-Medium", color: "#374151", margin: "0 0 10px" }}>
+              <p className="font-family-medium" style={{ fontSize: 13, color: "#374151", margin: "0 0 10px" }}>
                 Your Rating
               </p>
               <Rate
@@ -1378,7 +1377,7 @@ function Page() {
 
             {/* Review Text */}
             <div style={{ marginBottom: 20 }}>
-              <label style={{ fontSize: 13, fontFamily: "Inter-Medium", color: "#374151", display: "block", marginBottom: 6 }}>
+              <label className="font-family-medium" style={{ fontSize: 13, color: "#374151", display: "block", marginBottom: 6 }}>
                 Your Review
               </label>
               <textarea
@@ -1386,13 +1385,13 @@ function Page() {
                 onChange={(e) => setReviewText(e.target.value)}
                 placeholder="Tell us about your experience..."
                 rows={4}
+                className="font-family-regular"
                 style={{
                   width: "100%",
                   padding: "12px 16px",
                   border: "1.5px solid #e2e8f0",
                   borderRadius: 12,
                   fontSize: 13,
-                  fontFamily: "Inter-Regular",
                   color: "#0f172a",
                   outline: "none",
                   resize: "none",
@@ -1406,6 +1405,7 @@ function Page() {
             {/* Submit Button */}
             <button
               onClick={submitReview}
+              className="font-family-semibold"
               style={{
                 width: "100%",
                 height: 48,
@@ -1413,7 +1413,6 @@ function Page() {
                 border: "none",
                 background: "linear-gradient(135deg, #004a70 0%, #002d47 100%)",
                 color: "#fff",
-                fontFamily: "Inter-SemiBold",
                 fontSize: 14,
                 cursor: "pointer",
                 display: "flex",

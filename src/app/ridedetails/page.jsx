@@ -217,10 +217,10 @@ const RideDetail = () => {
     message.success("Copied To Clipboard");
   };
   return (
-    <div className="mx-auto w-full grid grid-cols-1 lg:grid-cols-12 gap-4 p-4" style={{ maxWidth: 1320 }}>
+    <div className="mx-auto w-full grid grid-cols-1 lg:grid-cols-12 gap-4 p-4 font-poppins" style={{ maxWidth: 1320 }}>
       {/* Left Section: Booking Details */}
       <div className="RideForm col-span-12 lg:col-span-4 xl:col-span-3">
-        <h1 style={{ fontFamily: "Inter-Bold", fontSize: "clamp(18px, 3vw, 24px)", color: "#0f172a", textAlign: "center", margin: "20px 0 30px" }}>
+        <h1 style={{ fontSize: "clamp(18px, 3vw, 24px)", color: "#0f172a", textAlign: "center", margin: "20px 0 30px" }} className="font-family-bold">
           Booking Details
         </h1>
 
@@ -239,12 +239,12 @@ const RideDetail = () => {
             style={{ width: 64, height: 64, borderRadius: "50%", objectFit: "cover", border: "2px solid #fff", boxShadow: "0 2px 8px rgba(0,0,0,0.1)", margin: "0 auto 8px" }}
             alt=""
           />
-          <h6 style={{ fontFamily: "Inter-Bold", fontSize: 16, color: "#0f172a", margin: "0 0 4px" }}>
+          <h6 style={{ fontSize: 16, color: "#0f172a", margin: "0 0 4px" }} className="font-family-bold">
             {productDetail?.to_id?.name}
           </h6>
           <div style={{ display: "flex", alignItems: "center", justifyContent: "center", gap: 4 }}>
             <FaStar color="#f59e0b" size={14} />
-            <span style={{ fontSize: 13, color: "#64748b", fontFamily: "Inter-Regular" }}>
+            <span style={{ fontSize: 13, color: "#64748b" }} className="font-family-regular">
               {productDetail?.to_id?.rating || "0"}.0
             </span>
           </div>
@@ -260,7 +260,7 @@ const RideDetail = () => {
 
         {/* Ride Details */}
         <div style={{ marginTop: 16 }}>
-          <h5 style={{ fontFamily: "Inter-SemiBold", fontSize: 15, color: "#0f172a", marginBottom: 12, borderBottom: "1px solid #f1f5f9", paddingBottom: 8 }}>
+          <h5 style={{ fontSize: 15, color: "#0f172a", marginBottom: 12, borderBottom: "1px solid #f1f5f9", paddingBottom: 8 }} className="font-family-semibold">
             Ride Details
           </h5>
 
@@ -272,12 +272,12 @@ const RideDetail = () => {
               <MdOutlineMyLocation color="#004a70" size={14} />
             </div>
             <div style={{ flex: 1, minWidth: 0 }}>
-              <p style={{ fontSize: 11, color: "#94a3b8", fontFamily: "Inter-Medium", margin: 0 }}>FROM</p>
-              <p style={{ fontSize: 13, color: "#0f172a", fontFamily: "Inter-Regular", margin: "2px 0 10px", lineHeight: 1.3 }}>
+              <p style={{ fontSize: 11, color: "#94a3b8", margin: 0 }} className="font-family-medium">FROM</p>
+              <p style={{ fontSize: 13, color: "#0f172a", margin: "2px 0 10px", lineHeight: 1.3 }} className="font-family-regular">
                 {productDetail?.start_address}
               </p>
-              <p style={{ fontSize: 11, color: "#94a3b8", fontFamily: "Inter-Medium", margin: 0 }}>TO</p>
-              <p style={{ fontSize: 13, color: "#0f172a", fontFamily: "Inter-Regular", margin: "2px 0 0", lineHeight: 1.3 }}>
+              <p style={{ fontSize: 11, color: "#94a3b8", margin: 0 }} className="font-family-medium">TO</p>
+              <p style={{ fontSize: 13, color: "#0f172a", margin: "2px 0 0", lineHeight: 1.3 }} className="font-family-regular">
                 {productDetail?.end_address}
               </p>
             </div>
@@ -285,8 +285,8 @@ const RideDetail = () => {
 
           {/* Pincode */}
           <div style={{ display: "flex", alignItems: "center", gap: 8, marginBottom: 14 }}>
-            <span style={{ fontSize: 13, fontFamily: "Inter-Medium", color: "#374151" }}>Pincode:</span>
-            <span style={{ fontSize: 13, fontFamily: "Inter-SemiBold", color: "#004a70" }}>{productDetail?.pincode}</span>
+            <span style={{ fontSize: 13, color: "#374151" }} className="font-family-medium">Pincode:</span>
+            <span style={{ fontSize: 13, color: "#004a70" }} className="font-family-semibold">{productDetail?.pincode}</span>
             <MdContentCopy size={16} style={{ cursor: "pointer", color: "#94a3b8" }} onClick={copytoClipBoard} />
           </div>
 
@@ -301,11 +301,11 @@ const RideDetail = () => {
                 style={{ width: 44, height: 44, borderRadius: 10, objectFit: "cover", border: "1px solid #e2e8f0" }}
               />
               <div>
-                <p style={{ fontSize: 13, fontFamily: "Inter-Medium", color: "#0f172a", margin: 0 }}>{productDetail?.to_id?.vehicle?.brand || "Vehicle"}</p>
+                <p style={{ fontSize: 13, color: "#0f172a", margin: 0 }} className="font-family-medium">{productDetail?.to_id?.vehicle?.brand || "Vehicle"}</p>
                 <p style={{ fontSize: 11, color: "#94a3b8", margin: "2px 0 0" }}>{productDetail?.to_id?.vehicle?.license || ""}</p>
               </div>
             </div>
-            <p style={{ fontSize: 18, fontFamily: "Inter-Bold", color: "#059669", margin: 0 }}>${productDetail?.price}</p>
+            <p style={{ fontSize: 18, color: "#059669", margin: 0 }} className="font-family-bold">${productDetail?.price}</p>
           </div>
         </div>
 
@@ -314,9 +314,10 @@ const RideDetail = () => {
             onClick={fav}
             style={{
               width: "100%", height: 46, marginTop: 16, borderRadius: 10, border: "none",
-              background: "#ef4444", color: "#fff", fontFamily: "Inter-SemiBold", fontSize: 13, cursor: "pointer",
+              background: "#ef4444", color: "#fff", fontSize: 13, cursor: "pointer",
               transition: "opacity 0.2s",
             }}
+            className="font-family-semibold"
             onMouseEnter={(e) => e.currentTarget.style.opacity = "0.9"}
             onMouseLeave={(e) => e.currentTarget.style.opacity = "1"}
           >
@@ -328,9 +329,10 @@ const RideDetail = () => {
             onClick={CancelRide}
             style={{
               width: "100%", height: 46, marginTop: 12, borderRadius: 10, border: "none",
-              background: "#004a70", color: "#fff", fontFamily: "Inter-SemiBold", fontSize: 13, cursor: "pointer",
+              background: "#004a70", color: "#fff", fontSize: 13, cursor: "pointer",
               transition: "opacity 0.2s",
             }}
+            className="font-family-semibold"
             onMouseEnter={(e) => e.currentTarget.style.opacity = "0.9"}
             onMouseLeave={(e) => e.currentTarget.style.opacity = "1"}
           >
@@ -356,7 +358,6 @@ const RideDetail = () => {
               border: activeTab === "reviews" ? "1.5px solid #004a70" : "1.5px solid #e2e8f0",
               background: activeTab === "reviews" ? "#004a70" : "#fff",
               color: activeTab === "reviews" ? "#fff" : "#64748b",
-              fontFamily: "Inter-Medium",
               fontSize: 13,
               cursor: "pointer",
               transition: "all 0.2s",
@@ -366,6 +367,7 @@ const RideDetail = () => {
               minWidth: "auto",
               width: "auto",
             }}
+            className="font-family-medium"
             onMouseEnter={(e) => {
               if (activeTab !== "reviews") {
                 e.currentTarget.style.borderColor = "#004a70";
@@ -390,7 +392,6 @@ const RideDetail = () => {
               border: activeTab === "track" ? "1.5px solid #004a70" : "1.5px solid #e2e8f0",
               background: activeTab === "track" ? "#004a70" : "#fff",
               color: activeTab === "track" ? "#fff" : "#64748b",
-              fontFamily: "Inter-Medium",
               fontSize: 13,
               cursor: "pointer",
               transition: "all 0.2s",
@@ -400,6 +401,7 @@ const RideDetail = () => {
               minWidth: "auto",
               width: "auto",
             }}
+            className="font-family-medium"
             onMouseEnter={(e) => {
               if (activeTab !== "track") {
                 e.currentTarget.style.borderColor = "#004a70";
@@ -456,7 +458,7 @@ const RideDetail = () => {
                             style={{ width: 40, height: 40, borderRadius: "50%", objectFit: "cover", border: "1px solid #f0f0f0" }}
                           />
                           <div>
-                            <h4 style={{ fontSize: 14, fontFamily: "Inter-SemiBold", color: "#0f172a", margin: 0 }}>
+                            <h4 style={{ fontSize: 14, color: "#0f172a", margin: 0 }} className="font-family-semibold">
                               {review.user?.name || "Anonymous"}
                             </h4>
                             <div style={{ display: "flex", alignItems: "center", gap: 2, marginTop: 2 }}>
@@ -467,17 +469,17 @@ const RideDetail = () => {
                                   color={star <= review.rating ? "#f59e0b" : "#e2e8f0"}
                                 />
                               ))}
-                              <span style={{ fontSize: 11, color: "#94a3b8", fontFamily: "Inter-Regular", marginLeft: 4 }}>
+                              <span style={{ fontSize: 11, color: "#94a3b8", marginLeft: 4 }} className="font-family-regular">
                                 {review.rating}.0
                               </span>
                             </div>
                           </div>
-                          <span style={{ fontSize: 11, color: "#94a3b8", fontFamily: "Inter-Regular", marginLeft: "auto" }}>
+                          <span style={{ fontSize: 11, color: "#94a3b8", marginLeft: "auto" }} className="font-family-regular">
                             {review.createdAt ? moment.utc(review.createdAt).format("DD MMM") : ""}
                           </span>
                         </div>
                         {/* Review Text */}
-                        <p style={{ fontSize: 13, fontFamily: "Inter-Regular", color: "#475569", margin: 0, lineHeight: 1.5 }}>
+                        <p style={{ fontSize: 13, color: "#475569", margin: 0, lineHeight: 1.5 }} className="font-family-regular">
                           {review.review}
                         </p>
                       </div>
@@ -486,7 +488,7 @@ const RideDetail = () => {
                 ) : (
                   <div style={{ display: "flex", flexDirection: "column", alignItems: "center", justifyContent: "center", height: 200 }}>
                     <FaStar size={32} color="#e2e8f0" />
-                    <p style={{ fontFamily: "Inter-Medium", color: "#94a3b8", marginTop: 8 }}>No Reviews Yet</p>
+                    <p style={{ color: "#94a3b8", marginTop: 8 }} className="font-family-medium">No Reviews Yet</p>
                   </div>
                 )}
               </div>
