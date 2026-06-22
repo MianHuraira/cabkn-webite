@@ -305,7 +305,7 @@ const MapPage = () => {
       {/* Header Badge */}
       <div className="absolute top-4 left-1/2 -translate-x-1/2 z-10 bg-white/90 backdrop-blur-sm px-6 py-2 rounded-full shadow-md border border-gray-100 flex items-center gap-2">
         <div className="w-2 h-2 rounded-full bg-green-500 animate-pulse" />
-        <span className="text-sm font-medium text-gray-800">
+        <span className="text-sm font-family-semibold text-gray-800">
           Live Ride Tracking
         </span>
       </div>

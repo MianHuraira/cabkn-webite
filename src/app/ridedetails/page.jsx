@@ -302,7 +302,7 @@ const RideDetail = () => {
               />
               <div>
                 <p style={{ fontSize: 13, color: "#0f172a", margin: 0 }} className="font-family-medium">{productDetail?.to_id?.vehicle?.brand || "Vehicle"}</p>
-                <p style={{ fontSize: 11, color: "#94a3b8", margin: "2px 0 0" }}>{productDetail?.to_id?.vehicle?.license || ""}</p>
+                <p className="font-family-regular" style={{ fontSize: 11, color: "#94a3b8", margin: "2px 0 0" }}>{productDetail?.to_id?.vehicle?.license || ""}</p>
               </div>
             </div>
             <p style={{ fontSize: 18, color: "#059669", margin: 0 }} className="font-family-bold">${productDetail?.price}</p>

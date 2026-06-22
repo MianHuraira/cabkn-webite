@@ -110,13 +110,13 @@ const Page = () => {
               marginBottom: 16,
             }}
           >
-            <a href="/" style={{ color: "rgba(255,255,255,0.5)", textDecoration: "none", transition: "color 0.2s" }}
+            <a href="/" className="font-family-medium" style={{ color: "rgba(255,255,255,0.5)", textDecoration: "none", transition: "color 0.2s" }}
               onMouseEnter={(e) => e.currentTarget.style.color = "#fff"}
               onMouseLeave={(e) => e.currentTarget.style.color = "rgba(255,255,255,0.5)"}>
               Home
             </a>
-            <span style={{ color: "rgba(255,255,255,0.3)" }}>/</span>
-            <span style={{ color: "rgba(255,255,255,0.8)" }}>Favorites</span>
+            <span className="font-family-medium" style={{ color: "rgba(255,255,255,0.3)" }}>/</span>
+            <span className="font-family-medium" style={{ color: "rgba(255,255,255,0.8)" }}>Favorites</span>
           </div>
 
           <div

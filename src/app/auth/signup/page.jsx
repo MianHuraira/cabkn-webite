@@ -359,7 +359,7 @@ const Signup = () => {
                   <path strokeLinecap="round" strokeLinejoin="round" d="M15 19l-7-7 7-7" />
                 </svg>
               </button>
-              <span>Complete your profile</span>
+              <span className="font-family-semibold">Complete your profile</span>
             </div>
           }
           subtitle="A few details to personalize your CabKn experience."
@@ -368,7 +368,7 @@ const Signup = () => {
           imageHeadline="Premium ride booking, built for comfort"
           imageSubheadline="Complete your profile to finish creating your account."
           footer={
-            <span>
+            <span className="font-family-regular">
               Prefer to sign in? <AuthInlineLink href="/auth/login">Go to login</AuthInlineLink>
             </span>
           }
@@ -424,12 +424,12 @@ const Signup = () => {
               />
 
               <div className="text-center mt-2">
-                <p className="text-sm font-semibold text-slate-800">
-                  Profile photo (optional)
-                </p>
-                <p className="text-xs text-slate-500 mt-0.5">
-                  Click on the circle to upload a profile photo
-                </p>
+<p className="font-family-semibold text-sm font-semibold text-slate-800">
+  Profile photo (optional)
+</p>
+<p className="font-family-regular text-xs text-slate-500 mt-0.5">
+  Click on the circle to upload a profile photo
+</p>
               </div>
             </div>
 
@@ -462,9 +462,9 @@ const Signup = () => {
             </div>
 
             <div className="space-y-2 relative">
-              <label htmlFor="address" className="text-sm font-medium text-slate-700">
-                Address
-              </label>
+<label htmlFor="address" className="font-family-medium text-sm font-medium text-slate-700">
+  Address
+</label>
               <div className="relative">
                 <input
                   id="address"
@@ -499,7 +499,7 @@ const Signup = () => {
                     <div
                       key={idx}
                       onClick={() => handlePredictionPress(prediction, setFieldValue)}
-                      className="w-full text-left px-4 py-2.5 text-[14px] text-slate-700 hover:bg-slate-50 transition cursor-pointer"
+                      className="font-family-regular w-full text-left px-4 py-2.5 text-[14px] text-slate-700 hover:bg-slate-50 transition cursor-pointer"
                     >
                       {prediction.description}
                     </div>
@@ -508,20 +508,20 @@ const Signup = () => {
               )}
 
               {noData && (
-                <div className="absolute z-50 left-0 right-0 mt-1 rounded-xl border border-slate-200 bg-white py-2.5 px-4 shadow-lg text-[14px] text-slate-500">
-                  No results found
-                </div>
+<div className="font-family-regular absolute z-50 left-0 right-0 mt-1 rounded-xl border border-slate-200 bg-white py-2.5 px-4 shadow-lg text-[14px] text-slate-500">
+  No results found
+</div>
               )}
 
-              {touched.address && errors.address ? (
-                <p className="text-sm leading-5 text-rose-600">{errors.address}</p>
-              ) : null}
+{touched.address && errors.address ? (
+  <p className="font-family-regular text-sm leading-5 text-rose-600">{errors.address}</p>
+) : null}
             </div>
 
             <div className="space-y-2">
-              <label htmlFor="phone" className="text-sm font-medium text-slate-700">
-                Phone
-              </label>
+<label htmlFor="phone" className="font-family-medium text-sm font-medium text-slate-700">
+  Phone
+</label>
               <div className="relative">
                 <PhoneInput
                   country={"us"}
@@ -574,9 +574,9 @@ const Signup = () => {
                   </div>
                 )}
               </div>
-              {touched.phone && errors.phone ? (
-                <p className="text-sm leading-5 text-rose-600">{errors.phone}</p>
-              ) : null}
+{touched.phone && errors.phone ? (
+  <p className="font-family-regular text-sm leading-5 text-rose-600">{errors.phone}</p>
+) : null}
             </div>
 
             <AuthTextField

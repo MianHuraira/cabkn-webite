@@ -505,16 +505,16 @@ const BookingManagement = () => {
                 className="border-2 border-gray-100 shadow-sm"
               />
               <div>
-                <h3 className="text-lg font-normal text-gray-800 mb-0 leading-tight">
+                <h3 className="text-lg font-family-bold text-gray-800 mb-0 leading-tight">
                   {orderDetails?.user?.name || "Customer User"}
                 </h3>
-                <p className="text-sm text-gray-500 font-normal m-0">
+                <p className="text-sm text-gray-500 font-family-regular m-0">
                   Type: <span className="text-[#004a70]">Ride</span>
                 </p>
               </div>
             </div>
             <div className="text-right flex flex-col items-end gap-1">
-              <p className="text-xs font-medium text-black m-0 uppercase ">
+              <p className="text-xs font-family-medium text-black m-0 uppercase">
                 #
                 {orderDetails?.order_id ||
                   orderDetails?._id?.slice(-8).toUpperCase()}
@@ -525,7 +525,7 @@ const BookingManagement = () => {
                   className="text-gray-400 mt-3 hover:text-gray-600 transition-colors flex items-center gap-0"
                 >
                   <IoCall className="text-lg" />
-                  <span className="text-xs font-normal">
+                  <span className="text-xs font-family-regular">
                     {orderDetails.user.phone}
                   </span>
                 </a>
@@ -535,7 +535,7 @@ const BookingManagement = () => {
 
           <div className="px-1 pb-6">
             <div className="flex justify-between items-center mb-3">
-              <p className="text-gray-500 text-sm font-normal">
+              <p className="text-gray-500 text-sm font-family-regular">
                 Created at :{" "}
                 <span className="text-gray-700">
                   {moment(orderDetails?.createdAt).format(
@@ -543,20 +543,20 @@ const BookingManagement = () => {
                   )}
                 </span>
               </p>
-              <p className="font-normal text-gray-400 capitalize">
+              <p className="font-family-regular text-gray-400 capitalize">
                 {orderDetails?.paymentType || "Cash"}
               </p>
             </div>
 
             <div className="mb-6">
-              <h4 className="text-base font-medium text-black">
+              <h4 className="text-base font-family-semibold text-black">
                 ${priceUSD.toFixed(2)} XCD - ${(priceUSD / 2.7).toFixed(2)} USD
               </h4>
             </div>
 
             {/* Car Type Badge */}
             <div className="mb-6">
-              <span className="px-4 py-2 border-2 border-[#004a70] rounded-full text-[#004a70] font-normal text-sm bg-blue-50/50">
+              <span className="px-4 py-2 border-2 border-[#004a70] rounded-full text-[#004a70] font-family-regular text-sm bg-blue-50/50">
                 {orderDetails?.liability?.title || "CabKN Standard"}{" "}
                 {orderDetails?.liability?.passenger &&
                   `(${orderDetails.liability.passenger} Passengers)`}
@@ -572,7 +572,7 @@ const BookingManagement = () => {
                 <div className="absolute -left-[28px] top-1 bg-white p-0.5 rounded-full z-10">
                   <div className="w-4 h-4 rounded-full border-4 border-[#004a70] bg-[#004a70]"></div>
                 </div>
-                <p className="text-sm font-normal text-gray-800 leading-snug">
+                <p className="text-sm font-family-regular text-gray-800 leading-snug">
                   {orderDetails?.start_address || "Pickup Point"}
                 </p>
               </div>
@@ -583,7 +583,7 @@ const BookingManagement = () => {
                   <div className="absolute -left-[28px] top-1 bg-white p-0.5 rounded-full z-10">
                     <div className="w-4 h-4 rounded-full border-4 border-gray-400 bg-gray-400"></div>
                   </div>
-                  <p className="text-sm font-normal text-gray-600 leading-snug">
+                  <p className="text-sm font-family-regular text-gray-600 leading-snug">
                     {stop?.address || "Intermediate Stop"}
                   </p>
                 </div>
@@ -594,7 +594,7 @@ const BookingManagement = () => {
                 <div className="absolute -left-[28px] top-1 bg-white p-0.5 rounded-full z-10">
                   <div className="w-4 h-4 rounded-full border-4 border-[#ef4444] bg-[#ef4444]"></div>
                 </div>
-                <p className="text-sm font-normal text-gray-800 leading-snug">
+                <p className="text-sm font-family-regular text-gray-800 leading-snug">
                   {orderDetails?.end_address || "Dropoff Point"}
                 </p>
               </div>
@@ -602,7 +602,7 @@ const BookingManagement = () => {
 
             {orderDetails?.status === "order-start" && (
               <div className="border-t border-gray-100 pt-4 mb-8">
-                <p className="text-base font-normal text-gray-600">
+                <p className="text-base font-family-regular text-gray-600">
                   You will be Paid{" "}
                   <span className="text-[#004a70]">
                     ${payoutUSD.toFixed(2)} XCD - $
@@ -618,14 +618,14 @@ const BookingManagement = () => {
                 <>
                   <button
                     disabled={submitting || locationDenied}
-                    className="w-full h-12 rounded-2xl border border-[#004a70] text-sm font-normal shadow-sm disabled:opacity-50"
+                    className="w-full h-12 rounded-2xl border border-[#004a70] text-sm font-family-medium shadow-sm disabled:opacity-50"
                     onClick={() => router.push("/")}
                   >
                     Reject
                   </button>
                   <button
                     disabled={submitting || locationDenied}
-                    className="w-full h-12 rounded-2xl bg-[#004a70] text-white border-0 text-sm font-normal shadow-sm disabled:opacity-50"
+                    className="w-full h-12 rounded-2xl bg-[#004a70] text-white border-0 text-sm font-family-semibold shadow-sm disabled:opacity-50"
                     onClick={() => setShowAcceptModal(true)}
                   >
                     Accept
@@ -638,14 +638,14 @@ const BookingManagement = () => {
                   <div className="flex gap-4">
                     <button
                       disabled={submitting || locationDenied}
-                      className="w-full h-12 rounded-2xl border border-[#004a70] text-[#004a70] text-sm font-normal shadow-sm disabled:opacity-50"
+                      className="w-full h-12 rounded-2xl border border-[#004a70] text-[#004a70] text-sm font-family-medium shadow-sm disabled:opacity-50"
                       onClick={() => handleAction("reject")}
                     >
                       Reject
                     </button>
                     <button
                       disabled={submitting || locationDenied}
-                      className="w-full h-12 rounded-2xl bg-[#004a70] text-white border-0 text-lg font-normal shadow-lg disabled:opacity-50"
+                      className="w-full h-12 rounded-2xl bg-[#004a70] text-white border-0 text-lg font-family-semibold shadow-lg disabled:opacity-50"
                       onClick={() => setShowPinModal(true)}
                     >
                       Start Ride
@@ -653,13 +653,13 @@ const BookingManagement = () => {
                   </div>
                   <div className="flex gap-3">
                     {/* <button
-                      className="w-full h-12 rounded-2xl border-2 border-[#004a70] text-[#004a70] text-sm font-normal shadow-md flex items-center justify-center gap-2 bg-white"
+                      className="w-full h-12 rounded-2xl border-2 border-[#004a70] text-[#004a70] text-sm font-family-medium shadow-md flex items-center justify-center gap-2 bg-white"
                       onClick={openExternalMap}
                     >
                       Track Ride
                     </button> */}
                     <button
-                      className="w-full h-12 rounded-2xl border-2 border-[#004a70] text-[#004a70] text-sm font-normal shadow-md flex items-center justify-center gap-2 bg-white"
+                      className="w-full h-12 rounded-2xl border-2 border-[#004a70] text-[#004a70] text-sm font-family-medium shadow-md flex items-center justify-center gap-2 bg-white"
                       onClick={openGoogleMaps}
                     >
                       Track Ride
@@ -672,13 +672,13 @@ const BookingManagement = () => {
                 <div className="flex flex-col gap-3 w-full">
                   <div className="flex gap-3">
                     {/* <button
-                      className="w-full h-12 rounded-2xl border-2 border-[#004a70] text-[#004a70] text-sm font-normal shadow-md flex items-center justify-center gap-2 bg-white"
+                      className="w-full h-12 rounded-2xl border-2 border-[#004a70] text-[#004a70] text-sm font-family-medium shadow-md flex items-center justify-center gap-2 bg-white"
                       onClick={openExternalMap}
                     >
                       Track Ride
                     </button> */}
                     <button
-                      className="w-full h-12 rounded-2xl border-2 border-[#004a70] text-[#004a70] text-sm font-normal shadow-md flex items-center justify-center gap-2 bg-white"
+                      className="w-full h-12 rounded-2xl border-2 border-[#004a70] text-[#004a70] text-sm font-family-medium shadow-md flex items-center justify-center gap-2 bg-white"
                       onClick={openGoogleMaps}
                     >
                       Track Ride
@@ -686,7 +686,7 @@ const BookingManagement = () => {
                   </div>
                   <button
                     disabled={submitting || locationDenied}
-                    className="w-full h-12 rounded-2xl bg-[#004a70] text-white border-0 text-lg font-normal shadow-lg disabled:opacity-50 flex items-center justify-center gap-2"
+                    className="w-full h-12 rounded-2xl bg-[#004a70] text-white border-0 text-lg font-family-semibold shadow-lg disabled:opacity-50 flex items-center justify-center gap-2"
                     onClick={() => handleAction("dropoff")}
                   >
                     {submitting ? (
@@ -713,7 +713,7 @@ const BookingManagement = () => {
         {/* Accept Modal (Car Details Form) */}
         <Modal
           title={
-            <h3 className="text-base font-normal text-[#004a70] text-center w-full mb-0 uppercase tracking-tight">
+            <h3 className="text-base font-family-bold text-[#004a70] text-center w-full mb-0 uppercase tracking-tight">
               Fill Information
             </h3>
           }
@@ -775,7 +775,7 @@ const BookingManagement = () => {
                         />
                         <div className="flex flex-col items-center text-gray-400">
                           <span className="text-4xl mb-2">📸</span>
-                          <span className="font-normal text-sm">
+                          <span className="font-family-regular text-sm">
                             Upload Car Image
                           </span>
                         </div>
@@ -794,14 +794,14 @@ const BookingManagement = () => {
 
                   <div className="space-y-4">
                     <div>
-                      <p className="text-sm font-normal text-gray-700 mb-1">
+                      <p className="text-sm font-family-medium text-gray-700 mb-1">
                         Car Color
                       </p>
                       <Field
                         name="carColor"
                         as={Input}
                         placeholder="e.g. White"
-                        className="h-10 rounded-xl border-gray-300 capitalize text-md font-normal"
+                        className="h-10 rounded-xl border-gray-300 capitalize text-md font-family-regular"
                       />
                       {touched.carColor && errors.carColor && (
                         <p className="text-xs text-red-500 mt-1">
@@ -810,14 +810,14 @@ const BookingManagement = () => {
                       )}
                     </div>
                     <div>
-                      <p className="text-sm font-normal text-gray-700 mb-1">
+                      <p className="text-sm font-family-medium text-gray-700 mb-1">
                         Car Plate Number
                       </p>
                       <Field
                         name="carNumber"
                         as={Input}
                         placeholder="ABC-1234"
-                        className="h-10 rounded-xl uppercase border-gray-300 text-md font-normal "
+                        className="h-10 rounded-xl uppercase border-gray-300 text-md font-family-regular"
                       />
                       {touched.carNumber && errors.carNumber && (
                         <p className="text-xs text-red-500 mt-1">
@@ -832,7 +832,7 @@ const BookingManagement = () => {
                     // loading={submitting || uploadingImage}
                     onClick={handleSubmit}
                     disabled={submitting || uploadingImage}
-                    className="w-full h-12 disabled:opacity-50 disabled:cursor-not-allowed rounded-2xl bg-[#004a70] text-white border-0 text-base font-normal shadow-lg"
+                    className="w-full h-12 disabled:opacity-50 disabled:cursor-not-allowed rounded-2xl bg-[#004a70] text-white border-0 text-base font-family-semibold shadow-lg"
                   >
                     {submitting ? "Submitting..." : "SUBMIT"}
                   </button>
@@ -845,7 +845,7 @@ const BookingManagement = () => {
         {/* PIN Verification Modal */}
         <Modal
           title={
-            <h3 className="text-xl font-normal text-gray-800 text-center w-full mb-0">
+            <h3 className="text-xl font-family-bold text-gray-800 text-center w-full mb-0">
               Verify Pin
             </h3>
           }
@@ -858,7 +858,7 @@ const BookingManagement = () => {
           width={400}
         >
           <div className="text-center py-6">
-            <p className="text-gray-500 font-normal text-lg leading-tight mb-8">
+            <p className="text-gray-500 font-family-regular text-lg leading-tight mb-8">
               Ask The Pin from Customer to Start the Ride
             </p>
 
@@ -875,7 +875,7 @@ const BookingManagement = () => {
               type="primary"
               loading={verifyingPin}
               onClick={handleVerifyPin}
-              className="w-full h-14 rounded-2xl bg-[#004a70] border-0 text-lg font-normal shadow-lg mt-4"
+              className="w-full h-14 rounded-2xl bg-[#004a70] border-0 text-lg font-family-semibold shadow-lg mt-4"
             >
               Confirm
             </AntButton>
@@ -885,7 +885,7 @@ const BookingManagement = () => {
         {/* Acceptance PIN Verification Modal */}
         <Modal
           title={
-            <h3 className="text-xl font-normal text-gray-800 text-center w-full mb-0">
+            <h3 className="text-xl font-family-bold text-gray-800 text-center w-full mb-0">
               Verify
             </h3>
           }
@@ -898,7 +898,7 @@ const BookingManagement = () => {
           width={400}
         >
           <div className="text-center">
-            <p className="text-gray-500 font-normal text-lg leading-tight mb-8">
+            <p className="text-gray-500 font-family-regular text-lg leading-tight mb-8">
               Enter PIN to confirm ride acceptance
             </p>
 
@@ -914,7 +914,7 @@ const BookingManagement = () => {
             <button
               onClick={handleConfirmAcceptance}
               disabled={submitting}
-              className="w-full h-12 rounded-2xl bg-[#004a70] text-white border-0 text-base font-normal shadow-sm mt-4 flex items-center justify-center gap-2"
+              className="w-full h-12 rounded-2xl bg-[#004a70] text-white border-0 text-base font-family-semibold shadow-sm mt-4 flex items-center justify-center gap-2"
             >
               {submitting && <Spinner size="sm" animation="border" />}
               CONFIRM ACCEPTANCE
@@ -922,7 +922,7 @@ const BookingManagement = () => {
           </div>
         </Modal>
 
-        <div className="text-center mt-12 text-gray-400 text-xs font-normal tracking-wider">
+        <div className="text-center mt-12 text-gray-400 text-xs font-family-regular tracking-wider">
           © CABKN TECHNOLOGIES. ALL RIGHTS RESERVED.
         </div>
 
@@ -945,12 +945,12 @@ const BookingManagement = () => {
                 <IoCloseCircle className="text-7xl text-red-500" />
               )}
             </div>
-            <h3 className="text-xl font-normal text-gray-800 mb-2">
-              {resultModal.title}
-            </h3>
-            <p className="text-gray-500 text-center text-lg leading-snug">
-              {resultModal.message}
-            </p>
+              <h3 className="text-xl font-family-bold text-gray-800 mb-2">
+                {resultModal.title}
+              </h3>
+              <p className="text-gray-500 text-center text-lg font-family-regular leading-snug">
+                {resultModal.message}
+              </p>
             {/* {resultModal.type === "error" && (
               <button
                 onClick={() =>
@@ -984,13 +984,13 @@ const BookingManagement = () => {
             <div className="mb-4">
               <IoCloseCircle className="text-7xl text-red-500" />
             </div>
-            <h3 className="text-2xl font-normal text-red-600 mb-4">
+            <h3 className="text-2xl font-family-bold text-red-600 mb-4">
               Location Access Required
             </h3>
             <div className="bg-red-50 p-4 rounded-2xl mb-8 border border-red-100">
-              <p className="text-gray-700 text-base leading-snug m-0">
-                Location access is <b>Compulsory</b>. Since you previously
-                declined, you <b>MUST manually enable</b> it in your browser
+              <p className="text-gray-700 text-base font-family-regular leading-snug m-0">
+                Location access is <b className="font-family-bold">Compulsory</b>. Since you previously
+                declined, you <b className="font-family-bold">MUST manually enable</b> it in your browser
                 settings to proceed.
               </p>
             </div>
@@ -999,7 +999,7 @@ const BookingManagement = () => {
               type="primary"
               size="large"
               onClick={handleRetryLocation}
-              className="w-full h-12 rounded-2xl bg-[#004a70] border-0 text-base font-normal shadow-lg"
+              className="w-full h-12 rounded-2xl bg-[#004a70] border-0 text-base font-family-semibold shadow-lg"
             >
               Try Again
             </AntButton>
@@ -1007,18 +1007,6 @@ const BookingManagement = () => {
         </Modal>
 
         <style jsx global>{`
-          * {
-            font-family:
-              "Inter-Regular",
-              -apple-system,
-              BlinkMacSystemFont,
-              "Segoe UI",
-              Roboto,
-              "Helvetica Neue",
-              Arial,
-              sans-serif !important;
-            font-weight: 400 !important;
-          }
           iframe#tidio-chat-iframe,
           #tidio-chat {
             display: none !important;

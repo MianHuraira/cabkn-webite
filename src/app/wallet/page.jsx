@@ -289,13 +289,13 @@ const page = () => {
         <div style={{ position: "absolute", bottom: -40, left: -40, width: 160, height: 160, borderRadius: "50%", background: "rgba(255,255,255,0.03)" }} />
         <div style={{ maxWidth: 1200, margin: "0 auto", padding: "0 16px", position: "relative" }}>
           <div className="font-family-medium" style={{ display: "flex", alignItems: "center", gap: 8, color: "rgba(255,255,255,0.5)", fontSize: 13, marginBottom: 16 }}>
-            <a href="/" style={{ color: "rgba(255,255,255,0.5)", textDecoration: "none", transition: "color 0.2s" }}
+            <a href="/" className="font-family-medium" style={{ color: "rgba(255,255,255,0.5)", textDecoration: "none", transition: "color 0.2s" }}
               onMouseEnter={(e) => e.currentTarget.style.color = "#fff"}
               onMouseLeave={(e) => e.currentTarget.style.color = "rgba(255,255,255,0.5)"}>
               Home
             </a>
-            <span style={{ color: "rgba(255,255,255,0.3)" }}>/</span>
-            <span style={{ color: "rgba(255,255,255,0.8)" }}>Wallet</span>
+            <span className="font-family-medium" style={{ color: "rgba(255,255,255,0.3)" }}>/</span>
+            <span className="font-family-medium" style={{ color: "rgba(255,255,255,0.8)" }}>Wallet</span>
           </div>
           <div style={{ display: "flex", alignItems: "center", gap: "clamp(10px, 2vw, 16px)" }}>
             <div style={{ width: "clamp(40px, 6vw, 52px)", height: "clamp(40px, 6vw, 52px)", borderRadius: "clamp(12px, 2vw, 16px)", background: "rgba(255,255,255,0.12)", backdropFilter: "blur(8px)", display: "flex", alignItems: "center", justifyContent: "center", flexShrink: 0 }}>
@@ -418,7 +418,7 @@ const page = () => {
                 <div style={{ width: 28, height: 28, borderRadius: 8, background: Tab === "Topup" ? "#004a70" : "#f3f4f6", display: "flex", alignItems: "center", justifyContent: "center", flexShrink: 0, transition: "all 0.2s" }}>
                   <FaWallet size={13} color={Tab === "Topup" ? "#fff" : "#9ca3af"} />
                 </div>
-                <span style={{ flex: 1 }}>Top Up</span>
+                <span className="font-family-medium" style={{ flex: 1 }}>Top Up</span>
                 {Tab === "Topup" && <div style={{ width: 6, height: 6, borderRadius: "50%", background: "#004a70" }} />}
               </div>
               <div
@@ -440,7 +440,7 @@ const page = () => {
                 <div style={{ width: 28, height: 28, borderRadius: 8, background: Tab === "History" ? "#004a70" : "#f3f4f6", display: "flex", alignItems: "center", justifyContent: "center", flexShrink: 0, transition: "all 0.2s" }}>
                   <FaHistory size={13} color={Tab === "History" ? "#fff" : "#9ca3af"} />
                 </div>
-                <span style={{ flex: 1 }}>History</span>
+                <span className="font-family-medium" style={{ flex: 1 }}>History</span>
                 {Tab === "History" && <div style={{ width: 6, height: 6, borderRadius: "50%", background: "#004a70" }} />}
               </div>
             </div>

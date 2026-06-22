@@ -748,7 +748,7 @@ const CreateRide = () => {
                     <div className="flex items-center justify-between">
                       <div className="flex items-center">
                         <i className="entypo-icon man text-lg"></i>
-                        <span className="text-gray-500 text-md">
+                        <span className="text-gray-500 text-md font-family-regular">
                           {item?.passenger} Up to Passengers
                         </span>
                       </div>
@@ -904,11 +904,11 @@ const CreateRide = () => {
               className="bg-white p-4 mb-4 rounded-lg shadow-md cursor-pointer"
             >
               <div className="flex justify-between items-center mb-1.5">
-                <div className="text-gray-500 text-sm mr-2">Email</div>
+                <div className="text-gray-500 text-sm mr-2 font-family-regular">Email</div>
                 <div className="font-family-bold text-lg">{`${item?.email}`}</div>
               </div>
               <div className="flex justify-between items-center">
-                <div className="text-gray-500 text-sm mr-2">Number</div>
+                <div className="text-gray-500 text-sm mr-2 font-family-regular">Number</div>
                 <div className="font-family-bold text-lg">{item?.cardnumber}</div>
               </div>
             </div>
@@ -1014,7 +1014,7 @@ const CreateRide = () => {
             >
               {loading ? (
                 <Spinner animation="border" role="status">
-                  <span className="visually-hidden">Loading...</span>
+                  <span className="visually-hidden font-family-regular">Loading...</span>
                 </Spinner>
               ) : (
                 " Add Payment Method"

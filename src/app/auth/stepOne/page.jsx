@@ -214,7 +214,7 @@ const page = () => {
       imageHeadline="A smarter way to get around"
       imageSubheadline="Create an account to book rides, manage trips, and track everything in one place."
       footer={
-        <span>
+        <span className="font-family-regular">
           Already have an account?{" "}
           <AuthInlineLink href="/auth/login">Login</AuthInlineLink>
         </span>
@@ -282,7 +282,7 @@ const page = () => {
             <div className="flex items-center justify-end">
               <AuthInlineLink
                 href="/auth/forgotpss"
-                className="text-sm font-semibold text-slate-700 hover:text-brand-700"
+                className="font-family-semibold text-sm font-semibold text-slate-700 hover:text-brand-700"
               >
                 Forgot password?
               </AuthInlineLink>

@@ -592,12 +592,12 @@ const page = () => {
 
         <div style={{ maxWidth: 1200, margin: "0 auto", padding: "0 24px", position: "relative" }}>
           <div className="font-family-medium" style={{ display: "flex", alignItems: "center", gap: 8, color: "rgba(255,255,255,0.5)", fontSize: 13, marginBottom: 16 }}>
-            <a href="/" style={{ color: "rgba(255,255,255,0.5)", textDecoration: "none", transition: "color 0.2s" }}
+            <a href="/" className="font-family-regular" style={{ color: "rgba(255,255,255,0.5)", textDecoration: "none", transition: "color 0.2s" }}
               onMouseEnter={(e) => e.currentTarget.style.color = "#fff"}
               onMouseLeave={(e) => e.currentTarget.style.color = "rgba(255,255,255,0.5)"}>
               Home
             </a>
-            <span style={{ color: "rgba(255,255,255,0.3)" }}>/</span>
+            <span className="font-family-regular" style={{ color: "rgba(255,255,255,0.3)" }}>/</span>
             <span className="font-family-medium" style={{ color: "rgba(255,255,255,0.8)" }}>List Your Place</span>
           </div>
 
@@ -857,7 +857,7 @@ const page = () => {
                             <div
                               key={prediction.place_id}
                               onClick={() => handlePredictionPress(prediction)}
-                              className="hover:bg-gray-100"
+                              className="hover:bg-gray-100 font-family-regular"
                               style={{
                                 padding: "10px 14px",
                                 cursor: "pointer",
@@ -938,6 +938,7 @@ const page = () => {
                 <button
                   type="button"
                   onClick={() => removeHighlight(index)}
+                  className="font-family-semibold"
                   style={{
                     width: 38,
                     height: 38,
@@ -950,7 +951,6 @@ const page = () => {
                     alignItems: "center",
                     justifyContent: "center",
                     fontSize: 14,
-                    fontWeight: 600
                   }}
                 >
                   ✕
@@ -1124,7 +1124,7 @@ const page = () => {
                 <line x1="12" y1="1" x2="12" y2="23" />
                 <path d="M17 5H9.5a3.5 3.5 0 0 0 0 7h5a3.5 3.5 0 0 1 0 7H6" />
               </svg>
-              Listing fee: <strong style={{ color: "#004a70" }}>$40.00</strong>
+              Listing fee: <strong className="font-family-semibold" style={{ color: "#004a70" }}>$40.00</strong>
             </p>
             <div style={{ display: "flex", gap: 12, flexWrap: "wrap" }}>
               <div
@@ -1232,7 +1232,7 @@ const page = () => {
             </svg>
           </div>
           <h2 className="font-family-bold" style={{ color: "#fff", fontSize: "clamp(18px, 3vw, 22px)", margin: 0 }}>Pay with Card</h2>
-          <p style={{ color: "rgba(255,255,255,0.6)", fontSize: 13, margin: "4px 0 0" }}>Amount: $40.00</p>
+          <p className="font-family-regular" style={{ color: "rgba(255,255,255,0.6)", fontSize: 13, margin: "4px 0 0" }}>Amount: $40.00</p>
         </div>
         <div style={{ padding: "clamp(20px, 3vw, 28px)" }}>
           {paymentCards?.length > 0 && (
@@ -1248,7 +1248,7 @@ const page = () => {
                     <svg width={20} height={20} viewBox="0 0 24 24" fill="#004a70"><path d="M4 4h16c1.1 0 2 .9 2 2v12c0 1.1-.9 2-2 2H4c-1.1 0-2-.9-2-2V6c0-1.1.9-2 2-2zm0 2v12h16V6H4zm2 6h12v2H6v-2zm0-3h12v2H6V9zm0 6h8v2H6v-2z" /></svg>
                     <div style={{ flex: 1, minWidth: 0 }}>
                       <p className="font-family-medium" style={{ fontSize: 13, color: "#374151", margin: 0 }}>{item?.cardfirstname} {item?.cardlastname}</p>
-                      <p style={{ fontSize: 12, color: "#9ca3af", margin: "2px 0 0" }}>**** {item?.cardnumber?.slice(-4)}</p>
+                      <p className="font-family-regular" style={{ fontSize: 12, color: "#9ca3af", margin: "2px 0 0" }}>**** {item?.cardnumber?.slice(-4)}</p>
                     </div>
                     <svg width={16} height={16} viewBox="0 0 24 24" fill="#059669"><path d="M9 16.17L4.83 12l-1.42 1.41L9 19 21 7l-1.41-1.41z" /></svg>
                   </div>

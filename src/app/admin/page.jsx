@@ -610,14 +610,14 @@ function Page() {
 
         <div style={{ maxWidth: 1200, margin: "0 auto", padding: "0 24px", position: "relative" }}>
           {/* Breadcrumb */}
-          <div style={{ display: "flex", alignItems: "center", gap: 8, color: "rgba(255,255,255,0.5)", fontSize: 13, fontWeight: 500, marginBottom: 16 }}>
-            <a href="/" style={{ color: "rgba(255,255,255,0.5)", textDecoration: "none", transition: "color 0.2s" }}
+          <div className="font-family-medium" style={{ display: "flex", alignItems: "center", gap: 8, color: "rgba(255,255,255,0.5)", fontSize: 13, marginBottom: 16 }}>
+            <a href="/" className="font-family-regular" style={{ color: "rgba(255,255,255,0.5)", textDecoration: "none", transition: "color 0.2s" }}
               onMouseEnter={(e) => e.currentTarget.style.color = "#fff"}
               onMouseLeave={(e) => e.currentTarget.style.color = "rgba(255,255,255,0.5)"}>
               Home
             </a>
-            <span style={{ color: "rgba(255,255,255,0.3)" }}>/</span>
-            <span style={{ color: "rgba(255,255,255,0.8)" }}>My Bookings</span>
+            <span className="font-family-regular" style={{ color: "rgba(255,255,255,0.3)" }}>/</span>
+            <span className="font-family-regular" style={{ color: "rgba(255,255,255,0.8)" }}>My Bookings</span>
           </div>
 
           <div style={{ display: "flex", alignItems: "center", justifyContent: "space-between", flexWrap: "wrap", gap: 12 }}>
@@ -630,10 +630,10 @@ function Page() {
                 <MdOutlineBookOnline size="clamp(20px, 3vw, 26px)" color="#fff" />
               </div>
               <div>
-                <h1 style={{ color: "#fff", fontSize: "clamp(20px, 5vw, 30px)", fontWeight: 700, margin: 0, letterSpacing: "-0.5px", lineHeight: 1.2, wordBreak: "break-word" }}>
+                <h1 className="font-family-bold" style={{ color: "#fff", fontSize: "clamp(20px, 5vw, 30px)", margin: 0, letterSpacing: "-0.5px", lineHeight: 1.2, wordBreak: "break-word" }}>
                   My Bookings
                 </h1>
-                <p style={{ color: "rgba(255,255,255,0.55)", fontSize: "clamp(12px, 2vw, 14px)", margin: "2px 0 0", fontWeight: 400, wordBreak: "break-word" }}>
+                <p className="font-family-regular" style={{ color: "rgba(255,255,255,0.55)", fontSize: "clamp(12px, 2vw, 14px)", margin: "2px 0 0", wordBreak: "break-word" }}>
                   {Orders?.length || 0} booking{Orders?.length !== 1 ? "s" : ""}
                 </p>
               </div>
@@ -645,7 +645,7 @@ function Page() {
               border: "1px solid rgba(255,255,255,0.06)", height: 36,
             }}>
               <MdOutlineCalendarMonth size={14} color="#fbbf24" />
-              <span style={{ color: "#fff", fontSize: 13, fontWeight: 500 }}>
+              <span className="font-family-medium" style={{ color: "#fff", fontSize: 13 }}>
                 {Orders?.length || 0} Active
               </span>
             </div>
@@ -712,7 +712,7 @@ function Page() {
                   <div className="absolute inset-0 rounded-full border-2 border-slate-100"></div>
                   <div className="absolute inset-0 rounded-full border-2 border-brand-600 border-t-transparent animate-spin"></div>
                 </div>
-                <p className="mt-4 text-slate-500 font-medium text-sm animate-pulse">Loading bookings...</p>
+                <p className="mt-4 text-slate-500 font-family-medium text-sm animate-pulse">Loading bookings...</p>
               </div>
             ) : Orders?.length === 0 ? (
               <div className="py-16">
@@ -1370,7 +1370,7 @@ function Page() {
                 onChange={setReviewRating}
                 style={{ fontSize: 32 }}
               />
-              <p style={{ fontSize: 12, color: "#94a3b8", margin: "8px 0 0" }}>
+              <p className="font-family-regular" style={{ fontSize: 12, color: "#94a3b8", margin: "8px 0 0" }}>
                 {reviewRating === 1 ? "Poor" : reviewRating === 2 ? "Fair" : reviewRating === 3 ? "Good" : reviewRating === 4 ? "Very Good" : "Excellent"}
               </p>
             </div>
