@@ -48,7 +48,7 @@ export function AuthShell({
           </div>
 
           {isShow && <div className="relative z-10 max-w-md">
-            <h2 className="text-3xl lg:text-4xl font-extrabold leading-tight tracking-tight text-white mb-4">
+            <h2 className="text-3xl lg:text-4xl font-family-bold leading-tight tracking-tight text-white mb-4">
               {imageHeadline || (
                 <>
                   Easily book your ride <br />
@@ -56,7 +56,7 @@ export function AuthShell({
                 </>
               )}
             </h2>
-            <p className="text-xs lg:text-sm leading-relaxed text-white/85 font-normal max-w-sm">
+            <p className="text-xs lg:text-sm leading-relaxed text-white/85 font-family-regular max-w-sm">
               {imageSubheadline || "We provide professional taxi services for you"}
             </p>
           </div>}
@@ -79,11 +79,11 @@ export function AuthShell({
           {/* Heading & Child Inputs */}
           <div className="!w-full max-w-lg  mx-auto flex-1 flex flex-col justify-center">
             <div className="text-center mb-8">
-              <h1 className="text-3xl lg:text-[34px] font-bold tracking-tight text-slate-900 mb-2">
+              <h1 className="text-3xl lg:text-[34px] font-family-bold tracking-tight text-slate-900 mb-2">
                 {title}
               </h1>
               {subtitle ? (
-                <p className="text-xs lg:text-sm text-slate-500 font-semibold">
+                <p className="text-xs lg:text-sm text-slate-500 font-family-semibold">
                   {subtitle}
                 </p>
               ) : null}
@@ -94,7 +94,7 @@ export function AuthShell({
 
           {/* Optional bottom navigation / helper footer */}
           {footer ? (
-            <div className="mt-8 text-center text-sm text-slate-500 font-semibold">
+            <div className="mt-8 text-center text-sm text-slate-500 font-family-semibold">
               {footer}
             </div>
           ) : null}
@@ -119,7 +119,7 @@ export function AuthTextField({
       {label ? (
         <label
           htmlFor={id}
-          className="text-xs font-bold text-slate-700"
+          className="text-xs font-family-bold text-slate-700"
         >
           {label}
         </label>
@@ -146,7 +146,7 @@ export function AuthTextField({
         ) : null}
       </div>
       {hasError ? (
-        <p className="text-xs text-red-500 font-semibold mt-1">{error}</p>
+        <p className="text-xs text-red-500 font-family-semibold mt-1">{error}</p>
       ) : null}
     </div>
   );
@@ -161,7 +161,7 @@ export function AuthPrimaryButton({
   return (
     <button
       className={cx(
-        "group relative inline-flex w-full items-center justify-center gap-2 rounded-xl px-4 py-3.5 text-sm font-bold text-white shadow-[0_4px_12px_rgba(0,74,112,0.2)] outline-none transition",
+        "group relative inline-flex w-full items-center justify-center gap-2 rounded-xl px-4 py-3.5 text-sm font-family-bold text-white shadow-[0_4px_12px_rgba(0,74,112,0.2)] outline-none transition",
         "bg-brand-600 hover:bg-brand-700 active:scale-[0.995]",
         "disabled:cursor-not-allowed disabled:opacity-70",
         className
@@ -179,7 +179,7 @@ export function AuthSecondaryButton({ children, className, ...props }) {
   return (
     <button
       className={cx(
-        "inline-flex w-full items-center justify-center gap-3 rounded-xl border border-slate-300 bg-white px-4 py-3 text-sm font-bold text-slate-700 shadow-sm outline-none transition",
+        "inline-flex w-full items-center justify-center gap-3 rounded-xl border border-slate-300 bg-white px-4 py-3 text-sm font-family-bold text-slate-700 shadow-sm outline-none transition",
         "hover:bg-slate-50 active:scale-[0.995]",
         "disabled:cursor-not-allowed disabled:opacity-70",
         className
@@ -195,7 +195,7 @@ export function AuthDivider({ label = "or" }) {
   return (
     <div className="my-5 flex items-center gap-3">
       <div className="h-px flex-1 bg-slate-200" />
-      <span className="text-[10px] font-bold uppercase tracking-wider text-slate-400">
+      <span className="text-[10px] font-family-bold uppercase tracking-wider text-slate-400">
         {label}
       </span>
       <div className="h-px flex-1 bg-slate-200" />
@@ -220,7 +220,7 @@ export function AuthInlineLink({ href, children, className, ...props }) {
     <Link
       href={href}
       className={cx(
-        "font-bold text-brand-600 hover:text-brand-800 hover:underline focus:outline-none",
+        "font-family-bold text-brand-600 hover:text-brand-800 hover:underline focus:outline-none",
         className
       )}
       {...props}

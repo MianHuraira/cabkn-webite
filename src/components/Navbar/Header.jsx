@@ -64,7 +64,6 @@ const Header = () => {
     padding: "8px 12px",
     color: isActive(id) ? "#004a70" : "#4b5563",
     fontSize: 13.5,
-    fontWeight: isActive(id) ? 600 : 500,
     textDecoration: "none",
     whiteSpace: "nowrap",
     position: "relative",
@@ -133,14 +132,13 @@ const Header = () => {
               <button
                 key={link.id}
                 onClick={() => handleNavClick(link.id)}
-                className="animate-fade-in-down"
+                className="animate-fade-in-down font-family-medium"
                 style={{
                   ...linkStyle(link.id),
                   animationDelay: `${index * 50}ms`,
                   background: "none",
                   border: "none",
                   cursor: "pointer",
-                  fontFamily: "inherit",
                 }}
                 onMouseEnter={(e) => {
                   if (!isActive(link.id)) {
@@ -164,11 +162,11 @@ const Header = () => {
           <div className="d-none d-xl-flex animate-fade-in" style={{ alignItems: "center", gap: 8, flexShrink: 0, animationDelay: "150ms" }}>
             <Link
               href="/auth/login"
+              className="font-family-medium"
               style={{
                 padding: "8px 18px",
                 borderRadius: 8,
                 fontSize: 13,
-                fontWeight: 500,
                 color: "#4b5563",
                 textDecoration: "none",
                 transition: "all 0.2s",
@@ -181,11 +179,11 @@ const Header = () => {
             </Link>
             <Link
               href="/auth/stepOne"
+              className="font-family-semibold"
               style={{
                 padding: "8px 18px",
                 borderRadius: 8,
                 fontSize: 13,
-                fontWeight: 600,
                 color: "#fff",
                 textDecoration: "none",
                 background: "#004a70",
@@ -198,17 +196,16 @@ const Header = () => {
             </Link>
             <button
               onClick={() => SetdriverModal(true)}
+              className="font-family-medium"
               style={{
                 padding: "8px 18px",
                 borderRadius: 8,
                 fontSize: 13,
-                fontWeight: 500,
                 color: "#004a70",
                 textDecoration: "none",
                 border: "1px solid #004a70",
                 background: "transparent",
                 cursor: "pointer",
-                fontFamily: "inherit",
                 transition: "all 0.2s",
               }}
               onMouseEnter={(e) => { e.currentTarget.style.background = "#004a70"; e.currentTarget.style.color = "#fff"; }}
@@ -366,10 +363,10 @@ const Header = () => {
               <path strokeLinecap="round" strokeLinejoin="round" d="M8.25 18.75a1.5 1.5 0 0 1-3 0m3 0a1.5 1.5 0 0 0-3 0m3 0h6m-9 0H3.375a1.125 1.125 0 0 1-1.125-1.125V14.25m17.25 4.5a1.5 1.5 0 0 1-3 0m3 0a1.5 1.5 0 0 0-3 0m3 0h1.125c.621 0 1.129-.504 1.09-1.124a17.902 17.902 0 0 0-3.213-9.193 2.056 2.056 0 0 0-1.58-.86H14.25M16.5 18.75h-2.25m0-11.177v-.958c0-.568-.422-1.048-.987-1.106a48.554 48.554 0 0 0-10.026 0 1.106 1.106 0 0 0-.987 1.106v7.635m12-6.677v6.677m0 4.5v-4.5m0 0h-12" />
             </svg>
           </div>
-          <h2 style={{ color: "#fff", fontSize: 22, fontWeight: 700, margin: "0 0 4px", letterSpacing: "-0.3px" }}>
+          <h2 className="font-family-bold" style={{ color: "#fff", fontSize: 22, margin: "0 0 4px", letterSpacing: "-0.3px" }}>
             Driver App
           </h2>
-          <p style={{ color: "rgba(255,255,255,0.6)", fontSize: 13, margin: 0 }}>
+          <p className="font-family-regular" style={{ color: "rgba(255,255,255,0.6)", fontSize: 13, margin: 0 }}>
             Take control of your rides
           </p>
         </div>
@@ -403,8 +400,8 @@ const Header = () => {
               </svg>
             </div>
             <div>
-              <p style={{ fontWeight: 600, fontSize: 14, color: "#1f2937", margin: 0 }}>Download our app</p>
-              <p style={{ fontSize: 12, color: "#9ca3af", margin: "2px 0 0" }}>Available on iOS & Android</p>
+              <p className="font-family-semibold" style={{ fontSize: 14, color: "#1f2937", margin: 0 }}>Download our app</p>
+              <p className="font-family-regular" style={{ fontSize: 12, color: "#9ca3af", margin: "2px 0 0" }}>Available on iOS & Android</p>
             </div>
           </div>
 
@@ -432,8 +429,8 @@ const Header = () => {
                 <path d="M4.98 3.5C4.36 3.5 3.8 3.88 3.6 4.5c-.32.98-.3 2.1-.3 3.5v8c0 1.4-.02 2.52.3 3.5.2.62.77 1 1.4 1.3 0 .55-.1.77-.28l10.8-7.5c.45-.35.7-.88.7-1.43 0-.55-.25-1.08-.7-1.43L5.74 3.78c-.22-.18-.46-.28-.76-.28z" />
               </svg>
               <div>
-                <p style={{ fontSize: 9, color: "rgba(255,255,255,0.5)", margin: 0, lineHeight: 1, letterSpacing: 1, textTransform: "uppercase" }}>Get it on</p>
-                <p style={{ fontSize: 14, fontWeight: 600, margin: "3px 0 0", lineHeight: 1 }}>Google Play</p>
+                <p className="font-family-medium" style={{ fontSize: 9, color: "rgba(255,255,255,0.5)", margin: 0, lineHeight: 1, letterSpacing: 1, textTransform: "uppercase" }}>Get it on</p>
+                <p className="font-family-semibold" style={{ fontSize: 14, margin: "3px 0 0", lineHeight: 1 }}>Google Play</p>
               </div>
             </button>
             <button
@@ -459,8 +456,8 @@ const Header = () => {
                 <path d="M17.05 20.28c-.98.95-2.05.8-3.08.35-1.09-.46-2.09-.48-3.24 0-1.44.62-2.2.44-3.06-.35C2.79 15.25 3.51 7.59 9.05 7.31c1.35.07 2.29.74 3.08.8 1.18-.24 2.31-.93 3.57-.84 1.51.12 2.65.72 3.4 1.8-3.12 1.87-2.38 5.98.48 7.13-.57 1.5-1.31 2.99-2.54 4.09zM12.03 7.25c-.15-2.23 1.66-4.07 3.74-4.25.29 2.58-2.34 4.5-3.74 4.25z" />
               </svg>
               <div>
-                <p style={{ fontSize: 9, color: "rgba(255,255,255,0.5)", margin: 0, lineHeight: 1, letterSpacing: 1, textTransform: "uppercase" }}>Download on</p>
-                <p style={{ fontSize: 14, fontWeight: 600, margin: "3px 0 0", lineHeight: 1 }}>App Store</p>
+                <p className="font-family-medium" style={{ fontSize: 9, color: "rgba(255,255,255,0.5)", margin: 0, lineHeight: 1, letterSpacing: 1, textTransform: "uppercase" }}>Download on</p>
+                <p className="font-family-semibold" style={{ fontSize: 14, margin: "3px 0 0", lineHeight: 1 }}>App Store</p>
               </div>
             </button>
           </div>
@@ -473,9 +470,9 @@ const Header = () => {
 const MobileNavItem = ({ label, onClick, active, danger }) => (
   <div
     onClick={onClick}
-    className={`transition-all duration-150 ${
+    className={`transition-all duration-150 font-family-medium ${
       active
-        ? "bg-indigo-50 font-semibold"
+        ? "bg-indigo-50 font-family-semibold"
         : danger
           ? "hover:bg-red-50"
           : "hover:bg-gray-100"
@@ -486,7 +483,6 @@ const MobileNavItem = ({ label, onClick, active, danger }) => (
       cursor: "pointer",
       color: active ? "#004a70" : danger ? "#ef4444" : "#374151",
       fontSize: 14,
-      fontWeight: active ? 600 : 500,
     }}
   >
     {label}

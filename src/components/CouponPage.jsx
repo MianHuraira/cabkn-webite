@@ -98,7 +98,7 @@ export default function CouponPage() {
         <div style={{ position: "absolute", bottom: -40, left: -40, width: 140, height: 140, borderRadius: "50%", background: "rgba(255,255,255,0.015)" }} />
 
         <div style={{ maxWidth: 1200, margin: "0 auto", padding: "0 16px" }}>
-          <div style={{ color: "rgba(255,255,255,0.5)", fontSize: 13, marginBottom: 10, display: "flex", alignItems: "center", gap: 6 }}>
+          <div className="font-family-medium" style={{ color: "rgba(255,255,255,0.5)", fontSize: 13, marginBottom: 10, display: "flex", alignItems: "center", gap: 6 }}>
             <span>Home</span>
             <span style={{ opacity: 0.4 }}>/</span>
             <span style={{ color: "rgba(255,255,255,0.8)" }}>Offers</span>
@@ -121,10 +121,10 @@ export default function CouponPage() {
               <MdLocalOffer size={22} color="#fbbf24" />
             </div>
             <div>
-              <h1 style={{ color: "#fff", fontSize: "clamp(22px, 4vw, 28px)", fontWeight: 700, margin: 0, letterSpacing: "-0.5px" }}>
+              <h1 className="font-family-bold" style={{ color: "#fff", fontSize: "clamp(22px, 4vw, 28px)", margin: 0, letterSpacing: "-0.5px" }}>
                 Offers
               </h1>
-              <p style={{ color: "rgba(255,255,255,0.5)", fontSize: 13.5, margin: "2px 0 0" }}>
+              <p className="font-family-regular" style={{ color: "rgba(255,255,255,0.5)", fontSize: 13.5, margin: "2px 0 0" }}>
                 {loading ? "Loading offers..." : `${Coupons.length} offer${Coupons.length !== 1 ? "s" : ""} available`}
               </p>
             </div>
@@ -157,10 +157,10 @@ export default function CouponPage() {
             }}>
               <MdLocalOffer size={28} color="#004a70" opacity={0.4} />
             </div>
-            <h3 style={{ fontSize: 20, fontWeight: 600, color: "#1f2937", margin: "0 0 8px" }}>
+            <h3 className="font-family-semibold" style={{ fontSize: 20, color: "#1f2937", margin: "0 0 8px" }}>
               No offers available
             </h3>
-            <p style={{ fontSize: 14, color: "#9ca3af", margin: 0, maxWidth: 360, marginInline: "auto" }}>
+            <p className="font-family-regular" style={{ fontSize: 14, color: "#9ca3af", margin: 0, maxWidth: 360, marginInline: "auto" }}>
               New offers and coupons will appear here. Check back later for exciting deals!
             </p>
           </div>
@@ -198,20 +198,19 @@ export default function CouponPage() {
                       <FaTag size={20} color="#d97706" />
                     </div>
                     <div style={{ flex: 1, minWidth: 0 }}>
-                      <p style={{ fontWeight: 600, fontSize: 15, color: "#1f2937", margin: 0, overflowWrap: "anywhere", lineHeight: 1.3 }}>
+                      <p className="font-family-semibold" style={{ fontSize: 15, color: "#1f2937", margin: 0, overflowWrap: "anywhere", lineHeight: 1.3 }}>
                         {item?.title}
                       </p>
                       <div style={{ display: "inline-flex", alignItems: "center", gap: 4, marginTop: 6, background: "#f0f7ff", borderRadius: 6, padding: "2px 8px" }}>
                         <MdContentCopy size={11} color="#004a70" />
-                        <span style={{ fontSize: 12, color: "#004a70", fontWeight: 600, fontFamily: "monospace", letterSpacing: 0.5 }}>
+                        <span className="font-family-semibold" style={{ fontSize: 12, color: "#004a70", fontFamily: "monospace", letterSpacing: 0.5 }}>
                           {item?.code}
                         </span>
                       </div>
                       <div style={{ display: "flex", alignItems: "center", gap: 8, marginTop: 8 }}>
                         {getDiscountLabel(item) && (
-                          <span style={{
+                          <span className="font-family-bold" style={{
                             fontSize: 11,
-                            fontWeight: 700,
                             color: "#fff",
                             background: "linear-gradient(135deg, #f59e0b, #d97706)",
                             borderRadius: 6,
@@ -221,7 +220,7 @@ export default function CouponPage() {
                             {getDiscountLabel(item)}
                           </span>
                         )}
-                        <span style={{ fontSize: 12, color: "#9ca3af" }}>
+                        <span className="font-family-regular" style={{ fontSize: 12, color: "#9ca3af" }}>
                           Exp: {moment(item?.expirey_date).format("MMM DD, YYYY")}
                         </span>
                       </div>
@@ -303,16 +302,16 @@ export default function CouponPage() {
           }}>
             <FaGift size={28} color="#fbbf24" />
           </div>
-          <h2 style={{ color: "#fff", fontSize: 22, fontWeight: 700, margin: "0 0 4px", letterSpacing: "-0.5px" }}>
+          <h2 className="font-family-bold" style={{ color: "#fff", fontSize: 22, margin: "0 0 4px", letterSpacing: "-0.5px" }}>
             Special Offer
           </h2>
-          <p style={{ color: "rgba(255,255,255,0.55)", fontSize: 14, margin: 0 }}>
+          <p className="font-family-regular" style={{ color: "rgba(255,255,255,0.55)", fontSize: 14, margin: 0 }}>
             Use this coupon code to save
           </p>
         </div>
 
         <div style={{ padding: "clamp(20px, 3vw, 28px)", textAlign: "center" }}>
-          <p style={{ fontSize: 14, fontWeight: 500, color: "#4b5563", margin: "0 0 14px", overflowWrap: "anywhere" }}>
+          <p className="font-family-medium" style={{ fontSize: 14, color: "#4b5563", margin: "0 0 14px", overflowWrap: "anywhere" }}>
             {CouponCode?.title}
           </p>
 
@@ -327,7 +326,7 @@ export default function CouponPage() {
               marginBottom: 14,
             }}>
               <FaPercentage size={12} color="#d97706" />
-              <span style={{ fontSize: 13, fontWeight: 700, color: "#92400e" }}>
+              <span className="font-family-bold" style={{ fontSize: 13, color: "#92400e" }}>
                 {getDiscountLabel(CouponCode)}
               </span>
             </div>
@@ -346,24 +345,24 @@ export default function CouponPage() {
           }}>
             <div style={{ display: "flex", alignItems: "center", gap: 8, minWidth: 0 }}>
               <MdContentCopy size={16} color="#64748b" />
-              <span style={{ fontSize: 16, fontWeight: 700, color: "#0f172a", fontFamily: "monospace", letterSpacing: 2 }}>
+              <span className="font-family-bold" style={{ fontSize: 16, color: "#0f172a", fontFamily: "monospace", letterSpacing: 2 }}>
                 {CouponCode?.code}
               </span>
             </div>
-            <button
-              onClick={() => handleCopy(CouponCode?.code)}
-              style={{
-                padding: "6px 16px",
-                borderRadius: 8,
-                background: copied ? "#059669" : "#004a70",
-                border: "none",
-                color: "#fff",
-                fontSize: 12,
-                fontWeight: 600,
-                cursor: "pointer",
-                transition: "all 0.2s",
-                flexShrink: 0,
-              }}
+              <button
+                onClick={() => handleCopy(CouponCode?.code)}
+                className="font-family-semibold"
+                style={{
+                  padding: "6px 16px",
+                  borderRadius: 8,
+                  background: copied ? "#059669" : "#004a70",
+                  border: "none",
+                  color: "#fff",
+                  fontSize: 12,
+                  cursor: "pointer",
+                  transition: "all 0.2s",
+                  flexShrink: 0,
+                }}
               onMouseEnter={(e) => { if (!copied) e.currentTarget.style.background = "#003353"; }}
               onMouseLeave={(e) => { if (!copied) e.currentTarget.style.background = "#004a70"; }}
             >
@@ -371,7 +370,7 @@ export default function CouponPage() {
             </button>
           </div>
 
-          <p style={{ fontSize: 12, color: "#9ca3af", margin: 0 }}>
+          <p className="font-family-regular" style={{ fontSize: 12, color: "#9ca3af", margin: 0 }}>
             Expires: {moment(CouponCode?.expirey_date).format("MMM DD, YYYY")}
           </p>
         </div>

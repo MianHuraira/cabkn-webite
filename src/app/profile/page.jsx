@@ -315,8 +315,8 @@ export default function EditProfile() {
                 </div>
                 <div>
                   <h5
+                    className="font-family-semibold"
                     style={{
-                      fontWeight: 600,
                       fontSize: 18,
                       color: "#1f2937",
                       margin: 0,
@@ -325,6 +325,7 @@ export default function EditProfile() {
                     {mounted ? (userData?.user?.name || "Your Name") : "Your Name"}
                   </h5>
                   <span
+                    className="font-family-regular"
                     style={{
                       fontSize: 13,
                       color: "#6b7280",
@@ -335,6 +336,7 @@ export default function EditProfile() {
                   </span>
                   <br />
                   <button
+                    className="font-family-semibold"
                     onClick={() =>
                       !isUploadingImage && document.getElementById("file-upload-profile").click()
                     }
@@ -345,7 +347,6 @@ export default function EditProfile() {
                       border: "none",
                       color: isUploadingImage ? "#9ca3af" : "#004a70",
                       fontSize: 13,
-                      fontWeight: 600,
                       cursor: isUploadingImage ? "not-allowed" : "pointer",
                       padding: 0,
                     }}
@@ -364,9 +365,9 @@ export default function EditProfile() {
 
               <Form onSubmit={handleSubmit(onSubmit)}>
                 <p
+                  className="font-family-semibold"
                   style={{
                     fontSize: 16,
-                    fontWeight: 600,
                     color: "#1f2937",
                     margin: "0 0 16px",
                     paddingBottom: 12,
@@ -384,7 +385,7 @@ export default function EditProfile() {
                   }}
                 >
                   <div>
-                    <Label for="name" style={{ fontSize: 13, fontWeight: 500, color: "#374151" }}>
+                    <Label for="name" className="font-family-medium" style={{ fontSize: 13, color: "#374151" }}>
                       Full Name
                     </Label>
                     <Controller
@@ -406,14 +407,14 @@ export default function EditProfile() {
                       )}
                     />
                     {errors.name && (
-                      <FormFeedback style={{ fontSize: 12, marginTop: 4 }}>
+                      <FormFeedback className="font-family-regular" style={{ fontSize: 12, marginTop: 4 }}>
                         {errors.name.message}
                       </FormFeedback>
                     )}
                   </div>
 
                   <div>
-                    <Label for="phone" style={{ fontSize: 13, fontWeight: 500, color: "#374151" }}>
+                    <Label for="phone" className="font-family-medium" style={{ fontSize: 13, color: "#374151" }}>
                       Phone Number
                     </Label>
                     <Controller
@@ -451,14 +452,14 @@ export default function EditProfile() {
                       )}
                     />
                     {errors.phone && (
-                      <FormFeedback style={{ fontSize: 12, marginTop: 4 }}>
+                      <FormFeedback className="font-family-regular" style={{ fontSize: 12, marginTop: 4 }}>
                         {errors.phone.message}
                       </FormFeedback>
                     )}
                   </div>
 
                   <div>
-                    <Label for="email" style={{ fontSize: 13, fontWeight: 500, color: "#374151" }}>
+                    <Label for="email" className="font-family-medium" style={{ fontSize: 13, color: "#374151" }}>
                       Email
                     </Label>
                     <Controller
@@ -482,14 +483,14 @@ export default function EditProfile() {
                       )}
                     />
                     {errors.email && (
-                      <FormFeedback style={{ fontSize: 12, marginTop: 4 }}>
+                      <FormFeedback className="font-family-regular" style={{ fontSize: 12, marginTop: 4 }}>
                         {errors.email.message}
                       </FormFeedback>
                     )}
                   </div>
 
                   <div>
-                    <Label for="address" style={{ fontSize: 13, fontWeight: 500, color: "#374151" }}>
+                    <Label for="address" className="font-family-medium" style={{ fontSize: 13, color: "#374151" }}>
                       Address
                     </Label>
                     <Controller
@@ -512,12 +513,12 @@ export default function EditProfile() {
                             invalid={errors.address && true}
                           />
                           {errors.address && (
-                            <FormFeedback style={{ fontSize: 12 }}>
+                            <FormFeedback className="font-family-regular" style={{ fontSize: 12 }}>
                               {errors.address.message}
                             </FormFeedback>
                           )}
                           {PridicLoading && (
-                            <span style={{ fontSize: 12, color: "#6b7280", marginTop: 4, display: "block" }}>
+                            <span className="font-family-regular" style={{ fontSize: 12, color: "#6b7280", marginTop: 4, display: "block" }}>
                               Loading...
                             </span>
                           )}
@@ -539,6 +540,7 @@ export default function EditProfile() {
                                   onClick={() =>
                                     handlePredictionPress(prediction)
                                   }
+                                  className="font-family-medium"
                                   style={{ cursor: "pointer", fontSize: 13, padding: "10px 14px" }}
                                 >
                                   {prediction.description}
@@ -547,7 +549,7 @@ export default function EditProfile() {
                             </ListGroup>
                           )}
                           {noData && (
-                            <span style={{ fontSize: 12, color: "#6b7280", marginTop: 4, display: "block" }}>
+                            <span className="font-family-regular" style={{ fontSize: 12, color: "#6b7280", marginTop: 4, display: "block" }}>
                               No results found
                             </span>
                           )}
@@ -683,23 +685,23 @@ export default function EditProfile() {
 
         <div style={{ maxWidth: 1200, margin: "0 auto", padding: "0 clamp(12px, 3vw, 24px)", position: "relative" }}>
           <div
+            className="font-family-medium"
             style={{
               display: "flex",
               alignItems: "center",
               gap: 8,
               color: "rgba(255,255,255,0.5)",
               fontSize: 13,
-              fontWeight: 500,
               marginBottom: 16,
             }}
           >
-            <a href="/" style={{ color: "rgba(255,255,255,0.5)", textDecoration: "none", transition: "color 0.2s" }}
+            <a href="/" className="font-family-medium" style={{ color: "rgba(255,255,255,0.5)", textDecoration: "none", transition: "color 0.2s" }}
               onMouseEnter={(e) => e.currentTarget.style.color = "#fff"}
               onMouseLeave={(e) => e.currentTarget.style.color = "rgba(255,255,255,0.5)"}>
               Home
             </a>
-            <span style={{ color: "rgba(255,255,255,0.3)" }}>/</span>
-            <span style={{ color: "rgba(255,255,255,0.8)" }}>Profile</span>
+            <span className="font-family-medium" style={{ color: "rgba(255,255,255,0.3)" }}>/</span>
+            <span className="font-family-medium" style={{ color: "rgba(255,255,255,0.8)" }}>Profile</span>
           </div>
 
           <div style={{ display: "flex", alignItems: "center", gap: "clamp(10px, 2vw, 16px)" }}>
@@ -720,10 +722,10 @@ export default function EditProfile() {
             </div>
             <div>
               <h1
+                className="font-family-bold"
                 style={{
                   color: "#fff",
                   fontSize: "clamp(20px, 5vw, 30px)",
-                  fontWeight: 700,
                   margin: 0,
                   letterSpacing: "-0.5px",
                   lineHeight: 1.2,
@@ -732,7 +734,7 @@ export default function EditProfile() {
               >
                 My Profile
               </h1>
-              <p style={{ color: "rgba(255,255,255,0.55)", fontSize: "clamp(12px, 2vw, 14px)", margin: "2px 0 0", fontWeight: 400, wordBreak: "break-word" }}>
+              <p className="font-family-regular" style={{ color: "rgba(255,255,255,0.55)", fontSize: "clamp(12px, 2vw, 14px)", margin: "2px 0 0", wordBreak: "break-word" }}>
                 Manage your account settings
               </p>
             </div>
@@ -766,7 +768,7 @@ export default function EditProfile() {
                 <div
                   key={tab.key}
                   onClick={() => setActiveTab(tab.key)}
-                  className={`${mounted ? 'animate-fade-in-up' : 'opacity-0'}`}
+                  className={`${mounted ? 'animate-fade-in-up' : 'opacity-0'} ${activeTab === tab.key ? "font-family-semibold" : "font-family-medium"}`}
                   style={{
                     display: "flex",
                     alignItems: "center",
@@ -776,7 +778,6 @@ export default function EditProfile() {
                     cursor: "pointer",
                     background: activeTab === tab.key ? "#004a70" : "#fff",
                     color: activeTab === tab.key ? "#fff" : "#4b5563",
-                    fontWeight: activeTab === tab.key ? 600 : 500,
                     fontSize: 13,
                     border: activeTab === tab.key ? "none" : "1px solid #e5e7eb",
                     flexShrink: 0,
@@ -810,7 +811,7 @@ export default function EditProfile() {
                 <div
                   key={tab.key}
                   onClick={() => setActiveTab(tab.key)}
-                  className={`${mounted ? 'animate-fade-in-up' : 'opacity-0'} ${activeTab !== tab.key ? 'hover:bg-gray-100' : ''}`}
+                  className={`${mounted ? 'animate-fade-in-up' : 'opacity-0'} ${activeTab !== tab.key ? 'hover:bg-gray-100' : ''} ${activeTab === tab.key ? "font-family-semibold" : "font-family-medium"}`}
                   style={{
                     display: "flex",
                     alignItems: "center",
@@ -820,7 +821,6 @@ export default function EditProfile() {
                     cursor: "pointer",
                     background: activeTab === tab.key ? "#f0f7ff" : "transparent",
                     color: activeTab === tab.key ? "#004a70" : "#4b5563",
-                    fontWeight: activeTab === tab.key ? 600 : 500,
                     fontSize: 14,
                     transition: "all 0.15s",
                     marginBottom: 2,

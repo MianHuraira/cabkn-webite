@@ -38,7 +38,8 @@
 }
 
 .chat-sidebar-title {
-  font-family: "Inter-SemiBold";
+  font-family: var(--font-poppins-local);
+  font-weight: 600;
   font-size: 16px;
   color: #1f2937;
   margin: 0 0 12px;
@@ -89,7 +90,8 @@
   outline: none;
   background: transparent;
   padding: 8px 0;
-  font-family: "Inter-Regular";
+  font-family: var(--font-poppins-local);
+  font-weight: 400;
   font-size: 13px;
   color: #1f2937;
 }
@@ -161,7 +163,8 @@
   display: flex;
   align-items: center;
   justify-content: center;
-  font-family: "Inter-SemiBold";
+  font-family: var(--font-poppins-local);
+  font-weight: 600;
   font-size: 18px;
   box-shadow: 0 1px 4px rgba(0, 0, 0, 0.08);
 }
@@ -198,7 +201,8 @@
 }
 
 .chat-conversation-name {
-  font-family: "Inter-Medium";
+  font-family: var(--font-poppins-local);
+  font-weight: 500;
   font-size: 14px;
   color: #1f2937;
   white-space: nowrap;
@@ -207,7 +211,8 @@
 }
 
 .chat-conversation-time {
-  font-family: "Inter-Regular";
+  font-family: var(--font-poppins-local);
+  font-weight: 400;
   font-size: 11px;
   color: #9ca3af;
   flex-shrink: 0;
@@ -222,7 +227,8 @@
 }
 
 .chat-conversation-preview {
-  font-family: "Inter-Regular";
+  font-family: var(--font-poppins-local);
+  font-weight: 400;
   font-size: 13px;
   color: #9ca3af;
   white-space: nowrap;
@@ -234,7 +240,8 @@
 .chat-unseen-badge {
   background: #004a70;
   color: #fff;
-  font-family: "Inter-SemiBold";
+  font-family: var(--font-poppins-local);
+  font-weight: 600;
   font-size: 10px;
   min-width: 18px;
   height: 18px;
@@ -319,7 +326,8 @@
   display: flex;
   align-items: center;
   justify-content: center;
-  font-family: "Inter-SemiBold";
+  font-family: var(--font-poppins-local);
+  font-weight: 600;
   font-size: 16px;
 }
 
@@ -329,13 +337,15 @@
 }
 
 .chat-header-name {
-  font-family: "Inter-Medium";
+  font-family: var(--font-poppins-local);
+  font-weight: 500;
   font-size: 15px;
   color: #1f2937;
 }
 
 .chat-header-status {
-  font-family: "Inter-Regular";
+  font-family: var(--font-poppins-local);
+  font-weight: 400;
   font-size: 12px;
   color: #9ca3af;
 }
@@ -391,7 +401,8 @@
   padding: 10px 16px;
   word-wrap: break-word;
   line-height: 1.5;
-  font-family: "Inter-Regular";
+  font-family: var(--font-poppins-local);
+  font-weight: 400;
   font-size: 14px;
 }
 
@@ -409,13 +420,15 @@
 
 .chat-bubble-text {
   margin: 0;
-  font-family: "Inter-Regular";
+  font-family: var(--font-poppins-local);
+  font-weight: 400;
   font-size: 14px;
   line-height: 1.5;
 }
 
 .chat-timestamp {
-  font-family: "Inter-Regular";
+  font-family: var(--font-poppins-local);
+  font-weight: 400;
   font-size: 11px;
   color: #9ca3af;
   margin-top: 4px;
@@ -451,7 +464,8 @@
   outline: none;
   background: transparent;
   padding: 8px 14px;
-  font-family: "Inter-Regular";
+  font-family: var(--font-poppins-local);
+  font-weight: 400;
   font-size: 14px;
   color: #1f2937;
 }
@@ -504,14 +518,16 @@
 }
 
 .chat-empty-title {
-  font-family: "Inter-SemiBold";
+  font-family: var(--font-poppins-local);
+  font-weight: 600;
   font-size: 18px;
   color: #1f2937;
   margin: 0 0 8px;
 }
 
 .chat-empty-text {
-  font-family: "Inter-Regular";
+  font-family: var(--font-poppins-local);
+  font-weight: 400;
   font-size: 14px;
   color: #9ca3af;
   margin: 0;
@@ -524,7 +540,8 @@
 }
 
 .chat-empty-list p {
-  font-family: "Inter-Regular";
+  font-family: var(--font-poppins-local);
+  font-weight: 400;
   font-size: 14px;
   color: #9ca3af;
   margin: 0;
@@ -536,7 +553,8 @@
 }
 
 .chat-empty-messages p {
-  font-family: "Inter-Regular";
+  font-family: var(--font-poppins-local);
+  font-weight: 400;
   font-size: 14px;
   color: #9ca3af;
   margin: 0;
@@ -658,7 +676,8 @@
 }
 
 .chat-end-list span {
-  font-family: "Inter-Regular";
+  font-family: var(--font-poppins-local);
+  font-weight: 400;
   font-size: 12px;
   color: #d1d5db;
 }

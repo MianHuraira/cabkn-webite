@@ -182,7 +182,7 @@ export default function ServiceComponent() {
         <div style={{ position: "absolute", bottom: -40, left: -40, width: 160, height: 160, borderRadius: "50%", background: "rgba(255,255,255,0.03)" }} />
 
         <div style={{ maxWidth: 1200, margin: "0 auto", padding: "0 24px", position: "relative" }}>
-          <div style={{ display: "flex", alignItems: "center", gap: 8, color: "rgba(255,255,255,0.5)", fontSize: 13, fontWeight: 500, marginBottom: 16 }}>
+          <div className="font-family-medium" style={{ display: "flex", alignItems: "center", gap: 8, color: "rgba(255,255,255,0.5)", fontSize: 13, marginBottom: 16 }}>
             <a href="/" style={{ color: "rgba(255,255,255,0.5)", textDecoration: "none", transition: "color 0.2s" }}
               onMouseEnter={(e) => e.currentTarget.style.color = "#fff"}
               onMouseLeave={(e) => e.currentTarget.style.color = "rgba(255,255,255,0.5)"}>
@@ -201,10 +201,10 @@ export default function ServiceComponent() {
               </svg>
             </div>
             <div>
-              <h1 style={{ color: "#fff", fontSize: "clamp(20px, 5vw, 30px)", fontWeight: 700, margin: 0, letterSpacing: "-0.5px", lineHeight: 1.2, wordBreak: "break-word" }}>
+              <h1 className="font-family-bold" style={{ color: "#fff", fontSize: "clamp(20px, 5vw, 30px)", margin: 0, letterSpacing: "-0.5px", lineHeight: 1.2, wordBreak: "break-word" }}>
                 Our Products
               </h1>
-              <p style={{ color: "rgba(255,255,255,0.55)", fontSize: "clamp(12px, 2vw, 14px)", margin: "2px 0 0", fontWeight: 400, wordBreak: "break-word" }}>
+              <p className="font-family-regular" style={{ color: "rgba(255,255,255,0.55)", fontSize: "clamp(12px, 2vw, 14px)", margin: "2px 0 0", wordBreak: "break-word" }}>
                 Browse our collection of products and services
               </p>
             </div>
@@ -250,12 +250,11 @@ export default function ServiceComponent() {
                         margin: "0 auto",
                         whiteSpace: "nowrap",
                         fontSize: 14,
-                        fontWeight: 500,
                         fontFamily: "Inter-Medium",
                       }}
                       onClick={() => setSelectedCategoryId(category._id)}
                     >
-                      <span style={{ fontSize: 13, fontFamily: "Inter-Medium" }}>{category?.name}</span>
+                      <span className="font-family-medium" style={{ fontSize: 13 }}>{category?.name}</span>
                     </div>
                   </div>
                 );
@@ -302,9 +301,9 @@ export default function ServiceComponent() {
                 border: "none",
                 borderRadius: 8,
                 fontSize: 14,
-                fontWeight: 500,
                 cursor: "pointer",
               }}
+              className="font-family-medium"
             >
               Try Again
             </button>

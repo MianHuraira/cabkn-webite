@@ -641,31 +641,31 @@ const CreateRide = () => {
       <Container>
         <div className=" mx-auto w-full grid grid-cols-12 gap-4 p-4">
           <div className="RideForm col-span-12">
-            <h1 className="rideHeader">Book a ride</h1>
+            <h1 className="rideHeader font-family-bold">Book a ride</h1>
             <div className="  mt-4 mb-4">
               <div>
                 <p
-                  className="medium-font"
+                  className="font-family-medium"
                   style={{ color: "#8A8A8A", fontSize: 15 }}
                 >
                   Distance
                 </p>
                 <h3
-                  className="medium-font"
+                  className="font-family-medium"
                   style={{ color: "#8A8A8A" }}
                 >{`${productDetail?.distance} Km`}</h3>
               </div>
               {productDetail?.rideType == "parcel" ? (
                 <div>
                   <p
-                    className="medium-font mt-2"
+                    className="font-family-medium mt-2"
                     style={{ color: "#8A8A8A", fontSize: 15 }}
                   >
                     Fare Price
                   </p>
 
                   {productDetail?.stop.length > 0 ? (
-                    <h3 className="medium-font" style={{ color: "#8A8A8A" }}>
+                    <h3 className="font-family-medium" style={{ color: "#8A8A8A" }}>
                       {`XCD ${
                         changePrice(RideType?.price) +
                         productDetail?.stop.length * 5
@@ -676,7 +676,7 @@ const CreateRide = () => {
                       )?.toFixed(2)}`}
                     </h3>
                   ) : (
-                    <h3 className="medium-font" style={{ color: "#8A8A8A" }}>
+                    <h3 className="font-family-medium" style={{ color: "#8A8A8A" }}>
                       {`XCD ${changePrice(RideType?.price)}`}
                       {`$ ${(changePrice(RideType?.price) / 2.7).toFixed(2)}`}
                     </h3>
@@ -699,13 +699,13 @@ const CreateRide = () => {
                 <FaLocationDot color="#004a70" size={30} />
               </div>
               <div className="ms-2">
-                <h5 className="medium-font mb-2"> Start location</h5>
-                <p className="regular-font" style={{ color: "#8A8A8A" }}>
+                <h5 className="font-family-medium mb-2"> Start location</h5>
+                <p className="font-family-regular" style={{ color: "#8A8A8A" }}>
                   {productDetail?.name}
                 </p>
-                <h5 className="medium-font mt-4">End location</h5>
+                <h5 className="font-family-medium mt-4">End location</h5>
 
-                <p className="regular-font" style={{ color: "#8A8A8A" }}>
+                <p className="font-family-regular" style={{ color: "#8A8A8A" }}>
                   {productDetail?.metaTitle}
                 </p>
               </div>
@@ -724,7 +724,7 @@ const CreateRide = () => {
                     }`}
                   >
                     <div className="flex items-center justify-between mb-2">
-                      <span className="font-bold text-black text-lg">
+                      <span className="font-family-bold text-black text-lg">
                         {item.title} - {prices[i]?.toFixed(2)} XCD
                       </span>
                       <Tooltip title={item?.tooltip}>
@@ -739,7 +739,7 @@ const CreateRide = () => {
                       {increasedPrice > 0 && (
                         <div className="flex items-center">
                           <i className="feather-icon trending-up text-green-500"></i>
-                          <span className="text-green-500 font-bold text-sm ml-2">
+                          <span className="text-green-500 font-family-bold text-sm ml-2">
                             XCD {increasedPrice} inc.
                           </span>
                         </div>
@@ -748,11 +748,11 @@ const CreateRide = () => {
                     <div className="flex items-center justify-between">
                       <div className="flex items-center">
                         <i className="entypo-icon man text-lg"></i>
-                        <span className="text-gray-500 text-md">
+                        <span className="text-gray-500 text-md font-family-regular">
                           {item?.passenger} Up to Passengers
                         </span>
                       </div>
-                      <span className="font-semibold">
+                      <span className="font-family-semibold">
                         {(prices[i] / 2.7)?.toFixed(2)} USD
                       </span>
                     </div>
@@ -763,13 +763,13 @@ const CreateRide = () => {
 
             {productDetail?.rideType == "driver" && (
               <>
-                <Checkbox className="mt-2 mb-2" onChange={onChangeSchedule}>
+                <Checkbox className="mt-2 mb-2 font-family-medium" onChange={onChangeSchedule}>
                   Do you have Additional Passenger
                 </Checkbox>
 
                 {Passanger && (
                   <div className="mt-2 mb-2">
-                    <Label>How Many Additional Passengers </Label>
+                    <Label className="font-family-medium">How Many Additional Passengers </Label>
                     <Input
                       value={PassangerCount}
                       onChange={handleChange}
@@ -788,12 +788,12 @@ const CreateRide = () => {
                   className={`border-2 rounded-lg p-4 mb-4 w-100 ${"border-gray-200"}`}
                 >
                   <div className="flex items-center justify-between mb-2">
-                    <span className="font-bold text-black text-lg">
+                    <span className="font-family-bold text-black text-lg">
                       {"Additional Cost"} - {Number(CabPrice)?.toFixed(2)} XCD
                     </span>
                   </div>
                   <div className="flex items-center justify-between">
-                    <span className="font-semibold">
+                    <span className="font-family-semibold">
                       {(CabPrice / 2.7)?.toFixed(2)} USD
                     </span>
                   </div>
@@ -801,7 +801,7 @@ const CreateRide = () => {
               </div>
             )}
 
-            <h5 className="medium-font mt-4">Pay With</h5>
+            <h5 className="font-family-medium mt-4">Pay With</h5>
             <div
               className="paywith cursor-pointer"
               style={{
@@ -814,7 +814,7 @@ const CreateRide = () => {
                 style={{
                   color: PaymentMethod == "jad" ? "#fff" : "#004a70",
                 }}
-                className="medium-font"
+                className="font-family-medium"
               >
                 Credit/Debit
               </h6>
@@ -833,7 +833,7 @@ const CreateRide = () => {
               />
 
               <h6
-                className="medium-font"
+                className="font-family-medium"
                 style={{
                   color: PaymentMethod == "wallet" ? "#fff" : "#004a70",
                 }}
@@ -855,7 +855,7 @@ const CreateRide = () => {
               />
 
               <h6
-                className="medium-font"
+                className="font-family-medium"
                 style={{
                   color: PaymentMethod == "cash" ? "#fff" : "#004a70",
                 }}
@@ -867,7 +867,7 @@ const CreateRide = () => {
             {RefIdPayement ? (
               <button
                 onClick={CancelRequest}
-                className={`w-full h-14 mt-4 px-4 py-2 rounded-lg text-white bg-[#FF3700] hover:bg-[#FF3700]`}
+                className={`w-full h-14 mt-4 px-4 py-2 rounded-lg text-white bg-[#FF3700] hover:bg-[#FF3700] font-family-medium`}
               >
                 Cancel request
               </button>
@@ -875,7 +875,7 @@ const CreateRide = () => {
               <>
                 {PaymentMethod && (
                   <Button
-                    className="findDriver mt-5"
+                    className="findDriver mt-5 font-family-medium"
                     disabled={WalletLoading}
                     // style={{ position: "absolute", bottom: 20, width: "90%" }}
                     onClick={handleShow}
@@ -890,11 +890,11 @@ const CreateRide = () => {
       </Container>
       <Modal centered size="lg" show={show} onHide={handleClose}>
         <Modal.Header closeButton>
-          <Modal.Title>Payment</Modal.Title>
+          <Modal.Title className="font-family-medium">Payment</Modal.Title>
         </Modal.Header>
         <Modal.Body>
           {paymentCards?.length ? (
-            <div className="font-bold text-2xl mb-2.5">Saved Cards</div>
+            <div className="font-family-bold text-2xl mb-2.5">Saved Cards</div>
           ) : null}
 
           {paymentCards?.map((item, i) => (
@@ -904,18 +904,18 @@ const CreateRide = () => {
               className="bg-white p-4 mb-4 rounded-lg shadow-md cursor-pointer"
             >
               <div className="flex justify-between items-center mb-1.5">
-                <div className="text-gray-500 text-sm mr-2">Email</div>
-                <div className="font-bold text-lg">{`${item?.email}`}</div>
+                <div className="text-gray-500 text-sm mr-2 font-family-regular">Email</div>
+                <div className="font-family-bold text-lg">{`${item?.email}`}</div>
               </div>
               <div className="flex justify-between items-center">
-                <div className="text-gray-500 text-sm mr-2">Number</div>
-                <div className="font-bold text-lg">{item?.cardnumber}</div>
+                <div className="text-gray-500 text-sm mr-2 font-family-regular">Number</div>
+                <div className="font-family-bold text-lg">{item?.cardnumber}</div>
               </div>
             </div>
           ))}
 
           {/* <form> */}
-          <h2 className="text-2xl font-bold mb-6">Price</h2>
+          <h2 className="text-2xl font-family-bold mb-6">Price</h2>
 
           <div className="grid grid-cols-1 md:grid-cols-12 gap-4 mt-2">
             <div className="md:col-span-6">
@@ -1008,13 +1008,13 @@ const CreateRide = () => {
             <button
               onClick={jadAPiFunction}
               disabled={!areAllFieldsFilled()}
-              className={`w-full h-14 px-4 py-2 rounded-lg text-white hover:bg-[#234670] ${
+              className={`w-full h-14 px-4 py-2 rounded-lg text-white hover:bg-[#234670] font-family-medium ${
                 !areAllFieldsFilled() ? "bg-[#d3d3d3]" : "bg-[#1e3a5f]"
               }`}
             >
               {loading ? (
                 <Spinner animation="border" role="status">
-                  <span className="visually-hidden">Loading...</span>
+                  <span className="visually-hidden font-family-regular">Loading...</span>
                 </Spinner>
               ) : (
                 " Add Payment Method"
@@ -1047,13 +1047,13 @@ const CreateRide = () => {
                 </svg>
               </div>
             </div>
-            <h2 className="text-xl font-Bold mb-2">Payment Success</h2>
-            <p className="font-medium text-gray-500 text-center mb-4">
+            <h2 className="text-xl font-Bold mb-2 font-family-bold">Payment Success</h2>
+            <p className="font-family-medium text-gray-500 text-center mb-4">
               Your money has been successfully
             </p>
 
             <Button
-              className="findDriver mt-5"
+              className="findDriver mt-5 font-family-medium"
               // style={{ position: "absolute", bottom: 20, width: "90%" }}
               onClick={() => {
                 setShow1(false);

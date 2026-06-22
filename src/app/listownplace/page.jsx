@@ -591,14 +591,14 @@ const page = () => {
         <div style={{ position: "absolute", bottom: -40, left: -40, width: 160, height: 160, borderRadius: "50%", background: "rgba(255,255,255,0.03)" }} />
 
         <div style={{ maxWidth: 1200, margin: "0 auto", padding: "0 24px", position: "relative" }}>
-          <div style={{ display: "flex", alignItems: "center", gap: 8, color: "rgba(255,255,255,0.5)", fontSize: 13, fontWeight: 500, marginBottom: 16 }}>
-            <a href="/" style={{ color: "rgba(255,255,255,0.5)", textDecoration: "none", transition: "color 0.2s" }}
+          <div className="font-family-medium" style={{ display: "flex", alignItems: "center", gap: 8, color: "rgba(255,255,255,0.5)", fontSize: 13, marginBottom: 16 }}>
+            <a href="/" className="font-family-regular" style={{ color: "rgba(255,255,255,0.5)", textDecoration: "none", transition: "color 0.2s" }}
               onMouseEnter={(e) => e.currentTarget.style.color = "#fff"}
               onMouseLeave={(e) => e.currentTarget.style.color = "rgba(255,255,255,0.5)"}>
               Home
             </a>
-            <span style={{ color: "rgba(255,255,255,0.3)" }}>/</span>
-            <span style={{ color: "rgba(255,255,255,0.8)" }}>List Your Place</span>
+            <span className="font-family-regular" style={{ color: "rgba(255,255,255,0.3)" }}>/</span>
+            <span className="font-family-medium" style={{ color: "rgba(255,255,255,0.8)" }}>List Your Place</span>
           </div>
 
           <div style={{ display: "flex", alignItems: "center", gap: "clamp(10px, 2vw, 16px)" }}>
@@ -608,10 +608,10 @@ const page = () => {
               </svg>
             </div>
             <div>
-              <h1 style={{ color: "#fff", fontSize: "clamp(20px, 5vw, 30px)", fontWeight: 700, margin: 0, letterSpacing: "-0.5px", lineHeight: 1.2, wordBreak: "break-word" }}>
+              <h1 className="font-family-bold" style={{ color: "#fff", fontSize: "clamp(20px, 5vw, 30px)", margin: 0, letterSpacing: "-0.5px", lineHeight: 1.2, wordBreak: "break-word" }}>
                 List Your Place
               </h1>
-              <p style={{ color: "rgba(255,255,255,0.55)", fontSize: "clamp(12px, 2vw, 14px)", margin: "2px 0 0", fontWeight: 400, wordBreak: "break-word" }}>
+              <p className="font-family-regular" style={{ color: "rgba(255,255,255,0.55)", fontSize: "clamp(12px, 2vw, 14px)", margin: "2px 0 0", wordBreak: "break-word" }}>
                 Register your property or service with us
               </p>
             </div>
@@ -634,7 +634,7 @@ const page = () => {
 
             {/* Images - Top */}
             <div style={{ marginBottom: 24 }}>
-              <p style={{ fontSize: 15, fontWeight: 600, color: "#1f2937", margin: "0 0 12px", display: "flex", alignItems: "center", gap: 8 }}>
+              <p className="font-family-semibold" style={{ fontSize: 15, color: "#1f2937", margin: "0 0 12px", display: "flex", alignItems: "center", gap: 8 }}>
                 <svg width={16} height={16} viewBox="0 0 24 24" fill="none" stroke="#004a70" strokeWidth={2} strokeLinecap="round" strokeLinejoin="round">
                   <rect x="3" y="3" width="18" height="18" rx="2" ry="2" />
                   <circle cx="8.5" cy="8.5" r="1.5" />
@@ -642,7 +642,7 @@ const page = () => {
                 </svg>
                 Images
               </p>
-              <p style={{ fontSize: 13, color: "#9ca3af", margin: "0 0 12px", marginBottom: 10 }}>
+              <p className="font-family-regular" style={{ fontSize: 13, color: "#9ca3af", margin: "0 0 12px", marginBottom: 10 }}>
                 Upload images of your place or service
               </p>
               <div
@@ -662,10 +662,10 @@ const page = () => {
                 <svg width={32} height={32} viewBox="0 0 24 24" fill="none" stroke="#9ca3af" strokeWidth={1.5}>
                   <path strokeLinecap="round" strokeLinejoin="round" d="M2.25 15.75l5.159-5.159a2.25 2.25 0 0 1 3.182 0l5.159 5.159m-1.5-1.5l1.409-1.409a2.25 2.25 0 0 1 3.182 0l2.909 2.909M3.75 21h16.5A2.25 2.25 0 0 0 22.5 18.75V5.25A2.25 2.25 0 0 0 20.25 3H3.75A2.25 2.25 0 0 0 1.5 5.25v13.5A2.25 2.25 0 0 0 3.75 21Z" />
                 </svg>
-                <p style={{ fontSize: 14, color: "#6b7280", margin: "8px 0 0" }}>
+                <p className="font-family-regular" style={{ fontSize: 14, color: "#6b7280", margin: "8px 0 0" }}>
                   {imageLoading ? "Uploading..." : "Click or drag images here"}
                 </p>
-                <p style={{ fontSize: 12, color: "#9ca3af", margin: "4px 0 0" }}>
+                <p className="font-family-regular" style={{ fontSize: 12, color: "#9ca3af", margin: "4px 0 0" }}>
                   JPG, PNG, SVG up to 1MB each
                 </p>
                 <Input
@@ -717,7 +717,7 @@ const page = () => {
             <div style={{ display: "grid", gridTemplateColumns: isMobile ? "1fr" : "1fr 1fr", gap: "12px 20px" }}>
               {/* Category */}
               <div>
-                <Label for="category" style={{ fontSize: 13, fontWeight: 500, color: "#374151", display: "block", marginBottom: 4 }}>
+                <Label for="category" className="font-family-medium" style={{ fontSize: 13, color: "#374151", display: "block", marginBottom: 4 }}>
                   Category <span style={{ color: "#ef4444" }}>*</span>
                 </Label>
                 <Controller
@@ -747,7 +747,7 @@ const page = () => {
                         styles={selectStyles(errors.category)}
                       />
                       {errors.category && (
-                        <FormFeedback style={{ fontSize: 12, marginTop: 4, color: "#ef4444", display: "block" }}>
+                        <FormFeedback className="font-family-regular" style={{ fontSize: 12, marginTop: 4, color: "#ef4444", display: "block" }}>
                           {errors.category.message}
                         </FormFeedback>
                       )}
@@ -758,7 +758,7 @@ const page = () => {
 
               {/* Sub Category */}
               <div>
-                <Label for="sucat" style={{ fontSize: 13, fontWeight: 500, color: "#374151", display: "block", marginBottom: 4 }}>
+                <Label for="sucat" className="font-family-medium" style={{ fontSize: 13, color: "#374151", display: "block", marginBottom: 4 }}>
                   Sub Category <span style={{ color: "#ef4444" }}>*</span>
                 </Label>
                 <Controller
@@ -787,7 +787,7 @@ const page = () => {
                         styles={selectStyles(errors.sucat)}
                       />
                       {errors.sucat && (
-                        <div style={{ fontSize: 12, marginTop: 4, color: "#ef4444" }}>
+                        <div className="font-family-regular" style={{ fontSize: 12, marginTop: 4, color: "#ef4444" }}>
                           {errors.sucat.message}
                         </div>
                       )}
@@ -798,7 +798,7 @@ const page = () => {
 
               {/* Title */}
               <div>
-                <Label style={{ fontSize: 13, fontWeight: 500, color: "#374151", display: "block", marginBottom: 4 }}>
+                <Label className="font-family-medium" style={{ fontSize: 13, color: "#374151", display: "block", marginBottom: 4 }}>
                   Title <span style={{ color: "#ef4444" }}>*</span>
                 </Label>
                 <Controller
@@ -814,7 +814,7 @@ const page = () => {
                   )}
                 />
                 {errors.title && (
-                  <FormFeedback style={{ fontSize: 12, marginTop: 4, color: "#ef4444", display: "block" }}>
+                  <FormFeedback className="font-family-regular" style={{ fontSize: 12, marginTop: 4, color: "#ef4444", display: "block" }}>
                     {errors.title.message}
                   </FormFeedback>
                 )}
@@ -822,7 +822,7 @@ const page = () => {
 
               {/* Location */}
               <div>
-                <Label style={{ fontSize: 13, fontWeight: 500, color: "#374151", display: "block", marginBottom: 4 }}>
+                <Label className="font-family-medium" style={{ fontSize: 13, color: "#374151", display: "block", marginBottom: 4 }}>
                   Start Location
                 </Label>
                 <Controller
@@ -838,7 +838,7 @@ const page = () => {
                         style={{ ...inputStyle(errors.location), paddingRight: 30 }}
                         invalid={errors.location && true}
                       />
-                      {PridicLoading && <span style={{ position: "absolute", right: 10, top: "50%", transform: "translateY(-50%)", fontSize: 12, color: "#9ca3af" }}>Loading...</span>}
+                      {PridicLoading && <span className="font-family-regular" style={{ position: "absolute", right: 10, top: "50%", transform: "translateY(-50%)", fontSize: 12, color: "#9ca3af" }}>Loading...</span>}
                       {predictions.length > 0 && (
                         <div
                           style={{
@@ -857,7 +857,7 @@ const page = () => {
                             <div
                               key={prediction.place_id}
                               onClick={() => handlePredictionPress(prediction)}
-                              className="hover:bg-gray-100"
+                              className="hover:bg-gray-100 font-family-regular"
                               style={{
                                 padding: "10px 14px",
                                 cursor: "pointer",
@@ -870,7 +870,7 @@ const page = () => {
                           ))}
                         </div>
                       )}
-                      {noData && <span style={{ fontSize: 12, color: "#9ca3af", marginTop: 4, display: "block" }}>No results found</span>}
+                      {noData && <span className="font-family-regular" style={{ fontSize: 12, color: "#9ca3af", marginTop: 4, display: "block" }}>No results found</span>}
                     </div>
                   )}
                 />
@@ -879,7 +879,7 @@ const page = () => {
 
             {/* Description */}
             <div style={{ marginTop: 16 }}>
-              <p style={{ fontSize: 15, fontWeight: 600, color: "#1f2937", margin: "0 0 12px", display: "flex", alignItems: "center", gap: 8 }}>
+              <p className="font-family-semibold" style={{ fontSize: 15, color: "#1f2937", margin: "0 0 12px", display: "flex", alignItems: "center", gap: 8 }}>
                 <svg width={16} height={16} viewBox="0 0 24 24" fill="none" stroke="#004a70" strokeWidth={2} strokeLinecap="round" strokeLinejoin="round">
                   <path d="M14 2H6a2 2 0 0 0-2 2v16a2 2 0 0 0 2 2h12a2 2 0 0 0 2-2V8z" />
                   <polyline points="14 2 14 8 20 8" />
@@ -902,7 +902,7 @@ const page = () => {
                 )}
               />
               {errors.description && (
-                <FormFeedback style={{ fontSize: 12, marginTop: 4, color: "#ef4444", display: "block" }}>
+                <FormFeedback className="font-family-regular" style={{ fontSize: 12, marginTop: 4, color: "#ef4444", display: "block" }}>
                   {errors.description.message}
                 </FormFeedback>
               )}
@@ -910,7 +910,7 @@ const page = () => {
 
             <div style={{ height: 1, background: "#f3f4f6", margin: "20px 0" }} />
 
-            <p style={{ fontSize: 15, fontWeight: 600, color: "#1f2937", margin: "0 0 12px", display: "flex", alignItems: "center", gap: 8 }}>
+            <p className="font-family-semibold" style={{ fontSize: 15, color: "#1f2937", margin: "0 0 12px", display: "flex", alignItems: "center", gap: 8 }}>
               <svg width={16} height={16} viewBox="0 0 24 24" fill="none" stroke="#004a70" strokeWidth={2} strokeLinecap="round" strokeLinejoin="round">
                 <polygon points="12 2 15.09 8.26 22 9.27 17 14.14 18.18 21.02 12 17.77 5.82 21.02 7 14.14 2 9.27 8.91 8.26 12 2" />
               </svg>
@@ -938,6 +938,7 @@ const page = () => {
                 <button
                   type="button"
                   onClick={() => removeHighlight(index)}
+                  className="font-family-semibold"
                   style={{
                     width: 38,
                     height: 38,
@@ -950,8 +951,6 @@ const page = () => {
                     alignItems: "center",
                     justifyContent: "center",
                     fontSize: 14,
-                    fontWeight: 600,
-                    flexShrink: 0,
                   }}
                 >
                   ✕
@@ -961,7 +960,7 @@ const page = () => {
             <button
               type="button"
               onClick={() => addHighlight("")}
-              className="hover:bg-blue-100"
+              className="font-family-medium hover:bg-blue-100"
               style={{
                 padding: "10px 20px",
                 borderRadius: 10,
@@ -969,7 +968,6 @@ const page = () => {
                 border: "1px dashed #004a70",
                 color: "#004a70",
                 fontSize: 13,
-                fontWeight: 500,
                 cursor: "pointer",
                 transition: "all 0.15s",
               }}
@@ -981,7 +979,7 @@ const page = () => {
             {selectedCategory?.name === "Excursion" && (
               <>
                 <div style={{ height: 1, background: "#f3f4f6", margin: "20px 0" }} />
-                <p style={{ fontSize: 15, fontWeight: 600, color: "#1f2937", margin: "0 0 12px", display: "flex", alignItems: "center", gap: 8 }}>
+                <p className="font-family-semibold" style={{ fontSize: 15, color: "#1f2937", margin: "0 0 12px", display: "flex", alignItems: "center", gap: 8 }}>
                   <svg width={16} height={16} viewBox="0 0 24 24" fill="none" stroke="#004a70" strokeWidth={2} strokeLinecap="round" strokeLinejoin="round">
                     <circle cx="12" cy="12" r="10" />
                     <path d="M12 6v6l4 2" />
@@ -990,7 +988,7 @@ const page = () => {
                 </p>
                 <div style={{ display: "grid", gridTemplateColumns: isMobile ? "1fr" : "1fr 1fr", gap: "12px 20px", marginBottom: 16 }}>
                   <div>
-                    <Label style={{ fontSize: 13, fontWeight: 500, color: "#374151", display: "block", marginBottom: 4 }}>
+                    <Label className="font-family-medium" style={{ fontSize: 13, color: "#374151", display: "block", marginBottom: 4 }}>
                       Travelers
                     </Label>
                     <Controller
@@ -1000,10 +998,10 @@ const page = () => {
                         <Input {...field} required placeholder="Max travelers" style={inputStyle(errors.trevelers)} invalid={errors.trevelers && true} />
                       )}
                     />
-                    {errors.trevelers && <FormFeedback style={{ fontSize: 12, marginTop: 4, color: "#ef4444", display: "block" }}>{errors.trevelers.message}</FormFeedback>}
+                    {errors.trevelers && <FormFeedback className="font-family-regular" style={{ fontSize: 12, marginTop: 4, color: "#ef4444", display: "block" }}>{errors.trevelers.message}</FormFeedback>}
                   </div>
                   <div>
-                    <Label style={{ fontSize: 13, fontWeight: 500, color: "#374151", display: "block", marginBottom: 4 }}>
+                    <Label className="font-family-medium" style={{ fontSize: 13, color: "#374151", display: "block", marginBottom: 4 }}>
                       Price Per Person ($)
                     </Label>
                     <Controller
@@ -1013,10 +1011,10 @@ const page = () => {
                         <Input {...field} required type="number" placeholder="0.00" style={inputStyle(errors.price_per_person)} invalid={errors.price_per_person && true} />
                       )}
                     />
-                    {errors.price_per_person && <FormFeedback style={{ fontSize: 12, marginTop: 4, color: "#ef4444", display: "block" }}>{errors.price_per_person.message}</FormFeedback>}
+                    {errors.price_per_person && <FormFeedback className="font-family-regular" style={{ fontSize: 12, marginTop: 4, color: "#ef4444", display: "block" }}>{errors.price_per_person.message}</FormFeedback>}
                   </div>
                 </div>
-                <p style={{ fontSize: 13, fontWeight: 600, color: "#374151", marginBottom: 8, display: "flex", alignItems: "center", gap: 6 }}>
+                <p className="font-family-semibold" style={{ fontSize: 13, color: "#374151", marginBottom: 8, display: "flex", alignItems: "center", gap: 6 }}>
                   <svg width={14} height={14} viewBox="0 0 24 24" fill="none" stroke="#004a70" strokeWidth={2} strokeLinecap="round" strokeLinejoin="round">
                     <circle cx="12" cy="12" r="10" />
                     <polyline points="12 6 12 12 16 14" />
@@ -1062,7 +1060,7 @@ const page = () => {
                 <button
                   type="button"
                   onClick={() => addTime("")}
-                  className="hover:bg-blue-100"
+                  className="font-family-medium hover:bg-blue-100"
                   style={{
                     padding: "10px 20px",
                     borderRadius: 10,
@@ -1070,7 +1068,6 @@ const page = () => {
                     border: "1px dashed #004a70",
                     color: "#004a70",
                     fontSize: 13,
-                    fontWeight: 500,
                     cursor: "pointer",
                     transition: "all 0.15s",
                   }}
@@ -1084,7 +1081,7 @@ const page = () => {
               <>
                 <div style={{ height: 1, background: "#f3f4f6", margin: "20px 0" }} />
                 <div style={{ maxWidth: 300 }}>
-                  <p style={{ fontSize: 13, fontWeight: 600, color: "#374151", margin: "0 0 4px", display: "flex", alignItems: "center", gap: 6 }}>
+                  <p className="font-family-semibold" style={{ fontSize: 13, color: "#374151", margin: "0 0 4px", display: "flex", alignItems: "center", gap: 6 }}>
                     <svg width={14} height={14} viewBox="0 0 24 24" fill="none" stroke="#004a70" strokeWidth={2} strokeLinecap="round" strokeLinejoin="round">
                       <line x1="12" y1="1" x2="12" y2="23" />
                       <path d="M17 5H9.5a3.5 3.5 0 0 0 0 7h5a3.5 3.5 0 0 1 0 7H6" />
@@ -1105,7 +1102,7 @@ const page = () => {
                     )}
                   />
                   {errors.location_price && (
-                    <FormFeedback style={{ fontSize: 12, marginTop: 4, color: "#ef4444", display: "block" }}>
+                    <FormFeedback className="font-family-regular" style={{ fontSize: 12, marginTop: 4, color: "#ef4444", display: "block" }}>
                       {errors.location_price.message}
                     </FormFeedback>
                   )}
@@ -1115,19 +1112,19 @@ const page = () => {
 
             {/* Payment Method */}
             <div style={{ height: 1, background: "#f3f4f6", margin: "20px 0" }} />
-            <p style={{ fontSize: 15, fontWeight: 600, color: "#1f2937", margin: "0 0 12px", display: "flex", alignItems: "center", gap: 8 }}>
+            <p className="font-family-semibold" style={{ fontSize: 15, color: "#1f2937", margin: "0 0 12px", display: "flex", alignItems: "center", gap: 8 }}>
               <svg width={16} height={16} viewBox="0 0 24 24" fill="none" stroke="#004a70" strokeWidth={2} strokeLinecap="round" strokeLinejoin="round">
                 <rect x="1" y="4" width="22" height="16" rx="2" ry="2" />
                 <line x1="1" y1="10" x2="23" y2="10" />
               </svg>
               Payment Method
             </p>
-            <p style={{ fontSize: 13, color: "#6b7280", margin: "0 0 14px", display: "flex", alignItems: "center", gap: 6 }}>
+            <p className="font-family-regular" style={{ fontSize: 13, color: "#6b7280", margin: "0 0 14px", display: "flex", alignItems: "center", gap: 6 }}>
               <svg width={14} height={14} viewBox="0 0 24 24" fill="none" stroke="#9ca3af" strokeWidth={2} strokeLinecap="round" strokeLinejoin="round">
                 <line x1="12" y1="1" x2="12" y2="23" />
                 <path d="M17 5H9.5a3.5 3.5 0 0 0 0 7h5a3.5 3.5 0 0 1 0 7H6" />
               </svg>
-              Listing fee: <strong style={{ color: "#004a70" }}>$40.00</strong>
+              Listing fee: <strong className="font-family-semibold" style={{ color: "#004a70" }}>$40.00</strong>
             </p>
             <div style={{ display: "flex", gap: 12, flexWrap: "wrap" }}>
               <div
@@ -1159,8 +1156,8 @@ const page = () => {
                   </svg>
                 </div>
                 <div>
-                  <p style={{ fontSize: 14, fontWeight: 600, color: "#1f2937", margin: 0 }}>Credit / Debit</p>
-                  <p style={{ fontSize: 12, color: "#9ca3af", margin: "2px 0 0" }}>Pay with card</p>
+                  <p className="font-family-semibold" style={{ fontSize: 14, color: "#1f2937", margin: 0 }}>Credit / Debit</p>
+                  <p className="font-family-regular" style={{ fontSize: 12, color: "#9ca3af", margin: "2px 0 0" }}>Pay with card</p>
                 </div>
               </div>
               <div
@@ -1190,8 +1187,8 @@ const page = () => {
                   <FaWallet size={18} color={PaymentMethod === "wallet" ? "#fff" : "#6b7280"} />
                 </div>
                 <div>
-                  <p style={{ fontSize: 14, fontWeight: 600, color: "#1f2937", margin: 0 }}>Wallet</p>
-                  <p style={{ fontSize: 12, color: "#9ca3af", margin: "2px 0 0" }}>Balance: ${userData?.amount?.toFixed(2) || "0.00"}</p>
+                  <p className="font-family-semibold" style={{ fontSize: 14, color: "#1f2937", margin: 0 }}>Wallet</p>
+                  <p className="font-family-regular" style={{ fontSize: 12, color: "#9ca3af", margin: "2px 0 0" }}>Balance: ${userData?.amount?.toFixed(2) || "0.00"}</p>
                 </div>
               </div>
             </div>
@@ -1200,6 +1197,7 @@ const page = () => {
             <div style={{ marginTop: 20, display: "flex", justifyContent: "flex-end" }}>
               <CustomButton
                 type="submit"
+                className="font-family-medium"
                 loading={isLoading}
                 disabled={imageLoading}
                 style={{ padding: "12px 36px" }}
@@ -1233,13 +1231,13 @@ const page = () => {
               <path strokeLinecap="round" strokeLinejoin="round" d="M2.25 8.25h19.5M2.25 9h19.5m-16.5 5.25h6m-6 2.25h3m-3.75 3h15a2.25 2.25 0 0 0 2.25-2.25V6.75A2.25 2.25 0 0 0 19.5 4.5h-15a2.25 2.25 0 0 0-2.25 2.25v10.5A2.25 2.25 0 0 0 4.5 19.5Z" />
             </svg>
           </div>
-          <h2 style={{ color: "#fff", fontSize: "clamp(18px, 3vw, 22px)", fontWeight: 700, margin: 0 }}>Pay with Card</h2>
-          <p style={{ color: "rgba(255,255,255,0.6)", fontSize: 13, margin: "4px 0 0" }}>Amount: $40.00</p>
+          <h2 className="font-family-bold" style={{ color: "#fff", fontSize: "clamp(18px, 3vw, 22px)", margin: 0 }}>Pay with Card</h2>
+          <p className="font-family-regular" style={{ color: "rgba(255,255,255,0.6)", fontSize: 13, margin: "4px 0 0" }}>Amount: $40.00</p>
         </div>
         <div style={{ padding: "clamp(20px, 3vw, 28px)" }}>
           {paymentCards?.length > 0 && (
             <>
-              <p style={{ fontSize: 14, fontWeight: 600, color: "#1f2937", margin: "0 0 10px" }}>Saved Cards</p>
+              <p className="font-family-semibold" style={{ fontSize: 14, color: "#1f2937", margin: "0 0 10px" }}>Saved Cards</p>
               <div style={{ display: "flex", flexDirection: "column", gap: 8, marginBottom: 20 }}>
                 {paymentCards?.map((item, i) => (
                   <div key={i} onClick={() => onSelectCard(item)} className="hover:border-brand-700 hover:bg-blue-50" style={{
@@ -1249,8 +1247,8 @@ const page = () => {
                   >
                     <svg width={20} height={20} viewBox="0 0 24 24" fill="#004a70"><path d="M4 4h16c1.1 0 2 .9 2 2v12c0 1.1-.9 2-2 2H4c-1.1 0-2-.9-2-2V6c0-1.1.9-2 2-2zm0 2v12h16V6H4zm2 6h12v2H6v-2zm0-3h12v2H6V9zm0 6h8v2H6v-2z" /></svg>
                     <div style={{ flex: 1, minWidth: 0 }}>
-                      <p style={{ fontSize: 13, fontWeight: 500, color: "#374151", margin: 0 }}>{item?.cardfirstname} {item?.cardlastname}</p>
-                      <p style={{ fontSize: 12, color: "#9ca3af", margin: "2px 0 0" }}>**** {item?.cardnumber?.slice(-4)}</p>
+                      <p className="font-family-medium" style={{ fontSize: 13, color: "#374151", margin: 0 }}>{item?.cardfirstname} {item?.cardlastname}</p>
+                      <p className="font-family-regular" style={{ fontSize: 12, color: "#9ca3af", margin: "2px 0 0" }}>**** {item?.cardnumber?.slice(-4)}</p>
                     </div>
                     <svg width={16} height={16} viewBox="0 0 24 24" fill="#059669"><path d="M9 16.17L4.83 12l-1.42 1.41L9 19 21 7l-1.41-1.41z" /></svg>
                   </div>
@@ -1262,16 +1260,16 @@ const page = () => {
             <div><Cards className="cardStyle" cvc={cardDetails.cvc} expiry={cardDetails.expiry} name={cardDetails.name} number={cardDetails.number} /></div>
             <div style={{ display: "flex", flexDirection: "column", gap: 10 }}>
               <div>
-                <label style={{ fontSize: 12, fontWeight: 500, color: "#374151", display: "block", marginBottom: 3 }}>Card Number</label>
+                <label className="font-family-medium" style={{ fontSize: 12, color: "#374151", display: "block", marginBottom: 3 }}>Card Number</label>
                 <input type="text" name="number" placeholder="1234 5678 9012 3456" value={cardDetails.number} onChange={handleInputChange} maxLength="16" required style={modalInputStyle} />
               </div>
               <div>
-                <label style={{ fontSize: 12, fontWeight: 500, color: "#374151", display: "block", marginBottom: 3 }}>Cardholder Name</label>
+                <label className="font-family-medium" style={{ fontSize: 12, color: "#374151", display: "block", marginBottom: 3 }}>Cardholder Name</label>
                 <input type="text" name="name" placeholder="John Doe" value={cardDetails.name} onChange={handleInputChange} required style={modalInputStyle} />
               </div>
               <div style={{ display: "flex", gap: 10 }}>
                 <div style={{ flex: 1 }}>
-                  <label style={{ fontSize: 12, fontWeight: 500, color: "#374151", display: "block", marginBottom: 3 }}>Expiry</label>
+                  <label className="font-family-medium" style={{ fontSize: 12, color: "#374151", display: "block", marginBottom: 3 }}>Expiry</label>
                   <input type="text" name="expiry" placeholder="MM/YY" value={cardDetails.expiry}
                     onChange={(e) => {
                       let value = e.target.value.replace(/\D/g, "");
@@ -1281,25 +1279,26 @@ const page = () => {
                     }} maxLength="5" required style={modalInputStyle} />
                 </div>
                 <div style={{ flex: 1 }}>
-                  <label style={{ fontSize: 12, fontWeight: 500, color: "#374151", display: "block", marginBottom: 3 }}>CVC</label>
+                  <label className="font-family-medium" style={{ fontSize: 12, color: "#374151", display: "block", marginBottom: 3 }}>CVC</label>
                   <input type="text" name="cvc" placeholder="123" value={cardDetails.cvc} onChange={handleInputChange} maxLength="3" required style={modalInputStyle} />
                 </div>
               </div>
             </div>
           </div>
           <div style={{ display: "grid", gridTemplateColumns: isMobile ? "1fr" : "1fr 1fr", gap: 10, marginTop: 16 }}>
-            <div><label style={{ fontSize: 12, fontWeight: 500, color: "#374151", display: "block", marginBottom: 3 }}>First Name</label><input type="text" name="firstName" placeholder="John" value={cardDetails.firstName} onChange={handleInputChange} required style={modalInputStyle} /></div>
-            <div><label style={{ fontSize: 12, fontWeight: 500, color: "#374151", display: "block", marginBottom: 3 }}>Last Name</label><input type="text" name="lastName" placeholder="Doe" value={cardDetails.lastName} onChange={handleInputChange} required style={modalInputStyle} /></div>
-            <div><label style={{ fontSize: 12, fontWeight: 500, color: "#374151", display: "block", marginBottom: 3 }}>Address</label><input type="text" name="address" placeholder="Address" value={cardDetails.address} onChange={handleInputChange} required style={modalInputStyle} /></div>
-            <div><label style={{ fontSize: 12, fontWeight: 500, color: "#374151", display: "block", marginBottom: 3 }}>Postal Code</label><input type="text" name="postalCode" placeholder="Postal code" value={cardDetails.postalCode} onChange={handleInputChange} required style={modalInputStyle} /></div>
-            <div><label style={{ fontSize: 12, fontWeight: 500, color: "#374151", display: "block", marginBottom: 3 }}>Country</label><input type="text" name="countary" placeholder="Country" value={cardDetails.countary} onChange={handleInputChange} required style={modalInputStyle} /></div>
-            <div><label style={{ fontSize: 12, fontWeight: 500, color: "#374151", display: "block", marginBottom: 3 }}>City</label><input type="text" name="city" placeholder="City" value={cardDetails.city} onChange={handleInputChange} required style={modalInputStyle} /></div>
-            <div><label style={{ fontSize: 12, fontWeight: 500, color: "#374151", display: "block", marginBottom: 3 }}>State</label><input type="text" name="state" placeholder="State" value={cardDetails.state} onChange={handleInputChange} required style={modalInputStyle} /></div>
-            <div><label style={{ fontSize: 12, fontWeight: 500, color: "#374151", display: "block", marginBottom: 3 }}>Phone</label><input type="text" name="phone" placeholder="+1 (___)-___-____" value={cardDetails.phone} onChange={handleInputChange} required style={modalInputStyle} /></div>
-            <div><label style={{ fontSize: 12, fontWeight: 500, color: "#374151", display: "block", marginBottom: 3 }}>Email</label><input type="text" name="email" placeholder="email@example.com" value={cardDetails.email} onChange={handleInputChange} required style={modalInputStyle} /></div>
+            <div><label className="font-family-medium" style={{ fontSize: 12, color: "#374151", display: "block", marginBottom: 3 }}>First Name</label><input type="text" name="firstName" placeholder="John" value={cardDetails.firstName} onChange={handleInputChange} required style={modalInputStyle} /></div>
+            <div><label className="font-family-medium" style={{ fontSize: 12, color: "#374151", display: "block", marginBottom: 3 }}>Last Name</label><input type="text" name="lastName" placeholder="Doe" value={cardDetails.lastName} onChange={handleInputChange} required style={modalInputStyle} /></div>
+            <div><label className="font-family-medium" style={{ fontSize: 12, color: "#374151", display: "block", marginBottom: 3 }}>Address</label><input type="text" name="address" placeholder="Address" value={cardDetails.address} onChange={handleInputChange} required style={modalInputStyle} /></div>
+            <div><label className="font-family-medium" style={{ fontSize: 12, color: "#374151", display: "block", marginBottom: 3 }}>Postal Code</label><input type="text" name="postalCode" placeholder="Postal code" value={cardDetails.postalCode} onChange={handleInputChange} required style={modalInputStyle} /></div>
+            <div><label className="font-family-medium" style={{ fontSize: 12, color: "#374151", display: "block", marginBottom: 3 }}>Country</label><input type="text" name="countary" placeholder="Country" value={cardDetails.countary} onChange={handleInputChange} required style={modalInputStyle} /></div>
+            <div><label className="font-family-medium" style={{ fontSize: 12, color: "#374151", display: "block", marginBottom: 3 }}>City</label><input type="text" name="city" placeholder="City" value={cardDetails.city} onChange={handleInputChange} required style={modalInputStyle} /></div>
+            <div><label className="font-family-medium" style={{ fontSize: 12, color: "#374151", display: "block", marginBottom: 3 }}>State</label><input type="text" name="state" placeholder="State" value={cardDetails.state} onChange={handleInputChange} required style={modalInputStyle} /></div>
+            <div><label className="font-family-medium" style={{ fontSize: 12, color: "#374151", display: "block", marginBottom: 3 }}>Phone</label><input type="text" name="phone" placeholder="+1 (___)-___-____" value={cardDetails.phone} onChange={handleInputChange} required style={modalInputStyle} /></div>
+            <div><label className="font-family-medium" style={{ fontSize: 12, color: "#374151", display: "block", marginBottom: 3 }}>Email</label><input type="text" name="email" placeholder="email@example.com" value={cardDetails.email} onChange={handleInputChange} required style={modalInputStyle} /></div>
           </div>
           <CustomButton
             onClick={jadAPiFunction}
+            className="font-family-medium"
             loading={loading}
             disabled={!areAllFieldsFilled()}
             style={{ width: "100%", marginTop: 20 }}
@@ -1321,10 +1320,11 @@ const page = () => {
               <path strokeLinecap="round" strokeLinejoin="round" d="M4.5 12.75l6 6 9-13.5" />
             </svg>
           </div>
-          <h2 style={{ fontSize: 20, fontWeight: 700, color: "#1f2937", margin: "0 0 4px" }}>Payment Successful!</h2>
-          <p style={{ fontSize: 14, color: "#6b7280", margin: "0 0 24px" }}>Your listing has been submitted</p>
+          <h2 className="font-family-bold" style={{ fontSize: 20, color: "#1f2937", margin: "0 0 4px" }}>Payment Successful!</h2>
+          <p className="font-family-regular" style={{ fontSize: 14, color: "#6b7280", margin: "0 0 24px" }}>Your listing has been submitted</p>
           <CustomButton
             onClick={() => { setShow1(false); router.push("/") }}
+            className="font-family-medium"
             style={{ padding: "12px 32px" }}
           >
             Back to Home

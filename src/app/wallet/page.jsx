@@ -288,24 +288,24 @@ const page = () => {
         <div style={{ position: "absolute", top: -60, right: -60, width: 200, height: 200, borderRadius: "50%", background: "rgba(255,255,255,0.03)" }} />
         <div style={{ position: "absolute", bottom: -40, left: -40, width: 160, height: 160, borderRadius: "50%", background: "rgba(255,255,255,0.03)" }} />
         <div style={{ maxWidth: 1200, margin: "0 auto", padding: "0 16px", position: "relative" }}>
-          <div style={{ display: "flex", alignItems: "center", gap: 8, color: "rgba(255,255,255,0.5)", fontSize: 13, fontWeight: 500, marginBottom: 16 }}>
-            <a href="/" style={{ color: "rgba(255,255,255,0.5)", textDecoration: "none", transition: "color 0.2s" }}
+          <div className="font-family-medium" style={{ display: "flex", alignItems: "center", gap: 8, color: "rgba(255,255,255,0.5)", fontSize: 13, marginBottom: 16 }}>
+            <a href="/" className="font-family-medium" style={{ color: "rgba(255,255,255,0.5)", textDecoration: "none", transition: "color 0.2s" }}
               onMouseEnter={(e) => e.currentTarget.style.color = "#fff"}
               onMouseLeave={(e) => e.currentTarget.style.color = "rgba(255,255,255,0.5)"}>
               Home
             </a>
-            <span style={{ color: "rgba(255,255,255,0.3)" }}>/</span>
-            <span style={{ color: "rgba(255,255,255,0.8)" }}>Wallet</span>
+            <span className="font-family-medium" style={{ color: "rgba(255,255,255,0.3)" }}>/</span>
+            <span className="font-family-medium" style={{ color: "rgba(255,255,255,0.8)" }}>Wallet</span>
           </div>
           <div style={{ display: "flex", alignItems: "center", gap: "clamp(10px, 2vw, 16px)" }}>
             <div style={{ width: "clamp(40px, 6vw, 52px)", height: "clamp(40px, 6vw, 52px)", borderRadius: "clamp(12px, 2vw, 16px)", background: "rgba(255,255,255,0.12)", backdropFilter: "blur(8px)", display: "flex", alignItems: "center", justifyContent: "center", flexShrink: 0 }}>
               <FaWallet size="clamp(18px, 3vw, 24px)" color="#fff" />
             </div>
             <div>
-              <h1 style={{ color: "#fff", fontSize: "clamp(20px, 5vw, 30px)", fontWeight: 700, margin: 0, letterSpacing: "-0.5px", lineHeight: 1.2, wordBreak: "break-word" }}>
+              <h1 className="font-family-bold" style={{ color: "#fff", fontSize: "clamp(20px, 5vw, 30px)", margin: 0, letterSpacing: "-0.5px", lineHeight: 1.2, wordBreak: "break-word" }}>
                 My Wallet
               </h1>
-              <p style={{ color: "rgba(255,255,255,0.55)", fontSize: "clamp(12px, 2vw, 14px)", margin: "2px 0 0", fontWeight: 400, wordBreak: "break-word" }}>
+              <p className="font-family-regular" style={{ color: "rgba(255,255,255,0.55)", fontSize: "clamp(12px, 2vw, 14px)", margin: "2px 0 0", wordBreak: "break-word" }}>
                 Manage your balance and transactions
               </p>
             </div>
@@ -368,13 +368,13 @@ const page = () => {
                   background: "rgba(255,255,255,0.03)",
                 }}
               />
-              <p style={{ fontSize: 13, color: "rgba(255,255,255,0.6)", margin: "0 0 8px", position: "relative", zIndex: 1 }}>
+              <p className="font-family-medium" style={{ fontSize: 13, color: "rgba(255,255,255,0.6)", margin: "0 0 8px", position: "relative", zIndex: 1 }}>
                 Available Balance
               </p>
               <p
+                className="font-family-bold"
                 style={{
                   fontSize: "clamp(20px, 3vw, 28px)",
-                  fontWeight: 700,
                   margin: 0,
                   position: "relative",
                   zIndex: 1,
@@ -399,7 +399,7 @@ const page = () => {
             >
               <div
                 onClick={() => setTab("Topup")}
-                className={Tab !== "Topup" ? 'hover:bg-slate-50' : ''}
+                className={(Tab !== "Topup" ? 'hover:bg-slate-50' : '') + (Tab === "Topup" ? " font-family-semibold" : " font-family-medium")}
                 style={{
                   display: "flex",
                   alignItems: "center",
@@ -409,7 +409,6 @@ const page = () => {
                   cursor: "pointer",
                   background: Tab === "Topup" ? "linear-gradient(135deg, #f0f7ff 0%, #e8f4fd 100%)" : "transparent",
                   color: Tab === "Topup" ? "#004a70" : "#4b5563",
-                  fontWeight: Tab === "Topup" ? 600 : 500,
                   fontSize: 14,
                   transition: "all 0.2s",
                   marginBottom: 2,
@@ -419,12 +418,12 @@ const page = () => {
                 <div style={{ width: 28, height: 28, borderRadius: 8, background: Tab === "Topup" ? "#004a70" : "#f3f4f6", display: "flex", alignItems: "center", justifyContent: "center", flexShrink: 0, transition: "all 0.2s" }}>
                   <FaWallet size={13} color={Tab === "Topup" ? "#fff" : "#9ca3af"} />
                 </div>
-                <span style={{ flex: 1 }}>Top Up</span>
+                <span className="font-family-medium" style={{ flex: 1 }}>Top Up</span>
                 {Tab === "Topup" && <div style={{ width: 6, height: 6, borderRadius: "50%", background: "#004a70" }} />}
               </div>
               <div
                 onClick={() => setTab("History")}
-                className={Tab !== "History" ? 'hover:bg-slate-50' : ''}
+                className={(Tab !== "History" ? 'hover:bg-slate-50' : '') + (Tab === "History" ? " font-family-semibold" : " font-family-medium")}
                 style={{
                   display: "flex",
                   alignItems: "center",
@@ -434,7 +433,6 @@ const page = () => {
                   cursor: "pointer",
                   background: Tab === "History" ? "linear-gradient(135deg, #f0f7ff 0%, #e8f4fd 100%)" : "transparent",
                   color: Tab === "History" ? "#004a70" : "#4b5563",
-                  fontWeight: Tab === "History" ? 600 : 500,
                   fontSize: 14,
                   transition: "all 0.2s",
                 }}
@@ -442,7 +440,7 @@ const page = () => {
                 <div style={{ width: 28, height: 28, borderRadius: 8, background: Tab === "History" ? "#004a70" : "#f3f4f6", display: "flex", alignItems: "center", justifyContent: "center", flexShrink: 0, transition: "all 0.2s" }}>
                   <FaHistory size={13} color={Tab === "History" ? "#fff" : "#9ca3af"} />
                 </div>
-                <span style={{ flex: 1 }}>History</span>
+                <span className="font-family-medium" style={{ flex: 1 }}>History</span>
                 {Tab === "History" && <div style={{ width: 6, height: 6, borderRadius: "50%", background: "#004a70" }} />}
               </div>
             </div>
@@ -464,7 +462,7 @@ const page = () => {
                 {/* Saved Cards */}
                 {paymentCards?.length > 0 && (
                   <>
-                    <p style={{ fontSize: 15, fontWeight: 600, color: "#1f2937", margin: "0 0 12px" }}>
+                    <p className="font-family-semibold" style={{ fontSize: 15, color: "#1f2937", margin: "0 0 12px" }}>
                       Saved Cards
                     </p>
                     <div style={{ display: "flex", flexDirection: "column", gap: 8, marginBottom: 20 }}>
@@ -486,10 +484,10 @@ const page = () => {
                         >
                           <FaCreditCard size={20} color="#004a70" />
                           <div style={{ flex: 1, minWidth: 0 }}>
-                            <p style={{ fontSize: 13, fontWeight: 500, color: "#374151", margin: 0 }}>
+                            <p className="font-family-medium" style={{ fontSize: 13, color: "#374151", margin: 0 }}>
                               {item?.email}
                             </p>
-                            <p style={{ fontSize: 12, color: "#9ca3af", margin: "2px 0 0" }}>
+                            <p className="font-family-regular" style={{ fontSize: 12, color: "#9ca3af", margin: "2px 0 0" }}>
                               **** {item?.cardnumber?.slice(-4)}
                             </p>
                           </div>
@@ -513,12 +511,12 @@ const page = () => {
                 <div style={{ marginBottom: 20 }}>
                   <div style={{ display: "flex", alignItems: "center", gap: 8, marginBottom: 12 }}>
                     <div style={{ width: 24, height: 24, borderRadius: "50%", background: "#004a70", display: "flex", alignItems: "center", justifyContent: "center", flexShrink: 0 }}>
-                      <span style={{ color: "#fff", fontSize: 11, fontWeight: 700 }}>1</span>
+                      <span className="font-family-bold" style={{ color: "#fff", fontSize: 11 }}>1</span>
                     </div>
-                    <p style={{ fontSize: 14, fontWeight: 600, color: "#1f2937", margin: 0 }}>Enter Amount</p>
+                    <p className="font-family-semibold" style={{ fontSize: 14, color: "#1f2937", margin: 0 }}>Enter Amount</p>
                   </div>
                   <div style={{ position: "relative" }}>
-                    <span style={{ position: "absolute", left: 14, top: "50%", transform: "translateY(-50%)", fontSize: 16, fontWeight: 600, color: "#9ca3af", zIndex: 1 }}>$</span>
+                    <span className="font-family-semibold" style={{ position: "absolute", left: 14, top: "50%", transform: "translateY(-50%)", fontSize: 16, color: "#9ca3af", zIndex: 1 }}>$</span>
                     <input
                       name="price"
                       placeholder="0.00"
@@ -530,16 +528,15 @@ const page = () => {
                         if (val.startsWith("-")) return;
                         handleInputChange(e);
                       }}
-                      className={`bg-gray-50 border-0 focus:ring-1 focus:ring-brand-600/30 focus:outline-none focus:bg-white${formErrors.price ? " ring-2 ring-red-400" : ""}`}
+                      className={`bg-gray-50 border-0 font-family-semibold focus:ring-1 focus:ring-brand-600/30 focus:outline-none focus:bg-white${formErrors.price ? " ring-2 ring-red-400" : ""}`}
                       style={{
                         width: "100%",
                         padding: "12px 14px 12px 32px",
                         borderRadius: 10,
                         fontSize: 16,
-                        fontWeight: 600,
                       }}
                     />
-                    {formErrors.price && <p style={{ fontSize: 12, color: "#ef4444", margin: "4px 0 0" }}>{formErrors.price}</p>}
+                    {formErrors.price && <p className="font-family-regular" style={{ fontSize: 12, color: "#ef4444", margin: "4px 0 0" }}>{formErrors.price}</p>}
                   </div>
                   <div style={{ display: "flex", gap: 8, marginTop: 10, flexWrap: "wrap" }}>
                     {[10, 25, 50, 100].map((amt) => (
@@ -547,7 +544,7 @@ const page = () => {
                         key={amt}
                         type="button"
                         onClick={() => setCardDetails((prev) => ({ ...prev, price: amt }))}
-                        className={cardDetails.price == amt ? 'bg-brand-700 text-white border-brand-700' : 'hover:border-brand-700 hover:text-brand-700'}
+                        className={(cardDetails.price == amt ? 'bg-brand-700 text-white border-brand-700' : 'hover:border-brand-700 hover:text-brand-700') + ' font-family-medium'}
                         style={{
                           padding: "6px 16px",
                           borderRadius: 9999,
@@ -555,7 +552,6 @@ const page = () => {
                           background: cardDetails.price == amt ? "#004a70" : "#fff",
                           color: cardDetails.price == amt ? "#fff" : "#4b5563",
                           fontSize: 13,
-                          fontWeight: 500,
                           cursor: "pointer",
                           transition: "all 0.15s",
                         }}
@@ -573,9 +569,9 @@ const page = () => {
                 <div style={{ marginBottom: 20 }}>
                   <div style={{ display: "flex", alignItems: "center", gap: 8, marginBottom: 16 }}>
                     <div style={{ width: 24, height: 24, borderRadius: "50%", background: "#004a70", display: "flex", alignItems: "center", justifyContent: "center", flexShrink: 0 }}>
-                      <span style={{ color: "#fff", fontSize: 11, fontWeight: 700 }}>2</span>
+                      <span className="font-family-bold" style={{ color: "#fff", fontSize: 11 }}>2</span>
                     </div>
-                    <p style={{ fontSize: 14, fontWeight: 600, color: "#1f2937", margin: 0 }}>Card Information</p>
+                    <p className="font-family-semibold" style={{ fontSize: 14, color: "#1f2937", margin: 0 }}>Card Information</p>
                   </div>
                   <div style={{ display: "grid", gridTemplateColumns: isMobileSidebar ? "1fr" : "1fr 1fr", gap: 20 }}>
                     <div>
@@ -588,7 +584,7 @@ const page = () => {
                     </div>
                     <div style={{ display: "flex", flexDirection: "column", gap: 12 }}>
                       <div>
-                        <label className="focus-within:text-brand-700" style={{ fontSize: 13, fontWeight: 500, color: "#374151", display: "block", marginBottom: 4, transition: "color 0.2s" }}>
+                        <label className="font-family-medium focus-within:text-brand-700" style={{ fontSize: 13, color: "#374151", display: "block", marginBottom: 4, transition: "color 0.2s" }}>
                           Card Number
                         </label>
                         <input
@@ -597,10 +593,10 @@ const page = () => {
                           type="text" name="number" placeholder="1234 5678 9012 3456"
                           value={cardDetails.number} onChange={handleInputChange} maxLength="16" required
                         />
-                        {formErrors.number && <p style={{ fontSize: 12, color: "#ef4444", margin: "4px 0 0" }}>{formErrors.number}</p>}
+                        {formErrors.number && <p className="font-family-regular" style={{ fontSize: 12, color: "#ef4444", margin: "4px 0 0" }}>{formErrors.number}</p>}
                       </div>
                       <div>
-                        <label style={{ fontSize: 13, fontWeight: 500, color: "#374151", display: "block", marginBottom: 4 }}>
+                        <label className="font-family-medium" style={{ fontSize: 13, color: "#374151", display: "block", marginBottom: 4 }}>
                           Card Holder Name
                         </label>
                         <input
@@ -609,11 +605,11 @@ const page = () => {
                           type="text" name="name" placeholder="John Doe"
                           value={cardDetails.name} onChange={handleInputChange} required
                         />
-                        {formErrors.name && <p style={{ fontSize: 12, color: "#ef4444", margin: "4px 0 0" }}>{formErrors.name}</p>}
+                        {formErrors.name && <p className="font-family-regular" style={{ fontSize: 12, color: "#ef4444", margin: "4px 0 0" }}>{formErrors.name}</p>}
                       </div>
                       <div style={{ display: "flex", gap: 12 }}>
                         <div style={{ flex: 1 }}>
-                          <label style={{ fontSize: 13, fontWeight: 500, color: "#374151", display: "block", marginBottom: 4 }}>Expiry</label>
+                          <label className="font-family-medium" style={{ fontSize: 13, color: "#374151", display: "block", marginBottom: 4 }}>Expiry</label>
                           <input
                             className={`bg-gray-50 border-0 focus:ring-1 focus:ring-brand-600/30 focus:outline-none focus:bg-white${formErrors.expiry ? " ring-2 ring-red-400" : ""}`}
                             style={{ width: "100%", padding: "11px 14px", borderRadius: 10, fontSize: 14 }}
@@ -627,17 +623,17 @@ const page = () => {
                             }}
                             maxLength="5" required
                           />
-                          {formErrors.expiry && <p style={{ fontSize: 12, color: "#ef4444", margin: "4px 0 0" }}>{formErrors.expiry}</p>}
+                          {formErrors.expiry && <p className="font-family-regular" style={{ fontSize: 12, color: "#ef4444", margin: "4px 0 0" }}>{formErrors.expiry}</p>}
                         </div>
                         <div style={{ flex: 1 }}>
-                          <label style={{ fontSize: 13, fontWeight: 500, color: "#374151", display: "block", marginBottom: 4 }}>CVC</label>
+                          <label className="font-family-medium" style={{ fontSize: 13, color: "#374151", display: "block", marginBottom: 4 }}>CVC</label>
                           <input
                             className={`bg-gray-50 border-0 focus:ring-1 focus:ring-brand-600/30 focus:outline-none focus:bg-white${formErrors.cvc ? " ring-2 ring-red-400" : ""}`}
                             style={{ width: "100%", padding: "11px 14px", borderRadius: 10, fontSize: 14 }}
                             type="text" name="cvc" placeholder="123"
                             value={cardDetails.cvc} onChange={handleInputChange} maxLength="3" required
                           />
-                          {formErrors.cvc && <p style={{ fontSize: 12, color: "#ef4444", margin: "4px 0 0" }}>{formErrors.cvc}</p>}
+                          {formErrors.cvc && <p className="font-family-regular" style={{ fontSize: 12, color: "#ef4444", margin: "4px 0 0" }}>{formErrors.cvc}</p>}
                         </div>
                       </div>
                     </div>
@@ -651,23 +647,23 @@ const page = () => {
                 <div style={{ marginBottom: 24 }}>
                   <div style={{ display: "flex", alignItems: "center", gap: 8, marginBottom: 16 }}>
                     <div style={{ width: 24, height: 24, borderRadius: "50%", background: "#004a70", display: "flex", alignItems: "center", justifyContent: "center", flexShrink: 0 }}>
-                      <span style={{ color: "#fff", fontSize: 11, fontWeight: 700 }}>3</span>
+                      <span className="font-family-bold" style={{ color: "#fff", fontSize: 11 }}>3</span>
                     </div>
-                    <p style={{ fontSize: 14, fontWeight: 600, color: "#1f2937", margin: 0 }}>Contact Details</p>
+                    <p className="font-family-semibold" style={{ fontSize: 14, color: "#1f2937", margin: 0 }}>Contact Details</p>
                   </div>
                   <div style={{ display: "grid", gridTemplateColumns: isMobileSidebar ? "1fr" : "1fr 1fr", gap: 12 }}>
                     <div>
-                      <label style={{ fontSize: 13, fontWeight: 500, color: "#374151", display: "block", marginBottom: 4 }}>Email</label>
+                      <label className="font-family-medium" style={{ fontSize: 13, color: "#374151", display: "block", marginBottom: 4 }}>Email</label>
                       <input
                         className={`bg-gray-50 border-0 focus:ring-1 focus:ring-brand-600/30 focus:outline-none focus:bg-white${formErrors.email ? " ring-2 ring-red-400" : ""}`}
                         style={{ width: "100%", padding: "11px 14px", borderRadius: 10, fontSize: 14 }}
                         type="text" name="email" placeholder="email@example.com"
                         value={cardDetails.email} onChange={handleInputChange} required
                       />
-                      {formErrors.email && <p style={{ fontSize: 12, color: "#ef4444", margin: "4px 0 0" }}>{formErrors.email}</p>}
+                      {formErrors.email && <p className="font-family-regular" style={{ fontSize: 12, color: "#ef4444", margin: "4px 0 0" }}>{formErrors.email}</p>}
                     </div>
                     <div>
-                      <label style={{ fontSize: 13, fontWeight: 500, color: "#374151", display: "block", marginBottom: 4 }}>Phone</label>
+                      <label className="font-family-medium" style={{ fontSize: 13, color: "#374151", display: "block", marginBottom: 4 }}>Phone</label>
                       <PhoneInput
                         country={"us"}
                         value={cardDetails.phone}
@@ -692,7 +688,7 @@ const page = () => {
                         containerStyle={{ borderRadius: 10, width: "100%" }}
                         inputClass={`${formErrors.phone ? "ring-2 ring-red-400" : ""}`}
                       />
-                      {formErrors.phone && <p style={{ fontSize: 12, color: "#ef4444", margin: "4px 0 0" }}>{formErrors.phone}</p>}
+                      {formErrors.phone && <p className="font-family-regular" style={{ fontSize: 12, color: "#ef4444", margin: "4px 0 0" }}>{formErrors.phone}</p>}
                     </div>
                   </div>
                 </div>
@@ -721,7 +717,7 @@ const page = () => {
                   animationDelay: "350ms",
                 }}
               >
-                <p style={{ fontSize: 15, fontWeight: 600, color: "#1f2937", margin: "0 0 16px", paddingBottom: 12, borderBottom: "1px solid #f3f4f6", display: "flex", alignItems: "center", gap: 8 }}>
+                <p className="font-family-semibold" style={{ fontSize: 15, color: "#1f2937", margin: "0 0 16px", paddingBottom: 12, borderBottom: "1px solid #f3f4f6", display: "flex", alignItems: "center", gap: 8 }}>
                   <FaHistory size={15} color="#004a70" />
                   Transaction History
                 </p>
@@ -772,17 +768,17 @@ const page = () => {
                             )}
                           </div>
                           <div style={{ minWidth: 0 }}>
-                            <p style={{ fontSize: 14, fontWeight: 600, color: "#1f2937", margin: 0, textTransform: "capitalize", wordBreak: "break-word" }}>
+                            <p className="font-family-semibold" style={{ fontSize: 14, color: "#1f2937", margin: 0, textTransform: "capitalize", wordBreak: "break-word" }}>
                               {section?.type || "Transaction"}
                             </p>
-                            <p style={{ fontSize: 12, color: "#9ca3af", margin: "2px 0 0" }}>
+                            <p className="font-family-regular" style={{ fontSize: 12, color: "#9ca3af", margin: "2px 0 0" }}>
                               {section?.createdAt ? moment(section.createdAt).format("MMM DD, YYYY") : ""}
                             </p>
                           </div>
                         </div>
                         <span
+                          className="font-family-semibold"
                           style={{
-                            fontWeight: 600,
                             fontSize: 14,
                             color: section?.type === "deposit" ? "#059669" : "#ef4444",
                             flexShrink: 0,

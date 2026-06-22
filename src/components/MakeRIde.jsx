@@ -744,14 +744,14 @@ const RidePage = () => {
 
         <div style={{ maxWidth: 1200, margin: "0 auto", padding: "0 24px", position: "relative" }}>
           {/* Breadcrumb */}
-          <div style={{ display: "flex", alignItems: "center", gap: 8, color: "rgba(255,255,255,0.5)", fontSize: 13, fontWeight: 500, marginBottom: 16 }}>
+          <div className="font-family-medium" style={{ display: "flex", alignItems: "center", gap: 8, color: "rgba(255,255,255,0.5)", fontSize: 13, marginBottom: 16 }}>
             <a href="/" style={{ color: "rgba(255,255,255,0.5)", textDecoration: "none", transition: "color 0.2s" }}
               onMouseEnter={(e) => e.currentTarget.style.color = "#fff"}
               onMouseLeave={(e) => e.currentTarget.style.color = "rgba(255,255,255,0.5)"}>
               Home
             </a>
             <span style={{ color: "rgba(255,255,255,0.3)" }}>/</span>
-            <span style={{ color: "rgba(255,255,255,0.8)" }}>Book a Ride</span>
+            <span className="font-family-medium" style={{ color: "rgba(255,255,255,0.8)" }}>Book a Ride</span>
           </div>
 
           <div style={{ display: "flex", alignItems: "center", justifyContent: "space-between", flexWrap: "wrap", gap: 12 }}>
@@ -766,10 +766,10 @@ const RidePage = () => {
                 </svg>
               </div>
               <div>
-                <h1 style={{ color: "#fff", fontSize: "clamp(20px, 5vw, 30px)", fontWeight: 700, margin: 0, letterSpacing: "-0.5px", lineHeight: 1.2, wordBreak: "break-word" }}>
+                <h1 className="font-family-bold" style={{ color: "#fff", fontSize: "clamp(20px, 5vw, 30px)", margin: 0, letterSpacing: "-0.5px", lineHeight: 1.2, wordBreak: "break-word" }}>
                   Book a Ride
                 </h1>
-                <p style={{ color: "rgba(255,255,255,0.55)", fontSize: "clamp(12px, 2vw, 14px)", margin: "2px 0 0", fontWeight: 400, wordBreak: "break-word" }}>
+                <p className="font-family-regular" style={{ color: "rgba(255,255,255,0.55)", fontSize: "clamp(12px, 2vw, 14px)", margin: "2px 0 0", wordBreak: "break-word" }}>
                   Set your pickup and drop-off locations
                 </p>
               </div>
@@ -792,7 +792,7 @@ const RidePage = () => {
             <form onSubmit={handleSubmit(onSubmit)}>
               {/* Category */}
               <div>
-                <p style={{ fontSize: 13, fontWeight: 500, color: "#374151", display: "block", marginBottom: 6 }}>Category</p>
+                <p className="font-family-medium" style={{ fontSize: 13, color: "#374151", display: "block", marginBottom: 6 }}>Category</p>
                 <Controller
                   name="category"
                   control={control}
@@ -814,11 +814,11 @@ const RidePage = () => {
                         value={value?.label}
                         isClearable
                       />
-                      {errors.category && (
-                        <span style={{ fontSize: 12, marginTop: 4, color: "#ef4444", display: "block" }}>
-                          {errors.category.message}
-                        </span>
-                      )}
+                        {errors.category && (
+                          <span className="font-family-regular" style={{ fontSize: 12, marginTop: 4, color: "#ef4444", display: "block" }}>
+                            {errors.category.message}
+                          </span>
+                        )}
                     </>
                   )}
                 />
@@ -828,7 +828,7 @@ const RidePage = () => {
 
               {/* Start Location */}
               <div>
-                <p style={{ fontSize: 13, fontWeight: 500, color: "#374151", display: "block", marginBottom: 6 }}>Start Location</p>
+                <p className="font-family-medium" style={{ fontSize: 13, color: "#374151", display: "block", marginBottom: 6 }}>Start Location</p>
                 <div style={{ display: "flex", alignItems: "center", gap: 8 }}>
                   <Controller
                     name="name"
@@ -843,11 +843,11 @@ const RidePage = () => {
                           style={inputStyle(errors.name)}
                         />
                         {errors.name && (
-                          <span style={{ fontSize: 12, marginTop: 4, color: "#ef4444", display: "block" }}>
+                          <span className="font-family-regular" style={{ fontSize: 12, marginTop: 4, color: "#ef4444", display: "block" }}>
                             {errors.name.message}
                           </span>
                         )}
-                        {PridicLoading && <div style={{ fontSize: 13, color: "#9ca3af", marginTop: 4 }}>Loading...</div>}
+                        {PridicLoading && <div className="font-family-regular" style={{ fontSize: 13, color: "#9ca3af", marginTop: 4 }}>Loading...</div>}
                         {predictions.length > 0 && (
                           <ListGroup
                             style={{
@@ -864,6 +864,7 @@ const RidePage = () => {
                               <ListGroupItem
                                 key={prediction.place_id}
                                 onClick={() => handlePredictionPress(prediction)}
+                                className="font-family-regular"
                                 style={{ cursor: "pointer", fontSize: 13, padding: "8px 12px" }}
                               >
                                 {prediction.description}
@@ -871,7 +872,7 @@ const RidePage = () => {
                             ))}
                           </ListGroup>
                         )}
-                        {noData && <div style={{ fontSize: 13, color: "#9ca3af", marginTop: 4 }}>No results found</div>}
+                        {noData && <div className="font-family-regular" style={{ fontSize: 13, color: "#9ca3af", marginTop: 4 }}>No results found</div>}
                       </div>
                     )}
                   />
@@ -887,7 +888,7 @@ const RidePage = () => {
 
               {/* Add Stop */}
               <div>
-                <p style={{ fontSize: 13, fontWeight: 500, color: "#374151", display: "block", marginBottom: 6 }}>Add Stop</p>
+                <p className="font-family-medium" style={{ fontSize: 13, color: "#374151", display: "block", marginBottom: 6 }}>Add Stop</p>
                 <div style={{ display: "flex", alignItems: "center", gap: 8 }}>
                   <Controller
                     name="stop"
@@ -902,11 +903,11 @@ const RidePage = () => {
                           style={inputStyle(errors.stop)}
                         />
                         {errors.stop && (
-                          <span style={{ fontSize: 12, marginTop: 4, color: "#ef4444", display: "block" }}>
+                          <span className="font-family-regular" style={{ fontSize: 12, marginTop: 4, color: "#ef4444", display: "block" }}>
                             {errors.stop.message}
                           </span>
                         )}
-                        {PridicLoadingStop && <div style={{ fontSize: 13, color: "#9ca3af", marginTop: 4 }}>Loading...</div>}
+                        {PridicLoadingStop && <div className="font-family-regular" style={{ fontSize: 13, color: "#9ca3af", marginTop: 4 }}>Loading...</div>}
                         {StopPredictions.length > 0 && (
                           <ListGroup
                             style={{
@@ -923,6 +924,7 @@ const RidePage = () => {
                               <ListGroupItem
                                 key={prediction.place_id}
                                 onClick={() => HadleStopPridication(prediction)}
+                                className="font-family-regular"
                                 style={{ cursor: "pointer", fontSize: 13, padding: "8px 12px" }}
                               >
                                 {prediction.description}
@@ -930,7 +932,7 @@ const RidePage = () => {
                             ))}
                           </ListGroup>
                         )}
-                        {noData && <div style={{ fontSize: 13, color: "#9ca3af", marginTop: 4 }}>No results found</div>}
+                        {noData && <div className="font-family-regular" style={{ fontSize: 13, color: "#9ca3af", marginTop: 4 }}>No results found</div>}
                       </div>
                     )}
                   />
@@ -943,7 +945,7 @@ const RidePage = () => {
 
                 {LocationDetails3.map((item, index) => (
                   <div key={index} style={{ display: "flex", alignItems: "center", gap: 8, marginTop: 8, cursor: "pointer" }}>
-                    <p style={{ fontSize: 13, color: "#374151", margin: 0, flex: 1, overflow: "hidden", textOverflow: "ellipsis", whiteSpace: "nowrap" }}>
+                    <p className="font-family-medium" style={{ fontSize: 13, color: "#374151", margin: 0, flex: 1, overflow: "hidden", textOverflow: "ellipsis", whiteSpace: "nowrap" }}>
                       {item?.address}
                     </p>
                     <div onClick={() => RemoveStop(index)} style={{ color: "#ef4444", flexShrink: 0 }}>
@@ -957,7 +959,7 @@ const RidePage = () => {
 
               {/* End Location */}
               <div>
-                <p style={{ fontSize: 13, fontWeight: 500, color: "#374151", display: "block", marginBottom: 6 }}>End Location</p>
+                <p className="font-family-medium" style={{ fontSize: 13, color: "#374151", display: "block", marginBottom: 6 }}>End Location</p>
                 <Controller
                   name="metaTitle"
                   control={control}
@@ -971,11 +973,11 @@ const RidePage = () => {
                         style={inputStyle(errors.metaTitle)}
                       />
                       {errors.metaTitle && (
-                        <span style={{ fontSize: 12, marginTop: 4, color: "#ef4444", display: "block" }}>
+                        <span className="font-family-regular" style={{ fontSize: 12, marginTop: 4, color: "#ef4444", display: "block" }}>
                           {errors.metaTitle.message}
                         </span>
                       )}
-                      {PridicLoadingEnd && <div style={{ fontSize: 13, color: "#9ca3af", marginTop: 4 }}>Loading...</div>}
+                      {PridicLoadingEnd && <div className="font-family-regular" style={{ fontSize: 13, color: "#9ca3af", marginTop: 4 }}>Loading...</div>}
                       {EndPredictions.length > 0 && (
                         <ListGroup
                           style={{
@@ -989,29 +991,30 @@ const RidePage = () => {
                           }}
                         >
                           {EndPredictions.map((prediction) => (
-                            <ListGroupItem
-                              key={prediction.place_id}
-                              onClick={() => HadleEndPridication(prediction)}
-                              style={{ cursor: "pointer", fontSize: 13, padding: "8px 12px" }}
-                            >
-                              {prediction.description}
-                            </ListGroupItem>
+                              <ListGroupItem
+                                key={prediction.place_id}
+                                onClick={() => HadleEndPridication(prediction)}
+                                className="font-family-regular"
+                                style={{ cursor: "pointer", fontSize: 13, padding: "8px 12px" }}
+                              >
+                                {prediction.description}
+                              </ListGroupItem>
                           ))}
                         </ListGroup>
                       )}
-                      {noData && <div style={{ fontSize: 13, color: "#9ca3af", marginTop: 4 }}>No results found</div>}
+                      {noData && <div className="font-family-regular" style={{ fontSize: 13, color: "#9ca3af", marginTop: 4 }}>No results found</div>}
                     </div>
                   )}
                 />
               </div>
 
-              <p style={{ fontSize: 12, color: "#6b7280", margin: "8px 0 4px" }}>
+              <p className="font-family-regular" style={{ fontSize: 12, color: "#6b7280", margin: "8px 0 4px" }}>
                 Copy and paste End location if it doesn&rsquo;t fetch automatically
               </p>
 
               {/* Schedule Checkbox */}
               {!RideTime && (
-                <label style={{ display: "flex", alignItems: "center", gap: 8, margin: "12px 0", cursor: "pointer", fontSize: 14, fontWeight: 500, color: "#374151" }}>
+                <label className="font-family-medium" style={{ display: "flex", alignItems: "center", gap: 8, margin: "12px 0", cursor: "pointer", fontSize: 14, color: "#374151" }}>
                   <input type="checkbox" checked={Schuale} onChange={onChangeSchedule} style={{ width: 16, height: 16, accentColor: "#004a70", cursor: "pointer" }} />
                   Schedule
                 </label>
@@ -1020,7 +1023,7 @@ const RidePage = () => {
               {/* Travelers */}
               {RideTime && (
                 <div style={{ marginTop: 12 }}>
-                  <p style={{ fontSize: 13, fontWeight: 500, color: "#374151", display: "block", marginBottom: 6 }}>Travelers</p>
+                  <p className="font-family-medium" style={{ fontSize: 13, color: "#374151", display: "block", marginBottom: 6 }}>Travelers</p>
                   <Controller
                     name="travlers"
                     control={control}
@@ -1028,7 +1031,7 @@ const RidePage = () => {
                       <div>
                         <input type="number" required {...field} placeholder="Travelers" style={inputStyle(errors.travlers)} />
                         {errors.travlers && (
-                          <span style={{ fontSize: 12, marginTop: 4, color: "#ef4444", display: "block" }}>
+                          <span className="font-family-regular" style={{ fontSize: 12, marginTop: 4, color: "#ef4444", display: "block" }}>
                             {errors.travlers.message}
                           </span>
                         )}
@@ -1079,7 +1082,7 @@ const RidePage = () => {
                 variant="primary"
                 size="md"
                 loading={isLoading}
-                className="!w-full !h-12 !mt-2"
+                className="!w-full !h-12 !mt-2 font-family-medium"
               >
                 Next
               </CustomButton>
@@ -1107,22 +1110,22 @@ const RidePage = () => {
       {ShowPermissionDialog && (
         <div className={mounted ? "animate-fade-in" : "opacity-0"} style={{ position: "fixed", inset: 0, background: "rgba(0,0,0,0.5)", display: "flex", alignItems: "center", justifyContent: "center", padding: 16, zIndex: 1050 }}>
           <div className={mounted ? "animate-fade-in-up" : "opacity-0"} style={{ background: "#fff", borderRadius: 14, maxWidth: 400, width: "100%", padding: "clamp(20px, 3vw, 28px)", animationDelay: "50ms" }}>
-            <h2 style={{ fontSize: 18, fontWeight: 600, color: "#1f2937", margin: "0 0 8px" }}>Location Access Required</h2>
-            <p style={{ fontSize: 14, color: "#6b7280", margin: "0 0 20px" }}>
+            <h2 className="font-family-semibold" style={{ fontSize: 18, color: "#1f2937", margin: "0 0 8px" }}>Location Access Required</h2>
+            <p className="font-family-regular" style={{ fontSize: 14, color: "#6b7280", margin: "0 0 20px" }}>
               Please enable location access to use this feature. You can enable it in your browser settings.
             </p>
             <div style={{ display: "flex", justifyContent: "flex-end", gap: 8 }}>
-              <button
-                onClick={() => handlePermissionGuide(false)}
-                className="hover:bg-gray-200"
-                style={{
-                  padding: "10px 24px", borderRadius: "9999px", background: "#f3f4f6", border: "none",
-                  color: "#374151", fontSize: 14, fontWeight: 600, cursor: "pointer",
-                  transition: "background 0.2s",
-                }}
-              >
-                Cancel
-              </button>
+                <button
+                  onClick={() => handlePermissionGuide(false)}
+                  className="font-family-semibold hover:bg-gray-200"
+                  style={{
+                    padding: "10px 24px", borderRadius: "9999px", background: "#f3f4f6", border: "none",
+                    color: "#374151", fontSize: 14, cursor: "pointer",
+                    transition: "background 0.2s",
+                  }}
+                >
+                  Cancel
+                </button>
               <CustomButton
                 onClick={handlePermissionGuide}
                 variant="primary"

@@ -104,7 +104,7 @@ const Reset = () => {
       imageHeadline="Your security matters"
       imageSubheadline="Update your password and get back to booking rides in minutes."
       footer={
-        <span>
+        <span className="font-family-regular">
           <AuthInlineLink href="/auth/login">Back to login</AuthInlineLink>
         </span>
       }

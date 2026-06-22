@@ -69,9 +69,9 @@ export async function generateMetadata() {
 const page = () => {
   return (
     <>
-      <div id="whyUs">
-        <ServiceComponent />
-      </div>
+    <div className="font-poppins" id="whyUs">
+      <ServiceComponent />
+    </div>
     </>
   );
 };

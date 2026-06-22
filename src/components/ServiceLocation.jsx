@@ -245,8 +245,8 @@ export default function ServiceLocation() {
         }}
       >
         <div style={{ maxWidth: 1200, margin: "0 auto", padding: "0 16px" }}>
-          <div style={{ color: "rgba(255,255,255,0.6)", fontSize: 13, marginBottom: 8 }}>Home / Product Detail</div>
-          <h1 style={{ color: "#fff", fontSize: "clamp(22px, 4vw, 28px)", fontWeight: 700, margin: 0, letterSpacing: "-0.3px", display: "flex", alignItems: "center", gap: 10 }}>
+          <div className="font-family-medium" style={{ color: "rgba(255,255,255,0.6)", fontSize: 13, marginBottom: 8 }}>Home / Product Detail</div>
+          <h1 className="font-family-bold" style={{ color: "#fff", fontSize: "clamp(22px, 4vw, 28px)", margin: 0, letterSpacing: "-0.3px", display: "flex", alignItems: "center", gap: 10 }}>
             <svg width={24} height={24} viewBox="0 0 24 24" fill="none" stroke="#fff" strokeWidth={1.5}>
               <path strokeLinecap="round" strokeLinejoin="round" d="M20 7l-8-4-8 4m16 0l-8 4m8-4v10l-8 4m0-10L4 7m8 4v10M4 7v10l8 4" />
             </svg>
@@ -287,12 +287,12 @@ export default function ServiceLocation() {
               {/* Title & Buy Button Row */}
               <div style={{ display: "flex", justifyContent: "space-between", alignItems: "flex-start", gap: 12, marginBottom: 12 }}>
                 <div>
-                  <h1 style={{ fontSize: "clamp(18px, 2.5vw, 22px)", fontWeight: 700, color: "#1f2937", margin: 0, textTransform: "capitalize" }}>
+                  <h1 className="font-family-bold" style={{ fontSize: "clamp(18px, 2.5vw, 22px)", color: "#1f2937", margin: 0, textTransform: "capitalize" }}>
                     {SubcatData?.name}
                   </h1>
                   <div style={{ display: "flex", alignItems: "center", gap: 6, marginTop: 6 }}>
                     <FaLocationDot style={{ color: "#004a70", fontSize: 14, flexShrink: 0 }} />
-                    <p style={{ fontSize: 14, color: "#6b7280", margin: 0 }}>{SubcatData?.address}</p>
+                    <p className="font-family-regular" style={{ fontSize: 14, color: "#6b7280", margin: 0 }}>{SubcatData?.address}</p>
                   </div>
                 </div>
                 <CustomButton
@@ -306,14 +306,14 @@ export default function ServiceLocation() {
 
               {/* Description */}
               <div style={{ marginBottom: 20 }}>
-                <h2 style={{ fontSize: 15, fontWeight: 600, color: "#374151", margin: "0 0 6px" }}>Description</h2>
-                <p style={{ fontSize: 14, color: "#6b7280", lineHeight: 1.7, margin: 0 }}>{SubcatData?.about}</p>
+                <h2 className="font-family-semibold" style={{ fontSize: 15, color: "#374151", margin: "0 0 6px" }}>Description</h2>
+                <p className="font-family-regular" style={{ fontSize: 14, color: "#6b7280", lineHeight: 1.7, margin: 0 }}>{SubcatData?.about}</p>
               </div>
 
               {/* Colors */}
               {SubcatData?.color?.length > 0 && (
                 <div style={{ marginBottom: 16 }}>
-                  <p style={{ fontSize: 13, fontWeight: 500, color: "#374151", marginBottom: 8 }}>Colors</p>
+                  <p className="font-family-medium" style={{ fontSize: 13, color: "#374151", marginBottom: 8 }}>Colors</p>
                   <div style={{ display: "flex", gap: 10 }}>
                     {SubcatData?.color?.map((item, index) => (
                       <div
@@ -337,18 +337,18 @@ export default function ServiceLocation() {
 
               {/* Quantity */}
               <div style={{ marginBottom: 16 }}>
-                <p style={{ fontSize: 13, fontWeight: 500, color: "#374151", marginBottom: 8 }}>Quantity</p>
+                <p className="font-family-medium" style={{ fontSize: 13, color: "#374151", marginBottom: 8 }}>Quantity</p>
                 <div style={{ display: "flex", alignItems: "center", gap: 12 }}>
                   <button
                     onClick={decrement}
-                    className="hover:border-brand-700 hover:text-brand-700"
-                    style={{ width: 36, height: 36, borderRadius: "9999px", border: "1px solid #d1d5db", background: "#fff", fontSize: 18, cursor: "pointer", display: "flex", alignItems: "center", justifyContent: "center", color: "#374151", fontWeight: 600, transition: "all 0.2s" }}
+                    className="hover:border-brand-700 hover:text-brand-700 font-family-semibold"
+                    style={{ width: 36, height: 36, borderRadius: "9999px", border: "1px solid #d1d5db", background: "#fff", fontSize: 18, cursor: "pointer", display: "flex", alignItems: "center", justifyContent: "center", color: "#374151", transition: "all 0.2s" }}
                   >-</button>
-                  <span style={{ fontSize: 16, fontWeight: 600, color: "#1f2937", minWidth: 24, textAlign: "center" }}>{incDec}</span>
+                    <span className="font-family-semibold" style={{ fontSize: 16, color: "#1f2937", minWidth: 24, textAlign: "center" }}>{incDec}</span>
                   <button
                     onClick={increment}
-                    className="hover:border-brand-700 hover:text-brand-700"
-                    style={{ width: 36, height: 36, borderRadius: "9999px", border: "1px solid #d1d5db", background: "#fff", fontSize: 18, cursor: "pointer", display: "flex", alignItems: "center", justifyContent: "center", color: "#374151", fontWeight: 600, transition: "all 0.2s" }}
+                    className="hover:border-brand-700 hover:text-brand-700 font-family-semibold"
+                    style={{ width: 36, height: 36, borderRadius: "9999px", border: "1px solid #d1d5db", background: "#fff", fontSize: 18, cursor: "pointer", display: "flex", alignItems: "center", justifyContent: "center", color: "#374151", transition: "all 0.2s" }}
                   >+</button>
                 </div>
               </div>
@@ -356,13 +356,13 @@ export default function ServiceLocation() {
               {/* Sizes */}
               {SubcatData?.size?.length > 0 && (
                 <div style={{ marginBottom: 16 }}>
-                  <p style={{ fontSize: 13, fontWeight: 500, color: "#374151", marginBottom: 8 }}>Size</p>
+                  <p className="font-family-medium" style={{ fontSize: 13, color: "#374151", marginBottom: 8 }}>Size</p>
                   <div style={{ display: "flex", gap: 8, flexWrap: "wrap" }}>
                     {SubcatData?.size?.map((item, index) => (
                       <button
                         key={index}
                         onClick={() => handleSize(item)}
-                        className={Size !== item ? "hover:border-brand-700 hover:text-brand-700" : ""}
+                        className={Size !== item ? "hover:border-brand-700 hover:text-brand-700 font-family-medium" : "font-family-medium"}
                         style={{
                           padding: "6px 18px",
                           borderRadius: "9999px",
@@ -370,7 +370,6 @@ export default function ServiceLocation() {
                           background: Size === item ? "#004a70" : "#fff",
                           color: Size === item ? "#fff" : "#374151",
                           fontSize: 13,
-                          fontWeight: 500,
                           cursor: "pointer",
                           transition: "all 0.2s",
                         }}
@@ -384,10 +383,10 @@ export default function ServiceLocation() {
 
               {/* Total Price */}
               <div style={{ padding: "14px 18px", background: "#f0f7ff", borderRadius: 12, marginTop: 4 }}>
-                <p style={{ fontSize: 13, color: "#6b7280", margin: "0 0 4px" }}>Total Price</p>
-                <p style={{ fontSize: 20, fontWeight: 700, color: "#004a70", margin: 0 }}>
+                <p className="font-family-regular" style={{ fontSize: 13, color: "#6b7280", margin: "0 0 4px" }}>Total Price</p>
+                <p className="font-family-bold" style={{ fontSize: 20, color: "#004a70", margin: 0 }}>
                   {`${(SubcatData?.location_price * incDec)?.toFixed(2)} XCD`}
-                  <span style={{ fontSize: 14, fontWeight: 500, color: "#9ca3af", marginLeft: 8 }}>
+                  <span className="font-family-medium" style={{ fontSize: 14, color: "#9ca3af", marginLeft: 8 }}>
                     {`~ $${((SubcatData?.location_price * incDec) / 2.7)?.toFixed(2)} USD`}
                   </span>
                 </p>
@@ -418,7 +417,7 @@ export default function ServiceLocation() {
         {/* Reviews Section */}
         <div style={{ background: "#fff", borderRadius: 14, border: "1px solid #f0f0f0", marginTop: 20, padding: "clamp(20px, 3vw, 28px)" }}>
           <div onClick={handleShow} style={{ display: "flex", justifyContent: "space-between", alignItems: "center", cursor: "pointer", marginBottom: 20 }}>
-            <h2 style={{ fontSize: 18, fontWeight: 700, color: "#1f2937", margin: 0 }}>All Reviews</h2>
+            <h2 className="font-family-bold" style={{ fontSize: 18, color: "#1f2937", margin: 0 }}>All Reviews</h2>
             <CustomButton
               onClick={handleShow}
               variant="primary"
@@ -457,13 +456,13 @@ export default function ServiceLocation() {
                               style={{ width: 44, height: 44, borderRadius: "9999px", objectFit: "cover", border: "2px solid #f3f4f6" }}
                             />
                           ) : (
-                            <div style={{ width: 44, height: 44, borderRadius: "9999px", background: "#e5e7eb", display: "flex", alignItems: "center", justifyContent: "center", fontSize: 16, fontWeight: 600, color: "#6b7280" }}>
+                            <div className="font-family-semibold" style={{ width: 44, height: 44, borderRadius: "9999px", background: "#e5e7eb", display: "flex", alignItems: "center", justifyContent: "center", fontSize: 16, color: "#6b7280" }}>
                               {review?.user?.name?.[0]?.toUpperCase() || "?"}
                             </div>
                           )}
                           <div>
-                            <p style={{ fontSize: 15, fontWeight: 600, color: "#1f2937", margin: 0 }}>{review?.user?.name}</p>
-                            <p style={{ fontSize: 12, color: "#9ca3af", margin: "2px 0 0" }}>{moment(review?.createdAt).format("MMM DD, YYYY")}</p>
+                            <p className="font-family-semibold" style={{ fontSize: 15, color: "#1f2937", margin: 0 }}>{review?.user?.name}</p>
+                            <p className="font-family-regular" style={{ fontSize: 12, color: "#9ca3af", margin: "2px 0 0" }}>{moment(review?.createdAt).format("MMM DD, YYYY")}</p>
                           </div>
                         </div>
                         <Rate
@@ -474,7 +473,7 @@ export default function ServiceLocation() {
                           style={{ fontSize: 14 }}
                         />
                       </div>
-                      <p style={{ fontSize: 14, color: "#6b7280", margin: "10px 0 0", lineHeight: 1.6 }}>{review.review}</p>
+                      <p className="font-family-regular" style={{ fontSize: 14, color: "#6b7280", margin: "10px 0 0", lineHeight: 1.6 }}>{review.review}</p>
                     </div>
                   ))}
                   {ratingLength > 0 && ratingData?.length < ratingLength && (
@@ -482,7 +481,7 @@ export default function ServiceLocation() {
                       <button
                         disabled={pagiLoading}
                         onClick={getRatingData}
-                        className="hover:shadow-lg"
+                        className="hover:shadow-lg font-family-semibold"
                         style={{
                           padding: "10px 28px",
                           border: "none",
@@ -490,9 +489,7 @@ export default function ServiceLocation() {
                           background: "#004a70",
                           color: "#fff",
                           fontSize: 14,
-                          fontWeight: 600,
                           cursor: pagiLoading ? "not-allowed" : "pointer",
-                          fontFamily: "Inter-SemiBold",
                           transition: "all 0.2s",
                         }}
                       >
@@ -503,7 +500,7 @@ export default function ServiceLocation() {
                 </>
               ) : (
                 <div style={{ background: "#fff", border: "1px solid #f0f0f0", borderRadius: 12, padding: "40px 20px", textAlign: "center", boxShadow: "0 2px 8px rgba(0,0,0,0.04)" }}>
-                  <p style={{ fontSize: 14, color: "#9ca3af", margin: 0 }}>No Reviews found</p>
+                  <p className="font-family-regular" style={{ fontSize: 14, color: "#9ca3af", margin: 0 }}>No Reviews found</p>
                 </div>
               )}
             </div>
@@ -514,7 +511,7 @@ export default function ServiceLocation() {
       {/* Review Modal */}
       <Modal centered backdrop="static" show={show} onHide={handleClose}>
         <Modal.Header closeButton>
-          <Modal.Title>Leave Review</Modal.Title>
+          <Modal.Title className="font-family-semibold">Leave Review</Modal.Title>
         </Modal.Header>
         <Modal.Body>
           <Formik
@@ -530,7 +527,7 @@ export default function ServiceLocation() {
                 <div className="mb-3 custom_control">
                   <label
                     htmlFor="rating"
-                    className="form-label color-1 regular-font text-[1rem] mb-1"
+                    className="form-label color-1 font-family-regular text-[1rem] mb-1"
                   >
                     Rating
                   </label>
@@ -552,7 +549,7 @@ export default function ServiceLocation() {
                 <div className="mb-3 custom_control">
                   <label
                     htmlFor="comment"
-                    className="form-label color-1 regular-font text-[1rem] mb-1"
+                    className="form-label color-1 font-family-regular text-[1rem] mb-1"
                   >
                     Enter Your Comment
                   </label>

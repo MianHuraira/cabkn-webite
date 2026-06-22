@@ -7,13 +7,13 @@ export default function ContactUs() {
   return (
     <div className="bg-white p-8 mx-auto" style={{ maxWidth: 1200, marginTop: 100 }}>
       <div className="text-start">
-        <h1 className="font-bold" style={{ fontSize: 50 }}>
+        <h1 className="font-family-bold" style={{ fontSize: 50 }}>
           Get in{" "}
-          <span className="font-Bold" style={{ color: "#004a70" }}>
+          <span className="font-family-bold" style={{ color: "#004a70" }}>
             Touch
           </span>
         </h1>
-        <p className="text-gray-600 mt-4">
+        <p className="text-gray-600 mt-4 font-family-regular">
           Enim tempor eget pharetra facilisis sed maecenas adipiscing. Eu leo
           molestie vel, ornare non id blandit netus.
         </p>
@@ -22,15 +22,15 @@ export default function ContactUs() {
         <div className="rounded-lg p-4 contacCard flex justify-center gap-4">
           <LuPhoneCall color="#004a70" size={30} />
           <div>
-            <h2 className="font-semibold text-lg">PHONE</h2>
-            <p className="text-gray-600">03 5432 1234 3456</p>
+            <h2 className="font-family-semibold text-lg">PHONE</h2>
+            <p className="text-gray-600 font-family-regular">03 5432 1234 3456</p>
           </div>
         </div>
         <div className=" rounded-lg p-4 contacCard flex justify-center gap-4">
           <GrLocation color="#004a70" size={30} />
           <div>
-          <h2 className="font-semibold text-lg">ADDRESS</h2>
-          <p className="text-gray-600">
+          <h2 className="font-family-semibold text-lg">ADDRESS</h2>
+          <p className="text-gray-600 font-family-regular">
             168/170, Ave 01, York Drive Rich <br /> Mirpur, Dhaka-1216
           </p>
           </div>
@@ -39,8 +39,8 @@ export default function ContactUs() {
         <div className="rounded-lg p-4 contacCard  flex justify-center gap-4">
         <MdEmail color="#004a70" size={30}  /> 
         <div>
-        <h2 className="font-semibold text-lg">EMAIL</h2>
-        <p className="text-gray-600 ">info@marcc.com.au</p>
+        <h2 className="font-family-semibold text-lg">EMAIL</h2>
+        <p className="text-gray-600 font-family-regular">info@marcc.com.au</p>
         </div>
           
         </div>
@@ -50,7 +50,7 @@ export default function ContactUs() {
           <div>
             <label
               htmlFor="name"
-              className="block text-sm font-medium text-gray-700"
+              className="block text-sm font-family-medium text-gray-700"
             >
               Name *
             </label>
@@ -64,7 +64,7 @@ export default function ContactUs() {
           <div>
             <label
               htmlFor="email"
-              className="block text-sm font-medium text-gray-700"
+              className="block text-sm font-family-medium text-gray-700"
             >
               Email
             </label>
@@ -78,7 +78,7 @@ export default function ContactUs() {
           <div>
             <label
               htmlFor="phone"
-              className="block text-sm font-medium text-gray-700"
+              className="block text-sm font-family-medium text-gray-700"
             >
               Phone Number *
             </label>
@@ -92,7 +92,7 @@ export default function ContactUs() {
           <div>
             <label
               htmlFor="message"
-              className="block text-sm font-medium text-gray-700"
+              className="block text-sm font-family-medium text-gray-700"
             >
               Write Message
             </label>

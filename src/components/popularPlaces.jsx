@@ -336,18 +336,18 @@ const PopularAA = () => {
       {/* Blue Gradient Header - matching other pages pattern */}
       <div className={`bg-gradient-to-br from-brand-800 to-brand-950 ${mounted ? "animate-fade-in-down" : "opacity-0"}`} style={{ padding: "28px 0 44px", animationDelay: "50ms" }}>
         <div style={{ maxWidth: 1200, margin: "0 auto", padding: "0 16px" }}>
-          <div style={{ color: "rgba(255,255,255,0.6)", fontSize: 13, marginBottom: 8 }}>
+          <div className="font-family-regular" style={{ color: "rgba(255,255,255,0.6)", fontSize: 13, marginBottom: 8 }}>
             Home / Popular Places / {SubcatData?.title || "Detail"}
           </div>
           <div style={{ display: "flex", alignItems: "center", justifyContent: "space-between", flexWrap: "wrap", gap: 12 }}>
-            <h1 style={{ color: "#fff", fontSize: "clamp(22px, 4vw, 28px)", fontWeight: 700, margin: 0, letterSpacing: "-0.3px", display: "flex", alignItems: "center", gap: 10 }}>
+            <h1 className="font-family-bold" style={{ color: "#fff", fontSize: "clamp(22px, 4vw, 28px)", margin: 0, letterSpacing: "-0.3px", display: "flex", alignItems: "center", gap: 10 }}>
               <FaLocationDot size={22} />
               {SubcatData?.title || "Detail"}
             </h1>
             {SubcatData?.avgRating > 0 && (
               <div style={{ display: "flex", alignItems: "center", gap: 8, background: "rgba(255,255,255,0.1)", borderRadius: 10, padding: "6px 14px 6px 10px" }}>
                 <FaStar size={14} color="#f59e0b" />
-                <span style={{ color: "#fff", fontSize: 14, fontWeight: 500 }}>{SubcatData?.avgRating?.toFixed(1)} ({SubcatData?.totalReviews})</span>
+                <span className="font-family-medium" style={{ color: "#fff", fontSize: 14 }}>{SubcatData?.avgRating?.toFixed(1)} ({SubcatData?.totalReviews})</span>
               </div>
             )}
           </div>
@@ -376,23 +376,23 @@ const PopularAA = () => {
             {/* Hero Content Overlay */}
             <div className="absolute bottom-0 left-0 right-0 z-10 p-4 sm:p-6 md:p-10">
               {SubcatData?.category?.name && (
-                <span className="inline-block bg-white/20 backdrop-blur-sm text-white text-xs font-medium px-3 py-1 rounded-full mb-3 border border-white/10">
+                <span className="inline-block bg-white/20 backdrop-blur-sm text-white text-xs font-family-medium px-3 py-1 rounded-full mb-3 border border-white/10">
                   {SubcatData?.category?.name}
                 </span>
               )}
-              <h1 className="text-white font-bold text-2xl md:text-3xl lg:text-4xl max-w-3xl leading-tight m-0">
+              <h1 className="text-white font-family-bold text-2xl md:text-3xl lg:text-4xl max-w-3xl leading-tight m-0">
                 {SubcatData?.title}
               </h1>
               <div className="flex flex-wrap items-center gap-4 mt-3">
                 <div className="flex items-center gap-1.5 text-white/80">
                   <FaLocationDot className="text-white/60 text-xs" />
-                  <span className="text-sm font-Regular">{SubcatData?.address}</span>
+                  <span className="text-sm font-family-regular">{SubcatData?.address}</span>
                 </div>
                 {SubcatData?.avgRating > 0 && (
                   <div className="flex items-center gap-1.5 text-white/80">
                     <FaStar className="text-amber-400 text-xs" />
-                    <span className="text-sm font-medium">{SubcatData?.avgRating?.toFixed(1)}</span>
-                    <span className="text-sm font-Regular text-white/60">({SubcatData?.totalReviews} Reviews)</span>
+                    <span className="text-sm font-family-medium">{SubcatData?.avgRating?.toFixed(1)}</span>
+                    <span className="text-sm font-family-regular text-white/60">({SubcatData?.totalReviews} Reviews)</span>
                   </div>
                 )}
               </div>
@@ -432,8 +432,8 @@ const PopularAA = () => {
                       <HiOutlineCalendarDays className="text-brand-600 text-lg" />
                     </div>
                     <div className="min-w-0">
-                      <p className="text-xs text-brand-600/60 font-Regular uppercase tracking-wide">Date</p>
-                      <p className="text-sm font-medium text-brand-600 truncate">
+                      <p className="text-xs text-brand-600/60 font-family-regular uppercase tracking-wide">Date</p>
+                      <p className="text-sm font-family-medium text-brand-600 truncate">
                         {moment(SubcatData.start_date).format("dddd, MMMM Do, YYYY")}
                       </p>
                     </div>
@@ -444,8 +444,8 @@ const PopularAA = () => {
                       <HiOutlineClock className="text-brand-600 text-lg" />
                     </div>
                     <div className="min-w-0">
-                      <p className="text-xs text-brand-600/60 font-Regular uppercase tracking-wide">Time</p>
-                      <p className="text-sm font-medium text-brand-600">
+                      <p className="text-xs text-brand-600/60 font-family-regular uppercase tracking-wide">Time</p>
+                      <p className="text-sm font-family-medium text-brand-600">
                         {moment(SubcatData.start_time, "HH:mm").format("hh:mm A")}
                       </p>
                     </div>
@@ -457,7 +457,7 @@ const PopularAA = () => {
             {/* Schedule */}
             {Schedule?.length > 0 && (
               <div className={`reveal ${contentInView ? "visible" : ""}`} style={{ transitionDelay: "100ms" }}>
-                <h3 className="text-lg font-bold text-gray-900 mb-4 flex items-center gap-2">
+                <h3 className="text-lg font-family-bold text-gray-900 mb-4 flex items-center gap-2">
                   <HiOutlineCalendarDays className="text-brand-600" />
                   Schedule
                 </h3>
@@ -468,8 +468,8 @@ const PopularAA = () => {
                       className={`flex items-center justify-between gap-2 px-4 sm:px-5 py-3.5 ${index !== Schedule.length - 1 ? "border-b border-gray-50" : ""
                         } hover:bg-brand-600/[0.02] transition-colors`}
                     >
-                      <span className="font-medium text-gray-800 text-sm truncate">{item?.slot_day}</span>
-                      <span className="font-Regular text-gray-500 text-sm whitespace-nowrap flex-shrink-0">
+                      <span className="font-family-medium text-gray-800 text-sm truncate">{item?.slot_day}</span>
+                      <span className="font-family-regular text-gray-500 text-sm whitespace-nowrap flex-shrink-0">
                         {item?.slots[0] != undefined && item.slots[1] != undefined
                           ? `${convertTo12Hour(item?.slots[0])} - ${convertTo12Hour(item?.slots[1])}`
                           : "No Time"}
@@ -482,9 +482,9 @@ const PopularAA = () => {
 
             {/* Description */}
             <div className={`reveal ${contentInView ? "visible" : ""}`} style={{ transitionDelay: "150ms" }}>
-              <h3 className="text-lg font-bold text-gray-900 mb-3">Description</h3>
+              <h3 className="text-lg font-family-bold text-gray-900 mb-3">Description</h3>
               <div className="bg-white rounded-xl border border-gray-100 shadow-sm p-5">
-                <p className="text-gray-600 font-Regular leading-relaxed text-[15px]">
+                <p className="text-gray-600 font-family-regular leading-relaxed text-[15px]">
                   {SubcatData?.about}
                 </p>
               </div>
@@ -493,13 +493,13 @@ const PopularAA = () => {
             {/* Highlights */}
             {SubcatData?.heighlights?.length > 0 && (
               <div className={`reveal ${contentInView ? "visible" : ""}`} style={{ transitionDelay: "200ms" }}>
-                <h3 className="text-lg font-bold text-gray-900 mb-3">Highlights</h3>
+                <h3 className="text-lg font-family-bold text-gray-900 mb-3">Highlights</h3>
                 <div className="bg-white rounded-xl border border-gray-100 shadow-sm p-5">
                   <div className="flex flex-wrap gap-3">
                     {SubcatData?.heighlights.map((item, index) => (
                       <div
                         key={index}
-                        className="inline-flex items-center gap-2 px-4 py-2.5 rounded-xl bg-brand-600/[0.06] text-brand-800 text-sm font-semibold border border-brand-600/10 transition-all duration-200 hover:bg-brand-600/[0.1] hover:scale-[1.02]"
+                        className="inline-flex items-center gap-2 px-4 py-2.5 rounded-xl bg-brand-600/[0.06] text-brand-800 text-sm font-family-semibold border border-brand-600/10 transition-all duration-200 hover:bg-brand-600/[0.1] hover:scale-[1.02]"
                       >
                         <HiOutlineCheckCircle className="text-brand-600 text-lg flex-shrink-0" />
                         <span>{item}</span>
@@ -512,7 +512,7 @@ const PopularAA = () => {
 
             {/* Map */}
             <div className={`reveal ${contentInView ? "visible" : ""}`} style={{ transitionDelay: "250ms" }}>
-              <h3 className="text-lg font-bold text-gray-900 mb-3 flex items-center gap-2">
+              <h3 className="text-lg font-family-bold text-gray-900 mb-3 flex items-center gap-2">
                 <HiOutlineMapPin className="text-brand-600" />
                 Location
               </h3>
@@ -534,11 +534,11 @@ const PopularAA = () => {
             {/* Reviews Section */}
             <section ref={reviewSectionRef} className={`reveal ${contentInView ? "visible" : ""}`} style={{ transitionDelay: "300ms" }}>
               <div className="flex flex-col sm:flex-row sm:items-center justify-between gap-3 mb-6">
-                <h3 className="text-lg font-bold text-gray-900 flex items-center gap-2">
+                <h3 className="text-lg font-family-bold text-gray-900 flex items-center gap-2">
                   <HiOutlineChatBubbleLeftRight className="text-brand-600" />
                   Reviews
                   {ratingLength > 0 && (
-                    <span className="text-sm font-Regular text-gray-400 font-normal">
+                    <span className="text-sm font-family-regular text-gray-400 font-normal">
                       ({ratingLength})
                     </span>
                   )}
@@ -586,17 +586,17 @@ const PopularAA = () => {
                                   />
                                 ) : (
                                   <div className="w-full h-full bg-brand-600/10 flex items-center justify-center">
-                                    <span className="text-brand-600 font-bold text-sm">
+                                    <span className="text-brand-600 font-family-bold text-sm">
                                       {review?.user?.name?.charAt(0)?.toUpperCase() || "U"}
                                     </span>
                                   </div>
                                 )}
                               </div>
                               <div className="min-w-0">
-                                <h4 className="font-medium text-gray-900 text-sm truncate">
+                                <h4 className="font-family-medium text-gray-900 text-sm truncate">
                                   {review?.user?.name}
                                 </h4>
-                                <p className="text-xs text-gray-400 font-Regular mt-0.5">
+                                <p className="text-xs text-gray-400 font-family-regular mt-0.5">
                                   {moment(review?.createdAt).format("MMM DD, YYYY")}
                                 </p>
                               </div>
@@ -609,7 +609,7 @@ const PopularAA = () => {
                             />
                           </div>
                           <div className="mt-3 relative pl-4 border-l-2 border-brand-600/10">
-                            <p className="text-gray-600 font-Regular text-[14px] leading-relaxed">
+                            <p className="text-gray-600 font-family-regular text-[14px] leading-relaxed">
                               {review.review}
                             </p>
                           </div>
@@ -649,10 +649,10 @@ const PopularAA = () => {
               <div className="flex items-center gap-2 mb-4">
                 <HiOutlineStar className="text-amber-400 text-lg" />
                 <div>
-                  <span className="text-lg font-bold text-gray-900">
+                  <span className="text-lg font-family-bold text-gray-900">
                     {SubcatData?.avgRating > 0 ? SubcatData?.avgRating?.toFixed(1) : "0.0"}
                   </span>
-                  <span className="text-sm text-gray-400 font-Regular ml-1">
+                  <span className="text-sm text-gray-400 font-family-regular ml-1">
                     ({SubcatData?.totalReviews || 0} reviews)
                   </span>
                 </div>
@@ -661,7 +661,7 @@ const PopularAA = () => {
               <div className="space-y-3 mb-6">
                 <div className="flex items-start gap-3">
                   <FaLocationDot className="text-brand-600/60 mt-1 text-sm" />
-                  <span className="text-sm text-gray-600 font-Regular leading-snug">
+                  <span className="text-sm text-gray-600 font-family-regular leading-snug">
                     {SubcatData?.address}
                   </span>
                 </div>
@@ -669,22 +669,22 @@ const PopularAA = () => {
 
               {SubcatData?.category?.name === "Excursion" && (
                 <div className="mb-4 p-3 bg-amber-50 rounded-lg border border-amber-100">
-                  <p className="text-xs text-amber-700 font-medium mb-2">Select Date & Time</p>
+                  <p className="text-xs text-amber-700 font-family-medium mb-2">Select Date & Time</p>
                   <div className="flex flex-col sm:flex-row gap-2">
                     <div className="flex flex-col gap-1 flex-1 min-w-0">
-                      <label className="text-[11px] text-gray-500 font-Regular">Date</label>
+                      <label className="text-[11px] text-gray-500 font-family-regular">Date</label>
                       <input
                         type="date"
                         onChange={(e) => setTimeSlot({ ...TimeSlot, date: e.target.value })}
-                        className="w-full px-3 py-2.5 text-sm border border-gray-200 rounded-lg focus:border-brand-600 outline-none font-Regular"
+                        className="w-full px-3 py-2.5 text-sm border border-gray-200 rounded-lg focus:border-brand-600 outline-none font-family-regular"
                       />
                     </div>
                     <div className="flex flex-col gap-1 flex-1 min-w-0">
-                      <label className="text-[11px] text-gray-500 font-Regular">Time</label>
+                      <label className="text-[11px] text-gray-500 font-family-regular">Time</label>
                       <input
                         type="time"
                         onChange={(e) => handleTime({ ...TimeSlot, time: e.target.value })}
-                        className="w-full px-3 py-2.5 text-sm border border-gray-200 rounded-lg focus:border-brand-600 outline-none font-Regular"
+                        className="w-full px-3 py-2.5 text-sm border border-gray-200 rounded-lg focus:border-brand-600 outline-none font-family-regular"
                       />
                     </div>
                   </div>
@@ -699,7 +699,7 @@ const PopularAA = () => {
                 Book a Ride
               </CustomButton>
 
-              <p className="text-[11px] text-gray-400 font-Regular text-center mt-3">
+              <p className="text-[11px] text-gray-400 font-family-regular text-center mt-3">
                 No cancellation fees • Instant confirmation
               </p>
             </div>
@@ -712,10 +712,10 @@ const PopularAA = () => {
         <div className="flex items-center justify-between mb-2">
           <div className="flex items-center gap-1">
             <FaStar className="text-amber-400 text-xs" />
-            <span className="text-sm font-bold text-gray-900">
+            <span className="text-sm font-family-bold text-gray-900">
               {SubcatData?.avgRating > 0 ? SubcatData?.avgRating?.toFixed(1) : "0.0"}
             </span>
-            <span className="text-xs text-gray-400 font-Regular">
+            <span className="text-xs text-gray-400 font-family-regular">
               ({SubcatData?.totalReviews || 0})
             </span>
           </div>
@@ -753,7 +753,7 @@ const PopularAA = () => {
             }
           `}</style>
           <div className="flex items-center justify-between mb-6">
-            <h3 className="text-xl font-bold text-gray-900">Leave a Review</h3>
+            <h3 className="text-xl font-family-bold text-gray-900">Leave a Review</h3>
             <button
               onClick={handleClose}
               className="w-8 h-8 rounded-full bg-gray-100 hover:bg-gray-200 flex items-center justify-center border-none cursor-pointer transition-colors"
@@ -775,7 +775,7 @@ const PopularAA = () => {
             {({ setFieldValue, handleChange, handleBlur, values, watch }) => (
               <Form>
                 <div className="mb-5">
-                  <label className="block text-sm font-medium text-gray-700 mb-2">
+                  <label className="block text-sm font-family-medium text-gray-700 mb-2">
                     Rating
                   </label>
                   <Rate
@@ -789,13 +789,13 @@ const PopularAA = () => {
                   <ErrorMessage
                     name="rating"
                     component="div"
-                    className="text-red-500 text-xs mt-1 font-Regular"
+                    className="text-red-500 text-xs mt-1 font-family-regular"
                   />
                 </div>
                 <div className="mb-5">
                   <label
                     htmlFor="comment"
-                    className="block text-sm font-medium text-gray-700 mb-2"
+                    className="block text-sm font-family-medium text-gray-700 mb-2"
                   >
                     Your Review
                   </label>
@@ -805,14 +805,14 @@ const PopularAA = () => {
                     placeholder="Share your experience..."
                     id="comment"
                     name="comment"
-                    className="w-full px-4 py-3 text-sm border border-slate-200 rounded-xl focus:border-brand-500 focus:ring-4 focus:ring-brand-100/50 outline-none font-Regular resize-none transition-all duration-200"
+                    className="w-full px-4 py-3 text-sm border border-slate-200 rounded-xl focus:border-brand-500 focus:ring-4 focus:ring-brand-100/50 outline-none font-family-regular resize-none transition-all duration-200"
                     onChange={handleChange}
                     onBlur={handleBlur}
                   />
                   <ErrorMessage
                     name="comment"
                     component="div"
-                    className="text-red-500 text-xs mt-1 font-Regular"
+                    className="text-red-500 text-xs mt-1 font-family-regular"
                   />
                 </div>
 
@@ -843,7 +843,7 @@ const PopularPlaces = () => {
           <div className="min-h-[60vh] flex items-center justify-center">
             <div className="flex flex-col items-center gap-3">
               <div className="w-10 h-10 border-[3px] border-brand-600/30 border-t-brand-600 rounded-full animate-spin" />
-              <p className="text-sm text-gray-400 font-Regular">Loading...</p>
+              <p className="text-sm text-gray-400 font-family-regular">Loading...</p>
             </div>
           </div>
         }

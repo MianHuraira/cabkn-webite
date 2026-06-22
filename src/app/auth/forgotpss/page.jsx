@@ -73,7 +73,7 @@ const page = () => {
       imageHeadline="Secure account recovery"
       imageSubheadline="We’ll guide you through a quick, secure reset flow."
       footer={
-        <span>
+        <span className="font-family-regular">
           Remembered it? <AuthInlineLink href="/auth/login">Back to login</AuthInlineLink>
         </span>
       }

@@ -66,13 +66,15 @@ const ProductTable = ({
     <div className="bg-white rounded-b-xl border-t border-t-slate-200 px-4 sm:px-6 py-4">
       <ReactPaginate
         previousLabel={
-          <div className="flex text-sm items-center gap-2 btnpgination">
-            <FaArrowLeft color="#64748b" />
+          <div className="flex text-sm items-center gap-2 btnpgination ">
+            <FaArrowLeft color="#000" />
             <span className="medium-font">Previous</span>
           </div>
         }
         nextLabel={
           <div className="flex text-sm items-center gap-2 btnpgination">
+            <span className="font-family-medium">Next</span>
+            <FaArrowRight color="#000" />
             <span className="medium-font">Next</span>
             <FaArrowRight color="#64748b" />
           </div>
@@ -127,10 +129,10 @@ const ProductTable = ({
   };
 
   return (
-    <Fragment>
+    <div className="font-poppins">
       {rowHeading && (
         <CardHeader className="flex items-center justify-between mb-3">
-          <CardTitle className="bold-font" tag={"h4"}>
+          <CardTitle className="font-family-bold" tag={"h4"}>
             {rowHeading}
           </CardTitle>
           {setSearch && (
@@ -190,7 +192,7 @@ const ProductTable = ({
           customStyles={customStyles}
         />
       </div>
-    </Fragment>
+    </div>
   );
 };
 

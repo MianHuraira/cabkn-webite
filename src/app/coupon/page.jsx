@@ -70,7 +70,7 @@ export async function generateMetadata() {
 const page = () => {
   return (
     <>
-      <div id="whyUs">
+      <div className="font-poppins" id="whyUs">
         <CouponPage />
       </div>
     </>

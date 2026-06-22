@@ -65,7 +65,7 @@ export async function generateMetadata() {
 
 export default function page() {
   return (
-    <div>
+    <div className="font-poppins">
       <MakeYourTour />
     </div>
   );

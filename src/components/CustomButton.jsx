@@ -13,7 +13,7 @@ const CustomButton = ({
   isIconOnly = false,
   ...props
 }) => {
-  const baseStyles = "!transition-all !duration-300 !inline-flex !items-center !justify-center !gap-2 !cursor-pointer !border-none !rounded-[9999px] !font-['Inter-Medium'] hover:!-translate-y-1 group";
+  const baseStyles = "!transition-all !duration-300 !inline-flex !items-center !justify-center !gap-2 !cursor-pointer !border-none !rounded-[9999px] font-family-medium hover:!-translate-y-1 group";
 
   const variants = {
     primary: "!bg-primary !text-white !shadow-[0_8px_30px_rgba(0,74,112,0.25)] hover:!shadow-[0_12px_40px_rgba(0,74,112,0.4)]",
