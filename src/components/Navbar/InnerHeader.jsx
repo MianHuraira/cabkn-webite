@@ -275,7 +275,6 @@ const InnerHeader = () => {
     padding: "8px 12px",
     color: isActive(href) ? "#004a70" : "#4b5563",
     fontSize: 13.5,
-    fontWeight: isActive(href) ? 600 : 500,
     textDecoration: "none",
     whiteSpace: "nowrap",
     position: "relative",
@@ -344,7 +343,7 @@ const InnerHeader = () => {
               <Link
                 key={link.href}
                 href={link.href}
-                className="animate-fade-in-down"
+                className={`animate-fade-in-down ${isActive(link.href) ? "font-family-semibold" : "font-family-medium"}`}
                 style={{ ...linkStyle(link.href), animationDelay: `${index * 50}ms` }}
                 onMouseEnter={(e) => {
                   if (!isActive(link.href)) {
@@ -422,13 +421,12 @@ const InnerHeader = () => {
                             item.onClick?.();
                             setUserMenuOpen(false);
                           }}
-                          className="block px-3.5 py-2.5 rounded-lg text-gray-700 font-medium text-sm no-underline transition-all duration-150 hover:bg-gray-100 hover:translate-x-0.5"
+                          className="block px-3.5 py-2.5 rounded-lg text-gray-700 font-family-medium text-sm no-underline transition-all duration-150 hover:bg-gray-100 hover:translate-x-0.5"
                           style={{
                             display: "block",
                             padding: "10px 14px",
                             borderRadius: 8,
                             color: "#374151",
-                            fontWeight: 500,
                             fontSize: 14,
                             textDecoration: "none",
                           }}
@@ -441,12 +439,11 @@ const InnerHeader = () => {
                             item.onClick?.();
                             setUserMenuOpen(false);
                           }}
-                          className="px-3.5 py-2.5 rounded-lg text-gray-700 font-medium text-sm cursor-pointer transition-all duration-150 hover:bg-gray-100 hover:translate-x-0.5"
+                          className="px-3.5 py-2.5 rounded-lg text-gray-700 font-family-medium text-sm cursor-pointer transition-all duration-150 hover:bg-gray-100 hover:translate-x-0.5"
                           style={{
                             padding: "10px 14px",
                             borderRadius: 8,
                             color: "#374151",
-                            fontWeight: 500,
                             fontSize: 14,
                             cursor: "pointer",
                           }}
@@ -541,19 +538,18 @@ const InnerHeader = () => {
             <div className="animate-fade-in" style={{ animationDelay: "0ms" }}>
               <div
                 onClick={() => setMobileProfileOpen(!mobileProfileOpen)}
-                className="transition-all duration-150 hover:bg-gray-100"
-                style={{
-                  padding: "11px 12px",
-                  borderRadius: 10,
-                  cursor: "pointer",
-                  color: "#374151",
-                  fontSize: 14,
-                  fontWeight: 500,
-                  display: "flex",
-                  alignItems: "center",
-                  justifyContent: "space-between",
-                  gap: 12,
-                }}
+                  className="transition-all duration-150 hover:bg-gray-100 font-family-medium"
+                  style={{
+                    padding: "11px 12px",
+                    borderRadius: 10,
+                    cursor: "pointer",
+                    color: "#374151",
+                    fontSize: 14,
+                    display: "flex",
+                    alignItems: "center",
+                    justifyContent: "space-between",
+                    gap: 12,
+                  }}
               >
                 <div style={{ display: "flex", alignItems: "center", gap: 12 }}>
                   {/* Avatar */}
@@ -589,10 +585,10 @@ const InnerHeader = () => {
                   </div>
                   {/* User info */}
                   <div>
-                    <div style={{ fontSize: 14, fontWeight: 600, color: "#1f2937" }}>
+                    <div className="font-family-semibold" style={{ fontSize: 14, color: "#1f2937" }}>
                       {userData?.user?.name || "Profile"}
                     </div>
-                    <div style={{ fontSize: 12, color: "#6b7280" }}>
+                    <div className="font-family-regular" style={{ fontSize: 12, color: "#6b7280" }}>
                       Profile actions
                     </div>
                   </div>
@@ -617,14 +613,13 @@ const InnerHeader = () => {
                             item.onClick?.();
                             Route(item.to === "/" ? "" : item.to.slice(1));
                           }}
-                          className="transition-all duration-150 hover:bg-gray-100"
+                          className="transition-all duration-150 hover:bg-gray-100 font-family-medium"
                           style={{
                             padding: "8px 12px",
                             borderRadius: 8,
                             cursor: "pointer",
                             color: item.label === "Logout" ? "#ef4444" : "#374151",
                             fontSize: 13,
-                            fontWeight: 500,
                           }}
                         >
                           {item.label}
@@ -634,14 +629,13 @@ const InnerHeader = () => {
                           onClick={() => {
                             item.onClick?.();
                           }}
-                          className="transition-all duration-150 hover:bg-gray-100"
+                          className="transition-all duration-150 hover:bg-gray-100 font-family-medium"
                           style={{
                             padding: "8px 12px",
                             borderRadius: 8,
                             cursor: "pointer",
                             color: "#374151",
                             fontSize: 13,
-                            fontWeight: 500,
                           }}
                         >
                           {item.label}
@@ -655,14 +649,13 @@ const InnerHeader = () => {
                         setNotifShow(true);
                         handleClose();
                       }}
-                      className="transition-all duration-150 hover:bg-gray-100"
+                      className="transition-all duration-150 hover:bg-gray-100 font-family-medium"
                       style={{
                         padding: "8px 12px",
                         borderRadius: 8,
                         cursor: "pointer",
                         color: "#374151",
                         fontSize: 13,
-                        fontWeight: 500,
                       }}
                     >
                       Notifications
@@ -932,10 +925,10 @@ const InnerHeader = () => {
                 <MdNotificationsActive size={18} color="#004a70" />
               </div>
               <div>
-                <h3 style={{ margin: 0, fontSize: 16, fontWeight: 700, color: "#1f2937", lineHeight: 1.3 }}>
+                <h3 className="font-family-bold" style={{ margin: 0, fontSize: 16, color: "#1f2937", lineHeight: 1.3 }}>
                   Notifications
                 </h3>
-                <p style={{ margin: 0, fontSize: 12, color: "#9ca3af", fontWeight: 500 }}>
+                <p className="font-family-medium" style={{ margin: 0, fontSize: 12, color: "#9ca3af" }}>
                   {notifications.length} {notifications.length === 1 ? "notification" : "notifications"}
                 </p>
               </div>
@@ -993,12 +986,12 @@ const InnerHeader = () => {
                     borderRadius: 8,
                     border: "none",
                     fontSize: 12,
-                    fontWeight: isActive ? 600 : 500,
                     cursor: "pointer",
                     transition: "all 0.15s",
                     background: isActive ? "#004a70" : "#f3f4f6",
                     color: isActive ? "#fff" : "#6b7280",
                   }}
+                  className={isActive ? "font-family-semibold" : "font-family-medium"}
                   onMouseEnter={(e) => {
                     if (!isActive) {
                       e.currentTarget.style.background = "#e5e7eb";
@@ -1047,14 +1040,14 @@ const InnerHeader = () => {
                 >
                   <MdNotificationsNone size={30} color="#004a70" opacity={0.35} />
                 </div>
-                <p style={{ fontSize: 14, fontWeight: 600, color: "#6b7280", margin: 0 }}>
+                <p className="font-family-semibold" style={{ fontSize: 14, color: "#6b7280", margin: 0 }}>
                   {notifFilter === "all"
                     ? "No notifications yet"
                     : notifFilter === "unread"
                       ? "No unread notifications"
                       : "No read notifications"}
                 </p>
-                <p style={{ fontSize: 12, color: "#9ca3af", margin: "4px 0 0" }}>
+                <p className="font-family-regular" style={{ fontSize: 12, color: "#9ca3af", margin: "4px 0 0" }}>
                   {notifFilter === "all"
                     ? "When you receive notifications, they'll show up here."
                     : "Try switching the filter."}
@@ -1112,9 +1105,8 @@ const InnerHeader = () => {
                         {!notification.isRead && (
                           <span style={{ width: 7, height: 7, borderRadius: "50%", background: colors.icon, flexShrink: 0, display: "inline-block" }} />
                         )}
-                        <p style={{
+                        <p className={notification.isRead ? "font-family-medium" : "font-family-semibold"} style={{
                           margin: 0,
-                          fontWeight: notification.isRead ? 500 : 650,
                           fontSize: 13,
                           color: notification.isRead ? "#4b5563" : "#111827",
                           lineHeight: 1.4,
@@ -1140,7 +1132,7 @@ const InnerHeader = () => {
                       )}
                       <div style={{ display: "flex", alignItems: "center", gap: 4, marginTop: 5 }}>
                         <IoMdTime size={11} color={getTimeColor(notification.createdAt)} />
-                        <span style={{ fontSize: 11, fontWeight: 500, color: getTimeColor(notification.createdAt) }}>
+                        <span className="font-family-medium" style={{ fontSize: 11, color: getTimeColor(notification.createdAt) }}>
                           {formatTime(notification.createdAt)}
                         </span>
                       </div>
@@ -1161,10 +1153,10 @@ const MobileNavItem = ({ label, onClick, active, danger }) => (
     onClick={onClick}
     className={`transition-all duration-150 ${
       active
-        ? "bg-indigo-50 font-semibold"
+        ? "bg-indigo-50 font-family-semibold"
         : danger
-          ? "hover:bg-red-50"
-          : "hover:bg-gray-100"
+          ? "hover:bg-red-50 font-family-medium"
+          : "hover:bg-gray-100 font-family-medium"
     }`}
     style={{
       padding: "11px 12px",
@@ -1172,7 +1164,6 @@ const MobileNavItem = ({ label, onClick, active, danger }) => (
       cursor: "pointer",
       color: active ? "#004a70" : danger ? "#ef4444" : "#374151",
       fontSize: 14,
-      fontWeight: active ? 600 : 500,
     }}
   >
     {label}
