@@ -3,15 +3,41 @@
 @tailwind utilities;
 
 @layer utilities {
-  .animation-delay-100 { animation-delay: 100ms; }
-  .animation-delay-150 { animation-delay: 150ms; }
-  .animation-delay-200 { animation-delay: 200ms; }
-  .animation-delay-250 { animation-delay: 250ms; }
-  .animation-delay-300 { animation-delay: 300ms; }
-  .animation-delay-350 { animation-delay: 350ms; }
-  .animation-delay-400 { animation-delay: 400ms; }
-  .animation-delay-500 { animation-delay: 500ms; }
-  .animation-delay-700 { animation-delay: 700ms; }
+  .animation-delay-100 {
+    animation-delay: 100ms;
+  }
+
+  .animation-delay-150 {
+    animation-delay: 150ms;
+  }
+
+  .animation-delay-200 {
+    animation-delay: 200ms;
+  }
+
+  .animation-delay-250 {
+    animation-delay: 250ms;
+  }
+
+  .animation-delay-300 {
+    animation-delay: 300ms;
+  }
+
+  .animation-delay-350 {
+    animation-delay: 350ms;
+  }
+
+  .animation-delay-400 {
+    animation-delay: 400ms;
+  }
+
+  .animation-delay-500 {
+    animation-delay: 500ms;
+  }
+
+  .animation-delay-700 {
+    animation-delay: 700ms;
+  }
 }
 
 .reveal {
@@ -19,6 +45,7 @@
   transform: translateY(30px);
   transition: opacity 0.7s cubic-bezier(0.16, 1, 0.3, 1), transform 0.7s cubic-bezier(0.16, 1, 0.3, 1);
 }
+
 .reveal.visible {
   opacity: 1;
   transform: translateY(0);
@@ -29,27 +56,46 @@
   transform: translateX(-30px);
   transition: opacity 0.6s cubic-bezier(0.16, 1, 0.3, 1), transform 0.6s cubic-bezier(0.16, 1, 0.3, 1);
 }
+
 .reveal-left.visible {
   opacity: 1;
   transform: translateX(0);
 }
 
-.mapboxgl-ctrl{
+.mapboxgl-ctrl {
   display: none !important;
 }
 
 @keyframes float-car {
-  0%, 100% { transform: translateY(0px); }
-  50% { transform: translateY(-15px); }
+
+  0%,
+  100% {
+    transform: translateY(0px);
+  }
+
+  50% {
+    transform: translateY(-15px);
+  }
 }
 
 @keyframes pulse-dot {
-  0%, 100% { opacity: 1; transform: scale(1); }
-  50% { opacity: 0.5; transform: scale(0.8); }
+
+  0%,
+  100% {
+    opacity: 1;
+    transform: scale(1);
+  }
+
+  50% {
+    opacity: 0.5;
+    transform: scale(0.8);
+  }
 }
 
 @keyframes spin {
-  to { transform: rotate(360deg); }
+  to {
+    transform: rotate(360deg);
+  }
 }
 
 .animate-spin {
@@ -57,20 +103,35 @@
 }
 
 @keyframes shimmer {
-  0% { background-position: 200% 0; }
-  100% { background-position: -200% 0; }
+  0% {
+    background-position: 200% 0;
+  }
+
+  100% {
+    background-position: -200% 0;
+  }
 }
 
 @keyframes pulse-ring {
-  0% { opacity: 0.6; transform: scale(1); }
-  50% { opacity: 0.2; transform: scale(1.08); }
-  100% { opacity: 0.6; transform: scale(1); }
+  0% {
+    opacity: 0.6;
+    transform: scale(1);
+  }
+
+  50% {
+    opacity: 0.2;
+    transform: scale(1.08);
+  }
+
+  100% {
+    opacity: 0.6;
+    transform: scale(1);
+  }
 }
 
 .driver-modal-sm .modal-dialog {
   max-width: 360px;
 }
-
 .font-poppins {
   font-family: var(--font-poppins-local), sans-serif !important;
 }
@@ -80,34 +141,42 @@
   font-family: var(--font-poppins-local), sans-serif !important;
   font-weight: 100 !important;
 }
+
 .fontfamilyextralight {
   font-family: var(--font-poppins-local), sans-serif !important;
   font-weight: 200 !important;
 }
+
 .fontfamilylight {
   font-family: var(--font-poppins-local), sans-serif !important;
   font-weight: 300 !important;
 }
+
 .fontfamilyregular {
   font-family: var(--font-poppins-local), sans-serif !important;
   font-weight: 400 !important;
 }
+
 .fontfamilymedium {
   font-family: var(--font-poppins-local), sans-serif !important;
   font-weight: 500 !important;
 }
+
 .fontfamilysemibold {
   font-family: var(--font-poppins-local), sans-serif !important;
   font-weight: 600 !important;
 }
+
 .fontfamilybold {
   font-family: var(--font-poppins-local), sans-serif !important;
   font-weight: 700 !important;
 }
+
 .fontfamilyextrabold {
   font-family: var(--font-poppins-local), sans-serif !important;
   font-weight: 800 !important;
 }
+
 .fontfamilyblack {
   font-family: var(--font-poppins-local), sans-serif !important;
   font-weight: 900 !important;
@@ -118,34 +187,42 @@
   font-family: var(--font-poppins-local), sans-serif !important;
   font-weight: 100 !important;
 }
+
 .font-family-extralight {
   font-family: var(--font-poppins-local), sans-serif !important;
   font-weight: 200 !important;
 }
+
 .font-family-light {
   font-family: var(--font-poppins-local), sans-serif !important;
   font-weight: 300 !important;
 }
+
 .font-family-regular {
   font-family: var(--font-poppins-local), sans-serif !important;
   font-weight: 400 !important;
 }
+
 .font-family-medium {
   font-family: var(--font-poppins-local), sans-serif !important;
   font-weight: 500 !important;
 }
+
 .font-family-semibold {
   font-family: var(--font-poppins-local), sans-serif !important;
   font-weight: 600 !important;
 }
+
 .font-family-bold {
   font-family: var(--font-poppins-local), sans-serif !important;
   font-weight: 700 !important;
 }
+
 .font-family-extrabold {
   font-family: var(--font-poppins-local), sans-serif !important;
   font-weight: 800 !important;
 }
+
 .font-family-black {
   font-family: var(--font-poppins-local), sans-serif !important;
   font-weight: 900 !important;
@@ -157,45 +234,51 @@
   font-family: var(--font-poppins-local), sans-serif !important;
   font-weight: 100 !important;
 }
+
 .font-poppins .font-extralight,
 .font-poppins.font-extralight {
   font-family: var(--font-poppins-local), sans-serif !important;
   font-weight: 200 !important;
 }
+
 .font-poppins .font-light,
 .font-poppins.font-light {
   font-family: var(--font-poppins-local), sans-serif !important;
   font-weight: 300 !important;
 }
+
 .font-poppins .font-normal,
 .font-poppins.font-normal {
   font-family: var(--font-poppins-local), sans-serif !important;
   font-weight: 400 !important;
 }
+
 .font-poppins .font-medium,
 .font-poppins.font-medium {
   font-family: var(--font-poppins-local), sans-serif !important;
   font-weight: 500 !important;
 }
+
 .font-poppins .font-semibold,
 .font-poppins.font-semibold {
   font-family: var(--font-poppins-local), sans-serif !important;
   font-weight: 600 !important;
 }
+
 .font-poppins .font-bold,
 .font-poppins.font-bold {
   font-family: var(--font-poppins-local), sans-serif !important;
   font-weight: 700 !important;
 }
+
 .font-poppins .font-extrabold,
 .font-poppins.font-extrabold {
   font-family: var(--font-poppins-local), sans-serif !important;
   font-weight: 800 !important;
 }
+
 .font-poppins .font-black,
 .font-poppins.font-black {
   font-family: var(--font-poppins-local), sans-serif !important;
   font-weight: 900 !important;
 }
-
-
