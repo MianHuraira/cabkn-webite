@@ -12,6 +12,7 @@ import "slick-carousel/slick/slick-theme.css";
 import "antd/dist/reset.css"; // For latest Ant Design (v5)
 import "@ant-design/v5-patch-for-react-19";
 import Head from "next/head";
+import { poppins } from "@/fonts";
 
 export const metadata = {
   title: {
@@ -23,7 +24,7 @@ export const metadata = {
 
 export default function RootLayout({ children }) {
   return (
-    <html lang="en">
+    <html lang="en" className={poppins.variable}>
       <head>
         {/* Your Head content */}
         <link rel="icon" type="image/png" href="/favicon.png" />

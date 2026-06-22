@@ -51,7 +51,7 @@ export default function DownloadApp() {
                 letterSpacing: 3,
                 textTransform: "uppercase",
                 transitionDelay: "100ms",
-                fontFamily: "Inter-Bold",
+                fontFamily: "var(--font-poppins-local)",
               }}
             >
               Get the App
@@ -65,7 +65,7 @@ export default function DownloadApp() {
                 lineHeight: 1.1,
                 margin: 0,
                 transitionDelay: "200ms",
-                fontFamily: "Inter-ExtraBold",
+                fontFamily: "var(--font-poppins-local)",
               }}
             >
               Download our <span style={{ color: "#004a70" }}>Mobile app</span>
@@ -78,7 +78,7 @@ export default function DownloadApp() {
                 lineHeight: 1.8,
                 maxWidth: 460,
                 transitionDelay: "300ms",
-                fontFamily: "Inter-Regular",
+                fontFamily: "var(--font-poppins-local)",
               }}
             >
               Download the Cabkn app for seamless, reliable transportation
@@ -102,7 +102,7 @@ export default function DownloadApp() {
                 style={{
                   minWidth: 190,
                   minHeight: 58,
-                  fontFamily: "Inter-SemiBold",
+                  fontFamily: "var(--font-poppins-local)",
                 }}
               >
                 <FaGooglePlay size={32} />
@@ -130,7 +130,7 @@ export default function DownloadApp() {
                 style={{
                   minWidth: 190,
                   minHeight: 58,
-                  fontFamily: "Inter-SemiBold",
+                  fontFamily: "var(--font-poppins-local)",
                 }}
               >
                 <TiVendorApple size={36} />

@@ -285,10 +285,10 @@ const InnerHeader = () => {
   });
 
   return (
-    <>
+    <div className="font-poppins">
       <Navbar
         expand="xl"
-        className={mounted ? "animate-header-slide-down" : "opacity-0"}
+        className={(mounted ? "animate-header-slide-down " : "opacity-0 ") + "font-poppins"}
         style={{
           position: "sticky",
           top: 0,
@@ -486,6 +486,7 @@ const InnerHeader = () => {
         show={show}
         onHide={handleClose}
         placement="start"
+        className="font-poppins"
         style={{
           width: 300,
           maxWidth: "85vw",
@@ -690,7 +691,7 @@ const InnerHeader = () => {
         backdrop="static"
         show={driverModal}
         onHide={handleClosedriver}
-        dialogClassName="driver-modal-sm"
+        dialogClassName="driver-modal-sm font-poppins"
         style={{ borderRadius: 20, overflow: "hidden" }}
       >
         <div
@@ -897,6 +898,7 @@ const InnerHeader = () => {
         show={notifShow}
         onHide={() => setNotifShow(false)}
         placement="end"
+        className="font-poppins"
         style={{
           width: 380,
           maxWidth: "90vw",
@@ -1150,7 +1152,7 @@ const InnerHeader = () => {
           </div>
         </div>
       </Offcanvas>
-    </>
+    </div>
   );
 };
 

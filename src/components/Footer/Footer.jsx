@@ -65,7 +65,7 @@ export default function Footer() {
   return (
     <footer
       ref={sectionRef}
-      className="bg-gradient-to-br from-brand-700 to-brand-950"
+      className="bg-gradient-to-br from-brand-700 to-brand-950 font-family-regular"
     >
       <div className="mx-auto px-4 sm:px-6 lg:px-8 pt-10 lg:pt-14 pb-8 lg:pb-10" style={{ maxWidth: 1200 }}>
         {/* Main 3-Column Grid - Clean Layout */}
@@ -92,7 +92,7 @@ export default function Footer() {
             </Link>
 
             {/* Description */}
-            <p className="text-white/80 text-sm leading-relaxed max-w-[300px] md:max-w-none text-center md:text-left">
+            <p className="text-white/80 text-sm leading-relaxed max-w-[300px] md:max-w-none text-center md:text-left font-family-regular">
               {FooterData?.short_title ||
                 "Your reliable ride partner, connecting you to your destinations safely and comfortably."}
             </p>
@@ -109,7 +109,7 @@ export default function Footer() {
                 />
               }
               style={{ color: "#000 !important" }}
-              className="!bg-white text-brand-700 !shadow-lg !shadow-black/12 !hover:shadow-xl !hover:-translate-y-0.5 !font-semibold !min-w-[160px]"
+              className="!bg-white text-brand-700 !shadow-lg !shadow-black/12 !hover:shadow-xl !hover:-translate-y-0.5 font-family-semibold !min-w-[160px]"
             >
               Request a driver
             </CustomButton>
@@ -120,7 +120,7 @@ export default function Footer() {
             className={`flex flex-col gap-4 items-center md:items-start reveal ${inView ? "visible" : ""}`}
             style={{ transitionDelay: "150ms" }}
           >
-            <h4 className="text-white text-sm font-semibold m-0">Contact Us</h4>
+            <h4 className="text-white text-sm font-family-semibold m-0">Contact Us</h4>
 
             <div className="flex flex-col gap-2 items-center md:items-start">
               {/* Phone */}
@@ -130,7 +130,7 @@ export default function Footer() {
                   className="group flex items-center gap-2.5 text-white/90 hover:text-white transition-colors"
                 >
                   <BsFillTelephoneFill size={14} className="text-white/70" />
-                  <span className="text-sm">{FooterData?.phone}</span>
+                  <span className="text-sm font-family-regular">{FooterData?.phone}</span>
                 </Link>
               )}
 
@@ -141,7 +141,7 @@ export default function Footer() {
                   className="group flex items-center gap-2.5 text-white/90 hover:text-white transition-colors"
                 >
                   <AiOutlineMail size={15} className="text-white/70" />
-                  <span className="text-sm">{FooterData?.emails}</span>
+                  <span className="text-sm font-family-regular">{FooterData?.emails}</span>
                 </Link>
               )}
 
@@ -149,7 +149,7 @@ export default function Footer() {
               {FooterData?.location && (
                 <div className="group flex items-start gap-2.5 text-white/90">
                   <FiMapPin size={15} className="text-white/70 mt-0.5" />
-                  <span className="text-sm leading-relaxed text-center md:text-left max-w-[220px] md:max-w-none">
+                  <span className="text-sm leading-relaxed text-center md:text-left max-w-[220px] md:max-w-none font-family-regular">
                     {FooterData?.location}
                   </span>
                 </div>
@@ -164,7 +164,7 @@ export default function Footer() {
           >
             {/* Social Media - Clean */}
             <div className="flex flex-col gap-2.5 items-center md:items-start">
-              <h4 className="text-white text-sm font-semibold m-0">
+              <h4 className="text-white text-sm font-family-semibold m-0">
                 Follow Us
               </h4>
               <div className="flex items-center gap-2 flex-wrap">
@@ -182,10 +182,10 @@ export default function Footer() {
 
             {/* App Downloads */}
             <div className="flex flex-col gap-2.5 items-center md:items-start">
-              <h4 className="text-white text-sm font-semibold m-0">
+              <h4 className="text-white text-sm font-family-semibold m-0">
                 Download Our App
               </h4>
-              <p className="text-white/70 text-sm leading-relaxed max-w-[220px] md:max-w-none text-center md:text-left">
+              <p className="text-white/70 text-sm leading-relaxed max-w-[220px] md:max-w-none text-center md:text-left font-family-regular">
                 Book rides on the go with our mobile app.
               </p>
 
@@ -229,20 +229,20 @@ export default function Footer() {
       <div className="bg-brand-950/80 border-t border-white/10">
         <div className="mx-auto px-4 sm:px-6 lg:px-8 py-3.5 sm:py-4" style={{ maxWidth: 1200 }}>
           <div className="flex flex-col sm:flex-row items-center justify-between gap-2">
-            <p className="text-white/60 text-[12px] m-0 text-center sm:text-left">
+            <p className="text-white/60 text-[12px] m-0 text-center sm:text-left font-family-regular">
               &copy; {new Date().getFullYear()} CabKN. All rights reserved.
             </p>
             <div className="flex items-center gap-3 sm:gap-4">
               <Link
                 href="/privacy"
-                className="text-white/60 text-[12px] cursor-pointer hover:text-white transition-colors duration-300"
+                className="text-white/60 text-[12px] cursor-pointer hover:text-white transition-colors duration-300 font-family-regular"
               >
                 Privacy Policy
               </Link>
               <span className="text-white/30 text-[12px]">·</span>
               <Link
                 href="/terms"
-                className="text-white/60 text-[12px] cursor-pointer hover:text-white transition-colors duration-300"
+                className="text-white/60 text-[12px] cursor-pointer hover:text-white transition-colors duration-300 font-family-regular"
               >
                 Terms &amp; Conditions
               </Link>

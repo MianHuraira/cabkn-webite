@@ -21,6 +21,9 @@ export default {
       },
     },
     extend: {
+      fontFamily: {
+        poppins: ["var(--font-poppins-local)", "sans-serif"],
+      },
       keyframes: {
         "auth-in": {
           "0%": {

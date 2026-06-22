@@ -363,7 +363,7 @@ export default function Tingstodo() {
     <div ref={sectionRef}>
       <div className={`mx-auto flex flex-col lg:flex-row justify-between items-start lg:items-center mb-8 mt-12 gap-5 reveal ${inView ? "visible" : ""}`} style={{ maxWidth: 1200, padding: "0 16px", transitionDelay: "50ms", position: "relative", zIndex: 100 }}>
         <div className="flex flex-col text-left w-full lg:w-auto">
-          <h2 className="text-2xl sm:text-3xl lg:text-[34px] font-['Inter-Bold'] text-slate-800 tracking-tight m-0 leading-tight">
+          <h2 className="text-2xl sm:text-3xl lg:text-[34px] font-family-bold text-slate-800 tracking-tight m-0 leading-tight">
             Our Tour Recommendations
           </h2>
         </div>
@@ -379,7 +379,7 @@ export default function Tingstodo() {
                     {...field}
                     placeholder="Search locations..."
                     value={searchQuery}
-                    className="flex-1 !border-none !shadow-none !outline-none !ring-0 !bg-transparent !py-0 !px-2.5 text-slate-700 font-['Inter-Medium'] placeholder:text-slate-400 placeholder:font-normal text-xs"
+                    className="flex-1 !border-none !shadow-none !outline-none !ring-0 !bg-transparent !py-0 !px-2.5 text-slate-700  font-family-medium placeholder:text-slate-400 placeholder:font-normal text-xs"
                     onChange={(e) => handleSearch(e.target.value)}
                     invalid={errors.name && true}
                     style={{ boxShadow: 'none', background: 'transparent', border: 'none', minHeight: 'unset' }}
@@ -405,7 +405,7 @@ export default function Tingstodo() {
                               <FaSearch className="w-4 h-4" />
                             </div>
                           )}
-                          <span className="font-['Inter-Medium'] text-slate-700 text-sm truncate flex-1 block">{prediction.description}</span>
+                          <span className="font-family-medium text-slate-700 text-sm truncate flex-1 block">{prediction.description}</span>
                         </li>
                       ))}
                     </ul>
@@ -416,7 +416,7 @@ export default function Tingstodo() {
                     <div className="w-10 h-10 rounded-full bg-slate-50 flex items-center justify-center text-slate-400">
                       <FaSearch className="w-4 h-4" />
                     </div>
-                    <span className="text-slate-500 font-['Inter-Medium'] text-sm">No results found</span>
+                    <span className="text-slate-500 font-family-medium text-sm">No results found</span>
                   </div>
                 )}
               </div>
@@ -459,11 +459,11 @@ export default function Tingstodo() {
                       whiteSpace: "nowrap",
                       fontSize: 14,
                       fontWeight: 500,
-                      fontFamily: "Inter-Medium",
+                      fontFamily: "var(--font-poppins-local)",
                     }}
                     onClick={() => setSelectedCategoryId(category._id)}
                   >
-                    <span style={{ fontSize: 13, fontFamily: "Inter-Medium" }}>{category?.name}</span>
+                    <span style={{ fontSize: 13, fontFamily: "var(--font-poppins-local)" }}>{category?.name}</span>
                   </div>
                 </div>
               );
@@ -512,6 +512,7 @@ export default function Tingstodo() {
                     <CustomButton
                       onClick={ShowMoreDAta}
                       loading={MoreLoading}
+                      className="font-family-semibold"
                     >
                       See more
                     </CustomButton>

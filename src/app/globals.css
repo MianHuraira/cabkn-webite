@@ -71,3 +71,131 @@
   max-width: 360px;
 }
 
+.font-poppins {
+  font-family: var(--font-poppins-local), sans-serif !important;
+}
+
+/* Custom font-weight classes (non-hyphenated) */
+.fontfamilythin {
+  font-family: var(--font-poppins-local), sans-serif !important;
+  font-weight: 100 !important;
+}
+.fontfamilyextralight {
+  font-family: var(--font-poppins-local), sans-serif !important;
+  font-weight: 200 !important;
+}
+.fontfamilylight {
+  font-family: var(--font-poppins-local), sans-serif !important;
+  font-weight: 300 !important;
+}
+.fontfamilyregular {
+  font-family: var(--font-poppins-local), sans-serif !important;
+  font-weight: 400 !important;
+}
+.fontfamilymedium {
+  font-family: var(--font-poppins-local), sans-serif !important;
+  font-weight: 500 !important;
+}
+.fontfamilysemibold {
+  font-family: var(--font-poppins-local), sans-serif !important;
+  font-weight: 600 !important;
+}
+.fontfamilybold {
+  font-family: var(--font-poppins-local), sans-serif !important;
+  font-weight: 700 !important;
+}
+.fontfamilyextrabold {
+  font-family: var(--font-poppins-local), sans-serif !important;
+  font-weight: 800 !important;
+}
+.fontfamilyblack {
+  font-family: var(--font-poppins-local), sans-serif !important;
+  font-weight: 900 !important;
+}
+
+/* Custom font-weight classes (hyphenated, e.g., font-family-bold) */
+.font-family-thin {
+  font-family: var(--font-poppins-local), sans-serif !important;
+  font-weight: 100 !important;
+}
+.font-family-extralight {
+  font-family: var(--font-poppins-local), sans-serif !important;
+  font-weight: 200 !important;
+}
+.font-family-light {
+  font-family: var(--font-poppins-local), sans-serif !important;
+  font-weight: 300 !important;
+}
+.font-family-regular {
+  font-family: var(--font-poppins-local), sans-serif !important;
+  font-weight: 400 !important;
+}
+.font-family-medium {
+  font-family: var(--font-poppins-local), sans-serif !important;
+  font-weight: 500 !important;
+}
+.font-family-semibold {
+  font-family: var(--font-poppins-local), sans-serif !important;
+  font-weight: 600 !important;
+}
+.font-family-bold {
+  font-family: var(--font-poppins-local), sans-serif !important;
+  font-weight: 700 !important;
+}
+.font-family-extrabold {
+  font-family: var(--font-poppins-local), sans-serif !important;
+  font-weight: 800 !important;
+}
+.font-family-black {
+  font-family: var(--font-poppins-local), sans-serif !important;
+  font-weight: 900 !important;
+}
+
+/* Automatic Poppins family application when standard Tailwind weight utilities are used inside a .font-poppins wrapper */
+.font-poppins .font-thin,
+.font-poppins.font-thin {
+  font-family: var(--font-poppins-local), sans-serif !important;
+  font-weight: 100 !important;
+}
+.font-poppins .font-extralight,
+.font-poppins.font-extralight {
+  font-family: var(--font-poppins-local), sans-serif !important;
+  font-weight: 200 !important;
+}
+.font-poppins .font-light,
+.font-poppins.font-light {
+  font-family: var(--font-poppins-local), sans-serif !important;
+  font-weight: 300 !important;
+}
+.font-poppins .font-normal,
+.font-poppins.font-normal {
+  font-family: var(--font-poppins-local), sans-serif !important;
+  font-weight: 400 !important;
+}
+.font-poppins .font-medium,
+.font-poppins.font-medium {
+  font-family: var(--font-poppins-local), sans-serif !important;
+  font-weight: 500 !important;
+}
+.font-poppins .font-semibold,
+.font-poppins.font-semibold {
+  font-family: var(--font-poppins-local), sans-serif !important;
+  font-weight: 600 !important;
+}
+.font-poppins .font-bold,
+.font-poppins.font-bold {
+  font-family: var(--font-poppins-local), sans-serif !important;
+  font-weight: 700 !important;
+}
+.font-poppins .font-extrabold,
+.font-poppins.font-extrabold {
+  font-family: var(--font-poppins-local), sans-serif !important;
+  font-weight: 800 !important;
+}
+.font-poppins .font-black,
+.font-poppins.font-black {
+  font-family: var(--font-poppins-local), sans-serif !important;
+  font-weight: 900 !important;
+}
+
+
