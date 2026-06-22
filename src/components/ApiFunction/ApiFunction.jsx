@@ -40,7 +40,7 @@ export const useApi = () => {
         status: error.response?.status,
         message: error.message,
       };
-      
+      // 
       // Only log detailed errors in development
       if (process.env.NODE_ENV === 'development') {
         console.error(`API ${method} Error:`, errorInfo);
