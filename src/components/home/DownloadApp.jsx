@@ -3,7 +3,6 @@ import { Col, Row } from "reactstrap";
 import { mobiledown } from "../assets/Images";
 import Image from "next/image";
 import { TiVendorApple } from "react-icons/ti";
-
 import { FaGooglePlay } from "react-icons/fa";
 
 export default function DownloadApp() {
@@ -27,69 +26,37 @@ export default function DownloadApp() {
   }, []);
 
   return (
-    <div
+    <section
       ref={sectionRef}
-      style={{
-        marginTop: "5rem",
-        marginBottom: "5rem",
-        background:
-          "linear-gradient(135deg, #f0f7ff 0%, #ffffff 40%, #eff6fb 100%)",
-      }}
+      className="py-24 bg-gradient-to-br from-brand-50 via-white to-brand-50"
     >
       <Row
         className="mx-auto align-items-center g-0"
-        style={{ maxWidth: 1200, minHeight: 520, padding: "2rem 0" }}
+        style={{ maxWidth: 1200, minHeight: 520 }}
       >
-        <Col lg={6} className="p-5 lg:p-8">
-          <div className="d-flex flex-column gap-4">
+        <Col lg={6} className="p-6 lg:p-12">
+          <div className="flex flex-col gap-6">
             <span
-              className={`reveal ${inView ? "visible" : ""}`}
-              style={{
-                color: "#004a70",
-                fontSize: 13,
-                fontWeight: 700,
-                letterSpacing: 3,
-                textTransform: "uppercase",
-                transitionDelay: "100ms",
-                fontFamily: "var(--font-poppins-local)",
-              }}
+              className={`inline-block px-4 py-1.5 bg-brand-100 text-brand-700 rounded-full text-sm font-family-semibold w-fit tracking-wider uppercase reveal ${inView ? "visible" : ""}`}
+              style={{ transitionDelay: "100ms" }}
             >
               Get the App
             </span>
             <h1
-              className={`reveal ${inView ? "visible" : ""}`}
-              style={{
-                fontSize: 48,
-                fontWeight: 800,
-                color: "#0f172a",
-                lineHeight: 1.1,
-                margin: 0,
-                transitionDelay: "200ms",
-                fontFamily: "var(--font-poppins-local)",
-              }}
+              className={`text-4xl lg:text-5xl text-slate-900 leading-tight font-family-extrabold reveal ${inView ? "visible" : ""}`}
+              style={{ transitionDelay: "200ms" }}
             >
-              Download our <span style={{ color: "#004a70" }}>Mobile app</span>
+              Download our <span className="text-brand-600">Mobile App</span>
             </h1>
             <p
-              className={`reveal ${inView ? "visible" : ""}`}
-              style={{
-                color: "#475569",
-                fontSize: 17,
-                lineHeight: 1.8,
-                maxWidth: 460,
-                transitionDelay: "300ms",
-                fontFamily: "var(--font-poppins-local)",
-              }}
+              className={`text-slate-600 text-lg leading-relaxed max-w-lg font-family-regular reveal ${inView ? "visible" : ""}`}
+              style={{ transitionDelay: "300ms" }}
             >
               Download the Cabkn app for seamless, reliable transportation
               between Nevis and Saint Kitts. Book rides in seconds, track your
               driver in real-time, and enjoy a premium travel experience.
             </p>
-            <div
-              className={`d-flex flex-wrap gap-4 mt-4 reveal ${inView ? "visible" : ""}`}
-              style={{ transitionDelay: "400ms" }}
-            >
-              {/* Google Play Button */}
+            <div className="flex flex-wrap gap-4 mt-2">
               <button
                 onClick={() =>
                   window.open(
@@ -98,26 +65,18 @@ export default function DownloadApp() {
                     "noopener,noreferrer",
                   )
                 }
-                className="flex items-center gap-3 px-3 py-2 text-white bg-black rounded-xl transition-all duration-300 hover:-translate-y-1 hover:shadow-xl cursor-pointer border border-gray-200"
+                className="flex items-center gap-4 px-6 py-4 text-white bg-slate-900 rounded-2xl transition-all duration-300 hover:-translate-y-2 hover:shadow-2xl cursor-pointer border-0 font-family-regular"
                 style={{
-                  minWidth: 190,
+                  minWidth: 200,
                   minHeight: 58,
-                  fontFamily: "var(--font-poppins-local)",
                 }}
               >
-                <FaGooglePlay size={32} />
+                <FaGooglePlay size={36} />
                 <div className="flex flex-col text-left">
-                  <span style={{ fontSize: 10, lineHeight: 1.2 }}>
-                    GET IT ON
-                  </span>
-                  <span
-                    style={{ fontSize: 18, lineHeight: 1.3, }}
-                  >
-                    Google Play
-                  </span>
+                  <span className="text-xs text-slate-300">GET IT ON</span>
+                  <span className="text-xl font-bold">Google Play</span>
                 </div>
               </button>
-              {/* App Store Button */}
               <button
                 onClick={() =>
                   window.open(
@@ -126,45 +85,28 @@ export default function DownloadApp() {
                     "noopener,noreferrer",
                   )
                 }
-                className="flex items-center gap-3 px-3 py-2 bg-black text-white rounded-xl transition-all duration-300 hover:-translate-y-1 hover:shadow-xl cursor-pointer border border-gray-200"
+                className="flex items-center gap-4 px-6 py-4 bg-slate-900 text-white rounded-2xl transition-all duration-300 hover:-translate-y-2 hover:shadow-2xl cursor-pointer border-0 font-family-regular"
                 style={{
-                  minWidth: 190,
+                  minWidth: 200,
                   minHeight: 58,
-                  fontFamily: "var(--font-poppins-local)",
                 }}
               >
-                <TiVendorApple size={36} />
+                <TiVendorApple size={40} />
                 <div className="flex flex-col text-left">
-                  <span style={{ fontSize: 10, lineHeight: 1.2 }}>
-                    Download on the
-                  </span>
-                  <span
-                    style={{ fontSize: 18, lineHeight: 1.3, fontWeight: 700 }}
-                  >
-                    App Store
-                  </span>
+                  <span className="text-xs text-slate-300">Download on the</span>
+                  <span className="text-xl font-bold">App Store</span>
                 </div>
               </button>
             </div>
           </div>
         </Col>
-        <Col lg={6} className="text-center">
-          <div
-            className={`reveal ${inView ? "visible" : ""}`}
-            style={{
-              display: "inline-block",
-              position: "relative",
-              transitionDelay: "300ms",
-            }}
-          >
+        <Col lg={6} className="text-center py-12">
+          <div className="relative inline-block">
             <div
+              className="absolute inset-0 -z-10"
               style={{
-                position: "absolute",
-                inset: 30,
-                background:
-                  "radial-gradient(circle, rgba(0,74,112,0.15) 0%, transparent 70%)",
-                borderRadius: "50%",
-                zIndex: 0,
+                background: "radial-gradient(circle, rgba(0,74,112,0.2) 0%, transparent 70%)",
+                transform: "scale(1.3)",
               }}
             />
             <Image
@@ -173,16 +115,15 @@ export default function DownloadApp() {
               style={{
                 objectFit: "contain",
                 width: "100%",
-                height: 460,
-                position: "relative",
-                zIndex: 1,
-                filter: "drop-shadow(0 30px 60px rgba(0,0,0,0.15))",
+                maxWidth: 400,
+                height: "auto",
+                filter: "drop-shadow(0 40px 80px rgba(0,74,112,0.25))",
               }}
               alt="Download App Image"
             />
           </div>
         </Col>
       </Row>
-    </div>
+    </section>
   );
 }

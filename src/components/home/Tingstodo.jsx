@@ -458,12 +458,10 @@ export default function Tingstodo() {
                       margin: "0 auto",
                       whiteSpace: "nowrap",
                       fontSize: 14,
-                      fontWeight: 500,
-                      fontFamily: "var(--font-poppins-local)",
                     }}
                     onClick={() => setSelectedCategoryId(category._id)}
                   >
-                    <span style={{ fontSize: 13, fontFamily: "var(--font-poppins-local)" }}>{category?.name}</span>
+                    <span className="font-family-medium" style={{ fontSize: 13 }}>{category?.name}</span>
                   </div>
                 </div>
               );
