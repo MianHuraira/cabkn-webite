@@ -62,7 +62,7 @@ export default function Page() {
         <div style={{ position: "absolute", bottom: -40, left: -40, width: 160, height: 160, borderRadius: "50%", background: "rgba(255,255,255,0.03)" }} />
 
         <div style={{ maxWidth: 1200, margin: "0 auto", padding: "0 24px", position: "relative" }}>
-          <div style={{ display: "flex", alignItems: "center", gap: 8, color: "rgba(255,255,255,0.5)", fontSize: 13, fontWeight: 500, marginBottom: 16 }}>
+          <div className="font-family-medium" style={{ display: "flex", alignItems: "center", gap: 8, color: "rgba(255,255,255,0.5)", fontSize: 13, marginBottom: 16 }}>
             <a href="/" style={{ color: "rgba(255,255,255,0.5)", textDecoration: "none", transition: "color 0.2s" }} onMouseEnter={(e) => e.currentTarget.style.color = "#fff"} onMouseLeave={(e) => e.currentTarget.style.color = "rgba(255,255,255,0.5)"}>Home</a>
             <span style={{ color: "rgba(255,255,255,0.3)" }}>/</span>
             <span style={{ color: "rgba(255,255,255,0.8)" }}>Reviews</span>
@@ -74,14 +74,14 @@ export default function Page() {
                 <MdRateReview size="clamp(20px, 3vw, 26px)" color="#fff" />
               </div>
               <div>
-                <h1 style={{ color: "#fff", fontSize: "clamp(20px, 5vw, 30px)", fontWeight: 700, margin: 0, letterSpacing: "-0.5px", lineHeight: 1.2, wordBreak: "break-word" }}>Reviews</h1>
-                <p style={{ color: "rgba(255,255,255,0.55)", fontSize: "clamp(12px, 2vw, 14px)", margin: "4px 0 0", fontWeight: 400, wordBreak: "break-word", maxWidth: "450px", lineHeight: 1.5 }}>See what our customers are saying about us.</p>
+                <h1 className="font-family-bold" style={{ color: "#fff", fontSize: "clamp(20px, 5vw, 30px)", margin: 0, letterSpacing: "-0.5px", lineHeight: 1.2, wordBreak: "break-word" }}>Reviews</h1>
+                <p className="font-family-regular" style={{ color: "rgba(255,255,255,0.55)", fontSize: "clamp(12px, 2vw, 14px)", margin: "4px 0 0", wordBreak: "break-word", maxWidth: "450px", lineHeight: 1.5 }}>See what our customers are saying about us.</p>
               </div>
             </div>
             {Reviews.length > 0 && (
               <div style={{ display: "flex", alignItems: "center", gap: 8, background: "rgba(255,255,255,0.08)", backdropFilter: "blur(8px)", borderRadius: 12, padding: "6px 14px", border: "1px solid rgba(255,255,255,0.06)", height: 36 }}>
                 <FaStar size={14} color="#fbbf24" />
-                <span style={{ color: "#fff", fontSize: 13, fontWeight: 500, lineHeight: 1 }}>{Reviews.length} Reviews</span>
+                <span className="font-family-medium" style={{ color: "#fff", fontSize: 13, lineHeight: 1 }}>{Reviews.length} Reviews</span>
               </div>
             )}
           </div>
@@ -94,14 +94,14 @@ export default function Page() {
         {/* Page Title & Context */}
         <div className="w-full mb-10 md:mb-14 mt-8 md:mt-12 flex flex-col md:flex-row justify-between items-start md:items-end gap-6">
           <div>
-            <p className="text-sm font-bold text-brand-500 tracking-[0.2em] uppercase mb-2">
+            <p className="text-sm font-family-bold text-brand-500 tracking-[0.2em] uppercase mb-2">
               Feedback
             </p>
-            <h1 className="text-4xl md:text-5xl lg:text-6xl font-bold text-gray-700 leading-tight">
+            <h1 className="text-4xl md:text-5xl lg:text-6xl font-family-bold text-gray-700 leading-tight">
               Real Experiences
             </h1>
           </div>
-          <p className="max-w-md text-gray-500 text-sm md:text-base leading-relaxed">
+          <p className="max-w-md text-gray-500 text-sm md:text-base font-family-regular leading-relaxed">
             From daily planners to frequent travelers, people across the globe rely on Cabkn for simple, reliable bookings. Here's what they have to say.
           </p>
         </div>
@@ -130,8 +130,8 @@ export default function Page() {
             <div className="w-24 h-24 mx-auto bg-brand-50 rounded-full flex items-center justify-center mb-6">
               <MdRateReview size={48} className="text-brand-400" />
             </div>
-            <h3 className="text-2xl font-bold text-gray-800 mb-3">No reviews yet</h3>
-            <p className="text-gray-500 text-lg">Reviews from your customers will appear here once they rate your service.</p>
+            <h3 className="text-2xl font-family-bold text-gray-800 mb-3">No reviews yet</h3>
+            <p className="text-gray-500 text-lg font-family-regular">Reviews from your customers will appear here once they rate your service.</p>
           </div>
         ) : (
           // Review Grid
@@ -173,7 +173,7 @@ export default function Page() {
                   <div className="relative z-10 flex-1 flex flex-col justify-center text-center md:text-left px-6 py-4 md:py-6 md:pl-[36%] lg:pl-[34%] xl:pl-[34%] md:pr-8">
 
                     {/* Quote Text */}
-                    <h2 className="text-sm md:text-base lg:text-lg font-medium text-gray-800 leading-snug md:leading-snug mb-3">
+                    <h2 className="text-sm md:text-base lg:text-lg font-family-medium text-gray-800 leading-snug md:leading-snug mb-3">
                       <span className="text-3xl md:text-4xl text-gray-700 font-serif mr-1 leading-none">"</span>
                       {item.review || "No review text provided."}
                       <span className="text-3xl md:text-4xl text-gray-700 font-serif ml-1 leading-none">"</span>
@@ -181,8 +181,8 @@ export default function Page() {
 
                     {/* User Info */}
                     <div className="flex flex-col items-center md:items-start justify-center md:justify-start mb-3">
-                      <p className="text-base md:text-lg font-bold text-gray-700 mb-0.5 leading-tight">{item.user?.name || "Anonymous User"}</p>
-                      <p className="text-xs md:text-sm text-brand-600 font-medium capitalize">{item.user?.type || 'User'}</p>
+                      <p className="text-base md:text-lg font-family-bold text-gray-700 mb-0.5 leading-tight">{item.user?.name || "Anonymous User"}</p>
+                      <p className="text-xs md:text-sm text-brand-600 font-family-medium capitalize">{item.user?.type || 'User'}</p>
                     </div>
 
                     {/* Rating Stars */}

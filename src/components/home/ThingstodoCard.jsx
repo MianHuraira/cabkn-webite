@@ -132,7 +132,7 @@ function ThingstodoCard({ testimonial, onClick, onClick2, btnTitle, isTour }) {
               onClick={onClick}
               className="inline-flex items-center gap-2 text-brand-700 font-family-semibold text-sm cursor-pointer group w-fit px-4 py-2.5 bg-brand-50 hover:bg-brand-100 rounded-full transition-all duration-300"
             >
-              <span>
+              <span className="font-family-semibold">
                 {btnTitle || "Book a Ride"}
               </span>
               <FiArrowRight className="text-brand-700 text-base transition-all duration-300 group-hover:translate-x-1" />
