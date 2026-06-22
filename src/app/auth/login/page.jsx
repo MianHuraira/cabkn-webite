@@ -210,13 +210,13 @@ const Login = () => {
                   type="checkbox"
                   className="rounded border-slate-400 text-brand-600 focus:ring-brand-500 w-4 h-4 cursor-pointer"
                 />
-<span className="font-family-semibold font-bold text-slate-500 hover:text-slate-700 transition">
+<span className="font-family-semibold text-slate-500 hover:text-slate-700 transition">
   Remember me
 </span>
               </label>
               <Link
                 href="/auth/forgotpss"
-                className="font-family-semibold font-bold text-brand-600 hover:text-brand-800 transition hover:underline"
+                className="font-family-semibold text-brand-600 hover:text-brand-800 transition hover:underline"
               >
                 Forgot Password
               </Link>

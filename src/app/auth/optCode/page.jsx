@@ -283,7 +283,7 @@ const Otp = () => {
               value={digit}
               onChange={(e) => handleInputChange(index, e.target.value)}
               onKeyDown={(e) => handleKeyDown(index, e)}
-              className="font-family-semibold h-14 w-full rounded-2xl border border-slate-200 bg-white text-center text-xl font-semibold text-slate-900 shadow-sm outline-none transition focus:border-brand-500 focus:ring-4 focus:ring-brand-100"
+              className="font-family-semibold h-14 w-full rounded-2xl border border-slate-200 bg-white text-center text-xl text-slate-900 shadow-sm outline-none transition focus:border-brand-500 focus:ring-4 focus:ring-brand-100"
               aria-label={`Digit ${index + 1}`}
               autoFocus={index === 0}
             />
@@ -317,12 +317,12 @@ const Otp = () => {
               type="button"
               onClick={handleResend}
               disabled={Loading}
-              className="font-family-semibold font-semibold text-brand-700 hover:text-brand-900 underline underline-offset-2 cursor-pointer bg-transparent border-none p-0 transition-colors disabled:opacity-50"
+              className="font-family-semibold text-brand-700 hover:text-brand-900 underline underline-offset-2 cursor-pointer bg-transparent border-none p-0 transition-colors disabled:opacity-50"
             >
               Resend code
             </button>
           ) : (
-            <span className="font-family-semibold font-semibold text-brand-700">{`Resend in 0:${timer
+            <span className="font-family-semibold text-brand-700">{`Resend in 0:${timer
               .toString()
               .padStart(2, "0")}`}</span>
           )}

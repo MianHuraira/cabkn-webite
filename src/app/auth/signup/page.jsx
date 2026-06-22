@@ -424,7 +424,7 @@ const Signup = () => {
               />
 
               <div className="text-center mt-2">
-<p className="font-family-semibold text-sm font-semibold text-slate-800">
+<p className="font-family-semibold text-sm text-slate-800">
   Profile photo (optional)
 </p>
 <p className="font-family-regular text-xs text-slate-500 mt-0.5">
@@ -462,7 +462,7 @@ const Signup = () => {
             </div>
 
             <div className="space-y-2 relative">
-<label htmlFor="address" className="font-family-medium text-sm font-medium text-slate-700">
+<label htmlFor="address" className="font-family-medium text-sm text-slate-700">
   Address
 </label>
               <div className="relative">
@@ -519,7 +519,7 @@ const Signup = () => {
             </div>
 
             <div className="space-y-2">
-<label htmlFor="phone" className="font-family-medium text-sm font-medium text-slate-700">
+<label htmlFor="phone" className="font-family-medium text-sm text-slate-700">
   Phone
 </label>
               <div className="relative">

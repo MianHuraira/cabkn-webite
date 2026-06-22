@@ -282,7 +282,7 @@ const page = () => {
             <div className="flex items-center justify-end">
               <AuthInlineLink
                 href="/auth/forgotpss"
-                className="font-family-semibold text-sm font-semibold text-slate-700 hover:text-brand-700"
+                className="font-family-semibold text-sm text-slate-700 hover:text-brand-700"
               >
                 Forgot password?
               </AuthInlineLink>
