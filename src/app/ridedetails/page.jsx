@@ -2,10 +2,10 @@
 
 import React, { Suspense, useEffect, useRef, useState } from "react";
 import moment from "moment/moment";
-import { FaLocationDot, FaStar } from "react-icons/fa6";
+import { FaLocationDot, FaStar, FaHeart } from "react-icons/fa6";
 import { IoCall } from "react-icons/io5";
 import { RiMessage2Fill } from "react-icons/ri";
-import { MdContentCopy, MdOutlineMyLocation } from "react-icons/md";
+import { MdContentCopy, MdOutlineMyLocation, MdOutlineCalendarMonth, MdOutlineAttachMoney } from "react-icons/md";
 
 import mapboxgl from "mapbox-gl";
 import "mapbox-gl/dist/mapbox-gl.css";
@@ -71,7 +71,7 @@ const RideDetail = () => {
       setFavLoading(false);
       console.log("Error adding to favorites: ", error);
     } finally {
-      setFavLoading(false); // Set loading false for the favorite request
+      setFavLoading(false);
     }
   };
 
@@ -142,7 +142,7 @@ const RideDetail = () => {
       zoom: 8,
     });
 
-    new mapboxgl.Marker({ color: "green" })
+    new mapboxgl.Marker({ color: "#059669" })
       .setLngLat(start)
       .addTo(mapRef.current);
 
@@ -166,7 +166,7 @@ const RideDetail = () => {
 
           const animateMarker = (route) => {
             let index = 0;
-            const marker = new mapboxgl.Marker({ color: "blue" })
+            const marker = new mapboxgl.Marker({ color: "#004a70" })
               .setLngLat(route[index])
               .addTo(mapRef.current);
 
@@ -201,7 +201,7 @@ const RideDetail = () => {
               "line-cap": "round",
             },
             paint: {
-              "line-color": "#A6A6A6",
+              "line-color": "#004a70",
               "line-width": 6,
             },
           });
@@ -216,291 +216,845 @@ const RideDetail = () => {
     navigator.clipboard.writeText(productDetail?.pincode);
     message.success("Copied To Clipboard");
   };
+  
+  const StatusBadge = ({ status }) => {
+    const statusColorMap = {
+      completed: { bg: "#e8f5e9", text: "#059669", border: "#a5d6a7" },
+      cancelled: { bg: "#fee2e2", text: "#dc2626", border: "#fca5a5" },
+      accepted: { bg: "#dbeafe", text: "#1d4ed8", border: "#93c5fd" },
+      pending: { bg: "#fef3c7", text: "#d97706", border: "#fcd34d" },
+      upcoming: { bg: "#f3e8ff", text: "#7e22ce", border: "#d8b4fe" },
+      active: { bg: "#ccfbf1", text: "#0f766e", border: "#5eead4" },
+    };
+    
+    const st = statusColorMap[(status || "").toLowerCase()] || { bg: "#f3f4f6", text: "#64748b", border: "#e5e7eb" };
+    
+    return (
+      <span style={{
+        display: "inline-flex",
+        alignItems: "center",
+        gap: "6px",
+        padding: "8px 16px",
+        borderRadius: "12px",
+        fontSize: "14px",
+        fontWeight: "700",
+        backgroundColor: st.bg,
+        color: st.text,
+        border: `1px solid ${st.border}`,
+        textTransform: "capitalize",
+      }}>
+        <span style={{
+          width: "8px",
+          height: "8px",
+          borderRadius: "50%",
+          backgroundColor: st.text,
+        }} />
+        {status}
+      </span>
+    );
+  };
+
   return (
-    <div className="mx-auto w-full grid grid-cols-1 lg:grid-cols-12 gap-4 p-4" style={{ maxWidth: 1320 }}>
-      {/* Left Section: Booking Details */}
-      <div className="RideForm col-span-12 lg:col-span-4 xl:col-span-3">
-        <h1 style={{ fontFamily: "Inter-Bold", fontSize: "clamp(18px, 3vw, 24px)", color: "#0f172a", textAlign: "center", margin: "20px 0 30px" }}>
-          Booking Details
-        </h1>
-
-        {/* Driver Card */}
+    <div style={{ 
+      minHeight: "100vh", 
+      backgroundColor: "#f8fafc", 
+      padding: "24px",
+    }}>
+      <div style={{ 
+        maxWidth: "1320px", 
+        margin: "0 auto" 
+      }}>
         <div style={{
-          background: "linear-gradient(135deg, #f8fafc 0%, #f1f5f9 100%)",
-          borderRadius: 14,
-          padding: 20,
-          border: "1px solid #e2e8f0",
-          textAlign: "center",
+          display: "grid",
+          gridTemplateColumns: "1fr",
+          gap: "24px",
         }}>
-          <Image
-            width={64}
-            height={64}
-            src={productDetail?.to_id?.image || NoshowData}
-            style={{ width: 64, height: 64, borderRadius: "50%", objectFit: "cover", border: "2px solid #fff", boxShadow: "0 2px 8px rgba(0,0,0,0.1)", margin: "0 auto 8px" }}
-            alt=""
-          />
-          <h6 style={{ fontFamily: "Inter-Bold", fontSize: 16, color: "#0f172a", margin: "0 0 4px" }}>
-            {productDetail?.to_id?.name}
-          </h6>
-          <div style={{ display: "flex", alignItems: "center", justifyContent: "center", gap: 4 }}>
-            <FaStar color="#f59e0b" size={14} />
-            <span style={{ fontSize: 13, color: "#64748b", fontFamily: "Inter-Regular" }}>
-              {productDetail?.to_id?.rating || "0"}.0
-            </span>
-          </div>
-          <div style={{ display: "flex", gap: 8, justifyContent: "center", marginTop: 10 }}>
-            <div style={{ width: 36, height: 36, borderRadius: 10, background: "#eef2ff", display: "flex", alignItems: "center", justifyContent: "center", cursor: "pointer" }}>
-              <IoCall color="#004A70" size={16} />
-            </div>
-            <div style={{ width: 36, height: 36, borderRadius: 10, background: "#eef2ff", display: "flex", alignItems: "center", justifyContent: "center", cursor: "pointer" }}>
-              <RiMessage2Fill color="#004A70" size={16} />
-            </div>
-          </div>
-        </div>
-
-        {/* Ride Details */}
-        <div style={{ marginTop: 16 }}>
-          <h5 style={{ fontFamily: "Inter-SemiBold", fontSize: 15, color: "#0f172a", marginBottom: 12, borderBottom: "1px solid #f1f5f9", paddingBottom: 8 }}>
-            Ride Details
-          </h5>
-
-          {/* Start - End locations with route line */}
-          <div style={{ display: "flex", gap: 10, marginBottom: 14 }}>
-            <div style={{ display: "flex", flexDirection: "column", alignItems: "center", gap: 2, paddingTop: 2 }}>
-              <FaLocationDot color="#004a70" size={14} />
-              <div style={{ width: 1.5, height: 28, background: "#d1d5db" }} />
-              <MdOutlineMyLocation color="#004a70" size={14} />
-            </div>
-            <div style={{ flex: 1, minWidth: 0 }}>
-              <p style={{ fontSize: 11, color: "#94a3b8", fontFamily: "Inter-Medium", margin: 0 }}>FROM</p>
-              <p style={{ fontSize: 13, color: "#0f172a", fontFamily: "Inter-Regular", margin: "2px 0 10px", lineHeight: 1.3 }}>
-                {productDetail?.start_address}
-              </p>
-              <p style={{ fontSize: 11, color: "#94a3b8", fontFamily: "Inter-Medium", margin: 0 }}>TO</p>
-              <p style={{ fontSize: 13, color: "#0f172a", fontFamily: "Inter-Regular", margin: "2px 0 0", lineHeight: 1.3 }}>
-                {productDetail?.end_address}
-              </p>
+          {/* Main Header */}
+          <div style={{
+            background: "linear-gradient(135deg, #004a70 0%, #003353 100%)",
+            borderRadius: "24px",
+            padding: "32px",
+            color: "#fff",
+          }}>
+            <div style={{
+              display: "flex",
+              alignItems: "flex-start",
+              justifyContent: "space-between",
+              gap: "16px",
+              flexWrap: "wrap",
+            }}>
+              <div style={{ maxWidth: "700px" }}>
+                <h1 style={{
+                  fontSize: "32px",
+                  fontWeight: "800",
+                  margin: "0 0 8px",
+                  fontFamily: "Inter, sans-serif",
+                }}>
+                  Booking Details
+                </h1>
+                <p style={{
+                  fontSize: "16px",
+                  opacity: "0.85",
+                  margin: 0,
+                  fontFamily: "Inter, sans-serif",
+                }}>
+                  {moment(DriveData?.createdAt).format("dddd, DD MMMM YYYY")} • {moment(DriveData?.createdAt).format("hh:mm A")}
+                </p>
+              </div>
+              <StatusBadge status={DriveData?.status} />
             </div>
           </div>
 
-          {/* Pincode */}
-          <div style={{ display: "flex", alignItems: "center", gap: 8, marginBottom: 14 }}>
-            <span style={{ fontSize: 13, fontFamily: "Inter-Medium", color: "#374151" }}>Pincode:</span>
-            <span style={{ fontSize: 13, fontFamily: "Inter-SemiBold", color: "#004a70" }}>{productDetail?.pincode}</span>
-            <MdContentCopy size={16} style={{ cursor: "pointer", color: "#94a3b8" }} onClick={copytoClipBoard} />
-          </div>
+          <div style={{
+            display: "grid",
+            gridTemplateColumns: "1fr 2fr",
+            gap: "24px",
+          }}>
+            {/* Left Column */}
+            <div style={{
+              display: "flex",
+              flexDirection: "column",
+              gap: "20px",
+            }}>
+              {/* Driver Card */}
+              <div style={{
+                background: "#fff",
+                borderRadius: "20px",
+                padding: "24px",
+                boxShadow: "0 4px 20px -6px rgba(0,0,0,0.08)",
+                border: "1px solid #e5e7eb",
+              }}>
+                <h3 style={{
+                  fontSize: "18px",
+                  fontWeight: "800",
+                  color: "#0f172a",
+                  margin: "0 0 16px",
+                  fontFamily: "Inter, sans-serif",
+                }}>
+                  Driver
+                </h3>
+                <div style={{
+                  display: "flex",
+                  alignItems: "center",
+                  gap: "16px",
+                  marginBottom: "16px",
+                }}>
+                  <div style={{
+                    width: "80px",
+                    height: "80px",
+                    borderRadius: "50%",
+                    overflow: "hidden",
+                    border: "4px solid #eef2ff",
+                    boxShadow: "0 8px 16px rgba(0,0,0,0.06)",
+                  }}>
+                    <Image
+                      width={80}
+                      height={80}
+                      src={productDetail?.to_id?.image || NoshowData}
+                      style={{ width: 80, height: 80, objectFit: "cover" }}
+                      alt=""
+                    />
+                  </div>
+                  <div style={{ flex: 1, minWidth: 0 }}>
+                    <h4 style={{
+                      fontSize: "20px",
+                      fontWeight: "800",
+                      color: "#0f172a",
+                      margin: "0 0 4px",
+                      fontFamily: "Inter, sans-serif",
+                    }}>
+                      {productDetail?.to_id?.name}
+                    </h4>
+                    <div style={{
+                      display: "flex",
+                      alignItems: "center",
+                      gap: "6px",
+                      marginBottom: "4px",
+                    }}>
+                      {[1,2,3,4,5].map((star) => (
+                        <FaStar
+                          key={star}
+                          size={16}
+                          color={star <= (productDetail?.to_id?.rating || 0) ? "#f59e0b" : "#e5e7eb"}
+                        />
+                      ))}
+                      <span style={{
+                        fontSize: "14px",
+                        color: "#4b5563",
+                        fontWeight: "600",
+                        fontFamily: "Inter, sans-serif",
+                        marginLeft: "4px"
+                      }}>
+                        {productDetail?.to_id?.rating || "0"}.0
+                      </span>
+                    </div>
+                    <p style={{
+                      fontSize: "13px",
+                      color: "#64748b",
+                      margin: 0,
+                      fontFamily: "Inter, sans-serif",
+                    }}>
+                      {productDetail?.to_id?.email}
+                    </p>
+                  </div>
+                </div>
 
-          {/* Vehicle + Price */}
-          <div style={{ display: "flex", alignItems: "center", justifyContent: "space-between", padding: "12px 14px", background: "#f8fafc", borderRadius: 10, border: "1px solid #f1f5f9" }}>
-            <div style={{ display: "flex", alignItems: "center", gap: 10 }}>
-              <Image
-                src={productDetail?.to_id?.vehicle?.images?.[0] || carAvatar}
-                alt=""
-                width={44}
-                height={44}
-                style={{ width: 44, height: 44, borderRadius: 10, objectFit: "cover", border: "1px solid #e2e8f0" }}
-              />
-              <div>
-                <p style={{ fontSize: 13, fontFamily: "Inter-Medium", color: "#0f172a", margin: 0 }}>{productDetail?.to_id?.vehicle?.brand || "Vehicle"}</p>
-                <p style={{ fontSize: 11, color: "#94a3b8", margin: "2px 0 0" }}>{productDetail?.to_id?.vehicle?.license || ""}</p>
+                <div style={{
+                  display: "flex",
+                  gap: "12px",
+                }}>
+                  <button
+                    style={{
+                      flex: 1,
+                      height: "48px",
+                      borderRadius: "12px",
+                      border: "none",
+                      background: "linear-gradient(135deg, #059669 0%, #047857 100%)",
+                      color: "#fff",
+                      fontSize: "14px",
+                      fontWeight: "700",
+                      cursor: "pointer",
+                      display: "flex",
+                      alignItems: "center",
+                      justifyContent: "center",
+                      gap: "8px",
+                      fontFamily: "Inter, sans-serif",
+                      transition: "all 0.2s",
+                      boxShadow: "0 6px 16px rgba(5, 150, 105, 0.25)",
+                    }}
+                    onMouseEnter={(e) => e.currentTarget.style.transform = "translateY(-1px)"}
+                    onMouseLeave={(e) => e.currentTarget.style.transform = "translateY(0)"}
+                  >
+                    <IoCall size={18} />
+                    Call
+                  </button>
+                  <button
+                    style={{
+                      flex: 1,
+                      height: "48px",
+                      borderRadius: "12px",
+                      border: "2px solid #e5e7eb",
+                      background: "#fff",
+                      color: "#374151",
+                      fontSize: "14px",
+                      fontWeight: "700",
+                      cursor: "pointer",
+                      display: "flex",
+                      alignItems: "center",
+                      justifyContent: "center",
+                      gap: "8px",
+                      fontFamily: "Inter, sans-serif",
+                      transition: "all 0.2s",
+                    }}
+                    onMouseEnter={(e) => {
+                      e.currentTarget.style.borderColor = "#004a70";
+                      e.currentTarget.style.color = "#004a70";
+                      e.currentTarget.style.background = "#f0f7ff";
+                    }}
+                    onMouseLeave={(e) => {
+                      e.currentTarget.style.borderColor = "#e5e7eb";
+                      e.currentTarget.style.color = "#374151";
+                      e.currentTarget.style.background = "#fff";
+                    }}
+                  >
+                    <RiMessage2Fill size={18} />
+                    Message
+                  </button>
+                </div>
+              </div>
+
+              {/* Vehicle Info */}
+              <div style={{
+                background: "#fff",
+                borderRadius: "20px",
+                padding: "24px",
+                boxShadow: "0 4px 20px -6px rgba(0,0,0,0.08)",
+                border: "1px solid #e5e7eb",
+              }}>
+                <h3 style={{
+                  fontSize: "18px",
+                  fontWeight: "800",
+                  color: "#0f172a",
+                  margin: "0 0 16px",
+                  fontFamily: "Inter, sans-serif",
+                }}>
+                  Vehicle
+                </h3>
+                <div style={{
+                  display: "flex",
+                  alignItems: "center",
+                  gap: "16px",
+                }}>
+                  <div style={{
+                    width: "100px",
+                    height: "64px",
+                    borderRadius: "12px",
+                    overflow: "hidden",
+                    border: "1px solid #e5e7eb",
+                    background: "#f8fafc",
+                    display: "flex",
+                    alignItems: "center",
+                    justifyContent: "center",
+                  }}>
+                    <Image
+                      src={productDetail?.to_id?.vehicle?.images?.[0] || carAvatar}
+                      alt=""
+                      width={100}
+                      height={64}
+                      style={{ width: "100%", height: "100%", objectFit: "cover" }}
+                    />
+                  </div>
+                  <div style={{ flex: 1 }}>
+                    <h4 style={{
+                      fontSize: "16px",
+                      fontWeight: "800",
+                      color: "#0f172a",
+                      margin: "0 0 4px",
+                      fontFamily: "Inter, sans-serif",
+                    }}>
+                      {productDetail?.to_id?.vehicle?.brand || "Vehicle"}
+                    </h4>
+                    <p style={{
+                      fontSize: "13px",
+                      color: "#64748b",
+                      margin: 0,
+                      fontFamily: "Inter, sans-serif",
+                    }}>
+                      License: {productDetail?.to_id?.vehicle?.license || "N/A"}
+                    </p>
+                  </div>
+                </div>
+              </div>
+
+              {/* Price & Action Buttons */}
+              <div style={{
+                background: "#fff",
+                borderRadius: "20px",
+                padding: "24px",
+                boxShadow: "0 4px 20px -6px rgba(0,0,0,0.08)",
+                border: "1px solid #e5e7eb",
+              }}>
+                <h3 style={{
+                  fontSize: "18px",
+                  fontWeight: "800",
+                  color: "#0f172a",
+                  margin: "0 0 12px",
+                  fontFamily: "Inter, sans-serif",
+                }}>
+                  Price
+                </h3>
+                <p style={{
+                  fontSize: "36px",
+                  fontWeight: "800",
+                  color: "#059669",
+                  margin: "0 0 16px",
+                  fontFamily: "Inter, sans-serif",
+                }}>
+                  <MdOutlineAttachMoney size={32} style={{ marginBottom: "4px" }} />
+                  {productDetail?.price}
+                </p>
+
+                <div style={{ display: "flex", flexDirection: "column", gap: "12px" }}>
+                  {productDetail?.status === "completed" && !productDetail?.likes && (
+                    <button
+                      onClick={fav}
+                      style={{
+                        width: "100%",
+                        height: "48px",
+                        borderRadius: "12px",
+                        border: "2px solid #dc2626",
+                        background: "#fff",
+                        color: "#dc2626",
+                        fontFamily: "Inter, sans-serif",
+                        fontWeight: "700",
+                        fontSize: "14px",
+                        cursor: "pointer",
+                        display: "flex",
+                        alignItems: "center",
+                        justifyContent: "center",
+                        gap: "8px",
+                        transition: "all 0.2s",
+                      }}
+                      onMouseEnter={(e) => {
+                        e.currentTarget.style.background = "#dc2626";
+                        e.currentTarget.style.color = "#fff";
+                      }}
+                      onMouseLeave={(e) => {
+                        e.currentTarget.style.background = "#fff";
+                        e.currentTarget.style.color = "#dc2626";
+                      }}
+                    >
+                      {FavLoading ? <Spinner size="sm" /> : (
+                        <>
+                          <FaHeart size={16} />
+                          Add to Favorites
+                        </>
+                      )}
+                    </button>
+                  )}
+                  {DriveData?.status === "accepted" ? (
+                    <button
+                      onClick={CancelRide}
+                      style={{
+                        width: "100%",
+                        height: "48px",
+                        borderRadius: "12px",
+                        border: "none",
+                        background: "linear-gradient(135deg, #004a70 0%, #003353 100%)",
+                        color: "#fff",
+                        fontFamily: "Inter, sans-serif",
+                        fontWeight: "700",
+                        fontSize: "14px",
+                        cursor: "pointer",
+                        transition: "all 0.2s",
+                        boxShadow: "0 6px 16px rgba(0,74,112,0.25)",
+                      }}
+                      onMouseEnter={(e) => e.currentTarget.style.transform = "translateY(-1px)"}
+                      onMouseLeave={(e) => e.currentTarget.style.transform = "translateY(0)"}
+                    >
+                      Cancel Ride
+                    </button>
+                  ) : null}
+                </div>
               </div>
             </div>
-            <p style={{ fontSize: 18, fontFamily: "Inter-Bold", color: "#059669", margin: 0 }}>${productDetail?.price}</p>
-          </div>
-        </div>
 
-        {productDetail?.status === "completed" && !productDetail?.likes && (
-          <button
-            onClick={fav}
-            style={{
-              width: "100%", height: 46, marginTop: 16, borderRadius: 10, border: "none",
-              background: "#ef4444", color: "#fff", fontFamily: "Inter-SemiBold", fontSize: 13, cursor: "pointer",
-              transition: "opacity 0.2s",
-            }}
-            onMouseEnter={(e) => e.currentTarget.style.opacity = "0.9"}
-            onMouseLeave={(e) => e.currentTarget.style.opacity = "1"}
-          >
-            {FavLoading ? <Spinner size="sm" /> : "Add to Favorites"}
-          </button>
-        )}
-        {DriveData?.status === "accepted" ? (
-          <button
-            onClick={CancelRide}
-            style={{
-              width: "100%", height: 46, marginTop: 12, borderRadius: 10, border: "none",
-              background: "#004a70", color: "#fff", fontFamily: "Inter-SemiBold", fontSize: 13, cursor: "pointer",
-              transition: "opacity 0.2s",
-            }}
-            onMouseEnter={(e) => e.currentTarget.style.opacity = "0.9"}
-            onMouseLeave={(e) => e.currentTarget.style.opacity = "1"}
-          >
-            Cancel Ride
-          </button>
-        ) : null}
-      </div>
-
-      {/* Right Section */}
-      <div className="col-span-12 lg:col-span-8 xl:col-span-9">
-        {/* Button tabs - smaller width, aligned left */}
-        <div style={{
-          display: "flex",
-          gap: 8,
-          marginBottom: 20,
-          flexWrap: "wrap",
-        }}>
-          <button
-            onClick={() => setActiveTab("reviews")}
-            style={{
-              padding: "10px 20px",
-              borderRadius: 10,
-              border: activeTab === "reviews" ? "1.5px solid #004a70" : "1.5px solid #e2e8f0",
-              background: activeTab === "reviews" ? "#004a70" : "#fff",
-              color: activeTab === "reviews" ? "#fff" : "#64748b",
-              fontFamily: "Inter-Medium",
-              fontSize: 13,
-              cursor: "pointer",
-              transition: "all 0.2s",
+            {/* Right Column */}
+            <div style={{
               display: "flex",
-              alignItems: "center",
-              gap: 6,
-              minWidth: "auto",
-              width: "auto",
-            }}
-            onMouseEnter={(e) => {
-              if (activeTab !== "reviews") {
-                e.currentTarget.style.borderColor = "#004a70";
-                e.currentTarget.style.background = "#f1f5f9";
-              }
-            }}
-            onMouseLeave={(e) => {
-              if (activeTab !== "reviews") {
-                e.currentTarget.style.borderColor = "#e2e8f0";
-                e.currentTarget.style.background = "#fff";
-              }
-            }}
-          >
-            <FaStar size={14} color={activeTab === "reviews" ? "#fbbf24" : "#94a3b8"} />
-            Reviews
-          </button>
-          <button
-            onClick={() => setActiveTab("track")}
-            style={{
-              padding: "10px 20px",
-              borderRadius: 10,
-              border: activeTab === "track" ? "1.5px solid #004a70" : "1.5px solid #e2e8f0",
-              background: activeTab === "track" ? "#004a70" : "#fff",
-              color: activeTab === "track" ? "#fff" : "#64748b",
-              fontFamily: "Inter-Medium",
-              fontSize: 13,
-              cursor: "pointer",
-              transition: "all 0.2s",
-              display: "flex",
-              alignItems: "center",
-              gap: 6,
-              minWidth: "auto",
-              width: "auto",
-            }}
-            onMouseEnter={(e) => {
-              if (activeTab !== "track") {
-                e.currentTarget.style.borderColor = "#004a70";
-                e.currentTarget.style.background = "#f1f5f9";
-              }
-            }}
-            onMouseLeave={(e) => {
-              if (activeTab !== "track") {
-                e.currentTarget.style.borderColor = "#e2e8f0";
-                e.currentTarget.style.background = "#fff";
-              }
-            }}
-          >
-            <svg width={14} height={14} viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth={2} strokeLinecap="round" strokeLinejoin="round">
-              <path d="M21 10c0 7-9 13-9 13s-9-6-9-13a9 9 0 0 1 18 0z" />
-              <circle cx="12" cy="10" r="3" />
-            </svg>
-            Track on Map
-          </button>
-        </div>
+              flexDirection: "column",
+              gap: "24px",
+            }}>
+              {/* Route Info */}
+              <div style={{
+                background: "#fff",
+                borderRadius: "20px",
+                padding: "28px",
+                boxShadow: "0 4px 20px -6px rgba(0,0,0,0.08)",
+                border: "1px solid #e5e7eb",
+              }}>
+                <h3 style={{
+                  fontSize: "20px",
+                  fontWeight: "800",
+                  color: "#0f172a",
+                  margin: "0 0 20px",
+                  fontFamily: "Inter, sans-serif",
+                }}>
+                  Route Information
+                </h3>
 
-        {/* Content */}
-        {activeTab === "reviews" ? (
-          <div className="RideForm" style={{ minHeight: 300 }}>
-            {Loading ? (
-              <div style={{ display: "flex", justifyContent: "center", alignItems: "center", height: 300 }}>
-                <Spinner>Loading...</Spinner>
+                <div style={{
+                  display: "flex",
+                  gap: "16px",
+                }}>
+                  <div style={{
+                    display: "flex",
+                    flexDirection: "column",
+                    alignItems: "center",
+                    paddingTop: "8px",
+                  }}>
+                    <div style={{
+                      width: "24px",
+                      height: "24px",
+                      borderRadius: "50%",
+                      background: "linear-gradient(135deg, #059669 0%, #047857 100%)",
+                      display: "flex",
+                      alignItems: "center",
+                      justifyContent: "center",
+                      boxShadow: "0 4px 12px rgba(5,150,105,0.3)",
+                    }}>
+                      <FaLocationDot color="#fff" size={12} />
+                    </div>
+                    <div style={{
+                      width: "3px",
+                      height: "60px",
+                      background: "linear-gradient(180deg, #059669 0%, #004a70 100%)",
+                      margin: "8px 0",
+                    }} />
+                    <div style={{
+                      width: "24px",
+                      height: "24px",
+                      borderRadius: "6px",
+                      background: "linear-gradient(135deg, #004a70 0%, #003353 100%)",
+                      display: "flex",
+                      alignItems: "center",
+                      justifyContent: "center",
+                      boxShadow: "0 4px 12px rgba(0,74,112,0.3)",
+                    }}>
+                      <MdOutlineMyLocation color="#fff" size={12} />
+                    </div>
+                  </div>
+
+                  <div style={{
+                    flex: 1,
+                    display: "flex",
+                    flexDirection: "column",
+                    gap: "16px",
+                  }}>
+                    <div>
+                      <p style={{
+                        fontSize: "13px",
+                        color: "#64748b",
+                        fontWeight: "600",
+                        fontFamily: "Inter, sans-serif",
+                        margin: "0 0 6px",
+                      }}>
+                        PICKUP
+                      </p>
+                      <p style={{
+                        fontSize: "16px",
+                        color: "#0f172a",
+                        fontWeight: "600",
+                        fontFamily: "Inter, sans-serif",
+                        margin: 0,
+                        lineHeight: "1.4",
+                      }}>
+                        {productDetail?.start_address}
+                      </p>
+                    </div>
+
+                    <div>
+                      <p style={{
+                        fontSize: "13px",
+                        color: "#64748b",
+                        fontWeight: "600",
+                        fontFamily: "Inter, sans-serif",
+                        margin: "0 0 6px",
+                      }}>
+                        DROP-OFF
+                      </p>
+                      <p style={{
+                        fontSize: "16px",
+                        color: "#0f172a",
+                        fontWeight: "600",
+                        fontFamily: "Inter, sans-serif",
+                        margin: 0,
+                        lineHeight: "1.4",
+                      }}>
+                        {productDetail?.end_address}
+                      </p>
+                    </div>
+                  </div>
+                </div>
+
+                <div style={{
+                  marginTop: "20px",
+                  paddingTop: "20px",
+                  borderTop: "1px solid #e5e7eb",
+                  display: "flex",
+                  alignItems: "center",
+                  gap: "12px",
+                }}>
+                  <span style={{
+                    fontSize: "14px",
+                    color: "#374151",
+                    fontWeight: "600",
+                    fontFamily: "Inter, sans-serif",
+                  }}>
+                    Pincode:
+                  </span>
+                  <span style={{
+                    fontSize: "15px",
+                    color: "#004a70",
+                    fontWeight: "800",
+                    fontFamily: "Inter, sans-serif",
+                  }}>
+                    {productDetail?.pincode}
+                  </span>
+                  <button
+                    onClick={copytoClipBoard}
+                    style={{
+                      width: "36px",
+                      height: "36px",
+                      borderRadius: "10px",
+                      border: "1px solid #e5e7eb",
+                      background: "#f8fafc",
+                      cursor: "pointer",
+                      display: "flex",
+                      alignItems: "center",
+                      justifyContent: "center",
+                      transition: "all 0.2s",
+                      color: "#64748b",
+                    }}
+                    onMouseEnter={(e) => {
+                      e.currentTarget.style.borderColor = "#004a70";
+                      e.currentTarget.style.color = "#004a70";
+                      e.currentTarget.style.background = "#f0f7ff";
+                    }}
+                    onMouseLeave={(e) => {
+                      e.currentTarget.style.borderColor = "#e5e7eb";
+                      e.currentTarget.style.color = "#64748b";
+                      e.currentTarget.style.background = "#f8fafc";
+                    }}
+                  >
+                    <MdContentCopy size={18} />
+                  </button>
+                </div>
               </div>
-            ) : (
-              <div>
-                {Reviews?.length > 0 ? (
-                  <div style={{ display: "grid", gridTemplateColumns: "repeat(auto-fill, minmax(240px, 1fr))", gap: 12 }}>
-                    {Reviews.map((review, index) => (
-                      <div
-                        key={index}
-                        style={{
-                          background: "#fff",
-                          borderRadius: 14,
-                          border: "1px solid #e2e8f0",
-                          padding: 18,
-                          transition: "all 0.2s",
-                          boxShadow: "0 1px 2px rgba(0,0,0,0.04)",
-                        }}
-                        onMouseEnter={(e) => e.currentTarget.style.boxShadow = "0 4px 12px rgba(0,0,0,0.08)"}
-                        onMouseLeave={(e) => e.currentTarget.style.boxShadow = "0 1px 2px rgba(0,0,0,0.04)"}
-                      >
-                        {/* Card Header */}
-                        <div style={{ display: "flex", alignItems: "center", gap: 10, marginBottom: 12 }}>
-                          <Image
-                            src={review.user?.image || NoshowData}
-                            width={40}
-                            height={40}
-                            alt=""
-                            style={{ width: 40, height: 40, borderRadius: "50%", objectFit: "cover", border: "1px solid #f0f0f0" }}
-                          />
-                          <div>
-                            <h4 style={{ fontSize: 14, fontFamily: "Inter-SemiBold", color: "#0f172a", margin: 0 }}>
-                              {review.user?.name || "Anonymous"}
-                            </h4>
-                            <div style={{ display: "flex", alignItems: "center", gap: 2, marginTop: 2 }}>
-                              {[1, 2, 3, 4, 5].map((star) => (
-                                <FaStar
-                                  key={star}
-                                  size={12}
-                                  color={star <= review.rating ? "#f59e0b" : "#e2e8f0"}
-                                />
-                              ))}
-                              <span style={{ fontSize: 11, color: "#94a3b8", fontFamily: "Inter-Regular", marginLeft: 4 }}>
-                                {review.rating}.0
-                              </span>
-                            </div>
-                          </div>
-                          <span style={{ fontSize: 11, color: "#94a3b8", fontFamily: "Inter-Regular", marginLeft: "auto" }}>
-                            {review.createdAt ? moment.utc(review.createdAt).format("DD MMM") : ""}
-                          </span>
+
+              {/* Tabs */}
+              <div style={{
+                background: "#fff",
+                borderRadius: "20px",
+                overflow: "hidden",
+                boxShadow: "0 4px 20px -6px rgba(0,0,0,0.08)",
+                border: "1px solid #e5e7eb",
+              }}>
+                <div style={{
+                  display: "flex",
+                  gap: "8px",
+                  padding: "20px 24px 0",
+                  borderBottom: "1px solid #e5e7eb",
+                  background: "#f8fafc",
+                }}>
+                  <button
+                    onClick={() => setActiveTab("reviews")}
+                    style={{
+                      padding: "12px 20px",
+                      borderTopLeftRadius: "12px",
+                      borderTopRightRadius: "12px",
+                      border: activeTab === "reviews" ? "1px solid #e5e7eb" : "1px solid transparent",
+                      borderBottom: activeTab === "reviews" ? "2px solid #004a70" : "none",
+                      background: activeTab === "reviews" ? "#fff" : "transparent",
+                      color: activeTab === "reviews" ? "#004a70" : "#64748b",
+                      fontFamily: "Inter, sans-serif",
+                      fontSize: "14px",
+                      fontWeight: activeTab === "reviews" ? "800" : "700",
+                      cursor: "pointer",
+                      transition: "all 0.2s",
+                      display: "flex",
+                      alignItems: "center",
+                      gap: "8px",
+                    }}
+                    onMouseEnter={(e) => {
+                      if (activeTab !== "reviews") {
+                        e.currentTarget.style.color = "#0f172a";
+                      }
+                    }}
+                    onMouseLeave={(e) => {
+                      if (activeTab !== "reviews") {
+                        e.currentTarget.style.color = "#64748b";
+                      }
+                    }}
+                  >
+                    <FaStar size={16} color={activeTab === "reviews" ? "#f59e0b" : "#64748b"} />
+                    Reviews
+                  </button>
+                  <button
+                    onClick={() => setActiveTab("track")}
+                    style={{
+                      padding: "12px 20px",
+                      borderTopLeftRadius: "12px",
+                      borderTopRightRadius: "12px",
+                      border: activeTab === "track" ? "1px solid #e5e7eb" : "1px solid transparent",
+                      borderBottom: activeTab === "track" ? "2px solid #004a70" : "none",
+                      background: activeTab === "track" ? "#fff" : "transparent",
+                      color: activeTab === "track" ? "#004a70" : "#64748b",
+                      fontFamily: "Inter, sans-serif",
+                      fontSize: "14px",
+                      fontWeight: activeTab === "track" ? "800" : "700",
+                      cursor: "pointer",
+                      transition: "all 0.2s",
+                      display: "flex",
+                      alignItems: "center",
+                      gap: "8px",
+                    }}
+                    onMouseEnter={(e) => {
+                      if (activeTab !== "track") {
+                        e.currentTarget.style.color = "#0f172a";
+                      }
+                    }}
+                    onMouseLeave={(e) => {
+                      if (activeTab !== "track") {
+                        e.currentTarget.style.color = "#64748b";
+                      }
+                    }}
+                  >
+                    <svg width={16} height={16} viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth={2} strokeLinecap="round" strokeLinejoin="round">
+                      <path d="M21 10c0 7-9 13-9 13s-9-6-9-13a9 9 0 0 1 18 0z" />
+                      <circle cx="12" cy="10" r="3" />
+                    </svg>
+                    Track on Map
+                  </button>
+                </div>
+
+                <div style={{
+                  padding: "24px",
+                }}>
+                  {activeTab === "reviews" ? (
+                    <div>
+                      {Loading ? (
+                        <div style={{
+                          display: "flex",
+                          justifyContent: "center",
+                          alignItems: "center",
+                          height: "200px",
+                        }}>
+                          <Spinner style={{ width: 24, height: 24 }}>Loading...</Spinner>
                         </div>
-                        {/* Review Text */}
-                        <p style={{ fontSize: 13, fontFamily: "Inter-Regular", color: "#475569", margin: 0, lineHeight: 1.5 }}>
-                          {review.review}
-                        </p>
-                      </div>
-                    ))}
-                  </div>
-                ) : (
-                  <div style={{ display: "flex", flexDirection: "column", alignItems: "center", justifyContent: "center", height: 200 }}>
-                    <FaStar size={32} color="#e2e8f0" />
-                    <p style={{ fontFamily: "Inter-Medium", color: "#94a3b8", marginTop: 8 }}>No Reviews Yet</p>
-                  </div>
-                )}
+                      ) : Reviews?.length > 0 ? (
+                        <div style={{
+                          display: "grid",
+                          gridTemplateColumns: "repeat(auto-fill, minmax(280px, 1fr))",
+                          gap: "16px",
+                        }}>
+                          {Reviews.map((review, index) => (
+                            <div
+                              key={index}
+                              style={{
+                                background: "#f8fafc",
+                                borderRadius: "16px",
+                                border: "1px solid #e5e7eb",
+                                padding: "20px",
+                                transition: "all 0.2s",
+                              }}
+                              onMouseEnter={(e) => {
+                                e.currentTarget.style.boxShadow = "0 8px 24px rgba(0,0,0,0.06)";
+                                e.currentTarget.style.transform = "translateY(-2px)";
+                              }}
+                              onMouseLeave={(e) => {
+                                e.currentTarget.style.boxShadow = "none";
+                                e.currentTarget.style.transform = "translateY(0)";
+                              }}
+                            >
+                              <div style={{
+                                display: "flex",
+                                alignItems: "center",
+                                gap: "12px",
+                                marginBottom: "14px",
+                              }}>
+                                <Image
+                                  src={review.user?.image || NoshowData}
+                                  width={48}
+                                  height={48}
+                                  alt=""
+                                  style={{
+                                    width: 48,
+                                    height: 48,
+                                    borderRadius: "50%",
+                                    objectFit: "cover",
+                                    border: "2px solid #fff",
+                                    boxShadow: "0 4px 8px rgba(0,0,0,0.06)"
+                                  }}
+                                />
+                                <div style={{ flex: 1, minWidth: 0 }}>
+                                  <h4 style={{
+                                    fontSize: "15px",
+                                    fontFamily: "Inter, sans-serif",
+                                    fontWeight: "800",
+                                    color: "#0f172a",
+                                    margin: "0 0 4px",
+                                  }}>
+                                    {review.user?.name || "Anonymous"}
+                                  </h4>
+                                  <div style={{
+                                    display: "flex",
+                                    alignItems: "center",
+                                    gap: "4px",
+                                  }}>
+                                    {[1, 2, 3, 4, 5].map((star) => (
+                                      <FaStar
+                                        key={star}
+                                        size={14}
+                                        color={star <= review.rating ? "#f59e0b" : "#e5e7eb"}
+                                      />
+                                    ))}
+                                    <span style={{
+                                      fontSize: "12px",
+                                      color: "#94a3b8",
+                                      fontFamily: "Inter, sans-serif",
+                                      fontWeight: "600",
+                                      marginLeft: "6px",
+                                    }}>
+                                      {review.rating}.0
+                                    </span>
+                                  </div>
+                                </div>
+                                <span style={{
+                                  fontSize: "12px",
+                                  color: "#94a3b8",
+                                  fontFamily: "Inter, sans-serif",
+                                  fontWeight: "600",
+                                }}>
+                                  {review.createdAt ? moment.utc(review.createdAt).format("DD MMM") : ""}
+                                </span>
+                              </div>
+                              <p style={{
+                                fontSize: "14px",
+                                fontFamily: "Inter, sans-serif",
+                                color: "#475569",
+                                margin: 0,
+                                lineHeight: "1.6",
+                              }}>
+                                {review.review}
+                              </p>
+                            </div>
+                          ))}
+                        </div>
+                      ) : (
+                        <div style={{
+                          display: "flex",
+                          flexDirection: "column",
+                          alignItems: "center",
+                          justifyContent: "center",
+                          height: "240px",
+                          gap: "12px",
+                        }}>
+                          <div style={{
+                            width: "80px",
+                            height: "80px",
+                            borderRadius: "50%",
+                            background: "#f1f5f9",
+                            display: "flex",
+                            alignItems: "center",
+                            justifyContent: "center",
+                          }}>
+                            <FaStar size={36} color="#cbd5e1" />
+                          </div>
+                          <div style={{ textAlign: "center" }}>
+                            <h4 style={{
+                              fontSize: "18px",
+                              fontWeight: "700",
+                              color: "#374151",
+                              margin: "0 0 6px",
+                              fontFamily: "Inter, sans-serif",
+                            }}>
+                              No Reviews Yet
+                            </h4>
+                            <p style={{
+                              fontSize: "14px",
+                              color: "#94a3b8",
+                              margin: 0,
+                              fontFamily: "Inter, sans-serif",
+                            }}>
+                              Be the first to leave a review!
+                            </p>
+                          </div>
+                        </div>
+                      )}
+                    </div>
+                  ) : (
+                    <div style={{
+                      overflow: "hidden",
+                      borderRadius: "16px",
+                      border: "1px solid #e5e7eb",
+                    }}>
+                      <div
+                        id="map-container"
+                        style={{
+                          width: "100%",
+                          height: "500px",
+                          borderRadius: "16px",
+                        }}
+                        ref={mapContainerRef}
+                      />
+                    </div>
+                  )}
+                </div>
               </div>
-            )}
+            </div>
           </div>
-        ) : (
-          <div className="RideForm" style={{ padding: 0, overflow: "hidden" }}>
-            <div
-              id="map-container"
-              style={{ width: "100%", height: "60vh", minHeight: 350 }}
-              ref={mapContainerRef}
-            />
-          </div>
-        )}
+        </div>
       </div>
     </div>
   );
@@ -508,7 +1062,16 @@ const RideDetail = () => {
 
 const page = () => {
   return (
-    <Suspense fallback={<Spinner animation="border" />}>
+    <Suspense fallback={
+      <div style={{
+        display: "flex",
+        alignItems: "center",
+        justifyContent: "center",
+        height: "100vh",
+      }}>
+        <Spinner animation="border" style={{ width: 32, height: 32 }} />
+      </div>
+    }>
       <RideDetail />
     </Suspense>
   );

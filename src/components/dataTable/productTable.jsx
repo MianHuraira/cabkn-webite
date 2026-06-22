@@ -34,7 +34,9 @@ const ProductTable = ({
   const handleFilter = (e) => {
     const value = e.target.value;
     setSearchValue(value);
-    setSearch(value);
+    if (setSearch) {
+      setSearch(value);
+    }
     setLastId(1);
     setCurrentPage(0);
   };
@@ -61,18 +63,18 @@ const ProductTable = ({
   );
 
   const CustomPagination = () => (
-    <div className="bg-white rounded-b-xl border-t border-t-[#C5C5D3]">
+    <div className="bg-white rounded-b-xl border-t border-t-slate-200 px-4 sm:px-6 py-4">
       <ReactPaginate
         previousLabel={
-          <div className="flex text-sm items-center gap-2 btnpgination ">
-            <FaArrowLeft color="#000" />
+          <div className="flex text-sm items-center gap-2 btnpgination">
+            <FaArrowLeft color="#64748b" />
             <span className="medium-font">Previous</span>
           </div>
         }
         nextLabel={
           <div className="flex text-sm items-center gap-2 btnpgination">
             <span className="medium-font">Next</span>
-            <FaArrowRight color="#000" />
+            <FaArrowRight color="#64748b" />
           </div>
         }
         forcePage={currentPage}
@@ -90,10 +92,40 @@ const ProductTable = ({
         previousLinkClassName="page-link"
         nextClassName="page-item next-item"
         previousClassName="page-item prev-item"
-        containerClassName="pagination react-paginate separated-pagination pagination-sm pe-4 justify-content-center py-3"
+        containerClassName="pagination react-paginate separated-pagination pagination-sm justify-center gap-1"
       />
     </div>
   );
+
+  // Custom table styles
+  const customStyles = {
+    rows: {
+      style: {
+        borderBottom: "1px solid #f1f5f9",
+        transition: "background-color 0.15s ease-in-out",
+      },
+      highlightOnHoverStyle: {
+        backgroundColor: "#f8fafc",
+      },
+    },
+    headCells: {
+      style: {
+        backgroundColor: "#f8fafc",
+        borderBottom: "1px solid #e2e8f0",
+        padding: "14px 20px",
+        fontSize: "13px",
+        fontWeight: 600,
+        color: "#475569",
+        textTransform: "none",
+      },
+    },
+    cells: {
+      style: {
+        padding: "14px 20px",
+      },
+    },
+  };
+
   return (
     <Fragment>
       {rowHeading && (
@@ -108,11 +140,11 @@ const ProductTable = ({
                 className="relative d-flex align-items-center"
               >
                 <Search
-                  className="absolute position-absolute text-[1rem]  ms-2"
+                  className="absolute position-absolute text-[1rem] ms-3 text-slate-400"
                   alt=""
                 />
                 <Input
-                  className="dataTable-filter ps-5 md:pe-5 py-[8px] w-full"
+                  className="dataTable-filter ps-5 md:pe-5 py-[8px] w-full border border-slate-200 rounded-xl focus:border-brand-500 focus:ring-2 focus:ring-brand-100"
                   type="text"
                   placeholder="Search anything here"
                   id="search-input-1"
@@ -142,10 +174,9 @@ const ProductTable = ({
           progressPending={loading}
           progressComponent={
             <div
-              className="py-5"
-              style={{ display: "flex", justifyContent: "center" }}
+              className="py-5 flex items-center justify-center"
             >
-              <Spinner color="dark">Loading...</Spinner>
+              <Spinner color="#004a70" style={{width: "24px", height: "24px"}}>Loading...</Spinner>
             </div>
           }
           selectableRowsNoSelectAll
@@ -156,6 +187,7 @@ const ProductTable = ({
           paginationDefaultPage={currentPage + 1}
           paginationComponent={CustomPagination}
           data={data}
+          customStyles={customStyles}
         />
       </div>
     </Fragment>
