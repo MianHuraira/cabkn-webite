@@ -113,11 +113,28 @@ const InnerHeader = () => {
   const [userMenuOpen, setUserMenuOpen] = useState(false);
   const [mobileProfileOpen, setMobileProfileOpen] = useState(false);
   const [mounted, setMounted] = useState(false);
+  const [isScrolled, setIsScrolled] = useState(false);
 
   const [notifShow, setNotifShow] = useState(false);
   const [notifications, setNotifications] = useState([]);
   const [notifFilter, setNotifFilter] = useState("all");
   const [notifLoading, setNotifLoading] = useState(false);
+
+  useEffect(() => {
+    const checkScroll = () => {
+      const scrolled = window.scrollY > 0 || document.documentElement.scrollTop > 0 || document.body.scrollTop > 0;
+      setIsScrolled(scrolled);
+    };
+    checkScroll();
+    window.addEventListener("scroll", checkScroll, { passive: true });
+    document.addEventListener("scroll", checkScroll, { passive: true });
+    const intervalId = setInterval(checkScroll, 100);
+    return () => {
+      window.removeEventListener("scroll", checkScroll);
+      document.removeEventListener("scroll", checkScroll);
+      clearInterval(intervalId);
+    };
+  }, []);
 
   useEffect(() => {
     if (!notifShow) return;
@@ -273,31 +290,50 @@ const InnerHeader = () => {
 
   const linkStyle = (href) => ({
     padding: "8px 12px",
-    color: isActive(href) ? "#004a70" : "#4b5563",
+    color: isActive(href) ? (isScrolled ? "#004a70" : "#fff") : (isScrolled ? "#4b5563" : "rgba(255,255,255,0.9)"),
     fontSize: 13.5,
     textDecoration: "none",
     whiteSpace: "nowrap",
     position: "relative",
     transition: "color 0.2s ease",
-    borderBottom: isActive(href) ? "2px solid #004a70" : "2px solid transparent",
+    borderBottom: isActive(href) ? `2px solid ${isScrolled ? "#004a70" : "#fff"}` : "2px solid transparent",
     paddingBottom: 4,
   });
 
   return (
     <div className="font-poppins">
+      <style jsx global>{`
+        .navBar00 {
+          background: transparent !important;
+          border-top: 1px solid rgba(255, 255, 255, 0.2) !important;
+          border-bottom: 1px solid rgba(255, 255, 255, 0.2) !important;
+        }
+        .navBar00.scrolled {
+          background-color: rgba(255, 255, 255, 0.75) !important;
+          background: rgba(255, 255, 255, 0.75) !important;
+          box-shadow: 0px 4px 22.9px 0px #0000000d !important;
+          backdrop-filter: blur(20px) !important;
+          -webkit-backdrop-filter: blur(20px) !important;
+          border-top: 1px solid rgba(255, 255, 255, 0.3) !important;
+          border-bottom: 1px solid rgba(255, 255, 255, 0.3) !important;
+        }
+      `}</style>
       <Navbar
         expand="xl"
-        className={(mounted ? "animate-header-slide-down " : "opacity-0 ") + "font-poppins"}
+        className={`navBar00 ${mounted ? "animate-header-slide-down " : "opacity-0 "} ${isScrolled ? "scrolled" : ""} font-poppins`}
         style={{
-          position: "sticky",
+          position: "fixed",
           top: 0,
+          left: 0,
+          right: 0,
           zIndex: 999,
           width: "100%",
           height: 64,
-          background: "rgba(255,255,255,0.95)",
-          backdropFilter: "blur(12px)",
-          WebkitBackdropFilter: "blur(12px)",
-          borderBottom: "1px solid rgba(0,0,0,0.06)",
+          background: isScrolled ? "rgba(255,255,255,0.75)" : "transparent",
+          backdropFilter: isScrolled ? "blur(20px)" : "none",
+          WebkitBackdropFilter: isScrolled ? "blur(20px)" : "none",
+          borderTop: "1px solid rgba(255,255,255,0.2)",
+          borderBottom: "1px solid rgba(255,255,255,0.2)",
           paddingLeft: 16,
           paddingRight: 24,
           display: "flex",
@@ -347,13 +383,13 @@ const InnerHeader = () => {
                 style={{ ...linkStyle(link.href), animationDelay: `${index * 50}ms` }}
                 onMouseEnter={(e) => {
                   if (!isActive(link.href)) {
-                    e.currentTarget.style.color = "#004a70";
-                    e.currentTarget.style.borderBottom = "2px solid #004a70";
+                    e.currentTarget.style.color = isScrolled ? "#004a70" : "#fff";
+                    e.currentTarget.style.borderBottom = `2px solid ${isScrolled ? "#004a70" : "#fff"}`;
                   }
                 }}
                 onMouseLeave={(e) => {
                   if (!isActive(link.href)) {
-                    e.currentTarget.style.color = "#4b5563";
+                    e.currentTarget.style.color = isScrolled ? "#4b5563" : "rgba(255,255,255,0.9)";
                     e.currentTarget.style.borderBottom = "2px solid transparent";
                   }
                 }}
@@ -368,7 +404,11 @@ const InnerHeader = () => {
             <Badge count={notifUnreadCount} size="small" offset={[-2, 2]} style={{ backgroundColor: "#ef4444" }}>
               <button
                 onClick={() => { setNotifShow(true); }}
-                className="w-[34px] h-[34px] rounded-lg bg-gray-100 flex items-center justify-center cursor-pointer transition-all duration-200 text-gray-600 hover:bg-brand-600 hover:text-white hover:scale-110 border-0"
+                className="w-[34px] h-[34px] rounded-lg flex items-center justify-center cursor-pointer transition-all duration-200 border-0"
+                style={{
+                  background: isScrolled ? "rgba(0,0,0,0.05)" : "rgba(255,255,255,0.1)",
+                  color: isScrolled ? "#4b5563" : "#fff"
+                }}
               >
                 <MdNotificationsActive size={16} />
               </button>
@@ -377,7 +417,10 @@ const InnerHeader = () => {
             <div ref={userMenuRef} style={{ position: "relative" }}>
               <button
                 onClick={() => setUserMenuOpen(!userMenuOpen)}
-                className="w-[34px] h-[34px] rounded-lg bg-gray-100 flex items-center justify-center cursor-pointer ml-[2px] transition-all duration-200 overflow-hidden hover:bg-gray-200 border-0"
+                className="w-[34px] h-[34px] rounded-lg flex items-center justify-center cursor-pointer ml-[2px] transition-all duration-200 overflow-hidden border-0"
+                style={{
+                  background: isScrolled ? "rgba(0,0,0,0.05)" : "rgba(255,255,255,0.1)"
+                }}
               >
                 {userData?.user?.image ? (
                   <Image
@@ -393,7 +436,7 @@ const InnerHeader = () => {
                     alt="userImage"
                   />
                 ) : (
-                  <FaUser size={15} color="#6b7280" />
+                  <FaUser size={15} color={isScrolled ? "#6b7280" : "#fff"} />
                 )}
               </button>
               {userMenuOpen && (
@@ -461,9 +504,9 @@ const InnerHeader = () => {
           {/* Mobile toggle */}
           <button
             onClick={() => setShow((prev) => !prev)}
-            className="d-xl-none transition-all duration-200 hover:bg-gray-100"
+            className="d-xl-none transition-all duration-200"
             style={{
-              background: "none",
+              background: isScrolled ? "rgba(0,0,0,0.05)" : "rgba(255,255,255,0.1)",
               border: "none",
               cursor: "pointer",
               padding: 8,
@@ -473,7 +516,7 @@ const InnerHeader = () => {
               justifyContent: "center",
             }}
           >
-            <AiOutlineMenuFold color="#004A70" size={24} />
+            <AiOutlineMenuFold color={isScrolled ? "#004A70" : "#fff"} size={24} />
           </button>
         </div>
       </Navbar>

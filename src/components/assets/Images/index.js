@@ -34,6 +34,7 @@ import dummy from "./imresizer-1739827932527.jpg"
 import loginGlowingWave from "./login_glowing_wave.png";
 import loginGlowingRide from "./login_glowing_ride.png";
 import loginFullBg from "./login_full_bg.png";
+import Heroimg from "./hero.png"
 
 
 
@@ -75,5 +76,6 @@ export {
   dummy,
   loginGlowingWave,
   loginGlowingRide,
-  loginFullBg
+  loginFullBg,
+  Heroimg
 };

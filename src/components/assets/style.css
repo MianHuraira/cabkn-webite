@@ -230,9 +230,10 @@ body {
   top: 0 !important;
   z-index: 999 !important;
   width: 100% !important;
-  height: 95px;
+  height: 64px;
   background-color: transparent !important;
   padding-right: 3rem;
+  transition: all 0.4s cubic-bezier(0.4, 0, 0.2, 1);
 }
 
 .navBar00inner {
@@ -247,8 +248,12 @@ body {
 }
 
 .navBar00.scrolled {
-  background: linear-gradient(179.02deg, #004a70 -69.5%, #b1b0b0 99.16%);
-  animation: fade-in 1s ease-in-out forwards;
+  background-color: rgba(255, 255, 255, 0.75) !important;
+  background: rgba(255, 255, 255, 0.75) !important;
+  box-shadow: 0px 4px 22.9px 0px #0000000d !important;
+  backdrop-filter: blur(20px) !important;
+  -webkit-backdrop-filter: blur(20px) !important;
+  border-bottom: 1px solid rgba(255,255,255,0.3) !important;
 }
 
 /* Fade animation */
