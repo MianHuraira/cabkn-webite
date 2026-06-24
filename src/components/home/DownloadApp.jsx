@@ -29,7 +29,10 @@ export default function DownloadApp() {
   return (
     <section
       ref={sectionRef}
-      className="py-12 sm:py-16 lg:py-20 overflow-hidden"
+      className="py-12 sm:py-16 lg:py-20 overflow-hidden bg-slate-50"
+      style={{
+        background: "linear-gradient(135deg, rgba(0, 74, 112, 0.05) 0%, rgba(0, 45, 69, 0.03) 50%, rgba(248, 250, 252, 0.95) 100%)",
+      }}
     >
       <Row
         className="mx-auto align-items-center g-0 px-4 sm:px-6 lg:px-8"
@@ -53,7 +56,7 @@ export default function DownloadApp() {
         <Col lg={6} className="p-4 sm:p-6 lg:p-8 order-2 lg:order-2">
           <div className="flex flex-col gap-3 sm:gap-4 lg:gap-5">
             <span
-              className={`inline-block px-3 py-1.5 bg-brand-100 text-brand-700 rounded-md text-xs font-family-semibold w-fit reveal ${inView ? "visible" : ""}`}
+              className={`inline-block px-3 py-1.5 bg-brand-50 text-brand-700 border border-brand-200 rounded-md text-xs font-family-semibold w-fit reveal ${inView ? "visible" : ""}`}
               style={{ transitionDelay: "100ms" }}
             >
               Get the App
@@ -66,13 +69,13 @@ export default function DownloadApp() {
             </h1>
             <div className="grid grid-cols-1 sm:grid-cols-2 gap-3 mt-2">
               <div className="flex items-start gap-2.5">
-                <BsCheck2Square className="text-brand-700 w-5 h-5 flex-shrink-0 mt-0.5" />
+                <BsCheck2Square className="text-brand-600 w-5 h-5 flex-shrink-0 mt-0.5" />
                 <p className="text-xs sm:text-sm text-slate-600 font-family-regular leading-relaxed">
                   Download the Cabkn app for seamless, reliable transportation between Nevis and Saint Kitts.
                 </p>
               </div>
               <div className="flex items-start gap-2.5">
-                <BsCheck2Square className="text-brand-700 w-5 h-5 flex-shrink-0 mt-0.5" />
+                <BsCheck2Square className="text-brand-600 w-5 h-5 flex-shrink-0 mt-0.5" />
                 <p className="text-xs sm:text-sm text-slate-600 font-family-regular leading-relaxed">
                   Book rides in seconds, track your driver in real-time, and enjoy a premium travel experience.
                 </p>
@@ -87,11 +90,11 @@ export default function DownloadApp() {
                     "noopener,noreferrer",
                   )
                 }
-                className="flex items-center justify-center sm:justify-start gap-2 px-4 py-2.5 bg-slate-900 text-white rounded-md transition-all duration-300 hover:-translate-y-1 hover:shadow-lg cursor-pointer font-family-regular w-full sm:w-auto"
+                className="flex items-center justify-center sm:justify-start gap-2 px-4 py-2.5 bg-brand-600 text-white rounded-md transition-all duration-300 hover:-translate-y-1 hover:shadow-lg cursor-pointer font-family-regular w-full sm:w-auto"
               >
                 <FaGooglePlay size={24} />
                 <div className="flex flex-col text-left">
-                  <span className="text-[10px] text-slate-300">GET IT ON</span>
+                  <span className="text-[10px] text-brand-100">GET IT ON</span>
                   <span className="text-sm font-bold">Google Play</span>
                 </div>
               </button>
@@ -103,11 +106,11 @@ export default function DownloadApp() {
                     "noopener,noreferrer",
                   )
                 }
-                className="flex items-center justify-center sm:justify-start gap-2 px-4 py-2.5 bg-slate-900 text-white rounded-md transition-all duration-300 hover:-translate-y-1 hover:shadow-lg cursor-pointer font-family-regular w-full sm:w-auto"
+                className="flex items-center justify-center sm:justify-start gap-2 px-4 py-2.5 bg-brand-600 text-white rounded-md transition-all duration-300 hover:-translate-y-1 hover:shadow-lg cursor-pointer font-family-regular w-full sm:w-auto"
               >
                 <TiVendorApple size={32} />
                 <div className="flex flex-col text-left">
-                  <span className="text-[10px] text-slate-300">Download on the</span>
+                  <span className="text-[10px] text-brand-100">Download on the</span>
                   <span className="text-sm font-bold">App Store</span>
                 </div>
               </button>
