@@ -4,6 +4,7 @@ import { mobiledown } from "../assets/Images";
 import Image from "next/image";
 import { TiVendorApple } from "react-icons/ti";
 import { FaGooglePlay } from "react-icons/fa";
+import { BsCheck2Square } from "react-icons/bs";
 
 export default function DownloadApp() {
   const sectionRef = useRef(null);
@@ -28,35 +29,56 @@ export default function DownloadApp() {
   return (
     <section
       ref={sectionRef}
-      className="py-16 sm:py-20 lg:py-24 bg-gradient-to-br from-brand-50 via-white to-brand-50"
+      className="py-12 sm:py-16 lg:py-20 overflow-hidden"
     >
       <Row
         className="mx-auto align-items-center g-0 px-4 sm:px-6 lg:px-8"
         style={{ maxWidth: 1200 }}
       >
-        <Col lg={6} className="p-4 sm:p-6 lg:p-12">
-          <div className="flex flex-col gap-4 sm:gap-5 lg:gap-6">
+        <Col lg={6} className="text-center py-6 sm:py-8 lg:py-10 order-1 lg:order-1">
+          <div className="relative inline-block w-full max-w-[260px] sm:max-w-[320px] lg:max-w-[380px] mx-auto">
+            <Image
+              src={mobiledown}
+              className="animate-[float-car_6s_ease-in-out_infinite]"
+              style={{
+                objectFit: "contain",
+                width: "100%",
+                height: "auto",
+                filter: "drop-shadow(0 25px 50px rgba(0,74,112,0.15))",
+              }}
+              alt="Download App Image"
+            />
+          </div>
+        </Col>
+        <Col lg={6} className="p-4 sm:p-6 lg:p-8 order-2 lg:order-2">
+          <div className="flex flex-col gap-3 sm:gap-4 lg:gap-5">
             <span
-              className={`inline-block px-3 sm:px-4 py-1.5 bg-brand-100 text-brand-700 rounded-full text-xs sm:text-sm font-family-semibold w-fit tracking-wider uppercase reveal ${inView ? "visible" : ""}`}
+              className={`inline-block px-3 py-1.5 bg-brand-100 text-brand-700 rounded-md text-xs font-family-semibold w-fit reveal ${inView ? "visible" : ""}`}
               style={{ transitionDelay: "100ms" }}
             >
               Get the App
             </span>
             <h1
-              className={`text-3xl sm:text-4xl lg:text-5xl text-slate-900 leading-tight font-family-extrabold reveal ${inView ? "visible" : ""}`}
+              className={`text-2xl sm:text-3xl lg:text-4xl text-slate-900 leading-tight font-family-extrabold reveal ${inView ? "visible" : ""}`}
               style={{ transitionDelay: "200ms" }}
             >
-              Download our <span className="text-brand-600">Mobile App</span>
+              Unlock seamless experiences with our <span className="text-brand-600">Mobile App</span>
             </h1>
-            <p
-              className={`text-sm sm:text-base lg:text-lg text-slate-600 leading-relaxed max-w-lg font-family-regular reveal ${inView ? "visible" : ""}`}
-              style={{ transitionDelay: "300ms" }}
-            >
-              Download the Cabkn app for seamless, reliable transportation
-              between Nevis and Saint Kitts. Book rides in seconds, track your
-              driver in real-time, and enjoy a premium travel experience.
-            </p>
-            <div className="flex flex-col sm:flex-row gap-3 sm:gap-4 mt-1 sm:mt-2 w-full sm:w-auto">
+            <div className="grid grid-cols-1 sm:grid-cols-2 gap-3 mt-2">
+              <div className="flex items-start gap-2.5">
+                <BsCheck2Square className="text-brand-700 w-5 h-5 flex-shrink-0 mt-0.5" />
+                <p className="text-xs sm:text-sm text-slate-600 font-family-regular leading-relaxed">
+                  Download the Cabkn app for seamless, reliable transportation between Nevis and Saint Kitts.
+                </p>
+              </div>
+              <div className="flex items-start gap-2.5">
+                <BsCheck2Square className="text-brand-700 w-5 h-5 flex-shrink-0 mt-0.5" />
+                <p className="text-xs sm:text-sm text-slate-600 font-family-regular leading-relaxed">
+                  Book rides in seconds, track your driver in real-time, and enjoy a premium travel experience.
+                </p>
+              </div>
+            </div>
+            <div className="flex flex-col sm:flex-row gap-3 sm:gap-4 mt-4 w-full sm:w-auto">
               <button
                 onClick={() =>
                   window.open(
@@ -65,15 +87,12 @@ export default function DownloadApp() {
                     "noopener,noreferrer",
                   )
                 }
-                className="flex items-center justify-center sm:justify-start gap-3 sm:gap-4 px-4 sm:px-6 py-3 sm:py-4 text-white bg-slate-900 rounded-xl sm:rounded-2xl transition-all duration-300 hover:-translate-y-1 sm:hover:-translate-y-2 hover:shadow-2xl cursor-pointer border-0 font-family-regular w-full sm:w-auto"
-                style={{
-                  minHeight: 48,
-                }}
+                className="flex items-center justify-center sm:justify-start gap-2 px-4 py-2.5 bg-slate-900 text-white rounded-md transition-all duration-300 hover:-translate-y-1 hover:shadow-lg cursor-pointer font-family-regular w-full sm:w-auto"
               >
-                <FaGooglePlay size={28} className="sm:w-9 sm:h-9" />
+                <FaGooglePlay size={24} />
                 <div className="flex flex-col text-left">
-                  <span className="text-[10px] sm:text-xs text-slate-300">GET IT ON</span>
-                  <span className="text-base sm:text-lg lg:text-xl font-bold">Google Play</span>
+                  <span className="text-[10px] text-slate-300">GET IT ON</span>
+                  <span className="text-sm font-bold">Google Play</span>
                 </div>
               </button>
               <button
@@ -84,40 +103,15 @@ export default function DownloadApp() {
                     "noopener,noreferrer",
                   )
                 }
-                className="flex items-center justify-center sm:justify-start gap-3 sm:gap-4 px-4 sm:px-6 py-3 sm:py-4 bg-slate-900 text-white rounded-xl sm:rounded-2xl transition-all duration-300 hover:-translate-y-1 sm:hover:-translate-y-2 hover:shadow-2xl cursor-pointer border-0 font-family-regular w-full sm:w-auto"
-                style={{
-                  minHeight: 48,
-                }}
+                className="flex items-center justify-center sm:justify-start gap-2 px-4 py-2.5 bg-slate-900 text-white rounded-md transition-all duration-300 hover:-translate-y-1 hover:shadow-lg cursor-pointer font-family-regular w-full sm:w-auto"
               >
-                <TiVendorApple size={32} className="sm:w-10 sm:h-10" />
+                <TiVendorApple size={32} />
                 <div className="flex flex-col text-left">
-                  <span className="text-[10px] sm:text-xs text-slate-300">Download on the</span>
-                  <span className="text-base sm:text-lg lg:text-xl font-bold">App Store</span>
+                  <span className="text-[10px] text-slate-300">Download on the</span>
+                  <span className="text-sm font-bold">App Store</span>
                 </div>
               </button>
             </div>
-          </div>
-        </Col>
-        <Col lg={6} className="text-center py-8 sm:py-10 lg:py-12">
-          <div className="relative inline-block w-full max-w-[280px] sm:max-w-[340px] lg:max-w-[400px] mx-auto">
-            <div
-              className="absolute inset-0 -z-10"
-              style={{
-                background: "radial-gradient(circle, rgba(0,74,112,0.2) 0%, transparent 70%)",
-                transform: "scale(1.3)",
-              }}
-            />
-            <Image
-              src={mobiledown}
-              className="animate-[float-car_6s_ease-in-out_infinite]"
-              style={{
-                objectFit: "contain",
-                width: "100%",
-                height: "auto",
-                filter: "drop-shadow(0 40px 80px rgba(0,74,112,0.25))",
-              }}
-              alt="Download App Image"
-            />
           </div>
         </Col>
       </Row>
