@@ -16,7 +16,7 @@ const CustomButton = ({
   const baseStyles = "!transition-all !duration-300 !inline-flex !items-center !justify-center !gap-2 !cursor-pointer !border-none !rounded-[9999px] font-family-medium hover:!-translate-y-1 group";
 
   const variants = {
-    primary: "!bg-primary !text-white !shadow-[0_8px_30px_rgba(0,74,112,0.25)] hover:!shadow-[0_12px_40px_rgba(0,74,112,0.4)]",
+    primary: "!bg-primary !text-white  hover:!shadow-[0_12px_40px_rgba(0,74,112,0.4)]",
     secondary: "!bg-secondary !text-white hover:!shadow-[0_6px_20px_rgba(108,117,125,0.35)]",
     success: "!bg-success !text-white hover:!shadow-[0_6px_20px_rgba(40,167,69,0.35)]",
     danger: "!bg-danger !text-white hover:!shadow-[0_6px_20px_rgba(220,53,69,0.35)]",
