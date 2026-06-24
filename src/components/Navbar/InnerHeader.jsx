@@ -19,7 +19,7 @@ import { IoHeart } from "react-icons/io5";
 import moment from "moment";
 
 import Link from "next/link";
-import { AppStore, GooglePlay, logoBlue } from "../assets/Images";
+import { AppStore, GooglePlay, logoBlue, whiteLogo } from "../assets/Images";
 import Image from "next/image";
 import ApiFunction from "../ApiFunction/ApiFunction";
 import { logout, setUnreadCount, setNotifUnreadCount, setNotifLastTotal } from "../Redux/Slices/AuthSlice";
@@ -353,7 +353,7 @@ const InnerHeader = () => {
           {/* Logo */}
           <Link href={"/"} style={{ textDecoration: "none", display: "flex", alignItems: "center", flexShrink: 0 }}>
             <Image
-              src={logoBlue}
+              src={isScrolled ? logoBlue : whiteLogo}
               alt="Cabkn"
               width={30}
               height={26}

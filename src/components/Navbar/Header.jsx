@@ -8,7 +8,7 @@ import { Modal } from "react-bootstrap";
 
 import { logout } from "../Redux/Slices/AuthSlice";
 import { useDispatch, useSelector } from "react-redux";
-import { logoBlue } from "../assets/Images";
+import { logoBlue, whiteLogo } from "../assets/Images";
 import { HiMenuAlt3, HiX } from "react-icons/hi";
 import Link from "next/link";
 import { AppStore, GooglePlay } from "../assets/Images";
@@ -97,7 +97,7 @@ const Header = () => {
         <div className="w-full max-w-7xl mx-auto h-full flex items-center justify-between px-4 lg:px-8">
           <Link href="/" className="flex items-center flex-shrink-0">
             <Image
-              src={logoBlue}
+              src={isScrolled ? logoBlue : whiteLogo}
               alt="Cabkn"
               width={30}
               height={26}

@@ -25,20 +25,17 @@ import Bag from "./bag.png";
 import jad from "./jad.png";
 import NoshowData from "./noShow.png";
 import carAvatar from "./carAvatar.png";
-import otpImage from "./otpImage.png"
-import cross from "./cross.png"
-import discount from "./discount.png"
-import forgotpass from "./forgotpass.png"
-import StaticUser from "./noShow.png"
-import dummy from "./imresizer-1739827932527.jpg"
+import otpImage from "./otpImage.png";
+import cross from "./cross.png";
+import discount from "./discount.png";
+import forgotpass from "./forgotpass.png";
+import StaticUser from "./noShow.png";
+import dummy from "./imresizer-1739827932527.jpg";
 import loginGlowingWave from "./login_glowing_wave.png";
 import loginGlowingRide from "./login_glowing_ride.png";
 import loginFullBg from "./login_full_bg.png";
-import Heroimg from "./hero.png"
-
-
-
-
+import Heroimg from "./hero1.png";
+import whiteLogo from "./logowhite.png";
 
 export {
   LoginImg,
@@ -70,12 +67,13 @@ export {
   carAvatar,
   otpImage,
   cross,
-  discount, 
+  discount,
   forgotpass,
   StaticUser,
   dummy,
   loginGlowingWave,
   loginGlowingRide,
   loginFullBg,
-  Heroimg
+  Heroimg,
+  whiteLogo,
 };
