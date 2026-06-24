@@ -138,7 +138,6 @@ export default function ServiceLocation() {
         setRatingLoading(false);
       })
       .catch((error) => {
-        console.log(error, "error");
         setRatingLoading(false);
       });
   };

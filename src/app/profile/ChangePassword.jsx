@@ -94,7 +94,6 @@ export default function ChangePassword() {
       }
     } catch (error) {
       setisLoading(false);
-      console.log(error.response?.data?.message);
     }
   };
 

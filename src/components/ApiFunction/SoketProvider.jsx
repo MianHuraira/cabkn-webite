@@ -40,7 +40,6 @@ export const SocketProvider = ({ children }) => {
 
     newSocket.emit("authenticate", token);
     newSocket.on("authenticated", (id) => {
-      console.log("Socket authenticated with ID:", id);
       setSocket(newSocket);
     });
 

@@ -21,7 +21,6 @@ export default function UserReviews() {
       setReviews(response.ratings);
     } catch (error) {
       setLoading(false);
-      console.log("errr----", error);
     } finally {
       setLoading(false);
     }

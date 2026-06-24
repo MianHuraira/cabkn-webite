@@ -49,7 +49,6 @@ const authSlice = createSlice({
 
       if (!isCardDuplicate) {
         state.paymentCards = [...state.paymentCards, newCard];
-        console.log("Card added successfully!");
       } else {
         console.log("This card is already saved.");
       }

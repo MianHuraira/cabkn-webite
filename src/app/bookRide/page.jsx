@@ -123,7 +123,7 @@ const CreateRide = () => {
     const letters = "ABCDEFGHIJKLMNOPQRSTUVWXYZ";
     const numbers = "0123456789";
     let code = "";
-   
+
     for (let i = 0; i < 2; i++) {
       code += letters.charAt(Math.floor(Math.random() * letters.length));
     }
@@ -164,7 +164,7 @@ const CreateRide = () => {
     setRefId(RefId);
     const apiPrice = productDetail?.stop?.length
       ? changePrice(
-          (RideType?.price || 0) + (productDetail?.stop?.length * 5 || 0)
+          (RideType?.price || 0) + (productDetail?.stop?.length * 5 || 0),
         )
       : changePrice(RideType?.price || 0);
 
@@ -177,7 +177,7 @@ const CreateRide = () => {
       const res = await putData(
         `users/order-card-payment`,
         paymetbody,
-        header1
+        header1,
       );
 
       let newDate = null;
@@ -189,10 +189,6 @@ const CreateRide = () => {
             minute: parseInt(productDetail?.schedule_time.split(":")[1], 10),
           })
           .toISOString();
-      } else {
-        console.log(
-          "No schedule date or time available, skipping newDate calculation"
-        );
       }
 
       let FavUserId = productDetail?.FavUserId;
@@ -244,8 +240,6 @@ const CreateRide = () => {
     } catch (error) {
       setloading(false);
       console.log(error);
-
-      console.log("=====error", error?.response?.data);
     }
   };
 
@@ -307,7 +301,7 @@ const CreateRide = () => {
     const tokenResponse = await getToken();
     if (tokenResponse.result !== "Success") {
       throw new Error(
-        `Failed to obtain token: ${JSON.stringify(tokenResponse)}`
+        `Failed to obtain token: ${JSON.stringify(tokenResponse)}`,
       );
     }
 
@@ -364,7 +358,7 @@ const CreateRide = () => {
 
       const apiPrice = productDetail?.stop?.length
         ? changePrice(
-            (RideType?.price || 0) + (productDetail?.stop?.length * 5 || 0)
+            (RideType?.price || 0) + (productDetail?.stop?.length * 5 || 0),
           )
         : changePrice(RideType?.price || 0);
 
@@ -420,7 +414,7 @@ const CreateRide = () => {
       const res = await putData(
         "users/order-wallet-payment",
         paymetbody,
-        header1
+        header1,
       );
 
       const responseBody = {
@@ -458,7 +452,7 @@ const CreateRide = () => {
       setWalletLoading(true);
       const apiPrice = productDetail?.stop?.length
         ? changePrice(
-            (RideType?.price || 0) + (productDetail?.stop?.length * 5 || 0)
+            (RideType?.price || 0) + (productDetail?.stop?.length * 5 || 0),
           )
         : changePrice(RideType?.price || 0);
 
@@ -591,7 +585,7 @@ const CreateRide = () => {
 
   useEffect(() => {
     const calculatedPrices = ProductData.map((item) =>
-      changePrice(item.price, productDetail?.distance)
+      changePrice(item.price, productDetail?.distance),
     );
     setPrices(calculatedPrices);
   }, [ProductData, productDetail?.distance]);
@@ -665,7 +659,10 @@ const CreateRide = () => {
                   </p>
 
                   {productDetail?.stop.length > 0 ? (
-                    <h3 className="font-family-medium" style={{ color: "#8A8A8A" }}>
+                    <h3
+                      className="font-family-medium"
+                      style={{ color: "#8A8A8A" }}
+                    >
                       {`XCD ${
                         changePrice(RideType?.price) +
                         productDetail?.stop.length * 5
@@ -676,7 +673,10 @@ const CreateRide = () => {
                       )?.toFixed(2)}`}
                     </h3>
                   ) : (
-                    <h3 className="font-family-medium" style={{ color: "#8A8A8A" }}>
+                    <h3
+                      className="font-family-medium"
+                      style={{ color: "#8A8A8A" }}
+                    >
                       {`XCD ${changePrice(RideType?.price)}`}
                       {`$ ${(changePrice(RideType?.price) / 2.7).toFixed(2)}`}
                     </h3>
@@ -763,13 +763,18 @@ const CreateRide = () => {
 
             {productDetail?.rideType == "driver" && (
               <>
-                <Checkbox className="mt-2 mb-2 font-family-medium" onChange={onChangeSchedule}>
+                <Checkbox
+                  className="mt-2 mb-2 font-family-medium"
+                  onChange={onChangeSchedule}
+                >
                   Do you have Additional Passenger
                 </Checkbox>
 
                 {Passanger && (
                   <div className="mt-2 mb-2">
-                    <Label className="font-family-medium">How Many Additional Passengers </Label>
+                    <Label className="font-family-medium">
+                      How Many Additional Passengers{" "}
+                    </Label>
                     <Input
                       value={PassangerCount}
                       onChange={handleChange}
@@ -904,12 +909,18 @@ const CreateRide = () => {
               className="bg-white p-4 mb-4 rounded-lg shadow-md cursor-pointer"
             >
               <div className="flex justify-between items-center mb-1.5">
-                <div className="text-gray-500 text-sm mr-2 font-family-regular">Email</div>
+                <div className="text-gray-500 text-sm mr-2 font-family-regular">
+                  Email
+                </div>
                 <div className="font-family-bold text-lg">{`${item?.email}`}</div>
               </div>
               <div className="flex justify-between items-center">
-                <div className="text-gray-500 text-sm mr-2 font-family-regular">Number</div>
-                <div className="font-family-bold text-lg">{item?.cardnumber}</div>
+                <div className="text-gray-500 text-sm mr-2 font-family-regular">
+                  Number
+                </div>
+                <div className="font-family-bold text-lg">
+                  {item?.cardnumber}
+                </div>
               </div>
             </div>
           ))}
@@ -1014,7 +1025,9 @@ const CreateRide = () => {
             >
               {loading ? (
                 <Spinner animation="border" role="status">
-                  <span className="visually-hidden font-family-regular">Loading...</span>
+                  <span className="visually-hidden font-family-regular">
+                    Loading...
+                  </span>
                 </Spinner>
               ) : (
                 " Add Payment Method"
@@ -1047,7 +1060,9 @@ const CreateRide = () => {
                 </svg>
               </div>
             </div>
-            <h2 className="text-xl font-Bold mb-2 font-family-bold">Payment Success</h2>
+            <h2 className="text-xl font-Bold mb-2 font-family-bold">
+              Payment Success
+            </h2>
             <p className="font-family-medium text-gray-500 text-center mb-4">
               Your money has been successfully
             </p>

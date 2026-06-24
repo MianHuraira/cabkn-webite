@@ -1,13 +1,7 @@
 import React from "react";
 import { Card } from "react-bootstrap";
 import Slider from "react-slick";
-import { FaLocationDot } from "react-icons/fa6";
-import { MdDateRange } from "react-icons/md";
-import { IoMdTime } from "react-icons/io";
-import { FiArrowRight } from "react-icons/fi";
-import moment from "moment";
-import { Rate } from "antd";
-import { FaStar } from "react-icons/fa";
+import Image from "next/image";
 
 function ThingstodoCard({ testimonial, onClick, onClick2, btnTitle, isTour }) {
   const settings = {
@@ -34,109 +28,111 @@ function ThingstodoCard({ testimonial, onClick, onClick2, btnTitle, isTour }) {
     ],
   };
 
+  // Star Icon SVG (green)
+  const StarIcon = () => (
+    <svg width="14" height="14" viewBox="0 0 24 24" fill="none" className="flex-shrink-0">
+      <path d="M12 2L15.09 8.26L22 9.27L17 14.14L18.18 21.02L12 17.77L5.82 21.02L7 14.14L2 9.27L8.91 8.26L12 2Z" fill="#22c55e" />
+    </svg>
+  );
+
+  // Location Icon SVG
+  const LocationIcon = () => (
+    <svg width="16" height="16" viewBox="0 0 24 24" fill="none" className="flex-shrink-0">
+      <path d="M12 2C8.13 2 5 5.13 5 9C5 14.25 12 22 12 22S19 14.25 19 9C19 5.13 15.87 2 12 2ZM12 11.5C10.62 11.5 9.5 10.38 9.5 9S10.62 6.5 12 6.5 14.5 7.62 14.5 9 13.38 11.5 12 11.5Z" fill="#334155" />
+    </svg>
+  );
+
+  // Checkmark Icon SVG
+  const CheckIcon = () => (
+    <svg width="16" height="16" viewBox="0 0 24 24" fill="none" className="flex-shrink-0">
+      <path d="M12 2C6.48 2 2 6.48 2 12s4.48 10 10 10 10-4.48 10-10S17.52 2 12 2zm-2 15l-5-5 1.41-1.41L10 14.17l7.59-7.59L19 8l-9 9z" fill="#334155" />
+    </svg>
+  );
+
+  // Cog Icon SVG
+  const CogIcon = () => (
+    <svg width="16" height="16" viewBox="0 0 24 24" fill="none" className="flex-shrink-0">
+      <path d="M19.14 12.94c.04-.31.06-.63.06-.94 0-.31-.02-.63-.06-.94l2.03-1.58c.18-.14.23-.41.12-.61l-1.92-3.32c-.12-.22-.37-.29-.59-.22l-2.39.96c-.5-.38-1.03-.7-1.62-.94l-.36-2.54c-.04-.24-.24-.41-.48-.41h-3.84c-.24 0-.43.17-.47.41l-.36 2.54c-.59.24-1.13.57-1.62.94l-2.39-.96c-.22-.08-.47 0-.59.22L2.74 8.87c-.12.21-.08.47.12.61l2.03 1.58c-.04.31-.06.63-.06.94s.02.63.06.94l-2.03 1.58c-.18.14-.23.41-.12.61l1.92 3.32c.12.22.37.29.59.22l2.39-.96c.5.38 1.03.7 1.62.94l.36 2.54c.05.24.24.41.48.41h3.84c.24 0 .44-.17.47-.41l.36-2.54c.59-.24 1.13-.56 1.62-.94l2.39.96c.22.08.47 0 .59-.22l1.92-3.32c.12-.22.07-.47-.12-.61l-2.01-1.58zM12 15.6c-1.98 0-3.6-1.62-3.6-3.6s1.62-3.6 3.6-3.6 3.6 1.62 3.6 3.6-1.62 3.6-3.6 3.6z" fill="#334155" />
+    </svg>
+  );
+
   return (
-    <Card
-      className="testimonial-card2 mt-2 cursor-pointer w-full group overflow-hidden border border-slate-100 hover:border-brand-200 shadow-[0_4px_20px_rgba(0,0,0,0.05)] hover:shadow-[0_12px_40px_rgba(0,74,112,0.12)] transition-all duration-400 hover:-translate-y-2 rounded-2xl bg-white flex flex-col font-family-regular"
-      style={{ height: "100%", borderRadius: "20px" }}
-    >
-      <Card.Body style={{ padding: 0, display: "flex", flexDirection: "column", height: "100%" }} onClick={onClick2}>
-        <div className="position-relative overflow-hidden rounded-t-2xl flex-shrink-0">
+    <Card className="mt-2 cursor-pointer w-full group overflow-hidden border border-slate-200 hover:border-brand-200 transition-all duration-400 hover:-translate-y-2 bg-white flex flex-col rounded-2xl shadow-[0_4px_20px_rgba(0,0,0,0.05)]">
+      <Card.Body className="p-0 flex flex-col h-full" onClick={onClick2}>
+        {/* Image Section */}
+        <div className="relative overflow-hidden flex-shrink-0 rounded-t-2xl">
           <Slider {...settings}>
             {testimonial?.images?.map((item, index) => (
-              <div key={index} style={{ textAlign: "center" }} className="overflow-hidden">
+              <div key={index} className="text-center overflow-hidden">
                 <img
                   src={item}
                   alt={`${testimonial.title}-${index}`}
-                  className="w-full h-[180px] object-cover transition-transform duration-700 group-hover:scale-110"
+                  className="w-full h-44 object-cover transition-transform duration-700 group-hover:scale-110"
                 />
               </div>
             ))}
           </Slider>
-          <div className="category font-family-semibold text-xs px-3 py-1.5 bg-white/90 backdrop-blur-sm text-brand-700 rounded-full shadow-sm absolute top-3 left-3 w-fit">
-            {testimonial?.category?.name}
-          </div>
-        </div>
-        <div style={{ padding: "16px 18px", display: "flex", flexDirection: "column", flexGrow: 1 }}>
-          <div className="flex items-start justify-between gap-3 mt-0">
-            <p className="font-family-semibold text-base text-slate-800 m-0 flex-1 leading-tight line-clamp-2" style={{ wordBreak: "break-word" }}>
-              {testimonial.title}
-            </p>
-            <div className="flex items-center gap-1.5 flex-shrink-0 cursor-pointer bg-amber-50 px-2 py-1 rounded-full">
-              {testimonial?.avgRating > 0 && (
-                <FaStar className="starDivHome text-amber-500" />
-              )}
-              <span className="font-family-semibold text-xs text-slate-700">
-                {testimonial?.avgRating > 0 ? Number(testimonial?.avgRating).toFixed(2) : 0} ({testimonial?.totalReviews || 0})
+          
+          {/* Rating Badge (Top Right, ON TOP OF IMAGE, like reference!) */}
+          {testimonial?.avgRating > 0 && (
+            <div className="absolute top-3 right-3 bg-white px-3 py-1.5 rounded-xl shadow-lg flex items-center gap-1.5 z-20">
+              <StarIcon />
+              <span className="font-semibold text-sm text-slate-900">
+                {Number(testimonial?.avgRating).toFixed(1)}
+              </span>
+              <span className="font-normal text-sm text-slate-500">
+                ({testimonial?.totalReviews || 0})
               </span>
             </div>
-          </div>
-          <div className="mt-2.5 flex items-center gap-2 text-slate-600">
-            <FaLocationDot className="text-brand-600 flex-shrink-0" />
-            <p
-              className="font-family-medium text-sm m-0 line-clamp-1"
-              style={{ fontSize: 14 }}
-            >
+          )}
+        </div>
+        
+        {/* Content Section */}
+        <div className="p-4 flex flex-col flex-grow gap-3">
+          {/* Title */}
+          <h3 className="text-lg font-bold text-slate-900 m-0 leading-tight line-clamp-2 break-words">
+            {testimonial.title}
+          </h3>
+
+          {/* Address/Location */}
+          <div className="flex items-center gap-1.5">
+            <LocationIcon />
+            <p className="font-normal text-sm m-0 text-slate-500 line-clamp-1 whitespace-nowrap overflow-hidden text-ellipsis">
               {testimonial.address}
             </p>
           </div>
-          {testimonial?.category?.name == "Upcoming Events" ? (
-            <>
-              {testimonial.start_date && (
-                <>
-                  <div className="mt-2 flex items-center gap-2 text-slate-600">
-                    <MdDateRange className="text-brand-600 flex-shrink-0" />
-                    <p
-                      className="font-family-medium text-sm m-0"
-                      style={{ fontSize: 14 }}
-                    >
-                      {moment(testimonial.start_date).format(
-                        "dddd, MMMM Do, YYYY"
-                      )}
-                    </p>
-                  </div>
 
-                  <div className="mt-1.5 flex items-center gap-2 text-slate-600">
-                    <IoMdTime className="text-brand-600 flex-shrink-0" />
-                    <p
-                      className="font-family-medium text-sm m-0"
-                      style={{ fontSize: 14 }}
-                    >
-                      {moment(testimonial.start_time, "HH:mm").format(
-                        "hh:mm A"
-                      )}
-                    </p>
-                  </div>
-                </>
-              )}
-            </>
-          ) : null}
-
-          <p
-            className="CardDes font-family-regular mt-3 text-slate-500 flex-grow"
-            style={{
-              fontSize: 13,
-              lineHeight: 1.5,
-              display: "-webkit-box",
-              WebkitLineClamp: 2,
-              WebkitBoxOrient: "vertical",
-              overflow: "hidden",
-              textOverflow: "ellipsis",
-              minHeight: "39px",
-            }}
-          >
-            {testimonial.about}
-          </p>
-
-          <div className="mt-auto pt-3">
-            <div
-              onClick={onClick}
-              className="inline-flex items-center gap-2 text-brand-700 font-family-semibold text-sm cursor-pointer group w-fit px-4 py-2.5 bg-brand-50 hover:bg-brand-100 rounded-full transition-all duration-300"
-            >
-              <span className="font-family-semibold">
-                {btnTitle || "Book a Ride"}
+          {/* Features Row (2x2 grid like reference) */}
+          <div className="grid grid-cols-2 gap-2.5 py-2.5 border-y border-slate-200">
+            <div className="flex items-center gap-2">
+              <CheckIcon />
+              <span className="text-sm font-normal text-slate-700">
+                From ${testimonial.location_price || 0}
               </span>
-              <FiArrowRight className="text-brand-700 text-base transition-all duration-300 group-hover:translate-x-1" />
             </div>
+            <div className="flex items-center gap-2">
+              <CogIcon />
+              <span className="text-sm font-normal text-slate-700">
+                {testimonial?.category?.name}
+              </span>
+            </div>
+          </div>
+
+          {/* Footer with Price & Button */}
+          <div className="flex items-center justify-between mt-auto pt-1">
+            <div className="flex items-baseline gap-1">
+              <span className="text-base font-normal text-slate-500">From</span>
+              <span className="text-2xl font-bold text-slate-900">
+                ${testimonial.location_price || 0}
+              </span>
+            </div>
+            
+            <button
+              onClick={onClick}
+              className="inline-flex items-center justify-center px-6 py-2.5 bg-slate-100 text-slate-900 text-sm font-semibold rounded-xl hover:bg-slate-200 transition-colors duration-300"
+            >
+              {btnTitle || "Book Now"}
+            </button>
           </div>
         </div>
       </Card.Body>

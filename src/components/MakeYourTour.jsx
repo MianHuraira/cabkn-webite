@@ -171,7 +171,6 @@ function MakeYourTour() {
       setCategory(updatedCategories);
       setCatLoading(false);
     } catch (error) {
-      console.log(error);
       setCatLoading(false);
     }
   };
@@ -198,7 +197,6 @@ function MakeYourTour() {
       setloading(false);
     } catch (error) {
       setloading(false);
-      console.log(error);
     }
   };
   useEffect(() => {
@@ -222,7 +220,6 @@ function MakeYourTour() {
       setMoreLoading(false);
     } catch (error) {
       setMoreLoading(false);
-      console.log(error);
     }
   };
   const getLocation = async () => {

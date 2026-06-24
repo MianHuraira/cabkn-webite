@@ -7,10 +7,7 @@ import "mapbox-gl/dist/mapbox-gl.css";
 import { Controller, useForm } from "react-hook-form";
 import { yupResolver } from "@hookform/resolvers/yup";
 import * as yup from "yup";
-import {
-  ListGroup,
-  ListGroupItem,
-} from "reactstrap";
+import { ListGroup, ListGroupItem } from "reactstrap";
 import Select from "react-select";
 import { Spinner } from "react-bootstrap";
 import { message, TimePicker } from "antd";
@@ -73,7 +70,9 @@ const RidePage = () => {
   const [isMobile, setIsMobile] = useState(false);
 
   const [mounted, setMounted] = useState(false);
-  useEffect(() => { setMounted(true); }, []);
+  useEffect(() => {
+    setMounted(true);
+  }, []);
 
   useEffect(() => {
     const handleResize = () => setIsMobile(window.innerWidth < 768);
@@ -107,7 +106,7 @@ const RidePage = () => {
                 value > 0 &&
                 value <= travelers
               );
-            }
+            },
           ),
       otherwise: (schema) => schema.notRequired(), // Make it optional if travelers is undefined, null, or not a valid number
     }),
@@ -141,7 +140,7 @@ const RidePage = () => {
 
           try {
             const response = await fetch(
-              `https://maps.googleapis.com/maps/api/geocode/json?latlng=${latitude},${longitude}&key=AIzaSyCkw_MZd-894MZUR4g1_p2XohCWTSTR8S4`
+              `https://maps.googleapis.com/maps/api/geocode/json?latlng=${latitude},${longitude}&key=AIzaSyCkw_MZd-894MZUR4g1_p2XohCWTSTR8S4`,
             );
             const data = await response.json();
             if (data.status === "OK") {
@@ -171,15 +170,13 @@ const RidePage = () => {
           enableHighAccuracy: true,
           timeout: 10000,
           maximumAge: 0,
-        }
+        },
       );
     } else {
       setError("Geolocation is not supported by your browser.");
     }
   };
 
-
-  
   const handlePermissionGuide = () => {
     setShowPermissionDialog(false);
     // Show instructions based on browser
@@ -205,7 +202,7 @@ const RidePage = () => {
 
       if (row) {
         setFavUserId(row?.favUserId);
-        
+
         setRowData(row);
         if (row?.time) {
           const time = JSON?.parse(row?.time);
@@ -239,7 +236,6 @@ const RidePage = () => {
     const start = Currentlocation?.longitude
       ? [Currentlocation?.longitude, Currentlocation?.longitude]
       : [locationDetails?.lng, locationDetails.lat];
-    console.log(start)
 
     const end = data?.lat
       ? [data?.lng, data?.lat]
@@ -345,16 +341,14 @@ const RidePage = () => {
     };
   };
 
-
   useEffect(() => {
     const hasLocationDetails = locationDetails?.lng && locationDetails?.lat;
     const hasCurrentLocation = Currentlocation?.lng && Currentlocation?.lat;
-  
+
     if (hasLocationDetails || hasCurrentLocation || SearchQueryEnd) {
       locationSet();
     }
   }, [locationDetails, Currentlocation, SearchQueryEnd]);
-
 
   const HandleCategory = () => {
     const apiGet = `https://api.cabkn.com/api/users/liabilty/1`;
@@ -401,7 +395,7 @@ const RidePage = () => {
         async (predictions, status) => {
           if (status === google.maps.places.PlacesServiceStatus.OK) {
             const placesService = new google.maps.places.PlacesService(
-              document.createElement("div")
+              document.createElement("div"),
             );
             const detailedPredictions = await Promise.all(
               predictions.map(
@@ -421,10 +415,10 @@ const RidePage = () => {
                         } else {
                           resolve(null);
                         }
-                      }
+                      },
                     );
-                  })
-              )
+                  }),
+              ),
             );
             setPredictions(detailedPredictions.filter((item) => item));
             setPridicLoading(false);
@@ -435,7 +429,7 @@ const RidePage = () => {
             setPridicLoading(false);
           }
           setPridicLoading(false);
-        }
+        },
       );
     } catch (error) {
       console.error("Error importing Places API library:", error);
@@ -480,7 +474,7 @@ const RidePage = () => {
         async (predictions, status) => {
           if (status === google.maps.places.PlacesServiceStatus.OK) {
             const placesService = new google.maps.places.PlacesService(
-              document.createElement("div")
+              document.createElement("div"),
             );
             const detailedPredictions = await Promise.all(
               predictions.map(
@@ -500,10 +494,10 @@ const RidePage = () => {
                         } else {
                           resolve(null);
                         }
-                      }
+                      },
                     );
-                  })
-              )
+                  }),
+              ),
             );
             setStopPredictions(detailedPredictions.filter((item) => item));
             setPridicLoadingStop(false);
@@ -514,7 +508,7 @@ const RidePage = () => {
             setPridicLoadingStop(false);
           }
           setPridicLoadingStop(false);
-        }
+        },
       );
     } catch (error) {
       console.error("Error importing Places API library:", error);
@@ -552,7 +546,7 @@ const RidePage = () => {
 
   const HadleStopPridication = (prediction) => {
     const isDuplicate = LocationDetails3.some(
-      (loc) => loc.address === prediction?.description
+      (loc) => loc.address === prediction?.description,
     );
 
     if (!isDuplicate) {
@@ -578,7 +572,7 @@ const RidePage = () => {
 
         // Avoid adding duplicates
         const isDuplicate = locationsArray.some(
-          (loc) => loc.address === selectedStop?.description
+          (loc) => loc.address === selectedStop?.description,
         );
 
         if (!isDuplicate) {
@@ -623,7 +617,7 @@ const RidePage = () => {
         async (predictions, status) => {
           if (status === google.maps.places.PlacesServiceStatus.OK) {
             const placesService = new google.maps.places.PlacesService(
-              document.createElement("div")
+              document.createElement("div"),
             );
             const detailedPredictions = await Promise.all(
               predictions.map(
@@ -643,10 +637,10 @@ const RidePage = () => {
                         } else {
                           resolve(null);
                         }
-                      }
+                      },
                     );
-                  })
-              )
+                  }),
+              ),
             );
             setEndPredictions(detailedPredictions.filter((item) => item));
             setPridicLoadingEnd(false);
@@ -657,7 +651,7 @@ const RidePage = () => {
             setPridicLoadingEnd(false);
           }
           setPridicLoadingEnd(false);
-        }
+        },
       );
     } catch (error) {
       console.error("Error importing Places API library:", error);
@@ -668,7 +662,7 @@ const RidePage = () => {
 
   const RemoveStop = (indexToRemove) => {
     setLocationDetails3((prevLocations) =>
-      prevLocations.filter((_, index) => index !== indexToRemove)
+      prevLocations.filter((_, index) => index !== indexToRemove),
     );
   };
 
@@ -732,44 +726,149 @@ const RidePage = () => {
   };
 
   return (
-    <div className={mounted ? "animate-fade-in" : "opacity-0"} style={{ minHeight: "100vh", background: "#f8fafc" }}>
+    <div
+      className={mounted ? "animate-fade-in" : "opacity-0"}
+      style={{ minHeight: "100vh", background: "#f8fafc" }}
+    >
       {/* Header */}
       <div
         className="bg-gradient-to-br from-brand-800 to-brand-950"
         style={{ padding: "28px 0 44px", position: "relative" }}
       >
         {/* Decorative circles */}
-        <div style={{ position: "absolute", top: -60, right: -60, width: 200, height: 200, borderRadius: "50%", background: "rgba(255,255,255,0.03)" }} />
-        <div style={{ position: "absolute", bottom: -40, left: -40, width: 160, height: 160, borderRadius: "50%", background: "rgba(255,255,255,0.03)" }} />
+        <div
+          style={{
+            position: "absolute",
+            top: -60,
+            right: -60,
+            width: 200,
+            height: 200,
+            borderRadius: "50%",
+            background: "rgba(255,255,255,0.03)",
+          }}
+        />
+        <div
+          style={{
+            position: "absolute",
+            bottom: -40,
+            left: -40,
+            width: 160,
+            height: 160,
+            borderRadius: "50%",
+            background: "rgba(255,255,255,0.03)",
+          }}
+        />
 
-        <div style={{ maxWidth: 1200, margin: "0 auto", padding: "0 24px", position: "relative" }}>
+        <div
+          style={{
+            maxWidth: 1200,
+            margin: "0 auto",
+            padding: "0 24px",
+            position: "relative",
+          }}
+        >
           {/* Breadcrumb */}
-          <div className="font-family-medium" style={{ display: "flex", alignItems: "center", gap: 8, color: "rgba(255,255,255,0.5)", fontSize: 13, marginBottom: 16 }}>
-            <a href="/" style={{ color: "rgba(255,255,255,0.5)", textDecoration: "none", transition: "color 0.2s" }}
-              onMouseEnter={(e) => e.currentTarget.style.color = "#fff"}
-              onMouseLeave={(e) => e.currentTarget.style.color = "rgba(255,255,255,0.5)"}>
+          <div
+            className="font-family-medium"
+            style={{
+              display: "flex",
+              alignItems: "center",
+              gap: 8,
+              color: "rgba(255,255,255,0.5)",
+              fontSize: 13,
+              marginBottom: 16,
+            }}
+          >
+            <a
+              href="/"
+              style={{
+                color: "rgba(255,255,255,0.5)",
+                textDecoration: "none",
+                transition: "color 0.2s",
+              }}
+              onMouseEnter={(e) => (e.currentTarget.style.color = "#fff")}
+              onMouseLeave={(e) =>
+                (e.currentTarget.style.color = "rgba(255,255,255,0.5)")
+              }
+            >
               Home
             </a>
             <span style={{ color: "rgba(255,255,255,0.3)" }}>/</span>
-            <span className="font-family-medium" style={{ color: "rgba(255,255,255,0.8)" }}>Book a Ride</span>
+            <span
+              className="font-family-medium"
+              style={{ color: "rgba(255,255,255,0.8)" }}
+            >
+              Book a Ride
+            </span>
           </div>
 
-          <div style={{ display: "flex", alignItems: "center", justifyContent: "space-between", flexWrap: "wrap", gap: 12 }}>
-            <div style={{ display: "flex", alignItems: "center", gap: "clamp(10px, 2vw, 16px)" }}>
-              <div style={{
-                width: "clamp(40px, 6vw, 52px)", height: "clamp(40px, 6vw, 52px)",
-                borderRadius: "clamp(12px, 2vw, 16px)", background: "rgba(255,255,255,0.12)",
-                backdropFilter: "blur(8px)", display: "flex", alignItems: "center", justifyContent: "center", flexShrink: 0,
-              }}>
-                <svg width="clamp(20px, 3vw, 26px)" height="clamp(20px, 3vw, 26px)" viewBox="0 0 24 24" fill="none" stroke="#fff" strokeWidth={1.5}>
-                  <path strokeLinecap="round" strokeLinejoin="round" d="M8.25 18.75a1.5 1.5 0 01-3 0m3 0a1.5 1.5 0 00-3 0m3 0h6m-9 0H3.375a1.125 1.125 0 01-1.125-1.125V14.25m17.25 4.5a1.5 1.5 0 01-3 0m3 0a1.5 1.5 0 00-3 0m3 0h1.125c.621 0 1.129-.504 1.09-1.124a17.902 17.902 0 00-3.213-9.193 2.056 2.056 0 00-1.58-.86H14.25M16.5 18.75h-2.25m0-11.177v-.958c0-.568-.422-1.048-.987-1.106a48.554 48.554 0 00-10.026 0 1.106 1.106 0 00-.987 1.106v7.635m12-6.677v6.677m0 4.5v-4.5m0 0h-12" />
+          <div
+            style={{
+              display: "flex",
+              alignItems: "center",
+              justifyContent: "space-between",
+              flexWrap: "wrap",
+              gap: 12,
+            }}
+          >
+            <div
+              style={{
+                display: "flex",
+                alignItems: "center",
+                gap: "clamp(10px, 2vw, 16px)",
+              }}
+            >
+              <div
+                style={{
+                  width: "clamp(40px, 6vw, 52px)",
+                  height: "clamp(40px, 6vw, 52px)",
+                  borderRadius: "clamp(12px, 2vw, 16px)",
+                  background: "rgba(255,255,255,0.12)",
+                  backdropFilter: "blur(8px)",
+                  display: "flex",
+                  alignItems: "center",
+                  justifyContent: "center",
+                  flexShrink: 0,
+                }}
+              >
+                <svg
+                  width="clamp(20px, 3vw, 26px)"
+                  height="clamp(20px, 3vw, 26px)"
+                  viewBox="0 0 24 24"
+                  fill="none"
+                  stroke="#fff"
+                  strokeWidth={1.5}
+                >
+                  <path
+                    strokeLinecap="round"
+                    strokeLinejoin="round"
+                    d="M8.25 18.75a1.5 1.5 0 01-3 0m3 0a1.5 1.5 0 00-3 0m3 0h6m-9 0H3.375a1.125 1.125 0 01-1.125-1.125V14.25m17.25 4.5a1.5 1.5 0 01-3 0m3 0a1.5 1.5 0 00-3 0m3 0h1.125c.621 0 1.129-.504 1.09-1.124a17.902 17.902 0 00-3.213-9.193 2.056 2.056 0 00-1.58-.86H14.25M16.5 18.75h-2.25m0-11.177v-.958c0-.568-.422-1.048-.987-1.106a48.554 48.554 0 00-10.026 0 1.106 1.106 0 00-.987 1.106v7.635m12-6.677v6.677m0 4.5v-4.5m0 0h-12"
+                  />
                 </svg>
               </div>
               <div>
-                <h1 className="font-family-bold" style={{ color: "#fff", fontSize: "clamp(20px, 5vw, 30px)", margin: 0, letterSpacing: "-0.5px", lineHeight: 1.2, wordBreak: "break-word" }}>
+                <h1
+                  className="font-family-bold"
+                  style={{
+                    color: "#fff",
+                    fontSize: "clamp(20px, 5vw, 30px)",
+                    margin: 0,
+                    letterSpacing: "-0.5px",
+                    lineHeight: 1.2,
+                    wordBreak: "break-word",
+                  }}
+                >
                   Book a Ride
                 </h1>
-                <p className="font-family-regular" style={{ color: "rgba(255,255,255,0.55)", fontSize: "clamp(12px, 2vw, 14px)", margin: "2px 0 0", wordBreak: "break-word" }}>
+                <p
+                  className="font-family-regular"
+                  style={{
+                    color: "rgba(255,255,255,0.55)",
+                    fontSize: "clamp(12px, 2vw, 14px)",
+                    margin: "2px 0 0",
+                    wordBreak: "break-word",
+                  }}
+                >
                   Set your pickup and drop-off locations
                 </p>
               </div>
@@ -779,20 +878,46 @@ const RidePage = () => {
       </div>
 
       {/* Content */}
-      <div style={{ maxWidth: 1200, margin: "-24px auto 0", padding: "0 16px 48px" }}>
-        <div style={{ display: "grid", gridTemplateColumns: isMobile ? "1fr" : "4fr 8fr", gap: 24, alignItems: "start" }}>
+      <div
+        style={{
+          maxWidth: 1200,
+          margin: "-24px auto 0",
+          padding: "0 16px 48px",
+        }}
+      >
+        <div
+          style={{
+            display: "grid",
+            gridTemplateColumns: isMobile ? "1fr" : "4fr 8fr",
+            gap: 24,
+            alignItems: "start",
+          }}
+        >
           {/* Form Card */}
           <div
             className={mounted ? "animate-fade-in-up" : "opacity-0"}
             style={{
-              background: "#fff", borderRadius: 14, border: "1px solid #f0f0f0", padding: "clamp(20px, 3vw, 32px)",
+              background: "#fff",
+              borderRadius: 14,
+              border: "1px solid #f0f0f0",
+              padding: "clamp(20px, 3vw, 32px)",
               animationDelay: "150ms",
             }}
           >
             <form onSubmit={handleSubmit(onSubmit)}>
               {/* Category */}
               <div>
-                <p className="font-family-medium" style={{ fontSize: 13, color: "#374151", display: "block", marginBottom: 6 }}>Category</p>
+                <p
+                  className="font-family-medium"
+                  style={{
+                    fontSize: 13,
+                    color: "#374151",
+                    display: "block",
+                    marginBottom: 6,
+                  }}
+                >
+                  Category
+                </p>
                 <Controller
                   name="category"
                   control={control}
@@ -809,26 +934,48 @@ const RidePage = () => {
                         styles={selectStyles(errors.category)}
                         onChange={(selectedOption) => {
                           setTypeRide(selectedOption?.value);
-                          onChange(selectedOption ? selectedOption.value : null);
+                          onChange(
+                            selectedOption ? selectedOption.value : null,
+                          );
                         }}
                         value={value?.label}
                         isClearable
                       />
-                        {errors.category && (
-                          <span className="font-family-regular" style={{ fontSize: 12, marginTop: 4, color: "#ef4444", display: "block" }}>
-                            {errors.category.message}
-                          </span>
-                        )}
+                      {errors.category && (
+                        <span
+                          className="font-family-regular"
+                          style={{
+                            fontSize: 12,
+                            marginTop: 4,
+                            color: "#ef4444",
+                            display: "block",
+                          }}
+                        >
+                          {errors.category.message}
+                        </span>
+                      )}
                     </>
                   )}
                 />
               </div>
 
-              <div style={{ height: 1, background: "#f3f4f6", margin: "20px 0" }} />
+              <div
+                style={{ height: 1, background: "#f3f4f6", margin: "20px 0" }}
+              />
 
               {/* Start Location */}
               <div>
-                <p className="font-family-medium" style={{ fontSize: 13, color: "#374151", display: "block", marginBottom: 6 }}>Start Location</p>
+                <p
+                  className="font-family-medium"
+                  style={{
+                    fontSize: 13,
+                    color: "#374151",
+                    display: "block",
+                    marginBottom: 6,
+                  }}
+                >
+                  Start Location
+                </p>
                 <div style={{ display: "flex", alignItems: "center", gap: 8 }}>
                   <Controller
                     name="name"
@@ -843,11 +990,30 @@ const RidePage = () => {
                           style={inputStyle(errors.name)}
                         />
                         {errors.name && (
-                          <span className="font-family-regular" style={{ fontSize: 12, marginTop: 4, color: "#ef4444", display: "block" }}>
+                          <span
+                            className="font-family-regular"
+                            style={{
+                              fontSize: 12,
+                              marginTop: 4,
+                              color: "#ef4444",
+                              display: "block",
+                            }}
+                          >
                             {errors.name.message}
                           </span>
                         )}
-                        {PridicLoading && <div className="font-family-regular" style={{ fontSize: 13, color: "#9ca3af", marginTop: 4 }}>Loading...</div>}
+                        {PridicLoading && (
+                          <div
+                            className="font-family-regular"
+                            style={{
+                              fontSize: 13,
+                              color: "#9ca3af",
+                              marginTop: 4,
+                            }}
+                          >
+                            Loading...
+                          </div>
+                        )}
                         {predictions.length > 0 && (
                           <ListGroup
                             style={{
@@ -863,32 +1029,65 @@ const RidePage = () => {
                             {predictions.map((prediction) => (
                               <ListGroupItem
                                 key={prediction.place_id}
-                                onClick={() => handlePredictionPress(prediction)}
+                                onClick={() =>
+                                  handlePredictionPress(prediction)
+                                }
                                 className="font-family-regular"
-                                style={{ cursor: "pointer", fontSize: 13, padding: "8px 12px" }}
+                                style={{
+                                  cursor: "pointer",
+                                  fontSize: 13,
+                                  padding: "8px 12px",
+                                }}
                               >
                                 {prediction.description}
                               </ListGroupItem>
                             ))}
                           </ListGroup>
                         )}
-                        {noData && <div className="font-family-regular" style={{ fontSize: 13, color: "#9ca3af", marginTop: 4 }}>No results found</div>}
+                        {noData && (
+                          <div
+                            className="font-family-regular"
+                            style={{
+                              fontSize: 13,
+                              color: "#9ca3af",
+                              marginTop: 4,
+                            }}
+                          >
+                            No results found
+                          </div>
+                        )}
                       </div>
                     )}
                   />
                   <BiCurrentLocation
                     size={28}
                     onClick={getLocation}
-                    style={{ cursor: "pointer", color: "#004a70", flexShrink: 0 }}
+                    style={{
+                      cursor: "pointer",
+                      color: "#004a70",
+                      flexShrink: 0,
+                    }}
                   />
                 </div>
               </div>
 
-              <div style={{ height: 1, background: "#f3f4f6", margin: "20px 0" }} />
+              <div
+                style={{ height: 1, background: "#f3f4f6", margin: "20px 0" }}
+              />
 
               {/* Add Stop */}
               <div>
-                <p className="font-family-medium" style={{ fontSize: 13, color: "#374151", display: "block", marginBottom: 6 }}>Add Stop</p>
+                <p
+                  className="font-family-medium"
+                  style={{
+                    fontSize: 13,
+                    color: "#374151",
+                    display: "block",
+                    marginBottom: 6,
+                  }}
+                >
+                  Add Stop
+                </p>
                 <div style={{ display: "flex", alignItems: "center", gap: 8 }}>
                   <Controller
                     name="stop"
@@ -903,11 +1102,30 @@ const RidePage = () => {
                           style={inputStyle(errors.stop)}
                         />
                         {errors.stop && (
-                          <span className="font-family-regular" style={{ fontSize: 12, marginTop: 4, color: "#ef4444", display: "block" }}>
+                          <span
+                            className="font-family-regular"
+                            style={{
+                              fontSize: 12,
+                              marginTop: 4,
+                              color: "#ef4444",
+                              display: "block",
+                            }}
+                          >
                             {errors.stop.message}
                           </span>
                         )}
-                        {PridicLoadingStop && <div className="font-family-regular" style={{ fontSize: 13, color: "#9ca3af", marginTop: 4 }}>Loading...</div>}
+                        {PridicLoadingStop && (
+                          <div
+                            className="font-family-regular"
+                            style={{
+                              fontSize: 13,
+                              color: "#9ca3af",
+                              marginTop: 4,
+                            }}
+                          >
+                            Loading...
+                          </div>
+                        )}
                         {StopPredictions.length > 0 && (
                           <ListGroup
                             style={{
@@ -925,41 +1143,95 @@ const RidePage = () => {
                                 key={prediction.place_id}
                                 onClick={() => HadleStopPridication(prediction)}
                                 className="font-family-regular"
-                                style={{ cursor: "pointer", fontSize: 13, padding: "8px 12px" }}
+                                style={{
+                                  cursor: "pointer",
+                                  fontSize: 13,
+                                  padding: "8px 12px",
+                                }}
                               >
                                 {prediction.description}
                               </ListGroupItem>
                             ))}
                           </ListGroup>
                         )}
-                        {noData && <div className="font-family-regular" style={{ fontSize: 13, color: "#9ca3af", marginTop: 4 }}>No results found</div>}
+                        {noData && (
+                          <div
+                            className="font-family-regular"
+                            style={{
+                              fontSize: 13,
+                              color: "#9ca3af",
+                              marginTop: 4,
+                            }}
+                          >
+                            No results found
+                          </div>
+                        )}
                       </div>
                     )}
                   />
                   <IoMdAddCircleOutline
                     onClick={addlocation}
                     size={28}
-                    style={{ cursor: "pointer", color: "#004a70", flexShrink: 0 }}
+                    style={{
+                      cursor: "pointer",
+                      color: "#004a70",
+                      flexShrink: 0,
+                    }}
                   />
                 </div>
 
                 {LocationDetails3.map((item, index) => (
-                  <div key={index} style={{ display: "flex", alignItems: "center", gap: 8, marginTop: 8, cursor: "pointer" }}>
-                    <p className="font-family-medium" style={{ fontSize: 13, color: "#374151", margin: 0, flex: 1, overflow: "hidden", textOverflow: "ellipsis", whiteSpace: "nowrap" }}>
+                  <div
+                    key={index}
+                    style={{
+                      display: "flex",
+                      alignItems: "center",
+                      gap: 8,
+                      marginTop: 8,
+                      cursor: "pointer",
+                    }}
+                  >
+                    <p
+                      className="font-family-medium"
+                      style={{
+                        fontSize: 13,
+                        color: "#374151",
+                        margin: 0,
+                        flex: 1,
+                        overflow: "hidden",
+                        textOverflow: "ellipsis",
+                        whiteSpace: "nowrap",
+                      }}
+                    >
                       {item?.address}
                     </p>
-                    <div onClick={() => RemoveStop(index)} style={{ color: "#ef4444", flexShrink: 0 }}>
+                    <div
+                      onClick={() => RemoveStop(index)}
+                      style={{ color: "#ef4444", flexShrink: 0 }}
+                    >
                       <IoMdCloseCircle size={18} />
                     </div>
                   </div>
                 ))}
               </div>
 
-              <div style={{ height: 1, background: "#f3f4f6", margin: "20px 0" }} />
+              <div
+                style={{ height: 1, background: "#f3f4f6", margin: "20px 0" }}
+              />
 
               {/* End Location */}
               <div>
-                <p className="font-family-medium" style={{ fontSize: 13, color: "#374151", display: "block", marginBottom: 6 }}>End Location</p>
+                <p
+                  className="font-family-medium"
+                  style={{
+                    fontSize: 13,
+                    color: "#374151",
+                    display: "block",
+                    marginBottom: 6,
+                  }}
+                >
+                  End Location
+                </p>
                 <Controller
                   name="metaTitle"
                   control={control}
@@ -973,11 +1245,30 @@ const RidePage = () => {
                         style={inputStyle(errors.metaTitle)}
                       />
                       {errors.metaTitle && (
-                        <span className="font-family-regular" style={{ fontSize: 12, marginTop: 4, color: "#ef4444", display: "block" }}>
+                        <span
+                          className="font-family-regular"
+                          style={{
+                            fontSize: 12,
+                            marginTop: 4,
+                            color: "#ef4444",
+                            display: "block",
+                          }}
+                        >
                           {errors.metaTitle.message}
                         </span>
                       )}
-                      {PridicLoadingEnd && <div className="font-family-regular" style={{ fontSize: 13, color: "#9ca3af", marginTop: 4 }}>Loading...</div>}
+                      {PridicLoadingEnd && (
+                        <div
+                          className="font-family-regular"
+                          style={{
+                            fontSize: 13,
+                            color: "#9ca3af",
+                            marginTop: 4,
+                          }}
+                        >
+                          Loading...
+                        </div>
+                      )}
                       {EndPredictions.length > 0 && (
                         <ListGroup
                           style={{
@@ -991,31 +1282,71 @@ const RidePage = () => {
                           }}
                         >
                           {EndPredictions.map((prediction) => (
-                              <ListGroupItem
-                                key={prediction.place_id}
-                                onClick={() => HadleEndPridication(prediction)}
-                                className="font-family-regular"
-                                style={{ cursor: "pointer", fontSize: 13, padding: "8px 12px" }}
-                              >
-                                {prediction.description}
-                              </ListGroupItem>
+                            <ListGroupItem
+                              key={prediction.place_id}
+                              onClick={() => HadleEndPridication(prediction)}
+                              className="font-family-regular"
+                              style={{
+                                cursor: "pointer",
+                                fontSize: 13,
+                                padding: "8px 12px",
+                              }}
+                            >
+                              {prediction.description}
+                            </ListGroupItem>
                           ))}
                         </ListGroup>
                       )}
-                      {noData && <div className="font-family-regular" style={{ fontSize: 13, color: "#9ca3af", marginTop: 4 }}>No results found</div>}
+                      {noData && (
+                        <div
+                          className="font-family-regular"
+                          style={{
+                            fontSize: 13,
+                            color: "#9ca3af",
+                            marginTop: 4,
+                          }}
+                        >
+                          No results found
+                        </div>
+                      )}
                     </div>
                   )}
                 />
               </div>
 
-              <p className="font-family-regular" style={{ fontSize: 12, color: "#6b7280", margin: "8px 0 4px" }}>
-                Copy and paste End location if it doesn&rsquo;t fetch automatically
+              <p
+                className="font-family-regular"
+                style={{ fontSize: 12, color: "#6b7280", margin: "8px 0 4px" }}
+              >
+                Copy and paste End location if it doesn&rsquo;t fetch
+                automatically
               </p>
 
               {/* Schedule Checkbox */}
               {!RideTime && (
-                <label className="font-family-medium" style={{ display: "flex", alignItems: "center", gap: 8, margin: "12px 0", cursor: "pointer", fontSize: 14, color: "#374151" }}>
-                  <input type="checkbox" checked={Schuale} onChange={onChangeSchedule} style={{ width: 16, height: 16, accentColor: "#004a70", cursor: "pointer" }} />
+                <label
+                  className="font-family-medium"
+                  style={{
+                    display: "flex",
+                    alignItems: "center",
+                    gap: 8,
+                    margin: "12px 0",
+                    cursor: "pointer",
+                    fontSize: 14,
+                    color: "#374151",
+                  }}
+                >
+                  <input
+                    type="checkbox"
+                    checked={Schuale}
+                    onChange={onChangeSchedule}
+                    style={{
+                      width: 16,
+                      height: 16,
+                      accentColor: "#004a70",
+                      cursor: "pointer",
+                    }}
+                  />
                   Schedule
                 </label>
               )}
@@ -1023,15 +1354,39 @@ const RidePage = () => {
               {/* Travelers */}
               {RideTime && (
                 <div style={{ marginTop: 12 }}>
-                  <p className="font-family-medium" style={{ fontSize: 13, color: "#374151", display: "block", marginBottom: 6 }}>Travelers</p>
+                  <p
+                    className="font-family-medium"
+                    style={{
+                      fontSize: 13,
+                      color: "#374151",
+                      display: "block",
+                      marginBottom: 6,
+                    }}
+                  >
+                    Travelers
+                  </p>
                   <Controller
                     name="travlers"
                     control={control}
                     render={({ field }) => (
                       <div>
-                        <input type="number" required {...field} placeholder="Travelers" style={inputStyle(errors.travlers)} />
+                        <input
+                          type="number"
+                          required
+                          {...field}
+                          placeholder="Travelers"
+                          style={inputStyle(errors.travlers)}
+                        />
                         {errors.travlers && (
-                          <span className="font-family-regular" style={{ fontSize: 12, marginTop: 4, color: "#ef4444", display: "block" }}>
+                          <span
+                            className="font-family-regular"
+                            style={{
+                              fontSize: 12,
+                              marginTop: 4,
+                              color: "#ef4444",
+                              display: "block",
+                            }}
+                          >
                             {errors.travlers.message}
                           </span>
                         )}
@@ -1044,13 +1399,26 @@ const RidePage = () => {
               {/* Schedule Calendar & Time */}
               {Schuale && (
                 <div style={{ marginTop: 16 }}>
-                  <div style={{ border: "1px solid #e5e7eb", borderRadius: 12, padding: 12, marginBottom: 12 }}>
+                  <div
+                    style={{
+                      border: "1px solid #e5e7eb",
+                      borderRadius: 12,
+                      padding: 12,
+                      marginBottom: 12,
+                    }}
+                  >
                     <Controller
                       name="date"
                       control={control}
                       defaultValue={null}
                       render={({ field }) => (
-                        <Calendar fullscreen={false} {...field} onSelect={(value) => { field.onChange(value) }} />
+                        <Calendar
+                          fullscreen={false}
+                          {...field}
+                          onSelect={(value) => {
+                            field.onChange(value);
+                          }}
+                        />
                       )}
                     />
                   </div>
@@ -1065,8 +1433,14 @@ const RidePage = () => {
                           use12Hours
                           format="h:mm a"
                           {...field}
-                          value={field.value ? moment(field.value, "h:mm a") : null}
-                          onChange={(value) => field.onChange(value ? value.format("h:mm a") : null)}
+                          value={
+                            field.value ? moment(field.value, "h:mm a") : null
+                          }
+                          onChange={(value) =>
+                            field.onChange(
+                              value ? value.format("h:mm a") : null,
+                            )
+                          }
                         />
                       )}
                     />
@@ -1074,7 +1448,9 @@ const RidePage = () => {
                 </div>
               )}
 
-              <div style={{ height: 1, background: "#f3f4f6", margin: "20px 0" }} />
+              <div
+                style={{ height: 1, background: "#f3f4f6", margin: "20px 0" }}
+              />
 
               {/* Submit */}
               <CustomButton
@@ -1093,7 +1469,11 @@ const RidePage = () => {
           <div
             className={mounted ? "animate-fade-in-up" : "opacity-0"}
             style={{
-              background: "#fff", borderRadius: 14, border: "1px solid #f0f0f0", overflow: "hidden", minHeight: isMobile ? 300 : 500,
+              background: "#fff",
+              borderRadius: 14,
+              border: "1px solid #f0f0f0",
+              overflow: "hidden",
+              minHeight: isMobile ? 300 : 500,
               animationDelay: "250ms",
             }}
           >
@@ -1108,24 +1488,62 @@ const RidePage = () => {
 
       {/* Location Permission Dialog */}
       {ShowPermissionDialog && (
-        <div className={mounted ? "animate-fade-in" : "opacity-0"} style={{ position: "fixed", inset: 0, background: "rgba(0,0,0,0.5)", display: "flex", alignItems: "center", justifyContent: "center", padding: 16, zIndex: 1050 }}>
-          <div className={mounted ? "animate-fade-in-up" : "opacity-0"} style={{ background: "#fff", borderRadius: 14, maxWidth: 400, width: "100%", padding: "clamp(20px, 3vw, 28px)", animationDelay: "50ms" }}>
-            <h2 className="font-family-semibold" style={{ fontSize: 18, color: "#1f2937", margin: "0 0 8px" }}>Location Access Required</h2>
-            <p className="font-family-regular" style={{ fontSize: 14, color: "#6b7280", margin: "0 0 20px" }}>
-              Please enable location access to use this feature. You can enable it in your browser settings.
+        <div
+          className={mounted ? "animate-fade-in" : "opacity-0"}
+          style={{
+            position: "fixed",
+            inset: 0,
+            background: "rgba(0,0,0,0.5)",
+            display: "flex",
+            alignItems: "center",
+            justifyContent: "center",
+            padding: 16,
+            zIndex: 1050,
+          }}
+        >
+          <div
+            className={mounted ? "animate-fade-in-up" : "opacity-0"}
+            style={{
+              background: "#fff",
+              borderRadius: 14,
+              maxWidth: 400,
+              width: "100%",
+              padding: "clamp(20px, 3vw, 28px)",
+              animationDelay: "50ms",
+            }}
+          >
+            <h2
+              className="font-family-semibold"
+              style={{ fontSize: 18, color: "#1f2937", margin: "0 0 8px" }}
+            >
+              Location Access Required
+            </h2>
+            <p
+              className="font-family-regular"
+              style={{ fontSize: 14, color: "#6b7280", margin: "0 0 20px" }}
+            >
+              Please enable location access to use this feature. You can enable
+              it in your browser settings.
             </p>
-            <div style={{ display: "flex", justifyContent: "flex-end", gap: 8 }}>
-                <button
-                  onClick={() => handlePermissionGuide(false)}
-                  className="font-family-semibold hover:bg-gray-200"
-                  style={{
-                    padding: "10px 24px", borderRadius: "9999px", background: "#f3f4f6", border: "none",
-                    color: "#374151", fontSize: 14, cursor: "pointer",
-                    transition: "background 0.2s",
-                  }}
-                >
-                  Cancel
-                </button>
+            <div
+              style={{ display: "flex", justifyContent: "flex-end", gap: 8 }}
+            >
+              <button
+                onClick={() => handlePermissionGuide(false)}
+                className="font-family-semibold hover:bg-gray-200"
+                style={{
+                  padding: "10px 24px",
+                  borderRadius: "9999px",
+                  background: "#f3f4f6",
+                  border: "none",
+                  color: "#374151",
+                  fontSize: 14,
+                  cursor: "pointer",
+                  transition: "background 0.2s",
+                }}
+              >
+                Cancel
+              </button>
               <CustomButton
                 onClick={handlePermissionGuide}
                 variant="primary"

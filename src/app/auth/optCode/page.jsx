@@ -7,13 +7,9 @@ import { otpImage } from "@/components/assets/Images";
 import { setAuthenticated, setUser } from "@/components/Redux/Slices/AuthSlice";
 import { useRouter, useSearchParams } from "next/navigation";
 import toast from "react-hot-toast";
-import {
-  AuthPrimaryButton,
-  AuthShell,
-} from "@/components/auth/AuthShell";
+import { AuthPrimaryButton, AuthShell } from "@/components/auth/AuthShell";
 
 const Otp = () => {
-
   const searchParams = useSearchParams();
   const encodedData = searchParams.get("data");
   const { postData, header1 } = ApiFunction();
@@ -105,7 +101,10 @@ const Otp = () => {
 
   useEffect(() => {
     if (!timerActive) return;
-    if (timer === 0) { setTimerActive(false); return; }
+    if (timer === 0) {
+      setTimerActive(false);
+      return;
+    }
     const interval = setInterval(() => {
       setTimer((prev) => (prev > 0 ? prev - 1 : 0));
     }, 1000);
@@ -156,8 +155,6 @@ const Otp = () => {
   };
 
   const Fogotpassword = () => {
-    console.log("ersr");
-
     setLoading(true);
     const codeString = code.join(""); // Combine the array into a single string
     let data = {
@@ -211,7 +208,7 @@ const Otp = () => {
           localStorage.setItem("isLogin", true);
           localStorage.setItem("Cabkn-token", res?.token);
           toast.success("Sign up successful! Redirecting...");
-          router.push('/')
+          router.push("/");
         } else {
           toast.error(res?.message);
         }
@@ -253,7 +250,11 @@ const Otp = () => {
               stroke="currentColor"
               className="h-5 w-5"
             >
-              <path strokeLinecap="round" strokeLinejoin="round" d="M15 19l-7-7 7-7" />
+              <path
+                strokeLinecap="round"
+                strokeLinejoin="round"
+                d="M15 19l-7-7 7-7"
+              />
             </svg>
           </button>
           <span className="font-family-bold">Verification code</span>
@@ -298,7 +299,9 @@ const Otp = () => {
             disabled={!otpComplete || Loading}
             className={!otpComplete ? "opacity-70" : ""}
           >
-            {rowdata?.isForgot == "true" ? "Verify & reset" : "Verify & sign up"}
+            {rowdata?.isForgot == "true"
+              ? "Verify & reset"
+              : "Verify & sign up"}
           </AuthPrimaryButton>
           {!otpComplete && !Loading ? (
             <button
@@ -310,8 +313,8 @@ const Otp = () => {
           ) : null}
         </div>
 
-<p className="font-family-regular text-sm mt-2 text-slate-600">
-  Didn't get a code?{" "}
+        <p className="font-family-regular text-sm mt-2 text-slate-600">
+          Didn't get a code?{" "}
           {timer === 0 ? (
             <button
               type="button"
@@ -330,8 +333,7 @@ const Otp = () => {
       </div>
     </AuthShell>
   );
-}
-
+};
 
 const page = () => {
   return (
@@ -344,9 +346,7 @@ const page = () => {
     >
       <Otp />
     </Suspense>
-  )
+  );
+};
 
-}
-
-
-export default page; 
+export default page;

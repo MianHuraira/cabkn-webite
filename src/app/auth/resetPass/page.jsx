@@ -90,7 +90,6 @@ const Reset = () => {
       }
     } catch (error) {
       toast.error(error?.response?.data?.message || "Something went wrong");
-      console.log("==========error: ", error);
     } finally {
       setLoading(false);
     }
@@ -114,7 +113,14 @@ const Reset = () => {
         validationSchema={validationSchema}
         onSubmit={(values) => handleSubmit(values)}
       >
-        {({ values, errors, touched, handleChange, handleBlur, handleSubmit }) => (
+        {({
+          values,
+          errors,
+          touched,
+          handleChange,
+          handleBlur,
+          handleSubmit,
+        }) => (
           <form onSubmit={handleSubmit} className="space-y-4">
             <AuthTextField
               id="npassword"
@@ -132,7 +138,9 @@ const Reset = () => {
                   type="button"
                   onClick={togglePasswordVisibility}
                   className="rounded-lg p-2 text-slate-500 transition hover:text-slate-800 focus:outline-none focus-visible:ring-4 focus-visible:ring-brand-200"
-                  aria-label={passwordVisible ? "Hide password" : "Show password"}
+                  aria-label={
+                    passwordVisible ? "Hide password" : "Show password"
+                  }
                 >
                   <Image
                     src={passwordVisible ? Eye : EyeOff}
@@ -159,7 +167,9 @@ const Reset = () => {
                   type="button"
                   onClick={togglePasswordVisibility1}
                   className="rounded-lg p-2 text-slate-500 transition hover:text-slate-800 focus:outline-none focus-visible:ring-4 focus-visible:ring-brand-200"
-                  aria-label={passwordVisible1 ? "Hide password" : "Show password"}
+                  aria-label={
+                    passwordVisible1 ? "Hide password" : "Show password"
+                  }
                 >
                   <Image
                     src={passwordVisible1 ? Eye : EyeOff}

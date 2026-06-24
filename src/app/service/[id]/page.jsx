@@ -9,7 +9,6 @@ const frontendBaseURL = "https://cabkn.com/service";
 
 export async function generateMetadata({ params }) {
   const { id } = params;
-  console.log(id);
 
   try {
     const response = await fetch(
@@ -27,9 +26,6 @@ export async function generateMetadata({ params }) {
     }
 
     const { success, category } = await response.json();
-
-    // console.log(category);
-
     if (!success || !category?.name) {
       throw new Error("SEO data not found");
     }

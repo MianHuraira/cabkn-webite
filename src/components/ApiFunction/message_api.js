@@ -21,7 +21,6 @@ export const sendNewMsg = async ({ data }) => {
     );
     return res;
   } catch (error) {
-    console.log(error, "error");
     throw error;
   }
 };
@@ -40,7 +39,6 @@ export const getSpecificUserChat = async ({ id, lastId = "" }) => {
     );
     return res;
   } catch (error) {
-    console.log(error, "error");
     throw error;
   }
 };
@@ -54,7 +52,6 @@ export const getChatList = async (id = "") => {
     });
     return res;
   } catch (error) {
-    console.log(error, "error");
     throw error;
   }
 };
@@ -73,7 +70,6 @@ export const notifySeen = async (id) => {
     );
     return res;
   } catch (error) {
-    console.log(error, "error");
     throw error;
   }
 };
@@ -92,7 +88,6 @@ export const getRelatedWHById = async ({ lastId, id }) => {
     );
     return res;
   } catch (error) {
-    console.log(error, "error");
     throw error;
   }
 };

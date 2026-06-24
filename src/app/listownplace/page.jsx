@@ -452,7 +452,6 @@ const page = () => {
     } catch (error) {
       setloading(false);
       console.log(error);
-      console.log("=====error", error?.response?.data);
     }
   };
 

@@ -59,7 +59,6 @@ const page = () => {
     } catch (error) {
       setLoading(false);
       toast.error(error?.response?.data?.message);
-      console.log("==========error: ", error?.response?.data?.message);
     } finally {
       setLoading(false);
     }

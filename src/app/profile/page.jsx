@@ -88,7 +88,6 @@ export default function EditProfile() {
     try {
       setIsUploadingImage(true);
       formData.append("image", file);
-      console.log(file, '------------------------------------');
       const res = await postData("image/upload", formData, header2);
       setImage(res?.image);
     } catch (error) {

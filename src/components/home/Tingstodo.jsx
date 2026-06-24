@@ -134,15 +134,12 @@ export default function Tingstodo() {
       const body = {
         location: { lat: locationDetails?.lat, lng: locationDetails?.lng },
       };
-      console.log(body);
 
       const res = await postData("websubcat/recommended", body);
       setSubCategory(res?.data?.categories || []);
       setPagelength(res?.data?.pagination?.itemsPerPage);
       setLocationLoading(false); // Stop loading on success
     } catch (error) {
-      console.log(error);
-      console.log("=========error", error?.response?.data);
       setLocationLoading(false); // Stop loading on error
     }
   };

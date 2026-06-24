@@ -279,7 +279,6 @@ const PopularAA = () => {
         setRatingLoading(false);
       })
       .catch((error) => {
-        console.log(error, "error");
         setRatingLoading(false);
       });
   };
@@ -315,7 +314,6 @@ const PopularAA = () => {
         setPagiLoading(false);
       })
       .catch((error) => {
-        console.log(error);
         setIsLoading(false);
         setPagiLoading(false);
       });
