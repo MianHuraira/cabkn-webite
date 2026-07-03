@@ -7,8 +7,8 @@ export const dynamicParams = true;
 const frontendBaseURL = "https://cabkn.com/popular";
 
 export async function generateMetadata({ params }) {
-
-  const { id } = params;
+  const resolvedParams = await params;
+  const { id } = resolvedParams;
 
   try {
     const response = await fetch(

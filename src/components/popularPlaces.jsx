@@ -332,27 +332,35 @@ const PopularAA = () => {
   return (
     <div className={mounted ? "animate-fade-in" : "opacity-0"} style={{ minHeight: "100vh", background: "#f8fafc" }}>
       {/* Blue Gradient Header - matching other pages pattern */}
-      <div className={`bg-gradient-to-br from-brand-800 to-brand-950 ${mounted ? "animate-fade-in-down" : "opacity-0"}`} style={{ padding: "28px 0 44px", animationDelay: "50ms" }}>
+      <div className={`bg-gradient-to-br from-brand-800 to-brand-950 ${mounted ? "animate-fade-in-down" : "opacity-0"}`} style={{ padding: "110px 0 44px", animationDelay: "50ms" }}>
         <div style={{ maxWidth: 1200, margin: "0 auto", padding: "0 16px" }}>
-          <div className="font-family-regular" style={{ color: "rgba(255,255,255,0.6)", fontSize: 13, marginBottom: 8 }}>
-            Home / Popular Places / {SubcatData?.title || "Detail"}
+          <div className="font-family-regular flex items-center gap-2 text-white/60 text-[13px] mb-3">
+            <span className="hover:text-white cursor-pointer transition-colors duration-200">Home</span>
+            <span>/</span>
+            <span className="hover:text-white cursor-pointer transition-colors duration-200">Popular Places</span>
+            <span>/</span>
+            <span className="text-white/90">{SubcatData?.title || "Detail"}</span>
           </div>
           <div style={{ display: "flex", alignItems: "center", justifyContent: "space-between", flexWrap: "wrap", gap: 12 }}>
-            <h1 className="font-family-bold" style={{ color: "#fff", fontSize: "clamp(22px, 4vw, 28px)", margin: 0, letterSpacing: "-0.3px", display: "flex", alignItems: "center", gap: 10 }}>
-              <FaLocationDot size={22} />
+            <h1 className="font-family-bold" style={{ color: "#fff", fontSize: "clamp(26px, 5vw, 36px)", margin: 0, letterSpacing: "-0.5px", display: "flex", alignItems: "center", gap: 12 }}>
+              <div className="bg-white/10 p-2.5 rounded-xl backdrop-blur-md border border-white/10">
+                <FaLocationDot size={24} className="text-amber-400" />
+              </div>
               {SubcatData?.title || "Detail"}
             </h1>
             {SubcatData?.avgRating > 0 && (
-              <div style={{ display: "flex", alignItems: "center", gap: 8, background: "rgba(255,255,255,0.1)", borderRadius: 10, padding: "6px 14px 6px 10px" }}>
-                <FaStar size={14} color="#f59e0b" />
-                <span className="font-family-medium" style={{ color: "#fff", fontSize: 14 }}>{SubcatData?.avgRating?.toFixed(1)} ({SubcatData?.totalReviews})</span>
+              <div className="flex items-center gap-2 bg-white/10 backdrop-blur-md rounded-xl px-4 py-2 border border-white/10 shadow-lg hover:bg-white/15 transition-all duration-300">
+                <FaStar size={16} className="text-amber-400 drop-shadow-[0_0_8px_rgba(251,191,36,0.5)]" />
+                <span className="font-family-medium text-white text-[15px]">{SubcatData?.avgRating?.toFixed(1)}</span>
+                <span className="text-white/70 text-[13px]">({SubcatData?.totalReviews} Reviews)</span>
               </div>
             )}
           </div>
         </div>
       </div>
 
-      <div className="w-full px-3 sm:px-4 md:px-6" style={{ marginTop: "-24px", paddingBottom: 48, maxWidth: 1200, marginLeft: "auto", marginRight: "auto" }}>
+      <div className="w-full px-3 sm:px-4 md:px-6 relative z-10" style={{ marginTop: "-28px", paddingBottom: 64, maxWidth: 1200, marginLeft: "auto", marginRight: "auto" }}>
+
         {/* Hero Gallery Section */}
         <div className={`relative rounded-2xl overflow-hidden bg-brand-600 shadow-xl reveal ${mounted ? "visible" : ""}`} style={{ transitionDelay: "150ms" }}>
           <div className="relative">
