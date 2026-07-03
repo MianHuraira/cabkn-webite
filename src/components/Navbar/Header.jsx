@@ -137,16 +137,16 @@ const Header = () => {
           >
             <Link
               href="/auth/login"
-              className={`font-family-medium px-4 py-2 rounded-lg text-sm transition-all duration-200 border ${isScrolled
-                ? "border-gray-200 text-gray-600 hover:text-[#004a70] hover:border-[#004a70]"
-                : "border-white/30 text-white hover:border-white/50 hover:bg-white/10"
+              className={`font-family-medium px-4 py-2 rounded-lg text-sm transition-all duration-200 !border ${isScrolled
+                ? "!border-gray-200 text-gray-600 hover:text-[#004a70] hover:!border-[#004a70]"
+                : "!border-white/30 text-white hover:!border-white/50 hover:bg-white/10"
                 }`}
             >
               Login
             </Link>
             <Link
               href="/auth/step-one"
-              className={`font-family-semibold px-4 py-2 rounded-lg text-sm transition-all duration-200 ${isScrolled
+              className={`font-family-semibold px-4 py-2 rounded-lg text-sm transition-all duration-200 !border-transparent ${isScrolled
                 ? "bg-[#004a70] text-white hover:bg-[#003353]"
                 : "bg-white text-[#004a70] hover:bg-gray-100"
                 }`}
@@ -155,9 +155,9 @@ const Header = () => {
             </Link>
             <button
               onClick={() => SetdriverModal(true)}
-              className={`font-family-medium px-4 py-2 rounded-lg text-sm transition-all duration-200 border ${isScrolled
-                ? "border-[#004a70]/30  text-[#004a70] hover:bg-[#004a70] hover:text-white"
-                : "border-white/30 text-white hover:bg-white/10"
+              className={`font-family-medium px-4 py-2 rounded-lg text-sm transition-all duration-200 !border ${isScrolled
+                ? "!border-[#004a70]/30 text-[#004a70] hover:bg-[#004a70] hover:text-white"
+                : "!border-white/30 text-white hover:bg-white/10 hover:!border-white/50"
                 }`}
             >
               Driver Sign Up
@@ -261,7 +261,7 @@ const Header = () => {
               backgroundImage: `radial-gradient(circle at 1px 1px, white 1px, transparent 0)`,
               backgroundSize: "24px 24px"
             }} />
-            
+
             {/* Floating blobs */}
             <div className="absolute -top-10 -right-10 w-32 h-32 bg-brand-400/20 rounded-full blur-[40px] animate-pulse" />
             <div className="absolute -bottom-10 -left-10 w-32 h-32 bg-indigo-500/20 rounded-full blur-[40px] animate-pulse" style={{ animationDelay: '1s' }} />
@@ -281,7 +281,7 @@ const Header = () => {
                 </svg>
               </div>
             </div>
-            
+
             <h2 className="relative z-10 text-white text-[22px] font-family-bold !m-0 !mb-1 tracking-tight leading-tight">
               Driver App
             </h2>
@@ -324,7 +324,7 @@ const Header = () => {
                   </p>
                 </div>
               </button>
-              
+
               <button
                 onClick={() => window.open("https://apps.apple.com/pk/app/cabkn-driver/id6740235396", "_blank")}
                 className="flex items-center justify-center gap-2.5 p-3 rounded-xl bg-slate-900 border border-slate-800 text-white hover:bg-slate-800 hover:-translate-y-0.5 hover:shadow-lg transition-all duration-300 group cursor-pointer"

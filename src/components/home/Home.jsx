@@ -72,7 +72,7 @@ const WhyChooseUs = () => {
   ];
 
   return (
-    <section className="py-20 bg-gradient-to-b from-white via-brand-50/30 to-brand-100/50 relative overflow-hidden">
+    <section className="py-20 select-none bg-gradient-to-b from-white via-brand-50/30 to-brand-100/50 relative overflow-hidden">
       {/* Subtle background for glass effect */}
       <div
         className="absolute inset-0 opacity-10 pointer-events-none"
@@ -150,7 +150,7 @@ const HomeComponent = () => {
   return (
     <>
       <section
-        className={`relative min-h-screen flex items-center overflow-hidden pt-20 pb-20 md:pt-24 md:pb-28 ${mounted ? "animate-fade-in" : "opacity-0"}`}
+        className={`relative min-h-screen select-none flex items-center overflow-hidden pt-20 pb-20 md:pt-24 md:pb-28 ${mounted ? "animate-fade-in" : "opacity-0"}`}
       >
         {/* Background Image */}
         <div

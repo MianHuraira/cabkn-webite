@@ -358,7 +358,7 @@ export default function Tingstodo() {
 
   return (
     <div ref={sectionRef}>
-      <div className={`mx-auto flex flex-col lg:flex-row justify-between items-start lg:items-center mb-8 mt-12 gap-5 reveal ${inView ? "visible" : ""}`} style={{ maxWidth: 1200, padding: "0 16px", transitionDelay: "50ms", position: "relative", zIndex: 100 }}>
+      <div className={`mx-auto flex flex-col select-none lg:flex-row justify-between items-start lg:items-center mb-8 mt-12 gap-5 reveal ${inView ? "visible" : ""}`} style={{ maxWidth: 1200, padding: "0 16px", transitionDelay: "50ms", position: "relative", zIndex: 100 }}>
         <div className="flex flex-col text-left w-full lg:w-auto">
           <h2 className="text-2xl sm:text-3xl lg:text-[34px] font-family-bold text-slate-800 tracking-tight m-0 leading-tight">
             Our Tour Recommendations

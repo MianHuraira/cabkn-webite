@@ -29,7 +29,7 @@ export default function DownloadApp() {
   return (
     <section
       ref={sectionRef}
-      className="py-12 sm:py-16 lg:py-20 overflow-hidden bg-slate-50"
+      className="py-12 sm:py-16  lg:py-20 overflow-hidden bg-slate-50"
       style={{
         background: "linear-gradient(135deg, rgba(0, 74, 112, 0.05) 0%, rgba(0, 45, 69, 0.03) 50%, rgba(248, 250, 252, 0.95) 100%)",
       }}
