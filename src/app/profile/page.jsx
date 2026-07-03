@@ -651,95 +651,41 @@ export default function EditProfile() {
 
   return (
     <div className={mounted ? 'animate-fade-in' : 'opacity-0'} style={{ minHeight: "100vh", background: "#f8fafc" }}>
-      {/* Header */}
-      <div
-        className={`bg-gradient-to-br from-brand-800 to-brand-950 ${mounted ? 'animate-fade-in-down' : 'opacity-0'}`}
-        style={{
-          padding: "28px 0 44px",
-          animationDelay: "50ms",
-        }}
-      >
-        <div
-          style={{
-            position: "absolute",
-            top: -60,
-            right: -60,
-            width: 200,
-            height: 200,
-            borderRadius: "50%",
-            background: "rgba(255,255,255,0.03)",
-          }}
-        />
-        <div
-          style={{
-            position: "absolute",
-            bottom: -40,
-            left: -40,
-            width: 160,
-            height: 160,
-            borderRadius: "50%",
-            background: "rgba(255,255,255,0.03)",
-          }}
-        />
+      {/* ===== HERO BANNER ===== */}
+      <section className={`relative overflow-hidden bg-gradient-to-br from-slate-900 via-brand-900 to-brand-950 !pt-28 !pb-28 ${mounted ? 'animate-fade-in-down' : 'opacity-0'}`} style={{ animationDelay: "50ms" }}>
+        <div className="absolute inset-0 opacity-[0.04]" style={{
+          backgroundImage: `radial-gradient(circle at 1px 1px, white 1px, transparent 0)`,
+          backgroundSize: "24px 24px"
+        }} />
+        <div className="absolute top-1/4 -left-20 w-80 h-80 bg-brand-500/10 rounded-full blur-[100px] animate-pulse pointer-events-none" style={{ animationDuration: "8s" }} />
+        <div className="absolute bottom-1/4 -right-20 w-96 h-96 bg-indigo-500/10 rounded-full blur-[120px] animate-pulse pointer-events-none" style={{ animationDuration: "12s" }} />
+        <div className="absolute inset-0 bg-gradient-to-t from-brand-950/60 via-transparent to-transparent pointer-events-none" />
 
-        <div style={{ maxWidth: 1200, margin: "0 auto", padding: "0 clamp(12px, 3vw, 24px)", position: "relative" }}>
-          <div
-            className="font-family-medium"
-            style={{
-              display: "flex",
-              alignItems: "center",
-              gap: 8,
-              color: "rgba(255,255,255,0.5)",
-              fontSize: 13,
-              marginBottom: 16,
-            }}
-          >
-            <a href="/" className="font-family-medium" style={{ color: "rgba(255,255,255,0.5)", textDecoration: "none", transition: "color 0.2s" }}
-              onMouseEnter={(e) => e.currentTarget.style.color = "#fff"}
-              onMouseLeave={(e) => e.currentTarget.style.color = "rgba(255,255,255,0.5)"}>
-              Home
-            </a>
-            <span className="font-family-medium" style={{ color: "rgba(255,255,255,0.3)" }}>/</span>
-            <span className="font-family-medium" style={{ color: "rgba(255,255,255,0.8)" }}>Profile</span>
+        <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 relative z-10">
+          <div className="flex items-center gap-2 text-slate-400 text-xs font-family-medium !mb-4">
+            <a href="/" className="text-slate-400 hover:text-white transition-colors">Home</a>
+            <span className="text-slate-500">/</span>
+            <span className="text-slate-200">Profile</span>
           </div>
 
-          <div style={{ display: "flex", alignItems: "center", gap: "clamp(10px, 2vw, 16px)" }}>
-            <div
-              style={{
-                width: "clamp(40px, 6vw, 52px)",
-                height: "clamp(40px, 6vw, 52px)",
-                borderRadius: "clamp(12px, 2vw, 16px)",
-                background: "rgba(255,255,255,0.12)",
-                backdropFilter: "blur(8px)",
-                display: "flex",
-                alignItems: "center",
-                justifyContent: "center",
-                flexShrink: 0,
-              }}
-            >
-              <FaUserCircle size="clamp(20px, 3vw, 26px)" color="#fff" />
+          <div className="flex items-center gap-4">
+            <div className="w-13 h-13 rounded-2xl bg-white/10 backdrop-blur-md flex items-center justify-center shrink-0">
+              <FaUserCircle size={24} color="#fff" />
             </div>
             <div>
-              <h1
-                className="font-family-bold"
-                style={{
-                  color: "#fff",
-                  fontSize: "clamp(20px, 5vw, 30px)",
-                  margin: 0,
-                  letterSpacing: "-0.5px",
-                  lineHeight: 1.2,
-                  wordBreak: "break-word",
-                }}
-              >
-                My Profile
+              <h1 className="text-white text-3xl font-family-bold tracking-tight !m-0 leading-tight">
+                My{" "}
+                <span className="text-transparent bg-clip-text bg-gradient-to-r from-brand-300 via-sky-300 to-indigo-200">
+                  Profile
+                </span>
               </h1>
-              <p className="font-family-regular" style={{ color: "rgba(255,255,255,0.55)", fontSize: "clamp(12px, 2vw, 14px)", margin: "2px 0 0", wordBreak: "break-word" }}>
+              <p className="text-slate-400 text-sm !mt-1 !m-0 font-family-regular">
                 Manage your account settings
               </p>
             </div>
           </div>
         </div>
-      </div>
+      </section>
 
       {/* Content */}
       <div className={mounted ? 'animate-fade-in-up' : 'opacity-0'} style={{ maxWidth: 1200, margin: "-24px auto 0", padding: "0 16px 48px", animationDelay: "150ms" }}>

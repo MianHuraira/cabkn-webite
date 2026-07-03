@@ -40,7 +40,7 @@ const Header = () => {
         window.scrollY > 0 ||
         document.documentElement.scrollTop > 0 ||
         document.body.scrollTop > 0;
-   
+
       setIsScrolled(scrolled);
     };
 
@@ -116,15 +116,14 @@ const Header = () => {
               <button
                 key={link.id}
                 onClick={() => handleNavClick(link.id)}
-                className={`animate-fade-in-down font-family-medium px-3 py-2 text-sm transition-all duration-200 ${
-                  isActive(link.id)
-                    ? isScrolled
-                      ? "text-[#004a70] border-b-2 border-[#004a70]"
-                      : "text-white border-b-2 border-white"
-                    : isScrolled
-                      ? "text-gray-600 hover:text-[#004a70] hover:border-b-2 hover:border-[#004a70]"
-                      : "text-white/90 hover:text-white hover:border-b-2 hover:border-white"
-                }`}
+                className={`animate-fade-in-down font-family-medium px-3 py-2 text-sm transition-all duration-200 ${isActive(link.id)
+                  ? isScrolled
+                    ? "text-[#004a70] border-b-2 border-[#004a70]"
+                    : "text-white border-b-2 border-white"
+                  : isScrolled
+                    ? "text-gray-600 hover:text-[#004a70] hover:border-b-2 hover:border-[#004a70]"
+                    : "text-white/90 hover:text-white hover:border-b-2 hover:border-white"
+                  }`}
                 style={{ animationDelay: `${index * 50}ms` }}
               >
                 {link.label}
@@ -138,31 +137,28 @@ const Header = () => {
           >
             <Link
               href="/auth/login"
-              className={`font-family-medium px-4 py-2 rounded-lg text-sm transition-all duration-200 border ${
-                isScrolled
-                  ? "border-gray-200 text-gray-600 hover:text-[#004a70] hover:border-[#004a70]"
-                  : "border-white/30 text-white hover:border-white/50 hover:bg-white/10"
-              }`}
+              className={`font-family-medium px-4 py-2 rounded-lg text-sm transition-all duration-200 border ${isScrolled
+                ? "border-gray-200 text-gray-600 hover:text-[#004a70] hover:border-[#004a70]"
+                : "border-white/30 text-white hover:border-white/50 hover:bg-white/10"
+                }`}
             >
               Login
             </Link>
             <Link
               href="/auth/step-one"
-              className={`font-family-semibold px-4 py-2 rounded-lg text-sm transition-all duration-200 ${
-                isScrolled
-                  ? "bg-[#004a70] text-white hover:bg-[#003353]"
-                  : "bg-white text-[#004a70] hover:bg-gray-100"
-              }`}
+              className={`font-family-semibold px-4 py-2 rounded-lg text-sm transition-all duration-200 ${isScrolled
+                ? "bg-[#004a70] text-white hover:bg-[#003353]"
+                : "bg-white text-[#004a70] hover:bg-gray-100"
+                }`}
             >
               Sign Up
             </Link>
             <button
               onClick={() => SetdriverModal(true)}
-              className={`font-family-medium px-4 py-2 rounded-lg text-sm transition-all duration-200 border ${
-                isScrolled
-                  ? "border-[#004a70] text-[#004a70] hover:bg-[#004a70] hover:text-white"
-                  : "border-white/30 text-white hover:bg-white/10"
-              }`}
+              className={`font-family-medium px-4 py-2 rounded-lg text-sm transition-all duration-200 border ${isScrolled
+                ? "border-[#004a70]/30  text-[#004a70] hover:bg-[#004a70] hover:text-white"
+                : "border-white/30 text-white hover:bg-white/10"
+                }`}
             >
               Driver Sign Up
             </button>
@@ -517,13 +513,12 @@ const Header = () => {
 const MobileNavItem = ({ label, onClick, active, danger }) => (
   <div
     onClick={onClick}
-    className={`transition-all duration-150 font-family-medium cursor-pointer px-3 py-2.5 rounded-lg ${
-      active
-        ? "bg-indigo-50 font-family-semibold text-[#004a70]"
-        : danger
-          ? "hover:bg-red-50 text-red-500"
-          : "hover:bg-gray-100 text-gray-700"
-    }`}
+    className={`transition-all duration-150 font-family-medium cursor-pointer px-3 py-2.5 rounded-lg ${active
+      ? "bg-indigo-50 font-family-semibold text-[#004a70]"
+      : danger
+        ? "hover:bg-red-50 text-red-500"
+        : "hover:bg-gray-100 text-gray-700"
+      }`}
   >
     {label}
   </div>
