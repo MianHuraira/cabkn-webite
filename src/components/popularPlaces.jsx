@@ -331,25 +331,33 @@ const PopularAA = () => {
 
   return (
     <div className={mounted ? "animate-fade-in" : "opacity-0"} style={{ minHeight: "100vh", background: "#f8fafc" }}>
-      {/* Blue Gradient Header - matching other pages pattern */}
-      <div className={`bg-gradient-to-br from-brand-800 to-brand-950 ${mounted ? "animate-fade-in-down" : "opacity-0"}`} style={{ padding: "110px 0 44px", animationDelay: "50ms" }}>
-        <div style={{ maxWidth: 1200, margin: "0 auto", padding: "0 16px" }}>
-          <div className="font-family-regular flex items-center gap-2 text-white/60 text-[13px] mb-3">
+      {/* ===== HERO BANNER ===== */}
+      <section className={`relative overflow-hidden bg-gradient-to-br from-slate-900 via-brand-900 to-brand-950 !pt-28 !pb-28 ${mounted ? 'animate-fade-in-down' : 'opacity-0'}`} style={{ animationDelay: "50ms" }}>
+        <div className="absolute inset-0 opacity-[0.04]" style={{
+          backgroundImage: `radial-gradient(circle at 1px 1px, white 1px, transparent 0)`,
+          backgroundSize: "24px 24px"
+        }} />
+        <div className="absolute top-1/4 -left-20 w-80 h-80 bg-brand-500/10 rounded-full blur-[100px] animate-pulse pointer-events-none" style={{ animationDuration: "8s" }} />
+        <div className="absolute bottom-1/4 -right-20 w-96 h-96 bg-indigo-500/10 rounded-full blur-[120px] animate-pulse pointer-events-none" style={{ animationDuration: "12s" }} />
+        <div className="absolute inset-0 bg-gradient-to-t from-brand-950/60 via-transparent to-transparent pointer-events-none" />
+
+        <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 relative z-10">
+          <div className="font-family-regular flex items-center gap-2 text-white/60 text-[13px] !mb-4">
             <span className="hover:text-white cursor-pointer transition-colors duration-200">Home</span>
             <span>/</span>
             <span className="hover:text-white cursor-pointer transition-colors duration-200">Popular Places</span>
             <span>/</span>
             <span className="text-white/90">{SubcatData?.title || "Detail"}</span>
           </div>
-          <div style={{ display: "flex", alignItems: "center", justifyContent: "space-between", flexWrap: "wrap", gap: 12 }}>
-            <h1 className="font-family-bold" style={{ color: "#fff", fontSize: "clamp(26px, 5vw, 36px)", margin: 0, letterSpacing: "-0.5px", display: "flex", alignItems: "center", gap: 12 }}>
-              <div className="bg-white/10 p-2.5 rounded-xl backdrop-blur-md border border-white/10">
+          <div className="flex items-center justify-between flex-wrap gap-3">
+            <h1 className="font-family-bold text-white text-[clamp(26px,5vw,36px)] !m-0 tracking-tight flex items-center gap-3">
+              <div className="bg-white/10 p-2.5 rounded-xl backdrop-blur-md !border border-white/10 flex items-center justify-center shrink-0">
                 <FaLocationDot size={24} className="text-amber-400" />
               </div>
               {SubcatData?.title || "Detail"}
             </h1>
             {SubcatData?.avgRating > 0 && (
-              <div className="flex items-center gap-2 bg-white/10 backdrop-blur-md rounded-xl px-4 py-2 border border-white/10 shadow-lg hover:bg-white/15 transition-all duration-300">
+              <div className="flex items-center gap-2 bg-white/10 backdrop-blur-md rounded-xl px-4 py-2 !border border-white/10 shadow-lg hover:bg-white/15 transition-all duration-300">
                 <FaStar size={16} className="text-amber-400 drop-shadow-[0_0_8px_rgba(251,191,36,0.5)]" />
                 <span className="font-family-medium text-white text-[15px]">{SubcatData?.avgRating?.toFixed(1)}</span>
                 <span className="text-white/70 text-[13px]">({SubcatData?.totalReviews} Reviews)</span>
@@ -357,9 +365,9 @@ const PopularAA = () => {
             )}
           </div>
         </div>
-      </div>
+      </section>
 
-      <div className="w-full px-3 sm:px-4 md:px-6 relative z-10" style={{ marginTop: "-28px", paddingBottom: 64, maxWidth: 1200, marginLeft: "auto", marginRight: "auto" }}>
+      <div className="w-full px-4 sm:px-6 lg:px-8 relative z-10 max-w-7xl mx-auto" style={{ marginTop: "-28px", paddingBottom: 64 }}>
 
         {/* Hero Gallery Section */}
         <div className={`relative rounded-2xl overflow-hidden bg-brand-600 shadow-xl reveal ${mounted ? "visible" : ""}`} style={{ transitionDelay: "150ms" }}>
@@ -431,7 +439,7 @@ const PopularAA = () => {
           <div className="lg:col-span-2 space-y-8">
             {/* Upcoming Events */}
             {SubcatData?.category?.name == "Upcoming Events" && SubcatData.start_date && (
-              <div className={`bg-gradient-to-r from-brand-600/5 to-brand-500/5 rounded-xl p-4 sm:p-5 border border-brand-600/10 reveal ${contentInView ? "visible" : ""}`} style={{ transitionDelay: "50ms" }}>
+              <div className={`bg-gradient-to-r from-brand-600/5 to-brand-500/5 rounded-xl p-4 sm:p-5 !border border-brand-600/10 reveal ${contentInView ? "visible" : ""}`} style={{ transitionDelay: "50ms" }}>
                 <div className="flex flex-col sm:flex-row flex-wrap items-start sm:items-center gap-4 sm:gap-6">
                   <div className="flex items-center gap-3">
                     <div className="w-10 h-10 rounded-full bg-brand-600/10 flex items-center justify-center flex-shrink-0">
@@ -463,11 +471,11 @@ const PopularAA = () => {
             {/* Schedule */}
             {Schedule?.length > 0 && (
               <div className={`reveal ${contentInView ? "visible" : ""}`} style={{ transitionDelay: "100ms" }}>
-                <h3 className="text-lg font-family-bold text-gray-900 mb-4 flex items-center gap-2">
+                <h3 className="text-lg font-family-bold text-gray-900 !mb-4 flex items-center gap-2">
                   <HiOutlineCalendarDays className="text-brand-600" />
                   Schedule
                 </h3>
-                <div className="bg-white rounded-xl border border-gray-100 shadow-sm overflow-hidden">
+                <div className="bg-white rounded-xl !border border-gray-100 shadow-sm overflow-hidden">
                   {Schedule?.map((item, index) => (
                     <div
                       key={index}
@@ -488,8 +496,8 @@ const PopularAA = () => {
 
             {/* Description */}
             <div className={`reveal ${contentInView ? "visible" : ""}`} style={{ transitionDelay: "150ms" }}>
-              <h3 className="text-lg font-family-bold text-gray-900 mb-3">Description</h3>
-              <div className="bg-white rounded-xl border border-gray-100 shadow-sm p-5">
+              <h3 className="text-lg font-family-bold text-gray-900 !mb-3">Description</h3>
+              <div className="bg-white rounded-xl !border border-gray-100 shadow-sm p-5">
                 <p className="text-gray-600 font-family-regular leading-relaxed text-[15px]">
                   {SubcatData?.about}
                 </p>
@@ -499,8 +507,8 @@ const PopularAA = () => {
             {/* Highlights */}
             {SubcatData?.heighlights?.length > 0 && (
               <div className={`reveal ${contentInView ? "visible" : ""}`} style={{ transitionDelay: "200ms" }}>
-                <h3 className="text-lg font-family-bold text-gray-900 mb-3">Highlights</h3>
-                <div className="bg-white rounded-xl border border-gray-100 shadow-sm p-5">
+                <h3 className="text-lg font-family-bold text-gray-900 !mb-3">Highlights</h3>
+                <div className="bg-white rounded-xl !border border-gray-100 shadow-sm p-5">
                   <div className="flex flex-wrap gap-3">
                     {SubcatData?.heighlights.map((item, index) => (
                       <div
@@ -518,11 +526,11 @@ const PopularAA = () => {
 
             {/* Map */}
             <div className={`reveal ${contentInView ? "visible" : ""}`} style={{ transitionDelay: "250ms" }}>
-              <h3 className="text-lg font-family-bold text-gray-900 mb-3 flex items-center gap-2">
+              <h3 className="text-lg font-family-bold text-gray-900 !mb-3 flex items-center gap-2">
                 <HiOutlineMapPin className="text-brand-600" />
                 Location
               </h3>
-              <div className="rounded-xl overflow-hidden border border-gray-100 shadow-sm relative">
+              <div className="rounded-xl overflow-hidden !border border-gray-100 shadow-sm relative">
                 <style>{`
                   #map-container canvas {
                     width: 100% !important;
@@ -539,7 +547,7 @@ const PopularAA = () => {
 
             {/* Reviews Section */}
             <section ref={reviewSectionRef} className={`reveal ${contentInView ? "visible" : ""}`} style={{ transitionDelay: "300ms" }}>
-              <div className="flex flex-col sm:flex-row sm:items-center justify-between gap-3 mb-6">
+              <div className="flex flex-col sm:flex-row sm:items-center justify-between gap-3 !mb-6">
                 <h3 className="text-lg font-family-bold text-gray-900 flex items-center gap-2">
                   <HiOutlineChatBubbleLeftRight className="text-brand-600" />
                   Reviews
@@ -561,8 +569,8 @@ const PopularAA = () => {
               {isLoading ? (
                 <div className="space-y-4">
                   {[1, 2].map((i) => (
-                    <div key={i} className="bg-white rounded-xl border border-gray-100 shadow-sm p-5">
-                      <div className="flex items-center gap-3 mb-3">
+                    <div key={i} className="bg-white rounded-xl !border border-gray-100 shadow-sm p-5">
+                      <div className="flex items-center gap-3 !mb-3">
                         <Skeleton.Avatar active size="large" shape="circle" />
                         <div className="flex-1">
                           <Skeleton.Input active size="small" className="!w-32" />
@@ -575,52 +583,77 @@ const PopularAA = () => {
               ) : (
                 <>
                   {ratingData?.length > 0 ? (
-                    <div className="space-y-4">
-                      {ratingData?.map((review) => (
-                        <div
-                          key={review?._id}
-                          className="bg-white rounded-xl border border-gray-100 shadow-sm p-5 hover:shadow-md transition-shadow duration-200"
-                        >
-                          <div className="flex flex-col sm:flex-row sm:items-start justify-between gap-2">
-                            <div className="flex items-center gap-3 min-w-0">
-                              <div className="w-10 h-10 sm:w-11 sm:h-11 rounded-full overflow-hidden border-2 border-gray-100 flex-shrink-0">
-                                {review?.user?.image ? (
-                                  <img
-                                    src={review?.user?.image}
-                                    alt={review?.user?.name}
-                                    className="w-full h-full object-cover"
-                                  />
-                                ) : (
-                                  <div className="w-full h-full bg-brand-600/10 flex items-center justify-center">
-                                    <span className="text-brand-600 font-family-bold text-sm">
-                                      {review?.user?.name?.charAt(0)?.toUpperCase() || "U"}
-                                    </span>
-                                  </div>
-                                )}
+                    <div className="space-y-5">
+                      {/* Overall Rating Summary */}
+                      <div className="bg-gradient-to-br from-brand-50 to-white rounded-2xl !border border-brand-100/60 p-6 flex flex-col sm:flex-row items-center justify-center sm:justify-start gap-6 shadow-sm">
+                        <div className="flex flex-col items-center justify-center text-center">
+                          <div className="flex items-end gap-1 !mb-1">
+                            <span className="text-5xl font-family-bold text-gray-900 leading-none tracking-tight">
+                              {SubcatData?.avgRating > 0 ? SubcatData?.avgRating?.toFixed(1) : "0.0"}
+                            </span>
+                            <span className="text-lg font-family-medium text-gray-400 !mb-1">/ 5</span>
+                          </div>
+                          <Rate disabled allowHalf value={SubcatData?.avgRating || 0} className="!text-primary !text-xl !mb-1" />
+                          <p className="text-xs font-family-medium text-gray-500 uppercase tracking-wider !m-0">
+                            {SubcatData?.totalReviews || ratingLength} Total Reviews
+                          </p>
+                        </div>
+                        <div className="w-px h-16 bg-brand-100/50 hidden sm:block"></div>
+                        <div className="flex-1 text-center sm:text-left">
+                          <h4 className="text-brand-900 font-family-bold text-lg !m-0 !mb-1">Customer Feedback</h4>
+                          <p className="text-sm font-family-regular text-gray-500 !m-0">Read what others have to say about their experience here.</p>
+                        </div>
+                      </div>
+
+                      <div className="space-y-4">
+                        {ratingData?.map((review) => (
+                          <div
+                            key={review?._id}
+                            className="bg-white rounded-2xl !border border-gray-100 shadow-sm p-5 hover:shadow-md hover:!border-brand-200 transition-all duration-300 group"
+                          >
+                            <div className="flex flex-col sm:flex-row sm:items-start justify-between gap-3">
+                              <div className="flex items-center gap-3 min-w-0">
+                                <div className="w-10 h-10 sm:w-12 sm:h-12 rounded-full overflow-hidden !border-2 border-brand-50 flex-shrink-0 shadow-sm group-hover:border-brand-200 transition-colors">
+                                  {review?.user?.image ? (
+                                    <img
+                                      src={review?.user?.image}
+                                      alt={review?.user?.name}
+                                      className="w-full h-full object-cover"
+                                    />
+                                  ) : (
+                                    <div className="w-full h-full bg-gradient-to-br from-brand-100 to-brand-50 flex items-center justify-center">
+                                      <span className="text-brand-700 font-family-bold text-sm">
+                                        {review?.user?.name?.charAt(0)?.toUpperCase() || "U"}
+                                      </span>
+                                    </div>
+                                  )}
+                                </div>
+                                <div className="min-w-0">
+                                  <h4 className="font-family-bold text-gray-900 text-[15px] truncate !m-0 !mb-0.5">
+                                    {review?.user?.name}
+                                  </h4>
+                                  <p className="text-[11px] text-gray-400 font-family-medium uppercase tracking-wider !m-0">
+                                    {moment(review?.createdAt).format("MMM DD, YYYY")}
+                                  </p>
+                                </div>
                               </div>
-                              <div className="min-w-0">
-                                <h4 className="font-family-medium text-gray-900 text-sm truncate">
-                                  {review?.user?.name}
-                                </h4>
-                                <p className="text-xs text-gray-400 font-family-regular mt-0.5">
-                                  {moment(review?.createdAt).format("MMM DD, YYYY")}
-                                </p>
+                              <div className="bg-brand-50/50 px-3 py-1.5 rounded-lg !border border-brand-100/50 self-start">
+                                <Rate
+                                  className="!text-[13px] !text-primary"
+                                  allowHalf
+                                  disabled
+                                  defaultValue={review?.rating}
+                                />
                               </div>
                             </div>
-                            <Rate
-                              className="starDiv !text-sm ml-12 sm:ml-0"
-                              allowHalf
-                              disabled
-                              defaultValue={review?.rating}
-                            />
+                            <div className="mt-4 relative pl-4 !border-l-2 border-brand-100 bg-brand-50/20 py-2 pr-3 rounded-r-xl">
+                              <p className="text-gray-700 font-family-regular text-[14px] leading-relaxed !m-0">
+                                {review.review}
+                              </p>
+                            </div>
                           </div>
-                          <div className="mt-3 relative pl-4 border-l-2 border-brand-600/10">
-                            <p className="text-gray-600 font-family-regular text-[14px] leading-relaxed">
-                              {review.review}
-                            </p>
-                          </div>
-                        </div>
-                      ))}
+                        ))}
+                      </div>
                       {ratingLength > 0 && ratingData?.length < ratingLength && (
                         <div className="flex justify-center pt-2">
                           <CustomButton
@@ -651,8 +684,8 @@ const PopularAA = () => {
           {/* Sidebar */}
           <div className={`space-y-6 reveal ${mounted ? "visible" : ""}`} style={{ transitionDelay: "200ms" }}>
             {/* Book a Ride Card */}
-            <div className="bg-white rounded-xl border border-gray-100 shadow-sm p-5 sm:p-6 sticky top-24">
-              <div className="flex items-center gap-2 mb-4">
+            <div className="bg-white rounded-xl !border border-gray-100 shadow-sm p-5 sm:p-6 sticky top-24">
+              <div className="flex items-center gap-2 !mb-4">
                 <HiOutlineStar className="text-amber-400 text-lg" />
                 <div>
                   <span className="text-lg font-family-bold text-gray-900">

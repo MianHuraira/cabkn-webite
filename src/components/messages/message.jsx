@@ -85,23 +85,49 @@ const ChatMessage = () => {
     console.error("WebSocket connection error:", error);
   };
   return (
-    <div className={mounted ? 'animate-fade-in' : 'opacity-0'} style={{ minHeight: "100vh", background: "#f8fafc" }}>
-      {/* Blue Gradient Header */}
-      <div className={`bg-gradient-to-br from-brand-800 to-brand-950 ${mounted ? 'animate-fade-in-down' : 'opacity-0'}`} style={{ padding: "28px 0 44px", animationDelay: "50ms" }}>
-        <div style={{ maxWidth: 1200, margin: "0 auto", padding: "0 16px" }}>
-          <div className="font-family-medium" style={{ color: "rgba(255,255,255,0.6)", fontSize: 13, marginBottom: 8 }}>Home / Chat</div>
-          <h1 className="font-family-bold" style={{ color: "#fff", fontSize: "clamp(22px, 4vw, 28px)", margin: 0, letterSpacing: "-0.3px", display: "flex", alignItems: "center", gap: 10 }}>
-            <svg width={24} height={24} viewBox="0 0 24 24" fill="none" stroke="#fff" strokeWidth={1.5}>
-              <path strokeLinecap="round" strokeLinejoin="round" d="M8.625 9.75a.375.375 0 11-.75 0 .375.375 0 01.75 0zm0 0H8.25m4.125 0a.375.375 0 11-.75 0 .375.375 0 01.75 0zm0 0H12m4.125 0a.375.375 0 11-.75 0 .375.375 0 01.75 0zm0 0h-.375m-13.5 3.01c0 1.6 1.123 2.994 2.707 3.227 1.087.16 2.185.283 3.293.369V21l4.184-4.183a1.14 1.14 0 01.778-.332 48.294 48.294 0 005.83-.498c1.585-.233 2.708-1.626 2.708-3.228V6.741c0-1.602-1.123-2.995-2.707-3.228A48.394 48.394 0 0012 3c-2.392 0-4.744.175-7.043.513C3.373 3.746 2.25 5.14 2.25 6.741v6.018z" />
-            </svg>
-            Messages
-          </h1>
+    <div className={`min-h-screen bg-slate-50/50 flex flex-col ${mounted ? 'animate-fade-in' : 'opacity-0'}`}>
+      {/* ===== HERO BANNER ===== */}
+      <section className={`relative overflow-hidden bg-gradient-to-br from-slate-900 via-brand-900 to-brand-950 !pt-28 !pb-28 ${mounted ? 'animate-fade-in-down' : 'opacity-0'}`} style={{ animationDelay: "50ms" }}>
+        <div className="absolute inset-0 opacity-[0.04]" style={{
+          backgroundImage: `radial-gradient(circle at 1px 1px, white 1px, transparent 0)`,
+          backgroundSize: "24px 24px"
+        }} />
+        
+        <div className="absolute top-1/4 -left-20 w-80 h-80 bg-brand-500/10 rounded-full blur-[100px] animate-pulse pointer-events-none" style={{ animationDuration: "8s" }} />
+        <div className="absolute bottom-1/4 -right-20 w-96 h-96 bg-indigo-500/10 rounded-full blur-[120px] animate-pulse pointer-events-none" style={{ animationDuration: "12s" }} />
+        
+        <div className="absolute inset-0 bg-gradient-to-t from-brand-950/60 via-transparent to-transparent pointer-events-none" />
+
+        <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 relative z-10 flex justify-between items-end">
+          <div>
+            <div className="flex items-center gap-2 text-slate-400 text-xs font-family-medium !mb-4">
+              <a href="/" className="text-slate-400 hover:text-white transition-colors">Home</a>
+              <span className="text-slate-500">/</span>
+              <span className="text-slate-200">Chat</span>
+            </div>
+
+            <div className="flex items-center gap-4">
+              <div className="w-13 h-13 rounded-2xl bg-white/10 backdrop-blur-md flex items-center justify-center shrink-0">
+                <BiSolidMessageRounded size={22} className="text-blue-300" />
+              </div>
+              <div>
+                <h1 className="text-white text-3xl font-family-bold tracking-tight !m-0 leading-tight">
+                  <span className="text-transparent bg-clip-text bg-gradient-to-r from-blue-200 via-indigo-300 to-purple-200">
+                    Messages
+                  </span>
+                </h1>
+                <p className="text-slate-400 text-sm !mt-1 !m-0 font-family-regular">
+                  Communicate with drivers and riders
+                </p>
+              </div>
+            </div>
+          </div>
         </div>
-      </div>
+      </section>
 
       {/* Chat Content */}
-      <div className={mounted ? 'animate-fade-in-up' : 'opacity-0'} style={{ maxWidth: 1200, margin: "-28px auto 0", padding: "0 16px 48px", animationDelay: "150ms" }}>
-        <div className="chat_grid">
+      <div className={`flex-1 max-w-7xl mx-auto w-full px-4 sm:px-6 lg:px-8 relative z-10 !-mt-12 !pb-12 ${mounted ? 'animate-fade-in-up' : 'opacity-0'}`} style={{ animationDelay: "150ms" }}>
+        <div className="chat_grid shadow-[0_4px_24px_rgba(0,0,0,0.04)] !border !border-slate-100/80 rounded-2xl">
           {/* Chat List Sidebar */}
           <div className={`chat-sidebar ${!responsiveChat ? "" : "d_chat_none"}`}>
             <div className="chat-sidebar-inner">

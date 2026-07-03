@@ -9,24 +9,12 @@ import { MdArrowForward } from "react-icons/md";
 const Page = () => {
   const { getData, header1, putData } = ApiFunction();
   const [favorites, setFavorites] = useState([]);
-  const [loading, setLoading] = useState(false);
+  const [loading, setLoading] = useState(true);
   const [favLoadingId, setFavLoadingId] = useState(null);
   const router = useRouter();
 
   const [mounted, setMounted] = useState(false);
   useEffect(() => { setMounted(true); }, []);
-
-  const [gridCols, setGridCols] = useState(2);
-
-  useEffect(() => {
-    const handleResize = () => {
-      if (window.innerWidth < 640) setGridCols(1);
-      else setGridCols(2);
-    };
-    handleResize();
-    window.addEventListener("resize", handleResize);
-    return () => window.removeEventListener("resize", handleResize);
-  }, []);
 
   const getFavorites = async () => {
     setLoading(true);
@@ -66,310 +54,120 @@ const Page = () => {
     getFavorites();
   }, []);
 
-  return (
-    <div className={`${mounted ? 'animate-fade-in' : 'opacity-0'} `} style={{ minHeight: "100vh", background: "#f8fafc" }}>
-      {/* Header */}
-      <div
-        className={`${mounted ? 'animate-fade-in-down' : 'opacity-0'} bg-gradient-to-br from-brand-800 to-brand-950`}
-        style={{
-          padding: "28px 0 44px",
-          animationDelay: "50ms",
-        }}
-      >
-        <div
-          style={{
-            position: "absolute",
-            top: -60,
-            right: -60,
-            width: 200,
-            height: 200,
-            borderRadius: "50%",
-            background: "rgba(255,255,255,0.03)",
-          }}
-        />
-        <div
-          style={{
-            position: "absolute",
-            bottom: -40,
-            left: -40,
-            width: 160,
-            height: 160,
-            borderRadius: "50%",
-            background: "rgba(255,255,255,0.03)",
-          }}
-        />
+  const SkeletonCard = () => (
+    <div className="bg-white rounded-2xl p-5 !border !border-slate-100 shadow-sm animate-pulse">
+      <div className="flex items-center gap-3 !mb-4">
+        <div className="w-12 h-12 rounded-xl bg-slate-100 shrink-0" />
+        <div className="flex-grow space-y-2">
+          <div className="h-3 w-1/2 bg-slate-100 rounded-full" />
+          <div className="h-2.5 w-1/4 bg-slate-50 rounded-full" />
+        </div>
+      </div>
+      <div className="h-10 bg-slate-50/50 rounded-xl" />
+    </div>
+  );
 
-        <div style={{ maxWidth: 1200, margin: "0 auto", padding: "0 clamp(12px, 3vw, 24px)", position: "relative" }}>
-          <div className="font-family-medium"
-            style={{
-              display: "flex",
-              alignItems: "center",
-              gap: 8,
-              color: "rgba(255,255,255,0.5)",
-              fontSize: 13,
-              marginBottom: 16,
-            }}
-          >
-            <a href="/" className="font-family-medium" style={{ color: "rgba(255,255,255,0.5)", textDecoration: "none", transition: "color 0.2s" }}
-              onMouseEnter={(e) => e.currentTarget.style.color = "#fff"}
-              onMouseLeave={(e) => e.currentTarget.style.color = "rgba(255,255,255,0.5)"}>
-              Home
-            </a>
-            <span className="font-family-medium" style={{ color: "rgba(255,255,255,0.3)" }}>/</span>
-            <span className="font-family-medium" style={{ color: "rgba(255,255,255,0.8)" }}>Favorites</span>
+  return (
+    <div className="min-h-screen bg-slate-50/50">
+      {/* ===== HERO BANNER ===== */}
+      <section className={`relative overflow-hidden bg-gradient-to-br from-slate-900 via-brand-900 to-brand-950 !pt-28 !pb-28 ${mounted ? 'animate-fade-in-down' : 'opacity-0'}`} style={{ animationDelay: "50ms" }}>
+        <div className="absolute inset-0 opacity-[0.04]" style={{
+          backgroundImage: `radial-gradient(circle at 1px 1px, white 1px, transparent 0)`,
+          backgroundSize: "24px 24px"
+        }} />
+
+        <div className="absolute top-1/4 -left-20 w-80 h-80 bg-brand-500/10 rounded-full blur-[100px] animate-pulse pointer-events-none" style={{ animationDuration: "8s" }} />
+        <div className="absolute bottom-1/4 -right-20 w-96 h-96 bg-indigo-500/10 rounded-full blur-[120px] animate-pulse pointer-events-none" style={{ animationDuration: "12s" }} />
+
+        <div className="absolute inset-0 bg-gradient-to-t from-brand-950/60 via-transparent to-transparent pointer-events-none" />
+
+        <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 relative z-10">
+          <div className="flex items-center gap-2 text-slate-400 text-xs font-family-medium !mb-4">
+            <a href="/" className="text-slate-400 hover:text-white transition-colors">Home</a>
+            <span className="text-slate-500">/</span>
+            <span className="text-slate-200">Favorites</span>
           </div>
 
-          <div
-            style={{
-              display: "flex",
-              alignItems: "center",
-              justifyContent: "space-between",
-              flexWrap: "wrap",
-              gap: 12,
-            }}
-          >
-            <div style={{ display: "flex", alignItems: "center", gap: "clamp(10px, 2vw, 16px)" }}>
-              <div
-                style={{
-                  width: "clamp(40px, 6vw, 52px)",
-                  height: "clamp(40px, 6vw, 52px)",
-                  borderRadius: "clamp(12px, 2vw, 16px)",
-                  background: "rgba(255,255,255,0.12)",
-                  backdropFilter: "blur(8px)",
-                  display: "flex",
-                  alignItems: "center",
-                  justifyContent: "center",
-                  flexShrink: 0,
-                }}
-              >
-                <FaHeart size="clamp(18px, 2.5vw, 24px)" color="#f87171" />
+          <div className="flex flex-wrap justify-between items-center gap-4">
+            <div className="flex items-center gap-4">
+              <div className="w-13 h-13 rounded-2xl bg-white/10 backdrop-blur-md flex items-center justify-center shrink-0">
+                <FaHeart size={22} color="#f87171" />
               </div>
               <div>
-                <h1 className="font-family-bold"
-                  style={{
-                    color: "#fff",
-                    fontSize: "clamp(20px, 5vw, 30px)",
-                    margin: 0,
-                    letterSpacing: "-0.5px",
-                    lineHeight: 1.2,
-                    wordBreak: "break-word",
-                  }}
-                >
-                  My Favorites
+                <h1 className="text-white text-3xl font-family-bold tracking-tight !m-0 leading-tight">
+                  My{" "}
+                  <span className="text-transparent bg-clip-text bg-gradient-to-r from-red-300 via-rose-300 to-pink-200">
+                    Favorites
+                  </span>
                 </h1>
-                <p className="font-family-regular" style={{ color: "rgba(255,255,255,0.55)", fontSize: "clamp(12px, 2vw, 14px)", margin: "2px 0 0", wordBreak: "break-word" }}>
+                <p className="text-slate-400 text-sm !mt-1 !m-0 font-family-regular">
                   {favorites.length} saved {favorites.length === 1 ? "driver" : "drivers"}
                 </p>
               </div>
             </div>
 
             {favorites.length > 0 && (
-              <div
-                style={{
-                  display: "flex",
-                  alignItems: "center",
-                  gap: 8,
-                  background: "rgba(255,255,255,0.08)",
-                  backdropFilter: "blur(8px)",
-                  borderRadius: 12,
-                  padding: "6px 14px",
-                  border: "1px solid rgba(255,255,255,0.06)",
-                  height: 36,
-                  boxSizing: "border-box",
-                }}
-              >
+              <div className="flex items-center gap-2 bg-white/10 backdrop-blur-md rounded-xl px-3.5 py-1.5 !border !border-white/10">
                 <FaHeart size={12} color="#f87171" />
-                <span className="font-family-semibold" style={{ color: "#fff", fontSize: 13, whiteSpace: "nowrap" }}>
+                <span className="font-family-semibold text-white text-xs whitespace-nowrap">
                   {favorites.length} saved
                 </span>
               </div>
             )}
           </div>
         </div>
-      </div>
+      </section>
 
-      {/* Content */}
-      <div style={{ maxWidth: 1200, margin: "-32px auto 0", padding: "0 clamp(12px, 3vw, 24px) clamp(40px, 6vw, 64px)" }}>
+      {/* ===== CONTENT LAYOUT ===== */}
+      <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 relative z-10 !-mt-12 !pb-24">
         {loading ? (
-          <div style={{ display: "grid", gridTemplateColumns: `repeat(${gridCols}, 1fr)`, gap: 12 }}>
-            {[1, 2, 3, 4].map((i) => (
-              <div
-                key={i}
-                style={{
-                  background: "#fff",
-                  borderRadius: 14,
-                  padding: "clamp(16px, 2vw, 24px)",
-                  boxShadow: "0 1px 3px rgba(0,0,0,0.04)",
-                  border: "1px solid rgba(0,0,0,0.04)",
-                }}
-              >
-                <div style={{ display: "flex", alignItems: "center", gap: 14 }}>
-                  <div
-                    style={{
-                      width: 56,
-                      height: 56,
-                      borderRadius: 14,
-                      background: "linear-gradient(90deg, #f0f0f0 25%, #e0e0e0 50%, #f0f0f0 75%)",
-                      backgroundSize: "200% 100%",
-                      animation: "shimmer 1.5s infinite",
-                    }}
-                  />
-                  <div style={{ flex: 1 }}>
-                    <div
-                      style={{
-                        width: "55%",
-                        height: 14,
-                        borderRadius: 6,
-                        background: "linear-gradient(90deg, #f0f0f0 25%, #e0e0e0 50%, #f0f0f0 75%)",
-                        backgroundSize: "200% 100%",
-                        animation: "shimmer 1.5s infinite",
-                        marginBottom: 8,
-                      }}
-                    />
-                    <div
-                      style={{
-                        width: "35%",
-                        height: 12,
-                        borderRadius: 6,
-                        background: "linear-gradient(90deg, #f0f0f0 25%, #e0e0e0 50%, #f0f0f0 75%)",
-                        backgroundSize: "200% 100%",
-                        animation: "shimmer 1.5s infinite",
-                      }}
-                    />
-                  </div>
-                </div>
-                <div
-                  style={{
-                    width: "100%",
-                    height: 42,
-                    borderRadius: 10,
-                    marginTop: 16,
-                    background: "linear-gradient(90deg, #f0f0f0 25%, #e0e0e0 50%, #f0f0f0 75%)",
-                    backgroundSize: "200% 100%",
-                    animation: "shimmer 1.5s infinite",
-                  }}
-                />
-              </div>
-            ))}
+          <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 xl:grid-cols-4 gap-4">
+            {[1, 2, 3, 4, 5, 6, 7, 8].map((i) => <SkeletonCard key={i} />)}
           </div>
         ) : favorites.length === 0 ? (
-          <div
-            style={{
-              background: "#fff",
-              borderRadius: 20,
-              padding: "clamp(40px, 8vw, 80px) clamp(16px, 4vw, 24px)",
-              textAlign: "center",
-              boxShadow: "0 1px 3px rgba(0,0,0,0.04)",
-              border: "1px solid rgba(0,0,0,0.04)",
-            }}
-          >
-            <div
-              style={{
-                width: 88,
-                height: 88,
-                borderRadius: 24,
-                background: "linear-gradient(135deg, #fef2f2, #fee2e2)",
-                display: "flex",
-                alignItems: "center",
-                justifyContent: "center",
-                margin: "0 auto 24px",
-                position: "relative",
-              }}
-            >
-              <FaHeart size={36} color="#f87171" opacity={0.4} />
-              <div
-                style={{
-                  position: "absolute",
-                  top: -4,
-                  right: -4,
-                  width: 24,
-                  height: 24,
-                  borderRadius: "50%",
-                  background: "#f0f0f0",
-                  display: "flex",
-                  alignItems: "center",
-                  justifyContent: "center",
-                  border: "3px solid #fff",
-                }}
-              >
-                <FaTimes size={10} color="#9ca3af" />
+          <div className="py-16 bg-white rounded-3xl !border !border-slate-100 text-center shadow-sm w-full   mt-8">
+            <div className="w-14 h-14 rounded-3xl bg-rose-50 flex items-center justify-center !border !border-rose-100 !mb-4 mx-auto relative">
+              <FaHeart size={24} className="text-rose-400 opacity-50" />
+              <div className="absolute -top-1 -right-1 w-5 h-5 rounded-full bg-slate-100 flex items-center justify-center border-2 border-white">
+                <FaTimes size={8} className="text-slate-400" />
               </div>
             </div>
-            <h3 className="font-family-bold" style={{ fontSize: "clamp(18px, 4vw, 22px)", color: "#1f2937", margin: "0 0 8px", letterSpacing: "-0.3px", wordBreak: "break-word" }}>
+            <h3 className="text-sm font-family-semibold text-slate-800 !m-0 !mb-1">
               No favorites yet
             </h3>
-            <p className="font-family-regular" style={{ fontSize: "clamp(13px, 2.5vw, 14px)", color: "#9ca3af", margin: "0 auto", maxWidth: 400, padding: "0 12px", lineHeight: 1.6, wordBreak: "break-word" }}>
+            <p className="text-xs text-slate-400 font-family-medium max-w-xs !m-0 mx-auto leading-relaxed">
               Start adding drivers to your favorites and they will appear here for quick booking.
             </p>
           </div>
         ) : (
-          <div
-            style={{
-              display: "grid",
-              gridTemplateColumns: `repeat(${gridCols}, 1fr)`,
-              gap: 12,
-            }}
-          >
+          <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-3 xl:grid-cols-4 gap-3">
             {favorites.map((item, index) => {
               const isFavorite = item?.likes;
 
               return (
                 <div
                   key={item?._id}
-                  style={{
-                    background: "#fff",
-                    borderRadius: 14,
-                    border: `1px solid rgba(0,0,0,0.04)`,
-                    padding: "clamp(16px, 2vw, 24px)",
-                    transition: "all 0.25s cubic-bezier(0.16, 1, 0.3, 1)",
-                    boxShadow: "0 1px 2px rgba(0,0,0,0.03)",
-                    opacity: 0,
-                    animation: `fade-in-up 0.35s cubic-bezier(0.16, 1, 0.3, 1) ${index * 0.06}s forwards`,
-                    position: "relative",
-                  }}
-                  onMouseEnter={(e) => {
-                    e.currentTarget.style.boxShadow = "0 8px 30px rgba(0,0,0,0.07)";
-                    e.currentTarget.style.transform = "translateY(-2px)";
-                  }}
-                  onMouseLeave={(e) => {
-                    e.currentTarget.style.boxShadow = "0 1px 2px rgba(0,0,0,0.03)";
-                    e.currentTarget.style.transform = "translateY(0)";
-                  }}
+                  className={`relative bg-white !border !border-slate-100 rounded-2xl p-4 shadow-[0_2px_8px_rgba(0,0,0,0.01)] hover:shadow-xl hover:-translate-y-1 transition-all duration-300 flex flex-col justify-between ${mounted ? 'animate-fade-in-up' : 'opacity-0'}`}
+                  style={{ animationDelay: `${index * 60}ms` }}
                 >
-                  {/* Top: Avatar + Info + Heart */}
-                  <div style={{ display: "flex", justifyContent: "space-between", alignItems: "flex-start" }}>
-                    <div style={{ display: "flex", alignItems: "center", gap: 12 }}>
-                      <div
-                        style={{
-                          width: 50,
-                          height: 50,
-                          borderRadius: 12,
-                          overflow: "hidden",
-                          flexShrink: 0,
-                          background: "#f3f4f6",
-                          display: "flex",
-                          alignItems: "center",
-                          justifyContent: "center",
-                          border: "2px solid #f0f0f0",
-                        }}
-                      >
+                  <div className="flex justify-between items-start gap-4">
+                    <div className="flex items-center gap-3">
+                      <div className="w-12 h-12 rounded-xl bg-slate-100 flex items-center justify-center !border !border-slate-200 shrink-0 overflow-hidden">
                         {item?.image ? (
                           <img
                             src={item?.image}
                             alt={item?.name}
-                            style={{ width: "100%", height: "100%", objectFit: "cover" }}
+                            className="w-full h-full object-cover"
                           />
                         ) : (
-                          <FaUser size={20} color="#9ca3af" />
+                          <FaUser size={20} className="text-slate-400" />
                         )}
                       </div>
                       <div>
-                        <p className="font-family-semibold" style={{ fontSize: 15, color: "#1f2937", margin: 0 }}>
-                          {item?.name}
-                        </p>
-                        <div style={{ display: "flex", alignItems: "center", gap: 3, marginTop: 3 }}>
-                          <FaStar size={12} color="#f59e0b" />
-                          <span className="font-family-medium" style={{ fontSize: 12, color: "#6b7280" }}>
+                        <h4 className="font-family-semibold text-sm text-slate-800 !m-0 leading-tight truncate max-w-[120px]">{item?.name}</h4>
+                        <div className="flex items-center gap-1 !mt-1">
+                          <FaStar size={10} color="#004a70" />
+                          <span className="text-[11px] text-slate-500 font-family-medium block">
                             {item?.rating || "0.0"}
                           </span>
                         </div>
@@ -377,85 +175,28 @@ const Page = () => {
                     </div>
 
                     {/* Heart toggle */}
-                    <div
+                    <button
                       onClick={() => onAddFavorite(item)}
-                      style={{
-                        width: 32,
-                        height: 32,
-                        borderRadius: 8,
-                        background: isFavorite ? "#fef2f2" : "#f3f4f6",
-                        display: "flex",
-                        alignItems: "center",
-                        justifyContent: "center",
-                        cursor: "pointer",
-                        transition: "all 0.2s",
-                        flexShrink: 0,
-                      }}
-                      onMouseEnter={(e) => {
-                        if (!isFavorite) {
-                          e.currentTarget.style.background = "#fee2e2";
-                          e.currentTarget.style.transform = "scale(1.05)";
-                        }
-                      }}
-                      onMouseLeave={(e) => {
-                        if (!isFavorite) {
-                          e.currentTarget.style.background = "#f3f4f6";
-                          e.currentTarget.style.transform = "scale(1)";
-                        }
-                      }}
+                      className={`w-8 h-8 rounded-lg flex items-center justify-center border-none cursor-pointer transition-all shrink-0 ${isFavorite ? "bg-rose-50" : "bg-slate-50 hover:bg-rose-50"}`}
+                      title={isFavorite ? "Remove from favorites" : "Add to favorites"}
                     >
                       {favLoadingId === item?._id ? (
-                        <div
-                          style={{
-                            width: 14,
-                            height: 14,
-                            border: "2px solid #004a70",
-                            borderTopColor: "transparent",
-                            borderRadius: "50%",
-                            animation: "spin 0.6s linear infinite",
-                          }}
-                        />
+                        <div className="w-3.5 h-3.5 border-2 border-brand-900 border-t-transparent rounded-full animate-spin" />
                       ) : isFavorite ? (
-                        <FaHeart color="#e11d48" size={14} />
+                        <FaHeart className="text-rose-600" size={13} />
                       ) : (
-                        <FaRegHeart color="#9ca3af" size={14} />
+                        <FaRegHeart className="text-slate-400 hover:text-rose-400 transition-colors" size={13} />
                       )}
-                    </div>
+                    </button>
                   </div>
 
-                  {/* Bottom: Request button */}
-                  <div style={{ marginTop: 16, paddingTop: 16, borderTop: "1px solid #f3f4f6", display: "flex", justifyContent: "flex-end" }}>
+                  <div className="!mt-4 pt-3 border-t border-slate-100 flex justify-end">
                     <button
                       onClick={() => addRideToFavRider(item)}
-                      style={{
-                        display: "flex",
-                        alignItems: "center",
-                        justifyContent: "center",
-                        gap: 6,
-                        padding: "8px 18px",
-                        borderRadius: 8,
-                        background: "#004a70",
-                        border: "none",
-                        color: "#fff",
-                        fontSize: 13,
-                        cursor: "pointer",
-                        transition: "all 0.2s ease",
-                        whiteSpace: "nowrap",
-                      }}
-                      className="font-family-semibold"
-                      onMouseEnter={(e) => {
-                        e.currentTarget.style.background = "#003c5a";
-                        e.currentTarget.style.transform = "translateY(-1px)";
-                        e.currentTarget.style.boxShadow = "0 4px 12px rgba(0,74,112,0.25)";
-                      }}
-                      onMouseLeave={(e) => {
-                        e.currentTarget.style.background = "#004a70";
-                        e.currentTarget.style.transform = "translateY(0)";
-                        e.currentTarget.style.boxShadow = "none";
-                      }}
+                      className="flex items-center justify-center gap-2 px-4 py-2 rounded-lg bg-brand-900 hover:bg-brand-950 border-none text-white text-xs font-family-semibold cursor-pointer transition-all hover:-translate-y-0.5 shadow-sm"
                     >
                       Request a Ride
-                      <MdArrowForward size={14} />
+                      <MdArrowForward size={12} />
                     </button>
                   </div>
                 </div>
@@ -469,3 +210,4 @@ const Page = () => {
 };
 
 export default Page;
+

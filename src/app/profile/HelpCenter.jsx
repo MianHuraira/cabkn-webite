@@ -38,48 +38,52 @@ export default function HelpCenter() {
       <Form onSubmit={handleSubmit(onSubmit)} className="mt-3">
         <h2 className="font-family-semibold text-lg text-gray-900 mb-4">Help Center</h2>
 
-        <div className="flex flex-col gap-4">
+        <div className="flex flex-col">
           {/* Title - full width */}
-          <div>
-            <label className="text-sm font-family-medium text-gray-700 mb-1 block">Title</label>
-            <Controller
-              name="title"
-              control={control}
-              render={({ field }) => (
-                <input
-                  {...field}
-                  placeholder="Enter title"
-                  className={`w-full px-4 py-3 border rounded-xl text-sm outline-none transition-colors focus:border-brand-600 ${
-                    errors.title ? "border-red-400 bg-red-50" : "border-gray-200 hover:border-gray-300"
-                  }`}
-                />
-              )}
-            />
-            {errors.title && (
-              <p className="text-red-500 text-xs mt-1">{errors.title.message}</p>
-            )}
+          <div className="mb-4">
+            <div className={`rounded-xl border p-3.5 transition-all duration-300 relative ${
+              errors.title 
+                ? 'border-red-400 bg-red-50/10 focus-within:border-red-500 focus-within:ring-4 focus-within:ring-red-100' 
+                : 'border-slate-200 bg-slate-50/50 focus-within:bg-white focus-within:border-brand-500 focus-within:ring-4 focus-within:ring-brand-500/10'
+            }`}>
+              <label className="block text-[10px] font-family-semibold uppercase tracking-wider text-slate-400 mb-1">Title *</label>
+              <Controller
+                name="title"
+                control={control}
+                render={({ field }) => (
+                  <input
+                    {...field}
+                    placeholder="Enter title"
+                    className="w-full bg-transparent text-sm text-slate-800 outline-none border-none p-0 focus:ring-0 placeholder-slate-400"
+                  />
+                )}
+              />
+            </div>
+            {errors.title && <p className="text-red-500 text-xs mt-1.5 ml-1 font-family-regular">{errors.title.message}</p>}
           </div>
 
           {/* Description - full width */}
-          <div>
-            <label className="text-sm font-family-medium text-gray-700 mb-1 block">Description</label>
-            <Controller
-              name="Des"
-              control={control}
-              render={({ field }) => (
-                <textarea
-                  {...field}
-                  rows={5}
-                  placeholder="Describe your issue or question..."
-                  className={`w-full px-4 py-3 border rounded-xl text-sm outline-none transition-colors focus:border-brand-600 resize-none ${
-                    errors.Des ? "border-red-400 bg-red-50" : "border-gray-200 hover:border-gray-300"
-                  }`}
-                />
-              )}
-            />
-            {errors.Des && (
-              <p className="text-red-500 text-xs mt-1">{errors.Des.message}</p>
-            )}
+          <div className="mb-4">
+            <div className={`rounded-xl border p-3.5 transition-all duration-300 relative ${
+              errors.Des 
+                ? 'border-red-400 bg-red-50/10 focus-within:border-red-500 focus-within:ring-4 focus-within:ring-red-100' 
+                : 'border-slate-200 bg-slate-50/50 focus-within:bg-white focus-within:border-brand-500 focus-within:ring-4 focus-within:ring-brand-500/10'
+            }`}>
+              <label className="block text-[10px] font-family-semibold uppercase tracking-wider text-slate-400 mb-1">Description *</label>
+              <Controller
+                name="Des"
+                control={control}
+                render={({ field }) => (
+                  <textarea
+                    {...field}
+                    rows={5}
+                    placeholder="Describe your issue or question..."
+                    className="w-full bg-transparent text-sm text-slate-800 outline-none border-none p-0 focus:ring-0 placeholder-slate-400 resize-none h-[110px]"
+                  />
+                )}
+              />
+            </div>
+            {errors.Des && <p className="text-red-500 text-xs mt-1.5 ml-1 font-family-regular">{errors.Des.message}</p>}
           </div>
         </div>
 

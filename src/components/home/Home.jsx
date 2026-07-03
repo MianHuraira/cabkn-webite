@@ -154,20 +154,16 @@ const HomeComponent = () => {
       >
         {/* Background Image */}
         <div
-          className="absolute inset-0 pointer-events-none bg-contain bg-no-repeat bg-center"
+          className="absolute inset-0 pointer-events-none bg-cover bg-no-repeat bg-[85%_center] md:bg-center"
           style={{
             backgroundImage: `url(${Heroimg.src})`,
-            backgroundSize: "100% 100%",
           }}
         />
 
         {/* Dark Overlay */}
         <div className="absolute inset-0 bg-gradient-to-r from-black/70 via-black/50 to-black/40"></div>
 
-        <div
-          className="relative z-10 w-full mx-auto px-4 sm:px-6 lg:px-8"
-          style={{ maxWidth: 1200 }}
-        >
+        <div className="relative z-10 w-full max-w-7xl mx-auto px-4 lg:px-8">
           <div className="flex flex-col gap-3">
             <div
               className={`inline-flex items-center gap-2 text-brand-300 text-[11px] sm:text-xs uppercase tracking-[0.15em] font-family-semibold w-fit ${mounted ? "animate-fade-in-down" : "opacity-0"}`}

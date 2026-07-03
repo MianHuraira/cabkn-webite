@@ -19,7 +19,7 @@ export default function Terms() {
 
   return (
     <div className={mounted ? 'animate-fade-in-up' : 'opacity-0'}>
-      <h2 className="font-family-semibold" style={{ fontSize: 18, color: "#1f2937", margin: "0 0 16px" }}>Terms and Conditions</h2>
+      <h2 className="font-family-semibold mb-3" style={{ fontSize: 18, color: "#1f2937", margin: "0 0 16px" }}>Terms and Conditions</h2>
       {loading ? (
         <div style={{ textAlign: "center", padding: "24px 0" }}>
           <div style={{ width: 28, height: 28, border: "2px solid #e5e7eb", borderTopColor: "#004a70", borderRadius: "50%", animation: "spin 0.8s linear infinite", margin: "0 auto" }} />

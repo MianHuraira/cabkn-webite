@@ -22,37 +22,36 @@ const schema = yup.object().shape({
 const PasswordField = ({ label, name, placeholder, control, errors }) => {
   const [show, setShow] = useState(false);
   return (
-    <div className="mt-3 first:mt-0">
-      <Label className="text-sm font-family-medium text-gray-700 mb-1 block">
-        {label}
-      </Label>
-      <Controller
-        name={name}
-        control={control}
-        render={({ field }) => (
-          <div className="relative">
-            <input
-              {...field}
-              type={show ? "text" : "password"}
-              placeholder={placeholder}
-              className={`w-full px-4 py-3 pr-11 border rounded-xl text-sm outline-none transition-colors focus:border-brand-600 ${errors[name]
-                  ? "border-red-400 bg-red-50"
-                  : "border-gray-200 bg-white hover:border-gray-300"
-                }`}
-            />
-            <button
-              type="button"
-              onClick={() => setShow((s) => !s)}
-              className="absolute right-3 top-1/2 -translate-y-1/2 text-gray-400 hover:text-brand-600 transition-colors border-none bg-transparent cursor-pointer p-0"
-            >
-              {show ? <FaEyeSlash size={17} /> : <FaEye size={17} />}
-            </button>
-          </div>
-        )}
-      />
-      {errors[name] && (
-        <p className="text-red-500 text-xs mt-1">{errors[name].message}</p>
-      )}
+    <div className="mb-4 last:mb-0">
+      <div className={`rounded-xl border p-3.5 transition-all duration-300 relative ${
+        errors[name] 
+          ? 'border-red-400 bg-red-50/10 focus-within:border-red-500 focus-within:ring-4 focus-within:ring-red-100' 
+          : 'border-slate-200 bg-slate-50/50 focus-within:bg-white focus-within:border-brand-500 focus-within:ring-4 focus-within:ring-brand-500/10'
+      }`}>
+        <label className="block text-[10px] font-family-semibold uppercase tracking-wider text-slate-400 mb-1">{label} *</label>
+        <Controller
+          name={name}
+          control={control}
+          render={({ field }) => (
+            <>
+              <input
+                {...field}
+                type={show ? "text" : "password"}
+                placeholder={placeholder}
+                className="w-full bg-transparent text-sm text-slate-800 outline-none border-none p-0 pr-8 focus:ring-0 placeholder-slate-400"
+              />
+              <button
+                type="button"
+                onClick={() => setShow((s) => !s)}
+                className="absolute right-3.5 bottom-3.5 text-slate-400 hover:text-brand-600 transition-colors border-none bg-transparent cursor-pointer p-0"
+              >
+                {show ? <FaEyeSlash size={16} /> : <FaEye size={16} />}
+              </button>
+            </>
+          )}
+        />
+      </div>
+      {errors[name] && <p className="text-red-500 text-xs mt-1.5 ml-1 font-family-regular">{errors[name].message}</p>}
     </div>
   );
 };
@@ -102,9 +101,9 @@ export default function ChangePassword() {
       <Form onSubmit={handleSubmit(onSubmit)} className="mt-3">
         <h2 className="font-family-semibold text-lg text-gray-900 mb-4">Change Password</h2>
 
-        <div className="grid grid-cols-1 md:grid-cols-2 gap-x-6 gap-y-1">
+        <div className="grid grid-cols-1 md:grid-cols-2 gap-x-6">
           {/* Left col */}
-          <div className="flex flex-col gap-1">
+          <div className="flex flex-col">
             <PasswordField
               label="Old Password"
               name="oldPassword"
@@ -122,7 +121,7 @@ export default function ChangePassword() {
           </div>
 
           {/* Right col */}
-          <div className="flex flex-col gap-1">
+          <div className="flex flex-col">
             <PasswordField
               label="Confirm Password"
               name="Cpass"
@@ -133,7 +132,7 @@ export default function ChangePassword() {
           </div>
         </div>
 
-        <div className="mt-6">
+        <div className="mt-4">
           <CustomButton
             type="submit"
             loading={isLoading}

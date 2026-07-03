@@ -89,10 +89,10 @@ export default function CouponPage() {
           backgroundImage: `radial-gradient(circle at 1px 1px, white 1px, transparent 0)`,
           backgroundSize: "24px 24px"
         }} />
-        
+
         <div className="absolute top-1/4 -left-20 w-80 h-80 bg-brand-500/10 rounded-full blur-[100px] animate-pulse pointer-events-none" style={{ animationDuration: "8s" }} />
         <div className="absolute bottom-1/4 -right-20 w-96 h-96 bg-indigo-500/10 rounded-full blur-[120px] animate-pulse pointer-events-none" style={{ animationDuration: "12s" }} />
-        
+
         <div className="absolute inset-0 bg-gradient-to-t from-brand-950/60 via-transparent to-transparent pointer-events-none" />
 
         <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 relative z-10">
@@ -142,42 +142,39 @@ export default function CouponPage() {
             </p>
           </div>
         ) : (
-          <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-3 xl:grid-cols-4 gap-4">
+          <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-3 xl:grid-cols-4 gap-3">
             {Coupons?.map((item, index) => (
               <div
                 key={index}
                 onClick={() => handleShow(item)}
-                className={`relative bg-white !border !border-slate-100 rounded-2xl overflow-hidden shadow-[0_4px_20px_rgba(0,0,0,0.02)] hover:shadow-xl hover:-translate-y-1 transition-all duration-300 cursor-pointer ${
-                  mounted ? 'animate-fade-in-up' : 'opacity-0'
-                }`}
+                className={`relative bg-white !border !border-slate-100 rounded-2xl overflow-hidden shadow-[0_4px_20px_rgba(0,0,0,0.02)] hover:shadow-xl hover:-translate-y-1 transition-all duration-300 cursor-pointer ${mounted ? 'animate-fade-in-up' : 'opacity-0'
+                  }`}
                 style={{ animationDelay: `${100 + index * 60}ms` }}
               >
-                {/* Top Gradient Accent Notch */}
-                <div className="h-1.5 bg-gradient-to-r from-brand-800 via-brand-600 to-amber-500" />
-                
+
                 {/* Ticket side notches */}
-                <div className="absolute top-1/2 -left-2.5 w-5 h-5 bg-slate-50/50 rounded-full !border !border-slate-150/40 z-10" />
-                <div className="absolute top-1/2 -right-2.5 w-5 h-5 bg-slate-50/50 rounded-full !border !border-slate-150/40 z-10" />
-                
-                <div className="p-5 flex gap-4 items-start relative z-10">
-                  <div className="w-12 h-12 rounded-2xl bg-amber-50 flex items-center justify-center shrink-0">
-                    <FaTag className="text-amber-600" size={18} />
+                <div className="absolute top-1/2 -left-2 w-4 h-4 bg-slate-50/50 rounded-full !border !border-slate-150/40 z-10" />
+                <div className="absolute top-1/2 -right-2 w-4 h-4 bg-slate-50/50 rounded-full !border !border-slate-150/40 z-10" />
+
+                <div className="p-3.5 flex gap-3 items-start relative z-10">
+                  <div className="w-10 h-10 rounded-xl bg-amber-50 flex items-center justify-center shrink-0">
+                    <FaTag className="text-amber-600" size={15} />
                   </div>
                   <div className="flex-grow min-w-0">
                     <h3 className="text-sm font-family-bold text-slate-800 truncate !m-0 leading-tight">
                       {item?.title}
                     </h3>
-                    
-                    <div className="inline-flex items-center gap-1.5 !mt-2.5 bg-brand-50/50 !border !border-brand-100/60 rounded-lg px-2.5 py-1">
-                      <MdContentCopy size={11} className="text-brand-900" />
-                      <span className="text-xs font-family-semibold text-brand-950 font-mono tracking-wider">
+
+                    <div className="inline-flex items-center gap-1.5 !mt-2 bg-brand-50/50 !border !border-brand-100/60 rounded px-2 py-0.5">
+                      <MdContentCopy size={10} className="text-brand-900" />
+                      <span className="text-[11px] font-family-semibold text-brand-950 font-mono tracking-wider">
                         {item?.code}
                       </span>
                     </div>
 
-                    <div className="flex items-center gap-2.5 !mt-3">
+                    <div className="flex items-center gap-2 !mt-2.5">
                       {getDiscountLabel(item) && (
-                        <span className="text-[10px] font-family-extrabold text-amber-900 bg-amber-100/80 rounded-md px-2 py-0.5 uppercase tracking-wide">
+                        <span className="text-[10px] font-family-bold text-amber-900 bg-amber-100/80 rounded px-1.5 py-0.5 uppercase tracking-wide">
                           {getDiscountLabel(item)}
                         </span>
                       )}
@@ -198,51 +195,46 @@ export default function CouponPage() {
         centered
         show={show}
         onHide={handleClose}
-        style={{ borderRadius: 20, overflow: "hidden" }}
+        style={{ borderRadius: 16, overflow: "hidden" }}
         size="sm"
       >
-        <div className="relative text-center px-6 py-8 bg-gradient-to-br from-slate-900 via-brand-900 to-brand-950">
-          <div className="absolute top-0 right-0 w-24 h-24 bg-white/5 rounded-full pointer-events-none" />
+        <div className="relative text-center px-4 py-4 bg-gradient-to-br from-slate-900 via-brand-900 to-brand-950">
           <button
             onClick={handleClose}
-            className="absolute top-3 right-3 w-8 h-8 rounded-lg bg-white/10 hover:bg-white/20 border-none text-white text-xs flex items-center justify-center transition-colors cursor-pointer"
+            className="absolute top-2 right-2 w-6 h-6 rounded bg-white/10 hover:bg-white/20 border-none text-white text-[10px] flex items-center justify-center transition-colors cursor-pointer"
           >
             ✕
           </button>
-          
-          <div className="w-14 h-14 rounded-2xl bg-white/10 backdrop-blur-md flex items-center justify-center mx-auto !mb-3">
-            <FaGift size={24} className="text-amber-400" />
-          </div>
-          <h2 className="text-white text-lg font-family-bold !m-0">Special Offer</h2>
-          <p className="text-slate-400 text-xs !mt-1 !m-0 font-family-regular">Use this coupon code to save</p>
+
+          <h2 className="text-white text-base font-family-bold !m-0">Special Offer</h2>
+          <p className="text-slate-400 text-[11px] !mt-0.5 !m-0 font-family-regular">Use this coupon code to save</p>
         </div>
 
-        <div className="p-6 text-center">
-          <p className="text-xs text-slate-500 font-family-semibold !m-0 !mb-4 leading-normal">
+        <div className="p-4 text-center">
+          <p className="text-xs text-slate-500 font-family-semibold !m-0 !mb-3 leading-normal">
             {CouponCode?.title}
           </p>
 
           {getDiscountLabel(CouponCode) && (
-            <div className="inline-flex items-center gap-1.5 bg-amber-50 !border !border-amber-200 rounded-lg px-3 py-1 !mb-4">
-              <FaPercentage size={10} className="text-amber-700" />
-              <span className="text-xs font-family-bold text-amber-800">
+            <div className="inline-flex items-center gap-1.5 bg-amber-50 !border !border-amber-200 rounded px-2.5 py-0.5 !mb-3">
+              <FaPercentage size={9} className="text-amber-700" />
+              <span className="text-[11px] font-family-bold text-amber-800">
                 {getDiscountLabel(CouponCode)}
               </span>
             </div>
           )}
 
-          <div className="bg-slate-50 !border !border-dashed !border-slate-300 rounded-xl p-3.5 flex items-center justify-between gap-3 !mb-4">
+          <div className="bg-slate-50 !border !border-dashed !border-slate-300 rounded-lg p-2.5 flex items-center justify-between gap-2 !mb-3">
             <div className="flex items-center gap-2 min-w-0">
-              <MdContentCopy size={14} className="text-slate-400" />
-              <span className="text-sm font-family-bold text-slate-800 font-mono tracking-widest truncate">
+              <MdContentCopy size={13} className="text-slate-400" />
+              <span className="text-xs font-family-bold text-slate-800 font-mono tracking-widest truncate">
                 {CouponCode?.code}
               </span>
             </div>
             <button
               onClick={() => handleCopy(CouponCode?.code)}
-              className={`px-4 py-1.5 rounded-lg text-white font-family-semibold text-xs border-none cursor-pointer transition-colors ${
-                copied ? "bg-emerald-600" : "bg-brand-900 hover:bg-brand-950"
-              }`}
+              className={`px-3 py-1 rounded text-white font-family-semibold text-[11px] border-none cursor-pointer transition-colors ${copied ? "bg-emerald-600" : "bg-brand-900 hover:bg-brand-950"
+                }`}
             >
               {copied ? "Copied!" : "Copy"}
             </button>

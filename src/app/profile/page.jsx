@@ -384,177 +384,190 @@ export default function EditProfile() {
                   }}
                 >
                   <div>
-                    <Label for="name" className="font-family-medium" style={{ fontSize: 13, color: "#374151" }}>
-                      Full Name
-                    </Label>
-                    <Controller
-                      name="name"
-                      control={control}
-                      render={({ field }) => (
-                        <Input
-                          {...field}
-                          placeholder="Enter Full Name"
-                          style={{
-                            borderRadius: 10,
-                            border: errors.name ? "1px solid #ef4444" : "1px solid #d1d5db",
-                            padding: "10px 14px",
-                            fontSize: 14,
-                            marginTop: 6,
-                          }}
-                          invalid={errors.name && true}
-                        />
-                      )}
-                    />
-                    {errors.name && (
-                      <FormFeedback className="font-family-regular" style={{ fontSize: 12, marginTop: 4 }}>
-                        {errors.name.message}
-                      </FormFeedback>
-                    )}
-                  </div>
-
-                  <div>
-                    <Label for="phone" className="font-family-medium" style={{ fontSize: 13, color: "#374151" }}>
-                      Phone Number
-                    </Label>
-                    <Controller
-                      name="phone"
-                      control={control}
-                      render={({ field }) => (
-                        <PhoneInput
-                          country={"us"}
-                          value={field.value}
-                          onChange={(value) => field.onChange(value)}
-                          onBlur={field.onBlur}
-                          disabled={true}
-                          inputStyle={{
-                            width: "100%",
-                            padding: "10px 14px 10px 48px",
-                            borderRadius: "10px",
-                            border: errors.phone ? "1px solid #ef4444" : "1px solid #d1d5db",
-                            fontSize: "14px",
-                            marginTop: "6px",
-                            background: "#f9fafb",
-                            height: "42px",
-                            color: "#374151",
-                          }}
-                          buttonStyle={{
-                            border: "none",
-                            background: "transparent",
-                            borderRadius: "10px 0 0 10px",
-                            paddingLeft: "8px",
-                            marginTop: "6px",
-                          }}
-                          dropdownStyle={{
-                            borderRadius: "10px",
-                          }}
-                        />
-                      )}
-                    />
-                    {errors.phone && (
-                      <FormFeedback className="font-family-regular" style={{ fontSize: 12, marginTop: 4 }}>
-                        {errors.phone.message}
-                      </FormFeedback>
-                    )}
-                  </div>
-
-                  <div>
-                    <Label for="email" className="font-family-medium" style={{ fontSize: 13, color: "#374151" }}>
-                      Email
-                    </Label>
-                    <Controller
-                      name="email"
-                      control={control}
-                      render={({ field }) => (
-                        <Input
-                          readOnly
-                          {...field}
-                          placeholder="Enter Email"
-                          style={{
-                            borderRadius: 10,
-                            border: errors.email ? "1px solid #ef4444" : "1px solid #d1d5db",
-                            padding: "10px 14px",
-                            fontSize: 14,
-                            marginTop: 6,
-                            background: "#f9fafb",
-                          }}
-                          invalid={errors.email && true}
-                        />
-                      )}
-                    />
-                    {errors.email && (
-                      <FormFeedback className="font-family-regular" style={{ fontSize: 12, marginTop: 4 }}>
-                        {errors.email.message}
-                      </FormFeedback>
-                    )}
-                  </div>
-
-                  <div>
-                    <Label for="address" className="font-family-medium" style={{ fontSize: 13, color: "#374151" }}>
-                      Address
-                    </Label>
-                    <Controller
-                      name="address"
-                      control={control}
-                      render={({ field }) => (
-                        <div style={{ position: "relative" }}>
-                          <Input
+                    <div className={`rounded-xl border p-3.5 transition-all duration-300 ${
+                      errors.name 
+                        ? 'border-red-400 bg-red-50/10 focus-within:border-red-500 focus-within:ring-4 focus-within:ring-red-100' 
+                        : 'border-slate-200 bg-slate-50/50 focus-within:bg-white focus-within:border-brand-500 focus-within:ring-4 focus-within:ring-brand-500/10'
+                    }`}>
+                      <label className="block text-[10px] font-family-semibold uppercase tracking-wider text-slate-400 mb-1">Full Name *</label>
+                      <Controller
+                        name="name"
+                        control={control}
+                        render={({ field }) => (
+                          <input
                             {...field}
-                            placeholder="Enter address"
-                            value={searchQuery}
-                            onChange={(e) => handleSearch(e.target.value)}
-                            style={{
-                              borderRadius: 10,
-                              border: errors.address ? "1px solid #ef4444" : "1px solid #d1d5db",
-                              padding: "10px 14px",
-                              fontSize: 14,
-                              marginTop: 6,
-                            }}
-                            invalid={errors.address && true}
+                            placeholder="Enter Full Name"
+                            className="w-full bg-transparent text-sm text-slate-800 outline-none border-none p-0 focus:ring-0 placeholder-slate-400"
                           />
-                          {errors.address && (
-                            <FormFeedback className="font-family-regular" style={{ fontSize: 12 }}>
-                              {errors.address.message}
-                            </FormFeedback>
-                          )}
-                          {PridicLoading && (
-                            <span className="font-family-regular" style={{ fontSize: 12, color: "#6b7280", marginTop: 4, display: "block" }}>
-                              Loading...
-                            </span>
-                          )}
-                          {predictions.length > 0 && (
-                            <ListGroup
-                              style={{
-                                position: "absolute",
-                                zIndex: 10,
-                                width: "100%",
-                                maxHeight: "200px",
-                                overflowY: "auto",
-                                borderRadius: 10,
-                                border: "1px solid #e5e7eb",
-                              }}
-                            >
-                              {predictions.map((prediction) => (
-                                <ListGroupItem
-                                  key={prediction.place_id}
-                                  onClick={() =>
-                                    handlePredictionPress(prediction)
-                                  }
-                                  className="font-family-medium"
-                                  style={{ cursor: "pointer", fontSize: 13, padding: "10px 14px" }}
-                                >
-                                  {prediction.description}
-                                </ListGroupItem>
-                              ))}
-                            </ListGroup>
-                          )}
-                          {noData && (
-                            <span className="font-family-regular" style={{ fontSize: 12, color: "#6b7280", marginTop: 4, display: "block" }}>
-                              No results found
-                            </span>
-                          )}
-                        </div>
-                      )}
-                    />
+                        )}
+                      />
+                    </div>
+                    {errors.name && <p className="text-red-500 text-xs mt-1.5 ml-1 font-family-regular">{errors.name.message}</p>}
+                  </div>
+
+                  <div>
+                    <div className={`rounded-xl border p-3.5 transition-all duration-300 ${
+                      errors.phone 
+                        ? 'border-red-400 bg-red-50/10 focus-within:border-red-500 focus-within:ring-4 focus-within:ring-red-100' 
+                        : 'border-slate-200 bg-slate-50/50 focus-within:bg-white focus-within:border-brand-500 focus-within:ring-4 focus-within:ring-brand-500/10'
+                    }`}>
+                      <label className="block text-[10px] font-family-semibold uppercase tracking-wider text-slate-400 mb-1">Phone Number *</label>
+                      <style>{`
+                        .react-tel-input {
+                          display: flex !important;
+                          align-items: center !important;
+                          height: 24px !important;
+                        }
+                        .react-tel-input .form-control {
+                          height: 24px !important;
+                          line-height: 24px !important;
+                          padding-top: 0 !important;
+                          padding-bottom: 0 !important;
+                          margin-top: 0 !important;
+                          margin-bottom: 0 !important;
+                        }
+                        .react-tel-input .flag-dropdown {
+                          height: 24px !important;
+                          top: 50% !important;
+                          transform: translateY(-50%) !important;
+                          border: none !important;
+                          background: transparent !important;
+                        }
+                        .react-tel-input .selected-flag {
+                          height: 24px !important;
+                          padding: 0 !important;
+                          background: transparent !important;
+                        }
+                      `}</style>
+                      <Controller
+                        name="phone"
+                        control={control}
+                        render={({ field }) => (
+                          <PhoneInput
+                            country={"us"}
+                            value={field.value}
+                            onChange={(value) => field.onChange(value)}
+                            onBlur={field.onBlur}
+                            disabled={true}
+                            inputStyle={{
+                              width: "100%",
+                              padding: "0px 0px 0px 42px",
+                              borderRadius: "0",
+                              border: "none",
+                              fontSize: "0.875rem",
+                              outline: "none",
+                              background: "transparent",
+                              height: "24px",
+                              lineHeight: "24px",
+                              color: "#1e293b",
+                              fontFamily: "inherit",
+                              cursor: "not-allowed"
+                            }}
+                            buttonStyle={{
+                              border: "none",
+                              background: "transparent",
+                              borderRadius: "0",
+                              paddingLeft: "0",
+                              height: "24px",
+                              minWidth: "auto",
+                              cursor: "not-allowed"
+                            }}
+                            dropdownStyle={{ borderRadius: "0.75rem", color: "#333" }}
+                          />
+                        )}
+                      />
+                    </div>
+                    {errors.phone && <p className="text-red-500 text-xs mt-1.5 ml-1 font-family-regular">{errors.phone.message}</p>}
+                  </div>
+
+                  <div>
+                    <div className={`rounded-xl border p-3.5 transition-all duration-300 ${
+                      errors.email 
+                        ? 'border-red-400 bg-red-50/10 focus-within:border-red-500 focus-within:ring-4 focus-within:ring-red-100' 
+                        : 'border-slate-200 bg-slate-50/50 focus-within:bg-white focus-within:border-brand-500 focus-within:ring-4 focus-within:ring-brand-500/10'
+                    }`}>
+                      <label className="block text-[10px] font-family-semibold uppercase tracking-wider text-slate-400 mb-1">Email *</label>
+                      <Controller
+                        name="email"
+                        control={control}
+                        render={({ field }) => (
+                          <input
+                            {...field}
+                            readOnly
+                            placeholder="Enter Email"
+                            className="w-full bg-transparent text-sm text-slate-500 outline-none border-none p-0 focus:ring-0 placeholder-slate-400 cursor-not-allowed"
+                          />
+                        )}
+                      />
+                    </div>
+                    {errors.email && <p className="text-red-500 text-xs mt-1.5 ml-1 font-family-regular">{errors.email.message}</p>}
+                  </div>
+
+                  <div>
+                    <div className={`rounded-xl border p-3.5 transition-all duration-300 ${
+                      errors.address 
+                        ? 'border-red-400 bg-red-50/10 focus-within:border-red-500 focus-within:ring-4 focus-within:ring-red-100' 
+                        : 'border-slate-200 bg-slate-50/50 focus-within:bg-white focus-within:border-brand-500 focus-within:ring-4 focus-within:ring-brand-500/10'
+                    }`}>
+                      <label className="block text-[10px] font-family-semibold uppercase tracking-wider text-slate-400 mb-1">Address *</label>
+                      <Controller
+                        name="address"
+                        control={control}
+                        render={({ field }) => (
+                          <div style={{ position: "relative" }}>
+                            <input
+                              {...field}
+                              placeholder="Enter address"
+                              value={searchQuery}
+                              onChange={(e) => handleSearch(e.target.value)}
+                              className="w-full bg-transparent text-sm text-slate-800 outline-none border-none p-0 focus:ring-0 placeholder-slate-400"
+                            />
+                            {PridicLoading && (
+                              <span className="font-family-regular" style={{ fontSize: 12, color: "#6b7280", marginTop: 4, display: "block" }}>
+                                Loading...
+                              </span>
+                            )}
+                            {predictions.length > 0 && (
+                              <ListGroup
+                                style={{
+                                  position: "absolute",
+                                  top: "100%",
+                                  left: 0,
+                                  zIndex: 10,
+                                  width: "100%",
+                                  maxHeight: "200px",
+                                  overflowY: "auto",
+                                  borderRadius: 10,
+                                  border: "1px solid #e5e7eb",
+                                  background: "#fff",
+                                  boxShadow: "0 10px 25px rgba(0,0,0,0.1)",
+                                  marginTop: "8px"
+                                }}
+                              >
+                                {predictions.map((prediction) => (
+                                  <ListGroupItem
+                                    key={prediction.place_id}
+                                    onClick={() =>
+                                      handlePredictionPress(prediction)
+                                    }
+                                    className="font-family-medium hover:bg-slate-50 transition-colors"
+                                    style={{ cursor: "pointer", fontSize: 13, padding: "10px 14px", border: "none", borderBottom: "1px solid #f1f5f9" }}
+                                  >
+                                    {prediction.description}
+                                  </ListGroupItem>
+                                ))}
+                              </ListGroup>
+                            )}
+                            {noData && (
+                              <span className="font-family-regular" style={{ fontSize: 12, color: "#6b7280", marginTop: 4, display: "block" }}>
+                                No results found
+                              </span>
+                            )}
+                          </div>
+                        )}
+                      />
+                    </div>
+                    {errors.address && <p className="text-red-500 text-xs mt-1.5 ml-1 font-family-regular">{errors.address.message}</p>}
                   </div>
                 </div>
 
