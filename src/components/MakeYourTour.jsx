@@ -2,16 +2,11 @@
 
 import React, { useEffect, useRef, useState } from "react";
 import mapboxgl from "mapbox-gl";
-
 import "mapbox-gl/dist/mapbox-gl.css";
 import { Controller, useForm } from "react-hook-form";
 import { yupResolver } from "@hookform/resolvers/yup";
 import * as yup from "yup";
-import {
-  Input,
-  ListGroup,
-  ListGroupItem,
-} from "reactstrap";
+import { ListGroup, ListGroupItem } from "reactstrap";
 import { Form, Offcanvas } from "react-bootstrap";
 import { FaLocationDot } from "react-icons/fa6";
 import { MdOutlineMyLocation } from "react-icons/md";
@@ -27,72 +22,7 @@ import EmptyState from "@/components/EmptyState";
 import ThingstodoCard from "@/components/home/ThingstodoCard";
 import ApiFunction from "@/components/ApiFunction/ApiFunction";
 import { useRouter } from "next/navigation";
-import Slider from "react-slick";
 import CustomButton from "./CustomButton";
-
-// const frontendBaseURL = "https://cabkn.com/popular";
-
-// export async function generateMetadata({  }) {
-
-//   try {
-
-//     // Enhanced metadata for better social media compatibility
-//     return {
-//       title: 'CabKn',
-//       description: category.about || `Explore ${'CabKn'}`,
-//       openGraph: {
-//         title: 'CabKn',
-//         description: '' || `Explore ${'CabKn'}`,
-//         type: "website",
-//         locale: "en_US",
-//         url: `${frontendBaseURL}/${id}`, // Using frontendBaseURL properly
-//         images: imageUrl
-//           ? [
-//               {
-//                 url: imageUrl,
-//                 width: 1200,
-//                 height: 630,
-//                 alt: 'CabKn',
-//               },
-//             ]
-//           : [],
-//         siteName: "CabKn",
-//       },
-
-//       robots: {
-//         index: true,
-//         follow: true,
-//       },
-//       twitter: {
-//         card: "summary_large_image",
-//         title: category.name,
-//         description: category.about,
-//         images: imageUrl
-//           ? [imageUrl]
-//           : [
-//               "https://firebasestorage.googleapis.com/v0/b/new-jesuspod.appspot.com/o/logoBlue.png?alt=media&token=8512e03c-5b30-4e1f-b805-d5facfa150a5",
-//             ],
-//       },
-//     };
-//   } catch (error) {
-//     console.error(
-//       "[generateMetadata] Error generating metadata:",
-//       error.message
-//     );
-//     return {
-//       title: "Error Title",
-//       description: "Error fetching data.",
-//       openGraph: {
-//         title: "Cabkn",
-//         description: "Error fetching data.",
-//         type: "website",
-//         locale: "en_US",
-//         url: "https://cabkn.com", // Replace with your actual domain
-//       },
-//       robots: "noindex, nofollow",
-//     };
-//   }
-// }
 
 function MakeYourTour() {
   const router = useRouter();
@@ -102,12 +32,9 @@ function MakeYourTour() {
     address: "",
   });
   const [Count, setCount] = useState(1);
-
   const [MoreLoading, setMoreLoading] = useState(false);
-
   const [error, setError] = useState("");
   const [show, setShow] = useState(false);
-
   const { getData, header1 } = ApiFunction();
   const [distance, setDistance] = useState("");
   const [Rideprice, setPrice] = useState(0);
@@ -115,7 +42,9 @@ function MakeYourTour() {
   const [Schuale, setSchuale] = useState(false);
 
   const [mounted, setMounted] = useState(false);
-  useEffect(() => { setMounted(true); }, []);
+  useEffect(() => {
+    setMounted(true);
+  }, []);
 
   const [TypeRide, setTypeRide] = useState("");
   const [predictions, setPredictions] = useState([]);
@@ -135,7 +64,6 @@ function MakeYourTour() {
   const [MutiRides, setMutiRides] = useState([]);
   const [Category, setCategory] = useState([]);
   const [selectedCategoryId, setSelectedCategoryId] = useState(0);
-
   const [TotalPrice, setTotalPrice] = useState(0);
 
   const schema = yup.object().shape({
@@ -157,6 +85,33 @@ function MakeYourTour() {
   const [LocationDetails3, setLocationDetails3] = useState([]);
 
   const { token } = theme.useToken();
+
+  const tabsRef = useRef(null);
+  const [isDown, setIsDown] = useState(false);
+  const [startX, setStartX] = useState(0);
+  const [scrollLeft, setScrollLeft] = useState(0);
+
+  const handleMouseDown = (e) => {
+    setIsDown(true);
+    setStartX(e.pageX - tabsRef.current.offsetLeft);
+    setScrollLeft(tabsRef.current.scrollLeft);
+  };
+
+  const handleMouseLeave = () => {
+    setIsDown(false);
+  };
+
+  const handleMouseUp = () => {
+    setIsDown(false);
+  };
+
+  const handleMouseMove = (e) => {
+    if (!isDown) return;
+    e.preventDefault();
+    const x = e.pageX - tabsRef.current.offsetLeft;
+    const walk = (x - startX) * 1.5;
+    tabsRef.current.scrollLeft = scrollLeft - walk;
+  };
 
   const getCategory = async () => {
     setCatLoading(true);
@@ -199,9 +154,6 @@ function MakeYourTour() {
       setloading(false);
     }
   };
-  useEffect(() => {
-    getCategorydata();
-  }, []);
 
   const ShowMoreDAta = async () => {
     setCount(Count + 1);
@@ -222,6 +174,7 @@ function MakeYourTour() {
       setMoreLoading(false);
     }
   };
+
   const getLocation = async () => {
     if (navigator.geolocation) {
       navigator.geolocation.getCurrentPosition(
@@ -272,9 +225,9 @@ function MakeYourTour() {
       setError("Geolocation is not supported by your browser.");
     }
   };
+
   const handlePermissionGuide = () => {
     setShowPermissionDialog(false);
-    // Show instructions based on browser
     const instructions = `
       To enable location access:
       1. Click the lock/info icon in your browser's address bar
@@ -287,43 +240,7 @@ function MakeYourTour() {
 
   useEffect(() => {
     getLocation();
-  }, [navigator.geolocation]);
-
-  const settings2 = {
-    dots: false,
-    infinite: false,
-    speed: 500,
-    slidesToShow: 5,
-    slidesToScroll: 3,
-    arrows: false,
-    initialSlide: 0,
-    responsive: [
-      {
-        breakpoint: 1024,
-        settings: {
-          slidesToShow: 3,
-          slidesToScroll: 3,
-          infinite: true,
-          dots: true,
-        },
-      },
-      {
-        breakpoint: 600,
-        settings: {
-          slidesToShow: 2,
-          slidesToScroll: 2,
-          initialSlide: 2,
-        },
-      },
-      {
-        breakpoint: 480,
-        settings: {
-          slidesToShow: 2,
-          slidesToScroll: 1,
-        },
-      },
-    ],
-  };
+  }, []);
 
   const onChangeSchedule = (e) => {
     setSchuale(e.target.checked);
@@ -342,7 +259,6 @@ function MakeYourTour() {
       longitude: locationDetails1?.lng,
     };
     const distance = getDistance(start, end) / 1000;
-
     setDistance(distance.toFixed(1));
   };
 
@@ -363,7 +279,6 @@ function MakeYourTour() {
 
     try {
       await loader.importLibrary("places");
-
       const autocompleteService = new google.maps.places.AutocompleteService();
 
       autocompleteService.getPlacePredictions(
@@ -394,7 +309,7 @@ function MakeYourTour() {
                         } else {
                           resolve(null);
                         }
-                      }
+                      },
                     );
                   })
               )
@@ -403,7 +318,6 @@ function MakeYourTour() {
             setPridicLoading(false);
             setNoData(false);
           } else {
-            console.error("Error fetching place predictions:", status);
             setNoData(true);
             setPridicLoading(false);
           }
@@ -411,7 +325,6 @@ function MakeYourTour() {
         }
       );
     } catch (error) {
-      console.error("Error importing Places API library:", error);
       setNoData(true);
       setPridicLoading(false);
     }
@@ -424,10 +337,8 @@ function MakeYourTour() {
       lng: prediction?.latLng?.lng || 0,
     });
     setValue("name", prediction?.description || "");
-
     setSearchQuery(prediction.description);
     setCurrentLocation({});
-    // locationSet();
     setPredictions([]);
     setNoData(false);
   };
@@ -443,7 +354,6 @@ function MakeYourTour() {
 
     try {
       await loader.importLibrary("places");
-
       const autocompleteService = new google.maps.places.AutocompleteService();
 
       autocompleteService.getPlacePredictions(
@@ -474,7 +384,7 @@ function MakeYourTour() {
                         } else {
                           resolve(null);
                         }
-                      }
+                      },
                     );
                   })
               )
@@ -483,7 +393,6 @@ function MakeYourTour() {
             setPridicLoadingEnd(false);
             setNoData(false);
           } else {
-            console.error("Error fetching place predictions:", status);
             setNoData(true);
             setPridicLoadingEnd(false);
           }
@@ -491,7 +400,6 @@ function MakeYourTour() {
         }
       );
     } catch (error) {
-      console.error("Error importing Places API library:", error);
       setNoData(true);
       setPridicLoadingEnd(false);
     }
@@ -594,55 +502,29 @@ function MakeYourTour() {
   };
 
   return (
-    <div className={`${mounted ? "animate-fade-in" : "opacity-0"}`} style={{ background: "#f8fafc", minHeight: "100vh" }}>
-      <style>{`
-        .make-tour-input input,
-        .make-tour-input .form-control {
-          background: #f9fafb !important;
-          border: none !important;
-          outline: none !important;
-        }
-        .make-tour-input input:focus,
-        .make-tour-input .form-control:focus {
-          box-shadow: 0 0 0 2px rgba(0,74,112,0.3) !important;
-          background: #fff !important;
-          border-color: transparent !important;
-          outline: none !important;
-        }
-      `}</style>
-      {/* Blue Gradient Header */}
-      <div
-        className={`bg-gradient-to-br from-brand-800 to-brand-950 ${mounted ? "animate-fade-in-down" : "opacity-0"} overflow-hidden`}
-        style={{ padding: "28px 0 44px", position: "relative", animationDelay: "50ms" }}
-      >
-        {/* Decorative circles */}
-        <div style={{ position: "absolute", top: -80, right: -40, width: 260, height: 260, borderRadius: "50%", background: "rgba(255,255,255,0.03)", pointerEvents: "none" }} />
-        <div style={{ position: "absolute", bottom: -60, left: -20, width: 200, height: 200, borderRadius: "50%", background: "rgba(255,255,255,0.03)", pointerEvents: "none" }} />
-        <div style={{ position: "absolute", top: 10, right: 200, width: 100, height: 100, borderRadius: "50%", background: "rgba(255,255,255,0.04)", pointerEvents: "none" }} />
+    <div className={`min-h-screen bg-slate-50/50 ${mounted ? "animate-fade-in" : "opacity-0"}`}>
+      {/* ===== HERO BANNER ===== */}
+      <section className="relative overflow-hidden bg-gradient-to-br from-slate-900 via-brand-900 to-brand-950 !pt-28 !pb-28">
+        <div className="absolute inset-0 opacity-[0.04]" style={{
+          backgroundImage: `radial-gradient(circle at 1px 1px, white 1px, transparent 0)`,
+          backgroundSize: "24px 24px"
+        }} />
 
-        <div style={{ maxWidth: 1320, margin: "0 auto", padding: "0 16px", position: "relative", zIndex: 1 }}>
-          <div className="font-family-medium hover:opacity-80 transition-opacity" style={{ color: "rgba(255,255,255,0.6)", fontSize: 13, marginBottom: 12 }}>
-            <a href="/" style={{ color: "rgba(255,255,255,0.5)", textDecoration: "none" }} className="hover:text-white/80 transition-colors">Home</a>
-            <span style={{ margin: "0 6px" }}>/</span>
-            <span className="font-family-medium" style={{ color: "rgba(255,255,255,0.8)" }}>Make Your Own Tour</span>
+        <div className="absolute top-1/4 -left-20 w-80 h-80 bg-brand-500/10 rounded-full blur-[100px] animate-pulse pointer-events-none" style={{ animationDuration: "8s" }} />
+        <div className="absolute bottom-1/4 -right-20 w-96 h-96 bg-indigo-500/10 rounded-full blur-[120px] animate-pulse pointer-events-none" style={{ animationDuration: "12s" }} />
+
+        <div className="absolute inset-0 bg-gradient-to-t from-brand-950/60 via-transparent to-transparent pointer-events-none" />
+
+        <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 relative z-10">
+          <div className="flex items-center gap-2 text-slate-400 text-xs font-family-medium !mb-4">
+            <a href="/" className="text-slate-400 hover:text-white transition-colors">Home</a>
+            <span className="text-slate-500">/</span>
+            <span className="text-slate-200">Make Your Own Tour</span>
           </div>
-          <div
-            style={{
-              display: "flex",
-              alignItems: "center",
-              justifyContent: "space-between",
-              flexWrap: "wrap",
-              gap: 12,
-            }}
-          >
-            <div style={{ display: "flex", alignItems: "center", gap: 16 }}>
-              <div style={{
-                width: 48, height: 48, borderRadius: 14,
-                background: "rgba(255,255,255,0.12)",
-                backdropFilter: "blur(8px)",
-                display: "flex", alignItems: "center", justifyContent: "center",
-                flexShrink: 0,
-              }}>
+
+          <div className="flex flex-wrap justify-between items-center gap-4">
+            <div className="flex items-center gap-4">
+              <div className="w-13 h-13 rounded-2xl bg-white/10 backdrop-blur-md flex items-center justify-center shrink-0">
                 <svg width={24} height={24} viewBox="0 0 24 24" fill="none" stroke="#fff" strokeWidth={2} strokeLinecap="round" strokeLinejoin="round">
                   <circle cx="12" cy="12" r="10" />
                   <path d="M2 12h20" />
@@ -650,402 +532,351 @@ function MakeYourTour() {
                 </svg>
               </div>
               <div>
-                <h1 className="font-family-bold" style={{ color: "#fff", fontSize: "clamp(22px, 4vw, 28px)", margin: 0, letterSpacing: "-0.3px", }}>
-                  Make Your Own Tour
+                <h1 className="text-white text-3xl font-family-bold tracking-tight !m-0 leading-tight">
+                  Make Your Own{" "}
+                  <span className="text-transparent bg-clip-text bg-gradient-to-r from-brand-300 via-sky-300 to-indigo-200">
+                    Tour
+                  </span>
                 </h1>
-                <p className="font-family-regular" style={{ color: "rgba(255,255,255,0.6)", fontSize: 14, margin: "4px 0 0" }}>
+                <p className="text-slate-400 text-sm !mt-1 !m-0 font-family-regular">
                   Create a custom itinerary for your perfect trip
                 </p>
               </div>
             </div>
           </div>
         </div>
-      </div>
+      </section>
 
-      {/* Content - Side by Side */}
-      <div style={{ maxWidth: 1320, margin: "0 auto", padding: "20px 16px", width: "100%" }}>
-        <div className="grid grid-cols-1 lg:grid-cols-12 gap-6">
-          {/* Left: Create Your Tour Form */}
-          <div className="lg:col-span-4">
-            <div
-              className={`make-tour-input ${mounted ? "animate-fade-in-up" : "opacity-0"}`}
-              style={{
-                background: "#fff",
-                borderRadius: 16,
-                border: "1px solid #e2e8f0",
-                boxShadow: "0 1px 3px rgba(0,0,0,0.04)",
-                padding: 24,
-                animationDelay: "150ms",
-                transition: "all 0.2s",
-              }}
-              onMouseEnter={(e) => { e.currentTarget.style.boxShadow = "0 4px 12px rgba(0,0,0,0.08)"; e.currentTarget.style.transform = "translateY(-2px)"; }}
-              onMouseLeave={(e) => { e.currentTarget.style.boxShadow = "0 1px 3px rgba(0,0,0,0.04)"; e.currentTarget.style.transform = "none"; }}
-            >
-              <h2 className="font-family-bold" style={{ fontSize: 18, color: "#0f172a", margin: "0 0 6px", textAlign: "center" }}>
-                Create Your Tour
-              </h2>
-              <p className="font-family-regular" style={{ fontSize: 13, color: "#64748b", textAlign: "center", margin: "0 0 20px" }}>
-                Set your start and end locations
-              </p>
+      {/* ===== CONTENT LAYOUT ===== */}
+      <div className="!-mt-12 max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 relative z-10 !pb-24">
+        <div className="grid grid-cols-1 lg:grid-cols-12 gap-8 items-start">
 
-              <Form onSubmit={handleSubmit(onSubmit)}>
-                <div style={{ marginBottom: 18 }}>
-                  <div className="font-family-medium d-flex align-items-center" style={{ fontSize: 13, color: "#374151", marginBottom: 6 }}>
-                    <FaLocationDot size={12} color="#004a70" style={{ marginRight: 4 }} />
-                    Start Location
-                  </div>
-                  <div className="flex items-center gap-2">
-                    <Controller
-                      name="name"
-                      control={control}
-                      render={({ field }) => (
-                        <div style={{ position: "relative", width: "100%" }}>
-                          <Input
-                            {...field}
-                            placeholder="Enter start location"
-                            value={searchQuery}
-                            onChange={(e) => handleSearch(e.target.value)}
-                            style={{ width: "100%", padding: "11px 14px", borderRadius: 10, fontSize: 14 }}
-                            className={`bg-gray-50 border-0 focus:ring-1 focus:ring-brand-600/30 focus:outline-none focus:bg-white${errors.name ? " ring-2 ring-red-400" : ""}`}
-                          />
-                          {errors.name && (
-                            <p className="font-family-medium" style={{ fontSize: 12, color: "#ef4444", margin: "4px 0 0" }}>{errors.name.message}</p>
-                          )}
-                          {PridicLoading && <div className="font-family-regular" style={{ fontSize: 12, color: "#94a3b8", marginTop: 4 }}>Loading...</div>}
-                          {predictions.length > 0 && (
-                            <ListGroup style={{
-                              position: "absolute",
-                              zIndex: 10,
-                              width: "100%",
-                              maxHeight: "180px",
-                              overflowY: "auto",
-                              borderRadius: 10,
-                              border: "1px solid #e2e8f0",
-                              boxShadow: "0 4px 12px rgba(0,0,0,0.08)",
-                            }}>
-                              {predictions.map((prediction) => (
-                                <ListGroupItem
-                                  key={prediction.place_id}
-                                  onClick={() => handlePredictionPress(prediction)}
-                                  style={{ cursor: "pointer", fontSize: 13, padding: "10px 14px", border: "none", borderBottom: "1px solid #f1f5f9" }}
-                                >
-                                  {prediction.description}
-                                </ListGroupItem>
-                              ))}
-                            </ListGroup>
-                          )}
-                          {noData && <div className="font-family-regular" style={{ fontSize: 12, color: "#94a3b8", marginTop: 4 }}>No results found</div>}
-                        </div>
-                      )}
-                    />
-                    <div
-                      onClick={getLocation}
-                      className="hover:bg-slate-200"
-                      style={{
-                        width: 46,
-                        height: 46,
-                        borderRadius: 10,
-                        background: "#f1f5f9",
-                        display: "flex",
-                        alignItems: "center",
-                        justifyContent: "center",
-                        cursor: "pointer",
-                        flexShrink: 0,
-                        transition: "all 0.2s",
-                        border: "none",
-                      }}
-                    >
-                      <BiCurrentLocation size={22} color="#004a70" />
-                    </div>
-                  </div>
-                </div>
+          {/* Left Column: Form Card (4 Cols) */}
+          <div className="lg:col-span-4 bg-white/95 backdrop-blur-xl rounded-3xl !border !border-slate-100 p-6 shadow-[0_8px_30px_rgba(0,0,0,0.02)] lg:sticky lg:top-28 lg:self-start z-10">
+            <h2 className="text-base font-family-bold text-slate-900 text-center !mb-1">
+              Create Your Tour
+            </h2>
+            <p className="text-xs text-slate-400 text-center !mb-6 font-family-regular">
+              Set your start and end locations
+            </p>
 
-                <div style={{ marginBottom: 24 }}>
-                  <div className="font-family-medium d-flex align-items-center" style={{ fontSize: 13, color: "#374151", marginBottom: 6 }}>
-                    <MdOutlineMyLocation size={14} color="#004a70" style={{ marginRight: 4 }} />
-                    End Location
-                  </div>
+            <Form onSubmit={handleSubmit(onSubmit)} className="space-y-6">
+
+              {/* Start Location */}
+              <div>
+                <label className="text-xs text-slate-700 block !mb-2 font-family-semibold flex items-center gap-1">
+                  <FaLocationDot size={12} className="text-brand-600" />
+                  Start Location
+                </label>
+                <div className="flex items-center gap-2.5">
                   <Controller
-                    name="metaTitle"
+                    name="name"
                     control={control}
                     render={({ field }) => (
-                      <div style={{ position: "relative" }}>
-                        <Input
+                      <div className="relative flex-grow">
+                        <input
                           {...field}
-                          placeholder="Enter end location"
-                          value={SearchQueryEnd}
-                          onChange={(e) => HandleEndSearch(e.target.value)}
-                          style={{ width: "100%", padding: "11px 14px", borderRadius: 10, fontSize: 14 }}
-                          className={`bg-gray-50 border-0 focus:ring-1 focus:ring-brand-600/30 focus:outline-none focus:bg-white${errors.metaTitle ? " ring-2 ring-red-400" : ""}`}
+                          placeholder="Enter start location"
+                          value={searchQuery}
+                          onChange={(e) => handleSearch(e.target.value)}
+                          className={`w-full px-4 py-3 bg-slate-50/50 !border-2 rounded-xl text-sm font-family-medium text-slate-900 focus:bg-white outline-none transition-all duration-200 ${errors.name ? "!border-rose-300 focus:!border-rose-500" : "!border-slate-100 focus:!border-brand-600"
+                            }`}
                         />
-                        {errors.metaTitle && (
-                          <p className="font-family-medium" style={{ fontSize: 12, color: "#ef4444", margin: "4px 0 0" }}>{errors.metaTitle.message}</p>
-                          )}
-                          {PridicLoadingEnd && <div className="font-family-regular" style={{ fontSize: 12, color: "#94a3b8", marginTop: 4 }}>Loading...</div>}
-                        {EndPredictions.length > 0 && (
-                          <ListGroup style={{
-                            position: "absolute",
-                            zIndex: 10,
-                            width: "100%",
-                            maxHeight: "180px",
-                            overflowY: "auto",
-                            borderRadius: 10,
-                            border: "1px solid #e2e8f0",
-                            boxShadow: "0 4px 12px rgba(0,0,0,0.08)",
-                          }}>
-                            {EndPredictions.map((prediction) => (
+                        {errors.name && (
+                          <span className="text-xs text-rose-500 block !mt-1.5 font-family-medium">
+                            {errors.name.message}
+                          </span>
+                        )}
+                        {PridicLoading && (
+                          <div className="text-xs text-slate-400 !mt-2 font-family-medium flex items-center gap-1.5">
+                            <Spinner animation="border" size="sm" style={{ width: 12, height: 12 }} />
+                            <span>Fetching locations...</span>
+                          </div>
+                        )}
+                        {predictions.length > 0 && (
+                          <ListGroup className="absolute z-20 w-full bg-white/95 backdrop-blur-md rounded-2xl shadow-xl !border !border-slate-100 max-h-[200px] overflow-y-auto !mt-2.5">
+                            {predictions.map((prediction) => (
                               <ListGroupItem
                                 key={prediction.place_id}
-                                onClick={() => HadleEndPridication(prediction)}
-                                style={{ cursor: "pointer", fontSize: 13, padding: "10px 14px", border: "none", borderBottom: "1px solid #f1f5f9" }}
+                                onClick={() => handlePredictionPress(prediction)}
+                                className="px-4 py-3 text-xs text-slate-700 font-family-medium cursor-pointer hover:bg-slate-50 hover:text-slate-950 transition-colors !border-b !border-slate-100 last:!border-none"
                               >
                                 {prediction.description}
                               </ListGroupItem>
                             ))}
                           </ListGroup>
                         )}
-                          {noData && <div className="font-family-regular" style={{ fontSize: 12, color: "#94a3b8", marginTop: 4 }}>No results found</div>}
                       </div>
                     )}
                   />
+                  <button
+                    type="button"
+                    onClick={getLocation}
+                    className="w-11 h-11 rounded-xl bg-brand-50 hover:bg-brand-100 text-brand-650 flex items-center justify-center shrink-0 !border !border-brand-100 transition-colors shadow-inner"
+                  >
+                    <BiCurrentLocation size={18} />
+                  </button>
                 </div>
+              </div>
 
-                {distance && (
-                  <div style={{
-                    textAlign: "center",
-                    padding: "10px 16px",
-                    background: "#f0fdf4",
-                    borderRadius: 10,
-                    marginBottom: 16,
-                    border: "1px solid #bbf7d0",
-                  }}>
-                    <span className="font-family-medium" style={{ fontSize: 13, color: "#16a34a" }}>
-                      Distance: {distance} km
-                    </span>
-                  </div>
-                )}
+              {/* End Location */}
+              <div>
+                <label className="text-xs text-slate-700 block !mb-2 font-family-semibold flex items-center gap-1">
+                  <MdOutlineMyLocation size={13} className="text-brand-600" />
+                  End Location
+                </label>
+                <Controller
+                  name="metaTitle"
+                  control={control}
+                  render={({ field }) => (
+                    <div className="relative">
+                      <input
+                        {...field}
+                        placeholder="Enter end location"
+                        value={SearchQueryEnd}
+                        onChange={(e) => HandleEndSearch(e.target.value)}
+                        className={`w-full px-4 py-3 bg-slate-50/50 !border-2 rounded-xl text-sm font-family-medium text-slate-900 focus:bg-white outline-none transition-all duration-200 ${errors.metaTitle ? "!border-rose-300 focus:!border-rose-500" : "!border-slate-100 focus:!border-brand-600"
+                          }`}
+                      />
+                      {errors.metaTitle && (
+                        <span className="text-xs text-rose-500 block !mt-1.5 font-family-medium">
+                          {errors.metaTitle.message}
+                        </span>
+                      )}
+                      {PridicLoadingEnd && (
+                        <div className="text-xs text-slate-400 !mt-2 font-family-medium flex items-center gap-1.5">
+                          <Spinner animation="border" size="sm" style={{ width: 12, height: 12 }} />
+                          <span>Fetching locations...</span>
+                        </div>
+                      )}
+                      {EndPredictions.length > 0 && (
+                        <ListGroup className="absolute z-20 w-full bg-white/95 backdrop-blur-md rounded-2xl shadow-xl !border !border-slate-100 max-h-[200px] overflow-y-auto !mt-2.5">
+                          {EndPredictions.map((prediction) => (
+                            <ListGroupItem
+                              key={prediction.place_id}
+                              onClick={() => HadleEndPridication(prediction)}
+                              className="px-4 py-3 text-xs text-slate-700 font-family-medium cursor-pointer hover:bg-slate-50 hover:text-slate-950 transition-colors !border-b !border-slate-100 last:!border-none"
+                            >
+                              {prediction.description}
+                            </ListGroupItem>
+                          ))}
+                        </ListGroup>
+                      )}
+                    </div>
+                  )}
+                />
+              </div>
 
+              {/* Distance Display */}
+              {distance && (
+                <div className="text-center p-3 bg-emerald-50/60 !border !border-emerald-100 rounded-2xl">
+                  <span className="text-xs font-family-semibold text-emerald-700">
+                    Distance: {distance} km
+                  </span>
+                </div>
+              )}
+
+              {/* Submit CTA */}
+              <div className="!pt-2">
                 <CustomButton
                   type="submit"
                   variant="primary"
                   size="md"
                   loading={isLoading}
-                  className="!w-full !h-12 font-family-medium"
+                  className="w-full h-12 bg-gradient-to-r from-brand-600 to-brand-700 hover:from-brand-700 hover:to-brand-800 text-white font-family-semibold rounded-full shadow-lg shadow-brand-600/10 hover:shadow-xl hover:-translate-y-0.5 active:translate-y-0 transition-all duration-300"
                 >
                   Next
                 </CustomButton>
-              </Form>
-            </div>
-          </div>
-
-          {/* Right: Add Places Section */}
-          <div className="lg:col-span-8">
-            <div
-              className={`${mounted ? "animate-fade-in-up" : "opacity-0"}`}
-              style={{
-                background: "#fff",
-                borderRadius: 16,
-                border: "1px solid #e2e8f0",
-                boxShadow: "0 1px 3px rgba(0,0,0,0.04)",
-                padding: 24,
-                animationDelay: "250ms",
-                transition: "all 0.2s",
-              }}
-              onMouseEnter={(e) => { e.currentTarget.style.boxShadow = "0 4px 12px rgba(0,0,0,0.08)"; e.currentTarget.style.transform = "translateY(-2px)"; }}
-              onMouseLeave={(e) => { e.currentTarget.style.boxShadow = "0 1px 3px rgba(0,0,0,0.04)"; e.currentTarget.style.transform = "none"; }}
-            >
-              <h2 className="font-family-bold" style={{ fontSize: 18, color: "#0f172a", margin: "0 0 16px" }}>
-                Add places to your itinerary
-              </h2>
-
-              <div className="slider-container" style={{ marginBottom: 20 }}>
-                {catLoading ? (
-                  <div style={{ display: "flex", gap: 8, overflow: "hidden", paddingBottom: 4 }}>
-                    {[1, 2, 3, 4, 5].map((s) => (
-                      <div key={s} className="animate-pulse" style={{ minWidth: 120, padding: "10px 16px", borderRadius: "9999px", background: "#f1f5f9", height: 42 }} />
-                    ))}
-                  </div>
-                ) : (
-                  <Slider {...settings2} key={Category.length}>
-                    {Category.map((category, index) => {
-                      const isSelected = selectedCategoryId === category._id;
-                      return (
-                        <div className="p-2" key={index}>
-                          <div
-                            className={`cursor-pointer capitalize font-family-medium`}
-                            style={{
-                              padding: "10px 16px",
-                              background: isSelected ? "#004a70" : "#f8fafc",
-                              color: isSelected ? "white" : "#1e293b",
-                              borderRadius: "9999px",
-                              minWidth: "120px",
-                              textAlign: "center",
-                              display: "flex",
-                              alignItems: "center",
-                              justifyContent: "center",
-                              transition: "all 0.3s ease",
-                              border: isSelected ? "none" : "1px solid #e2e8f0",
-                              boxShadow: isSelected ? "0 2px 8px rgba(0,74,112,0.25)" : "none",
-                              margin: "0 auto",
-                              whiteSpace: "nowrap",
-                              fontSize: 14,
-                              cursor: "pointer",
-                            }}
-                            onClick={() => setSelectedCategoryId(category._id)}
-                            onMouseEnter={(e) => { if (!isSelected) { e.currentTarget.style.background = "#f1f5f9"; e.currentTarget.style.borderColor = "#004a70"; } }}
-                            onMouseLeave={(e) => { if (!isSelected) { e.currentTarget.style.background = "#f8fafc"; e.currentTarget.style.borderColor = "#e2e8f0"; } }}
-                          >
-                            <span className="font-family-medium" style={{ fontSize: 13 }}>{category?.name}</span>
-                          </div>
-                        </div>
-                      );
-                    })}
-                  </Slider>
-                )}
               </div>
 
-              {loading ? (
-                <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-3 gap-3">
-                  {[1, 2, 3, 4, 5, 6].map((s) => (
-                    <div
-                      key={s}
-                      className="animate-pulse"
-                      style={{
-                        borderRadius: 12,
-                        border: "1px solid #e2e8f0",
-                        overflow: "hidden",
-                        background: "#fff",
-                      }}
-                    >
-                      <div className="shimmer" style={{ height: 140, width: "100%", background: "#f1f5f9" }} />
-                      <div style={{ padding: "12px 14px" }}>
-                        <div className="shimmer" style={{ height: 14, width: "70%", borderRadius: 6, marginBottom: 8, background: "#f1f5f9" }} />
-                        <div className="shimmer" style={{ height: 14, width: "40%", borderRadius: 6, background: "#f1f5f9" }} />
-                      </div>
-                      <div style={{ padding: "0 14px 12px" }}>
-                        <div className="shimmer" style={{ height: 36, width: "100%", borderRadius: 8, background: "#f1f5f9" }} />
-                      </div>
-                    </div>
+            </Form>
+          </div>
+
+          {/* Right Column: Places List Grid (8 Cols) */}
+          <div className="lg:col-span-8 bg-white rounded-3xl !border !border-slate-100 p-6 md:p-8 shadow-[0_8px_30px_rgba(0,0,0,0.02)]">
+            <h2 className="text-lg font-family-bold text-slate-900 !mb-5">
+              Add places to your itinerary
+            </h2>
+
+            {/* Scrollable categories bar */}
+            <div
+              ref={tabsRef}
+              onMouseDown={handleMouseDown}
+              onMouseLeave={handleMouseLeave}
+              onMouseUp={handleMouseUp}
+              onMouseMove={handleMouseMove}
+              className={`flex gap-2.5 overflow-x-auto pb-3 scrollbar-hide !my-4 select-none ${isDown ? "cursor-grabbing" : "cursor-grab"
+                }`}
+              style={{ WebkitOverflowScrolling: "touch" }}
+            >
+              {catLoading ? (
+                <div className="flex gap-2.5">
+                  {[1, 2, 3, 4, 5].map((s) => (
+                    <div key={s} className="animate-pulse bg-slate-100 rounded-full h-9 w-24 shrink-0" />
                   ))}
                 </div>
-              ) : SubCategory.length > 0 ? (
-                <>
-                  <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-3 gap-3">
-                    {SubCategory?.map((testimonial, index) => (
-                      <ThingstodoCard
-                        key={index}
-                        testimonial={testimonial}
-                        isTour={true}
-                        onClick={() => handleSelection(testimonial)}
-                        btnTitle={"Add to Itinerary"}
-                      />
-                    ))}
-                  </div>
-                  <div className="flex justify-center items-center mt-6 mb-2">
-                    {Pagelength > 0 ? (
-                      <CustomButton
-                        onClick={ShowMoreDAta}
-                        variant="primary"
-                        size="md"
-                        loading={MoreLoading}
-                        className="font-family-medium"
-                      >
-                        See more
-                      </CustomButton>
-                    ) : null}
-                  </div>
-                </>
               ) : (
-                <div className="py-10">
-                  <EmptyState
-                    title="No Places Found"
-                    showBg={false}
-                    description="We couldn't find any places matching your selected category."
-                  />
-                </div>
+                Category.map((category, index) => {
+                  const isSelected = selectedCategoryId === category._id;
+                  return (
+                    <div
+                      key={index}
+                      onClick={() => setSelectedCategoryId(category._id)}
+                      className={`cursor-pointer capitalize font-family-medium text-xs px-5 py-2.5 rounded-full shrink-0 transition-all duration-300 border ${isSelected
+                          ? "bg-brand-900 text-white border-brand-900 shadow-md shadow-brand-900/10 font-family-semibold"
+                          : "bg-slate-50 text-slate-700 border-slate-150 hover:bg-slate-100"
+                        }`}
+                    >
+                      {category?.name}
+                    </div>
+                  );
+                })
               )}
             </div>
+
+            {/* Grid list of things to do */}
+            {loading ? (
+              <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-3 gap-3">
+                {[1, 2, 3, 4, 5, 6].map((s) => (
+                  <div
+                    key={s}
+                    className="animate-pulse rounded-2xl !border !border-slate-100 overflow-hidden bg-white"
+                  >
+                    <div className="h-36 w-full bg-slate-100" />
+                    <div className="p-4 space-y-2">
+                      <div className="h-4 w-3/4 rounded bg-slate-100" />
+                      <div className="h-4.5 w-1/2 rounded bg-slate-100" />
+                    </div>
+                  </div>
+                ))}
+              </div>
+            ) : SubCategory.length > 0 ? (
+              <>
+                <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-3 gap-3">
+                  {SubCategory?.map((testimonial, index) => (
+                    <ThingstodoCard
+                      key={index}
+                      testimonial={testimonial}
+                      isTour={true}
+                      onClick={() => handleSelection(testimonial)}
+                      btnTitle={"Add to Itinerary"}
+                    />
+                  ))}
+                </div>
+                {Pagelength > 0 && (
+                  <div className="flex justify-center items-center !mt-8">
+                    <CustomButton
+                      onClick={ShowMoreDAta}
+                      variant="primary"
+                      size="md"
+                      loading={MoreLoading}
+                      className="px-6 py-2 bg-slate-900 hover:bg-black text-white rounded-full font-family-semibold text-xs shadow-md transition-colors"
+                    >
+                      See more
+                    </CustomButton>
+                  </div>
+                )}
+              </>
+            ) : (
+              <div className="py-12">
+                <EmptyState
+                  title="No Places Found"
+                  showBg={false}
+                  description="We couldn't find any places matching your selected category."
+                />
+              </div>
+            )}
+
           </div>
+
         </div>
       </div>
 
+      {/* Itinerary Drawer */}
       <Offcanvas
         scroll={true}
         backdrop={false}
         placement="bottom"
         show={show}
         onHide={handleClose}
-        style={{ borderTopLeftRadius: 16, borderTopRightRadius: 16 }}
+        style={{ borderTopLeftRadius: 24, borderTopRightRadius: 24 }}
+        className="bg-white/95 backdrop-blur-xl border-t !border-slate-100 shadow-[0_-10px_35px_rgba(0,0,0,0.05)]"
       >
-        <Offcanvas.Header style={{ padding: "16px 20px 0", borderBottom: "1px solid #f1f5f9" }} closeButton>
-          <Offcanvas.Title className="font-family-semibold" style={{ fontSize: 16, color: "#0f172a" }}>
+        <Offcanvas.Header className="!px-6 !pt-5 !pb-3 !border-b !border-slate-100" closeButton>
+          <Offcanvas.Title className="font-family-bold text-sm text-slate-800 uppercase tracking-wider">
             Your Itinerary
           </Offcanvas.Title>
         </Offcanvas.Header>
-        <Offcanvas.Body style={{ padding: "12px 20px 20px" }}>
+        <Offcanvas.Body className="!px-6 !py-4">
           {MutiRides?.length > 0 ? (
-            <>
-              <div style={{ marginBottom: 12 }}>
+            <div className="max-w-3xl mx-auto">
+              <div className="max-h-[160px] overflow-y-auto pr-1 space-y-2 !mb-4">
                 {MutiRides?.map((item, index) => (
-                  <div key={index} style={{ display: "flex", alignItems: "center", justifyContent: "space-between", padding: "10px 0", borderBottom: "1px solid #f8fafc" }}>
-                    <div style={{ display: "flex", alignItems: "center", gap: 10 }}>
-                      <FaLocationDot size={14} color="#004a70" />
-                      <div>
-                        <p className="font-family-medium" style={{ fontSize: 14, color: "#0f172a", margin: 0, overflow: "hidden", textOverflow: "ellipsis", whiteSpace: "nowrap", maxWidth: 220 }}>{item?.title}</p>
-                        <p className="font-family-semibold" style={{ fontSize: 13, color: "#004a70", margin: "2px 0 0" }}>{`$${item?.location_price}`}</p>
+                  <div
+                    key={index}
+                    className="flex items-center justify-between gap-4 p-3 bg-slate-50/50 hover:bg-slate-50 !border !border-slate-100 rounded-2xl transition-colors"
+                  >
+                    <div className="flex items-center gap-3 min-w-0">
+                      <div className="w-8 h-8 rounded-lg bg-brand-50 flex items-center justify-center shrink-0">
+                        <FaLocationDot size={13} className="text-brand-650" />
+                      </div>
+                      <div className="min-w-0">
+                        <h4 className="font-family-semibold text-xs text-slate-800 truncate !m-0">
+                          {item?.title}
+                        </h4>
+                        <span className="text-[11px] font-family-bold text-brand-650 block !mt-0.5">
+                          {`$${item?.location_price}`}
+                        </span>
                       </div>
                     </div>
-                    <IoMdCloseCircle
+                    <button
+                      type="button"
                       onClick={() => removeIndex(index, item)}
-                      style={{ cursor: "pointer", color: "#9ca3af", flexShrink: 0 }}
-                      size={20}
-                    />
+                      className="text-slate-400 hover:text-rose-500 bg-transparent border-none p-0 flex items-center shrink-0 cursor-pointer transition-colors"
+                    >
+                      <IoMdCloseCircle size={20} />
+                    </button>
                   </div>
                 ))}
               </div>
-              <div style={{ display: "flex", justifyContent: "space-between", alignItems: "center", padding: "12px 0 0", borderTop: "2px solid #f1f5f9" }}>
-                <p className="font-family-semibold" style={{ fontSize: 15, color: "#0f172a", margin: 0 }}>Total Price</p>
-                <p className="font-family-bold" style={{ fontSize: 15, color: "#004a70", margin: 0 }}>{`$${TotalPrice}`}</p>
+              <div className="flex justify-between items-center !pt-4 !border-t-2 !border-slate-100">
+                <span className="text-xs font-family-bold text-slate-500 uppercase tracking-wider">Total Price</span>
+                <span className="text-base font-family-extrabold text-brand-650">{`$${TotalPrice}`}</span>
               </div>
-            </>
+            </div>
           ) : (
-            <p className="font-family-regular" style={{ fontSize: 13, color: "#94a3b8", textAlign: "center", margin: "20px 0" }}>No items in your itinerary yet</p>
+            <p className="text-xs text-slate-400 text-center font-family-medium py-4">No items in your itinerary yet</p>
           )}
         </Offcanvas.Body>
       </Offcanvas>
 
+      {/* Geolocation Permissions Modal */}
       {ShowPermissionDialog && (
-        <div className={`fixed inset-0 bg-black bg-opacity-50 flex items-center justify-center p-4 ${mounted ? "animate-fade-in" : "opacity-0"}`} style={{ zIndex: 9999 }}>
-          <div className={`bg-white rounded-2xl max-w-md w-full p-6 space-y-4 ${mounted ? "animate-fade-in-up" : "opacity-0"}`} style={{ animationDelay: "50ms", boxShadow: "0 20px 60px rgba(0,0,0,0.15)" }}>
-            <div style={{ display: "flex", alignItems: "center", gap: 12, marginBottom: 8 }}>
-              <div style={{ width: 40, height: 40, borderRadius: 10, background: "#eff6ff", display: "flex", alignItems: "center", justifyContent: "center" }}>
-                <svg width={20} height={20} viewBox="0 0 24 24" fill="none" stroke="#004a70" strokeWidth={2}>
-                  <path d="M12 2a7 7 0 0 0-7 7c0 5.25 7 13 7 13s7-7.75 7-13a7 7 0 0 0-7-7z" />
-                  <circle cx="12" cy="9" r="2.5" />
-                </svg>
-              </div>
-              <div>
-                <h2 className="font-family-semibold" style={{ fontSize: 16, color: "#0f172a", margin: 0 }}>Location Access Required</h2>
-                <p className="font-family-regular" style={{ fontSize: 13, color: "#64748b", margin: "2px 0 0" }}>Enable location to use this feature</p>
-              </div>
+        <div className="fixed inset-0 bg-slate-900/65 backdrop-blur-sm flex items-center justify-center p-4 z-[9999] animate-fade-in">
+          <div className="bg-white rounded-3xl p-6 md:p-8 shadow-2xl max-w-sm w-full text-center relative !border !border-slate-100">
+            <div className="w-16 h-16 rounded-full bg-brand-50 text-brand-600 flex items-center justify-center mx-auto !mb-4">
+              <BiCurrentLocation size={30} />
             </div>
-            <p className="font-family-regular" style={{ fontSize: 13, color: "#64748b", margin: 0, lineHeight: 1.5 }}>
-              Please enable location access in your browser settings to automatically fill your start location.
+            <h2 className="text-lg font-family-bold text-slate-900 !mb-2">
+              Location Access Required
+            </h2>
+            <p className="text-xs text-slate-500 font-family-regular leading-relaxed !mb-6">
+              Please enable location access to use this feature. You can enable it in your browser settings.
             </p>
-            <div style={{ display: "flex", justifyContent: "flex-end", gap: 8, marginTop: 8 }}>
+            <div className="flex gap-3 justify-center">
               <button
-                onClick={() => handlePermissionGuide(false)}
-                className="font-family-medium"
-                style={{ padding: "8px 16px", fontSize: 13, color: "#64748b", background: "#f1f5f9", border: "none", borderRadius: 8, cursor: "pointer" }}
+                type="button"
+                onClick={() => setShowPermissionDialog(false)}
+                className="px-6 py-2.5 rounded-full !border-2 !border-slate-150 bg-white text-slate-550 hover:bg-slate-50 font-family-semibold text-sm transition-all duration-200 cursor-pointer"
               >
                 Cancel
               </button>
               <button
+                type="button"
                 onClick={handlePermissionGuide}
-                className="font-family-medium"
-                style={{ padding: "8px 16px", fontSize: 13, color: "#fff", background: "#004a70", border: "none", borderRadius: 8, cursor: "pointer" }}
+                className="px-6 py-2.5 rounded-full bg-brand-900 hover:bg-brand-950 text-white font-family-semibold text-sm transition-all duration-200 !border-none cursor-pointer"
               >
-                Show Instructions
+                Show Guide
               </button>
             </div>
           </div>

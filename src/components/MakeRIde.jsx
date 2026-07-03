@@ -2,7 +2,6 @@
 
 import React, { Suspense, useEffect, useRef, useState } from "react";
 import mapboxgl from "mapbox-gl";
-
 import "mapbox-gl/dist/mapbox-gl.css";
 import { Controller, useForm } from "react-hook-form";
 import { yupResolver } from "@hookform/resolvers/yup";
@@ -10,9 +9,7 @@ import * as yup from "yup";
 import { ListGroup, ListGroupItem } from "reactstrap";
 import Select from "react-select";
 import { Spinner } from "react-bootstrap";
-import { message, TimePicker } from "antd";
-
-import { Calendar } from "antd";
+import { message, TimePicker, Calendar, ConfigProvider } from "antd";
 import moment from "moment";
 import { Loader } from "@googlemaps/js-api-loader";
 import { getDistance } from "geolib";
@@ -62,9 +59,7 @@ const RidePage = () => {
   const [PridicLoadingEnd, setPridicLoadingEnd] = useState(false);
 
   const [RideTime, SetRideTime] = useState("");
-
   const [Schuale, setSchuale] = useState(false);
-
   const [selectedStop, setSelectedStop] = useState(null);
   const [FavUserId, setFavUserId] = useState("");
   const [isMobile, setIsMobile] = useState(false);
@@ -88,8 +83,8 @@ const RidePage = () => {
     Type: yup.string(),
     travlers: yup.number().when([], {
       is: () => {
-        const travelers = Number(RowData?.travelers); // Convert to number if possible
-        return !isNaN(travelers) && travelers > 0; // Only validate if it's a valid positive number
+        const travelers = Number(RowData?.travelers);
+        return !isNaN(travelers) && travelers > 0;
       },
       then: (schema) =>
         schema
@@ -98,7 +93,7 @@ const RidePage = () => {
             "is-less-than-parsedTravelers",
             `${RowData?.travelers} Travelers Available`,
             function (value) {
-              const travelers = Number(RowData?.travelers); // Convert to number
+              const travelers = Number(RowData?.travelers);
               return (
                 typeof value === "number" &&
                 !isNaN(value) &&
@@ -108,7 +103,7 @@ const RidePage = () => {
               );
             },
           ),
-      otherwise: (schema) => schema.notRequired(), // Make it optional if travelers is undefined, null, or not a valid number
+      otherwise: (schema) => schema.notRequired(),
     }),
   });
 
@@ -179,7 +174,6 @@ const RidePage = () => {
 
   const handlePermissionGuide = () => {
     setShowPermissionDialog(false);
-    // Show instructions based on browser
     const instructions = `
       To enable location access:
       1. Click the lock/info icon in your browser's address bar
@@ -202,7 +196,6 @@ const RidePage = () => {
 
       if (row) {
         setFavUserId(row?.favUserId);
-
         setRowData(row);
         if (row?.time) {
           const time = JSON?.parse(row?.time);
@@ -234,75 +227,204 @@ const RidePage = () => {
 
   const locationSet = (data) => {
     const start = Currentlocation?.longitude
-      ? [Currentlocation?.longitude, Currentlocation?.longitude]
-      : [locationDetails?.lng, locationDetails.lat];
+      ? [Currentlocation?.longitude, Currentlocation?.latitude]
+      : (locationDetails?.lng ? [locationDetails.lng, locationDetails.lat] : null);
 
     const end = data?.lat
       ? [data?.lng, data?.lat]
-      : [locationDetails1?.lng, locationDetails1.lat];
+      : (locationDetails1?.lng ? [locationDetails1.lng, locationDetails1.lat] : null);
+
+    const hasStart = start && start[0] && start[1];
+    const hasEnd = end && end[0] && end[1];
+    const hasStops = (LocationDetails3 && LocationDetails3.length > 0) || (selectedStop && selectedStop.latLng && selectedStop.latLng.lng);
+
+    if (!hasStart && !hasEnd && !hasStops) return;
 
     if (mapRef.current) {
       mapRef.current.remove();
     }
 
+    let defaultCenter = [17.363747, -62.754593];
+    if (hasStart) {
+      defaultCenter = start;
+    } else if (hasEnd) {
+      defaultCenter = end;
+    } else if (hasStops) {
+      const stopLng = LocationDetails3 && LocationDetails3.length > 0 ? LocationDetails3[0].longitude : selectedStop.latLng.lng;
+      const stopLat = LocationDetails3 && LocationDetails3.length > 0 ? LocationDetails3[0].latitude : selectedStop.latLng.lat;
+      defaultCenter = [stopLng, stopLat];
+    }
+
     mapRef.current = new mapboxgl.Map({
       container: mapContainerRef.current,
       style: "mapbox://styles/mapbox/streets-v11",
-      center: start ?? [17.363747, -62.754593],
-      zoom: 8,
+      center: defaultCenter,
+      zoom: hasStart && (hasEnd || hasStops) ? 8 : 11,
     });
 
-    new mapboxgl.Marker({ color: "green" })
-      .setLngLat(start)
-      .addTo(mapRef.current);
+    const bounds = new mapboxgl.LngLatBounds();
 
-    mapRef.current.on("load", () => {
-      const directionsUrl = `https://api.mapbox.com/directions/v5/mapbox/driving/${start[0]},${start[1]};${end[0]},${end[1]}?geometries=geojson&access_token=pk.eyJ1IjoibWFybGVncmFudCIsImEiOiJjbTgwdmV0MjkweXB2MnFzNXBjM2x6NThnIn0.3oz3YGaDHiFDh8W5ALk09w`;
+    const createCustomMarker = (text, type) => {
+      const el = document.createElement("div");
+      el.className = "custom-mapbox-marker flex items-center justify-center shadow-md cursor-pointer transition-transform duration-200 hover:scale-110";
+      
+      let bgColor = "#f59e0b"; // Amber/orange for stops
+      let textColor = "#ffffff";
+      let size = "26px";
+      
+      if (type === "start") {
+        bgColor = "#22c55e"; // Green for start
+        size = "30px";
+      } else if (type === "end") {
+        bgColor = "#ef4444"; // Red for end
+        size = "30px";
+      }
+      
+      el.style.backgroundColor = bgColor;
+      el.style.color = textColor;
+      el.style.width = size;
+      el.style.height = size;
+      el.style.borderRadius = "50% 50% 50% 0";
+      el.style.transform = "rotate(-45deg)";
+      el.style.border = "2px solid #ffffff";
+      el.style.boxShadow = "0 4px 6px -1px rgb(0 0 0 / 0.1), 0 2px 4px -2px rgb(0 0 0 / 0.1)";
+      
+      const span = document.createElement("span");
+      span.innerText = text;
+      span.style.transform = "rotate(45deg)";
+      span.style.fontSize = type === "start" || type === "end" ? "11px" : "10px";
+      span.style.fontFamily = "Inter, sans-serif";
+      span.style.fontWeight = "bold";
+      span.className = "flex items-center justify-center h-full w-full";
+      
+      el.appendChild(span);
+      return el;
+    };
+
+    const createPopup = (title, address) => {
+      return new mapboxgl.Popup({ offset: 25, closeButton: false })
+        .setHTML(`
+          <div style="font-family: 'Inter', sans-serif; padding: 4px 8px; max-width: 220px;">
+            <p style="margin: 0; font-size: 11px; font-weight: 700; color: #0f172a;">${title}</p>
+            ${address ? `<p style="margin: 2px 0 0; font-size: 10px; color: #64748b; line-height: 1.4; white-space: normal; word-break: break-word;">${address}</p>` : ""}
+          </div>
+        `);
+    };
+
+    if (hasStart) {
+      const el = createCustomMarker("S", "start");
+      const startAddress = locationDetails?.address || Currentlocation?.address || "Pickup Point";
+      const popup = createPopup("Pickup (Start)", startAddress);
+      const marker = new mapboxgl.Marker({ element: el, anchor: "bottom" })
+        .setLngLat(start)
+        .setPopup(popup)
+        .addTo(mapRef.current);
+      
+      el.addEventListener("mouseenter", () => {
+        if (!marker.getPopup().isOpen()) marker.togglePopup();
+      });
+      el.addEventListener("mouseleave", () => {
+        if (marker.getPopup().isOpen()) marker.togglePopup();
+      });
+      bounds.extend(start);
+    }
+
+    if (hasEnd) {
+      const el = createCustomMarker("E", "end");
+      const endAddress = locationDetails1?.address || "Destination Point";
+      const popup = createPopup("Destination (End)", endAddress);
+      const marker = new mapboxgl.Marker({ element: el, anchor: "bottom" })
+        .setLngLat(end)
+        .setPopup(popup)
+        .addTo(mapRef.current);
+
+      el.addEventListener("mouseenter", () => {
+        if (!marker.getPopup().isOpen()) marker.togglePopup();
+      });
+      el.addEventListener("mouseleave", () => {
+        if (marker.getPopup().isOpen()) marker.togglePopup();
+      });
+      bounds.extend(end);
+    }
+
+    let stopLetters = ["A", "B", "C", "D", "E", "F", "G", "H", "I", "J"];
+    let stopCount = 0;
+
+    if (LocationDetails3 && LocationDetails3.length > 0) {
+      LocationDetails3.forEach((stop) => {
+        const letter = stopLetters[stopCount % stopLetters.length];
+        stopCount++;
+        
+        const el = createCustomMarker(letter, "stop");
+        const popup = createPopup(`Stop ${letter}`, stop.address);
+        const marker = new mapboxgl.Marker({ element: el, anchor: "bottom" })
+          .setLngLat([stop.longitude, stop.latitude])
+          .setPopup(popup)
+          .addTo(mapRef.current);
+
+        el.addEventListener("mouseenter", () => {
+          if (!marker.getPopup().isOpen()) marker.togglePopup();
+        });
+        el.addEventListener("mouseleave", () => {
+          if (marker.getPopup().isOpen()) marker.togglePopup();
+        });
+        bounds.extend([stop.longitude, stop.latitude]);
+      });
+    }
+
+    if (selectedStop && selectedStop.latLng && selectedStop.latLng.lng) {
+      const letter = stopLetters[stopCount % stopLetters.length];
+      stopCount++;
+      
+      const el = createCustomMarker(letter, "stop");
+      const popup = createPopup(`Stop ${letter} (Preview)`, selectedStop.description);
+      const marker = new mapboxgl.Marker({ element: el, anchor: "bottom" })
+        .setLngLat([selectedStop.latLng.lng, selectedStop.latLng.lat])
+        .setPopup(popup)
+        .addTo(mapRef.current);
+
+      el.addEventListener("mouseenter", () => {
+        if (!marker.getPopup().isOpen()) marker.togglePopup();
+      });
+      el.addEventListener("mouseleave", () => {
+        if (marker.getPopup().isOpen()) marker.togglePopup();
+      });
+      bounds.extend([selectedStop.latLng.lng, selectedStop.latLng.lat]);
+    }
+
+    // Draw route if start is selected and we have either end or stops (so at least 2 points)
+    if (hasStart && (hasEnd || hasStops)) {
+      // Build coordinates string: start;stop1;stop2;...;end
+      let coordsString = `${start[0]},${start[1]}`;
+      if (LocationDetails3 && LocationDetails3.length > 0) {
+        LocationDetails3.forEach((stop) => {
+          coordsString += `;${stop.longitude},${stop.latitude}`;
+        });
+      }
+      if (selectedStop && selectedStop.latLng && selectedStop.latLng.lng) {
+        coordsString += `;${selectedStop.latLng.lng},${selectedStop.latLng.lat}`;
+      }
+      if (hasEnd) {
+        coordsString += `;${end[0]},${end[1]}`;
+      }
+
+      const directionsUrl = `https://api.mapbox.com/directions/v5/mapbox/driving/${coordsString}?geometries=geojson&access_token=${mapboxgl.accessToken}`;
 
       fetch(directionsUrl)
         .then((response) => response.json())
         .then((data) => {
           const route = data.routes[0]?.geometry?.coordinates;
+          if (!route || route.length === 0) return;
 
-          if (!route || route.length === 0) {
-            console.error("No route found.");
-            return;
-          }
-
-          const bounds = new mapboxgl.LngLatBounds();
           route.forEach((coord) => bounds.extend(coord));
-
-          const start = {
-            latitude: locationDetails?.lat,
-            longitude: locationDetails?.lng,
-          };
-          const end = {
-            latitude: locationDetails1?.lat,
-            longitude: locationDetails1?.lng,
-          };
-
-          const distance = getDistance(start, end) / 1000; // Convert meters to kilometers
-
-          setDistance(distance.toFixed(1));
-
           mapRef.current.fitBounds(bounds, { padding: 50 });
 
-          const animateMarker = (route) => {
-            let index = 0;
-            const marker = new mapboxgl.Marker({ color: "blue" })
-              .setLngLat(route[index])
-              .addTo(mapRef.current);
-
-            const moveMarker = () => {
-              if (index < route.length - 1) {
-                index++;
-                marker.setLngLat(route[index]);
-                requestAnimationFrame(moveMarker);
-              }
-            };
-
-            moveMarker();
-          };
+          if (hasEnd) {
+            const startCoords = { latitude: start[1], longitude: start[0] };
+            const endCoords = { latitude: end[1], longitude: end[0] };
+            const distanceVal = getDistance(startCoords, endCoords) / 1000;
+            setDistance(distanceVal.toFixed(1));
+          }
 
           mapRef.current.addSource("route", {
             type: "geojson",
@@ -324,31 +446,22 @@ const RidePage = () => {
               "line-cap": "round",
             },
             paint: {
-              "line-color": "#888",
+              "line-color": "#004a70",
               "line-width": 6,
             },
           });
-
-          animateMarker(route);
         })
         .catch((error) => console.log("Failed to fetch directions"));
-    });
-
-    return () => {
-      if (mapRef.current) {
-        mapRef.current.remove();
+    } else {
+      if (hasStart || hasEnd || hasStops) {
+        mapRef.current.fitBounds(bounds, { padding: 100, maxZoom: 14 });
       }
-    };
+    }
   };
 
   useEffect(() => {
-    const hasLocationDetails = locationDetails?.lng && locationDetails?.lat;
-    const hasCurrentLocation = Currentlocation?.lng && Currentlocation?.lat;
-
-    if (hasLocationDetails || hasCurrentLocation || SearchQueryEnd) {
-      locationSet();
-    }
-  }, [locationDetails, Currentlocation, SearchQueryEnd]);
+    locationSet();
+  }, [locationDetails, Currentlocation, locationDetails1, LocationDetails3, selectedStop]);
 
   const HandleCategory = () => {
     const apiGet = `https://api.cabkn.com/api/users/liabilty/1`;
@@ -384,7 +497,6 @@ const RidePage = () => {
 
     try {
       await loader.importLibrary("places");
-
       const autocompleteService = new google.maps.places.AutocompleteService();
 
       autocompleteService.getPlacePredictions(
@@ -424,7 +536,6 @@ const RidePage = () => {
             setPridicLoading(false);
             setNoData(false);
           } else {
-            console.error("Error fetching place predictions:", status);
             setNoData(true);
             setPridicLoading(false);
           }
@@ -432,7 +543,6 @@ const RidePage = () => {
         },
       );
     } catch (error) {
-      console.error("Error importing Places API library:", error);
       setNoData(true);
       setPridicLoading(false);
     }
@@ -445,7 +555,6 @@ const RidePage = () => {
       lng: prediction?.latLng?.lng || 0,
     });
     setValue("name", prediction?.description || "");
-
     setSearchQuery(prediction.description);
     setCurrentLocation({});
     setPredictions([]);
@@ -463,7 +572,6 @@ const RidePage = () => {
 
     try {
       await loader.importLibrary("places");
-
       const autocompleteService = new google.maps.places.AutocompleteService();
 
       autocompleteService.getPlacePredictions(
@@ -503,7 +611,6 @@ const RidePage = () => {
             setPridicLoadingStop(false);
             setNoData(false);
           } else {
-            console.error("Error fetching place predictions:", status);
             setNoData(true);
             setPridicLoadingStop(false);
           }
@@ -511,38 +618,10 @@ const RidePage = () => {
         },
       );
     } catch (error) {
-      console.error("Error importing Places API library:", error);
       setNoData(true);
       setPridicLoadingStop(false);
     }
   };
-
-  // const HadleStopPridication = (prediction) => {
-  //   setLocationDetails3((prevLocations) => {
-  //     const locationsArray = Array.isArray(prevLocations) ? prevLocations : [];
-
-  //     const isDuplicate = locationsArray.some(
-  //       (loc) => loc.address === prediction?.description
-  //     );
-
-  //     if (!isDuplicate) {
-  //       return [
-  //         ...locationsArray,
-  //         {
-  //           address: prediction?.description || "",
-  //           latitude: prediction?.latLng?.lat || 0,
-  //           longitude: prediction?.latLng?.lng || 0,
-  //         },
-  //       ];
-  //     }
-
-  //     return locationsArray;
-  //   });
-  //   setValue("stop", prediction?.description || "");
-  //   setSearchQueryStop(prediction.description);
-  //   setStopPredictions([]);
-  //   setNoData(false);
-  // };
 
   const HadleStopPridication = (prediction) => {
     const isDuplicate = LocationDetails3.some(
@@ -554,7 +633,6 @@ const RidePage = () => {
         description: prediction?.description || "",
         latLng: prediction?.latLng || { lat: 0, lng: 0 },
       });
-
       setSearchQueryStop(prediction.description);
       setStopPredictions([]);
       setNoData(false);
@@ -570,7 +648,6 @@ const RidePage = () => {
           ? prevLocations
           : [];
 
-        // Avoid adding duplicates
         const isDuplicate = locationsArray.some(
           (loc) => loc.address === selectedStop?.description,
         );
@@ -585,11 +662,8 @@ const RidePage = () => {
             },
           ];
         }
-
         return locationsArray;
       });
-
-      // Clear the temporary selected stop after adding
       setSearchQueryStop("");
       setSelectedStop(null);
     }
@@ -606,7 +680,6 @@ const RidePage = () => {
 
     try {
       await loader.importLibrary("places");
-
       const autocompleteService = new google.maps.places.AutocompleteService();
 
       autocompleteService.getPlacePredictions(
@@ -646,7 +719,6 @@ const RidePage = () => {
             setPridicLoadingEnd(false);
             setNoData(false);
           } else {
-            console.error("Error fetching place predictions:", status);
             setNoData(true);
             setPridicLoadingEnd(false);
           }
@@ -654,7 +726,6 @@ const RidePage = () => {
         },
       );
     } catch (error) {
-      console.error("Error importing Places API library:", error);
       setNoData(true);
       setPridicLoadingEnd(false);
     }
@@ -697,8 +768,8 @@ const RidePage = () => {
   });
 
   const onSubmit = (data) => {
-    if (distance == 0) {
-      message.error("Distance cannot (0) Km");
+    if (Number(distance) === 0) {
+      message.error("Distance cannot be 0 Km");
     } else {
       const utcDate = moment(data?.date?.$d).utc().format();
       const body = {
@@ -708,7 +779,7 @@ const RidePage = () => {
         schedule_date: utcDate,
         schedule_time: RideTime ? RideTime : data?.time,
         distance: distance,
-        start: [locationDetails?.lng, locationDetails.lat],
+        start: [locationDetails?.lng || Currentlocation?.longitude, locationDetails?.lat || Currentlocation?.latitude],
         end: [locationDetails1?.lng, locationDetails1.lat],
         stop: LocationDetails3,
         service: RowData?._id,
@@ -725,199 +796,65 @@ const RidePage = () => {
     }
   };
 
-  return (
-    <div
-      className={mounted ? "animate-fade-in" : "opacity-0"}
-      style={{ minHeight: "100vh", background: "#f8fafc" }}
-    >
-      {/* Header */}
-      <div
-        className="bg-gradient-to-br from-brand-800 to-brand-950"
-        style={{ padding: "28px 0 44px", position: "relative" }}
-      >
-        {/* Decorative circles */}
-        <div
-          style={{
-            position: "absolute",
-            top: -60,
-            right: -60,
-            width: 200,
-            height: 200,
-            borderRadius: "50%",
-            background: "rgba(255,255,255,0.03)",
-          }}
-        />
-        <div
-          style={{
-            position: "absolute",
-            bottom: -40,
-            left: -40,
-            width: 160,
-            height: 160,
-            borderRadius: "50%",
-            background: "rgba(255,255,255,0.03)",
-          }}
-        />
+  const hasAnyLocation = (locationDetails?.lng && locationDetails?.lat) || (Currentlocation?.longitude && Currentlocation?.latitude) || (locationDetails1?.lng && locationDetails1?.lat) || (LocationDetails3 && LocationDetails3.length > 0) || (selectedStop && selectedStop.latLng && selectedStop.latLng.lng);
 
-        <div
-          style={{
-            maxWidth: 1200,
-            margin: "0 auto",
-            padding: "0 24px",
-            position: "relative",
-          }}
-        >
-          {/* Breadcrumb */}
-          <div
-            className="font-family-medium"
-            style={{
-              display: "flex",
-              alignItems: "center",
-              gap: 8,
-              color: "rgba(255,255,255,0.5)",
-              fontSize: 13,
-              marginBottom: 16,
-            }}
-          >
-            <a
-              href="/"
-              style={{
-                color: "rgba(255,255,255,0.5)",
-                textDecoration: "none",
-                transition: "color 0.2s",
-              }}
-              onMouseEnter={(e) => (e.currentTarget.style.color = "#fff")}
-              onMouseLeave={(e) =>
-                (e.currentTarget.style.color = "rgba(255,255,255,0.5)")
-              }
-            >
-              Home
-            </a>
-            <span style={{ color: "rgba(255,255,255,0.3)" }}>/</span>
-            <span
-              className="font-family-medium"
-              style={{ color: "rgba(255,255,255,0.8)" }}
-            >
-              Book a Ride
-            </span>
+  return (
+    <div className={`min-h-screen bg-slate-50/50 ${mounted ? "animate-fade-in" : "opacity-0"}`}>
+      {/* ===== HERO BANNER ===== */}
+      <section className="relative overflow-hidden bg-gradient-to-br from-slate-900 via-brand-900 to-brand-950 !pt-28 !pb-28">
+        <div className="absolute inset-0 opacity-[0.04]" style={{
+          backgroundImage: `radial-gradient(circle at 1px 1px, white 1px, transparent 0)`,
+          backgroundSize: "24px 24px"
+        }} />
+        
+        <div className="absolute top-1/4 -left-20 w-80 h-80 bg-brand-500/10 rounded-full blur-[100px] animate-pulse pointer-events-none" style={{ animationDuration: "8s" }} />
+        <div className="absolute bottom-1/4 -right-20 w-96 h-96 bg-indigo-500/10 rounded-full blur-[120px] animate-pulse pointer-events-none" style={{ animationDuration: "12s" }} />
+        
+        <div className="absolute inset-0 bg-gradient-to-t from-brand-950/60 via-transparent to-transparent pointer-events-none" />
+
+        <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 relative z-10">
+          <div className="flex items-center gap-2 text-slate-400 text-xs font-family-medium !mb-4">
+            <a href="/" className="text-slate-400 hover:text-white transition-colors">Home</a>
+            <span className="text-slate-500">/</span>
+            <span className="text-slate-200">Book a Ride</span>
           </div>
 
-          <div
-            style={{
-              display: "flex",
-              alignItems: "center",
-              justifyContent: "space-between",
-              flexWrap: "wrap",
-              gap: 12,
-            }}
-          >
-            <div
-              style={{
-                display: "flex",
-                alignItems: "center",
-                gap: "clamp(10px, 2vw, 16px)",
-              }}
-            >
-              <div
-                style={{
-                  width: "clamp(40px, 6vw, 52px)",
-                  height: "clamp(40px, 6vw, 52px)",
-                  borderRadius: "clamp(12px, 2vw, 16px)",
-                  background: "rgba(255,255,255,0.12)",
-                  backdropFilter: "blur(8px)",
-                  display: "flex",
-                  alignItems: "center",
-                  justifyContent: "center",
-                  flexShrink: 0,
-                }}
-              >
-                <svg
-                  width="clamp(20px, 3vw, 26px)"
-                  height="clamp(20px, 3vw, 26px)"
-                  viewBox="0 0 24 24"
-                  fill="none"
-                  stroke="#fff"
-                  strokeWidth={1.5}
-                >
-                  <path
-                    strokeLinecap="round"
-                    strokeLinejoin="round"
-                    d="M8.25 18.75a1.5 1.5 0 01-3 0m3 0a1.5 1.5 0 00-3 0m3 0h6m-9 0H3.375a1.125 1.125 0 01-1.125-1.125V14.25m17.25 4.5a1.5 1.5 0 01-3 0m3 0a1.5 1.5 0 00-3 0m3 0h1.125c.621 0 1.129-.504 1.09-1.124a17.902 17.902 0 00-3.213-9.193 2.056 2.056 0 00-1.58-.86H14.25M16.5 18.75h-2.25m0-11.177v-.958c0-.568-.422-1.048-.987-1.106a48.554 48.554 0 00-10.026 0 1.106 1.106 0 00-.987 1.106v7.635m12-6.677v6.677m0 4.5v-4.5m0 0h-12"
-                  />
+          <div className="flex flex-wrap justify-between items-center gap-4">
+            <div className="flex items-center gap-4">
+              <div className="w-13 h-13 rounded-2xl bg-white/10 backdrop-blur-md flex items-center justify-center shrink-0">
+                <svg width={26} height={26} viewBox="0 0 24 24" fill="none" stroke="#fff" strokeWidth={1.5}>
+                  <path strokeLinecap="round" strokeLinejoin="round" d="M8.25 18.75a1.5 1.5 0 01-3 0m3 0a1.5 1.5 0 00-3 0m3 0h6m-9 0H3.375a1.125 1.125 0 01-1.125-1.125V14.25m17.25 4.5a1.5 1.5 0 01-3 0m3 0a1.5 1.5 0 00-3 0m3 0h1.125c.621 0 1.129-.504 1.09-1.124a17.902 17.902 0 00-3.213-9.193 2.056 2.056 0 00-1.58-.86H14.25M16.5 18.75h-2.25m0-11.177v-.958c0-.568-.422-1.048-.987-1.106a48.554 48.554 0 00-10.026 0 1.106 1.106 0 00-.987 1.106v7.635m12-6.677v6.677m0 4.5v-4.5m0 0h-12" />
                 </svg>
               </div>
               <div>
-                <h1
-                  className="font-family-bold"
-                  style={{
-                    color: "#fff",
-                    fontSize: "clamp(20px, 5vw, 30px)",
-                    margin: 0,
-                    letterSpacing: "-0.5px",
-                    lineHeight: 1.2,
-                    wordBreak: "break-word",
-                  }}
-                >
-                  Book a Ride
+                <h1 className="text-white text-3xl font-family-bold tracking-tight !m-0 leading-tight">
+                  Book a{" "}
+                  <span className="text-transparent bg-clip-text bg-gradient-to-r from-brand-300 via-sky-300 to-indigo-200">
+                    Ride
+                  </span>
                 </h1>
-                <p
-                  className="font-family-regular"
-                  style={{
-                    color: "rgba(255,255,255,0.55)",
-                    fontSize: "clamp(12px, 2vw, 14px)",
-                    margin: "2px 0 0",
-                    wordBreak: "break-word",
-                  }}
-                >
-                  Set your pickup and drop-off locations
+                <p className="text-slate-400 text-sm !mt-1 !m-0 font-family-regular">
+                  Set pickup, drop-off, and schedule your trip details
                 </p>
               </div>
             </div>
           </div>
         </div>
-      </div>
+      </section>
 
-      {/* Content */}
-      <div
-        style={{
-          maxWidth: 1200,
-          margin: "-24px auto 0",
-          padding: "0 16px 48px",
-        }}
-      >
-        <div
-          style={{
-            display: "grid",
-            gridTemplateColumns: isMobile ? "1fr" : "4fr 8fr",
-            gap: 24,
-            alignItems: "start",
-          }}
-        >
-          {/* Form Card */}
-          <div
-            className={mounted ? "animate-fade-in-up" : "opacity-0"}
-            style={{
-              background: "#fff",
-              borderRadius: 14,
-              border: "1px solid #f0f0f0",
-              padding: "clamp(20px, 3vw, 32px)",
-              animationDelay: "150ms",
-            }}
-          >
-            <form onSubmit={handleSubmit(onSubmit)}>
+      {/* ===== FORM & MAP CONTAINER ===== */}
+      <div className="!-mt-12 max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 relative z-10 !pb-24">
+        <div className="grid grid-cols-1 lg:grid-cols-12 gap-8 items-start">
+          
+          {/* Form Card (5 Cols) */}
+          <div className="lg:col-span-5 bg-white/95 backdrop-blur-xl rounded-3xl !border !border-slate-100 p-6 md:p-8 shadow-[0_8px_30px_rgba(0,0,0,0.02)]">
+            <form onSubmit={handleSubmit(onSubmit)} className="space-y-6">
+              
               {/* Category */}
               <div>
-                <p
-                  className="font-family-medium"
-                  style={{
-                    fontSize: 13,
-                    color: "#374151",
-                    display: "block",
-                    marginBottom: 6,
-                  }}
-                >
+                <label className="text-xs text-slate-700 block !mb-2 font-family-semibold">
                   Category
-                </p>
+                </label>
                 <Controller
                   name="category"
                   control={control}
@@ -934,23 +871,13 @@ const RidePage = () => {
                         styles={selectStyles(errors.category)}
                         onChange={(selectedOption) => {
                           setTypeRide(selectedOption?.value);
-                          onChange(
-                            selectedOption ? selectedOption.value : null,
-                          );
+                          onChange(selectedOption ? selectedOption.value : null);
                         }}
-                        value={value?.label}
+                        value={value ? { value, label: value.charAt(0).toUpperCase() + value.slice(1) } : null}
                         isClearable
                       />
                       {errors.category && (
-                        <span
-                          className="font-family-regular"
-                          style={{
-                            fontSize: 12,
-                            marginTop: 4,
-                            color: "#ef4444",
-                            display: "block",
-                          }}
-                        >
+                        <span className="text-xs text-rose-500 block !mt-1.5 font-family-medium">
                           {errors.category.message}
                         </span>
                       )}
@@ -959,412 +886,208 @@ const RidePage = () => {
                 />
               </div>
 
-              <div
-                style={{ height: 1, background: "#f3f4f6", margin: "20px 0" }}
-              />
-
               {/* Start Location */}
               <div>
-                <p
-                  className="font-family-medium"
-                  style={{
-                    fontSize: 13,
-                    color: "#374151",
-                    display: "block",
-                    marginBottom: 6,
-                  }}
-                >
+                <label className="text-xs text-slate-700 block !mb-2 font-family-semibold">
                   Start Location
-                </p>
-                <div style={{ display: "flex", alignItems: "center", gap: 8 }}>
+                </label>
+                <div className="flex items-center gap-2.5">
                   <Controller
                     name="name"
                     control={control}
                     render={({ field }) => (
-                      <div style={{ position: "relative", width: "100%" }}>
+                      <div className="relative flex-grow">
                         <input
                           {...field}
                           placeholder="Enter start location"
                           value={searchQuery}
                           onChange={(e) => handleSearch(e.target.value)}
-                          style={inputStyle(errors.name)}
+                          className={`w-full px-4 py-3 bg-slate-50/50 !border-2 rounded-xl text-sm font-family-medium text-slate-900 focus:bg-white outline-none transition-all duration-200 ${
+                            errors.name ? "!border-rose-300 focus:!border-rose-500" : "!border-slate-100 focus:!border-brand-600"
+                          }`}
                         />
                         {errors.name && (
-                          <span
-                            className="font-family-regular"
-                            style={{
-                              fontSize: 12,
-                              marginTop: 4,
-                              color: "#ef4444",
-                              display: "block",
-                            }}
-                          >
+                          <span className="text-xs text-rose-500 block !mt-1.5 font-family-medium">
                             {errors.name.message}
                           </span>
                         )}
                         {PridicLoading && (
-                          <div
-                            className="font-family-regular"
-                            style={{
-                              fontSize: 13,
-                              color: "#9ca3af",
-                              marginTop: 4,
-                            }}
-                          >
-                            Loading...
+                          <div className="text-xs text-slate-400 !mt-2 font-family-medium flex items-center gap-1.5">
+                            <Spinner animation="border" size="sm" style={{ width: 12, height: 12 }} />
+                            <span>Fetching locations...</span>
                           </div>
                         )}
                         {predictions.length > 0 && (
-                          <ListGroup
-                            style={{
-                              position: "absolute",
-                              zIndex: 10,
-                              width: "100%",
-                              maxHeight: "200px",
-                              overflowY: "auto",
-                              marginTop: 2,
-                              borderRadius: 8,
-                            }}
-                          >
+                          <ListGroup className="absolute z-20 w-full bg-white/95 backdrop-blur-md rounded-2xl shadow-xl !border !border-slate-100 max-h-[200px] overflow-y-auto !mt-2.5">
                             {predictions.map((prediction) => (
                               <ListGroupItem
                                 key={prediction.place_id}
-                                onClick={() =>
-                                  handlePredictionPress(prediction)
-                                }
-                                className="font-family-regular"
-                                style={{
-                                  cursor: "pointer",
-                                  fontSize: 13,
-                                  padding: "8px 12px",
-                                }}
+                                onClick={() => handlePredictionPress(prediction)}
+                                className="px-4 py-3 text-xs text-slate-700 font-family-medium cursor-pointer hover:bg-slate-50 hover:text-slate-950 transition-colors !border-b !border-slate-100 last:!border-none"
                               >
                                 {prediction.description}
                               </ListGroupItem>
                             ))}
                           </ListGroup>
                         )}
-                        {noData && (
-                          <div
-                            className="font-family-regular"
-                            style={{
-                              fontSize: 13,
-                              color: "#9ca3af",
-                              marginTop: 4,
-                            }}
-                          >
-                            No results found
-                          </div>
-                        )}
                       </div>
                     )}
                   />
-                  <BiCurrentLocation
-                    size={28}
+                  <button
+                    type="button"
                     onClick={getLocation}
-                    style={{
-                      cursor: "pointer",
-                      color: "#004a70",
-                      flexShrink: 0,
-                    }}
-                  />
+                    className="w-11 h-11 rounded-xl bg-brand-50 hover:bg-brand-100 text-brand-650 flex items-center justify-center shrink-0 !border !border-brand-100 transition-colors shadow-inner"
+                  >
+                    <BiCurrentLocation size={18} />
+                  </button>
                 </div>
               </div>
 
-              <div
-                style={{ height: 1, background: "#f3f4f6", margin: "20px 0" }}
-              />
-
               {/* Add Stop */}
               <div>
-                <p
-                  className="font-family-medium"
-                  style={{
-                    fontSize: 13,
-                    color: "#374151",
-                    display: "block",
-                    marginBottom: 6,
-                  }}
-                >
+                <label className="text-xs text-slate-700 block !mb-2 font-family-semibold">
                   Add Stop
-                </p>
-                <div style={{ display: "flex", alignItems: "center", gap: 8 }}>
+                </label>
+                <div className="flex items-center gap-2.5">
                   <Controller
                     name="stop"
                     control={control}
                     render={({ field }) => (
-                      <div style={{ position: "relative", width: "100%" }}>
+                      <div className="relative flex-grow">
                         <input
                           {...field}
                           placeholder="Enter stop location"
                           value={SearchQueryStop}
                           onChange={(e) => HandleStopSearch(e.target.value)}
-                          style={inputStyle(errors.stop)}
+                          className={`w-full px-4 py-3 bg-slate-50/50 !border-2 rounded-xl text-sm font-family-medium text-slate-900 focus:bg-white outline-none transition-all duration-200 ${
+                            errors.stop ? "!border-rose-300 focus:!border-rose-500" : "!border-slate-100 focus:!border-brand-600"
+                          }`}
                         />
                         {errors.stop && (
-                          <span
-                            className="font-family-regular"
-                            style={{
-                              fontSize: 12,
-                              marginTop: 4,
-                              color: "#ef4444",
-                              display: "block",
-                            }}
-                          >
+                          <span className="text-xs text-rose-500 block !mt-1.5 font-family-medium">
                             {errors.stop.message}
                           </span>
                         )}
                         {PridicLoadingStop && (
-                          <div
-                            className="font-family-regular"
-                            style={{
-                              fontSize: 13,
-                              color: "#9ca3af",
-                              marginTop: 4,
-                            }}
-                          >
-                            Loading...
+                          <div className="text-xs text-slate-400 !mt-2 font-family-medium flex items-center gap-1.5">
+                            <Spinner animation="border" size="sm" style={{ width: 12, height: 12 }} />
+                            <span>Fetching locations...</span>
                           </div>
                         )}
                         {StopPredictions.length > 0 && (
-                          <ListGroup
-                            style={{
-                              position: "absolute",
-                              zIndex: 10,
-                              width: "100%",
-                              maxHeight: "200px",
-                              overflowY: "auto",
-                              marginTop: 2,
-                              borderRadius: 8,
-                            }}
-                          >
+                          <ListGroup className="absolute z-20 w-full bg-white/95 backdrop-blur-md rounded-2xl shadow-xl !border !border-slate-100 max-h-[200px] overflow-y-auto !mt-2.5">
                             {StopPredictions.map((prediction) => (
                               <ListGroupItem
                                 key={prediction.place_id}
                                 onClick={() => HadleStopPridication(prediction)}
-                                className="font-family-regular"
-                                style={{
-                                  cursor: "pointer",
-                                  fontSize: 13,
-                                  padding: "8px 12px",
-                                }}
+                                className="px-4 py-3 text-xs text-slate-700 font-family-medium cursor-pointer hover:bg-slate-50 hover:text-slate-950 transition-colors !border-b !border-slate-100 last:!border-none"
                               >
                                 {prediction.description}
                               </ListGroupItem>
                             ))}
                           </ListGroup>
                         )}
-                        {noData && (
-                          <div
-                            className="font-family-regular"
-                            style={{
-                              fontSize: 13,
-                              color: "#9ca3af",
-                              marginTop: 4,
-                            }}
-                          >
-                            No results found
-                          </div>
-                        )}
                       </div>
                     )}
                   />
-                  <IoMdAddCircleOutline
+                  <button
+                    type="button"
                     onClick={addlocation}
-                    size={28}
-                    style={{
-                      cursor: "pointer",
-                      color: "#004a70",
-                      flexShrink: 0,
-                    }}
-                  />
+                    className="w-11 h-11 rounded-xl bg-brand-50 hover:bg-brand-100 text-brand-650 flex items-center justify-center shrink-0 !border !border-brand-100 transition-colors shadow-inner"
+                  >
+                    <IoMdAddCircleOutline size={20} />
+                  </button>
                 </div>
 
                 {LocationDetails3.map((item, index) => (
                   <div
                     key={index}
-                    style={{
-                      display: "flex",
-                      alignItems: "center",
-                      gap: 8,
-                      marginTop: 8,
-                      cursor: "pointer",
-                    }}
+                    className="flex items-center justify-between gap-3 p-3 bg-slate-50/70 !border !border-slate-100 rounded-2xl !mt-2.5 shadow-sm"
                   >
-                    <p
-                      className="font-family-medium"
-                      style={{
-                        fontSize: 13,
-                        color: "#374151",
-                        margin: 0,
-                        flex: 1,
-                        overflow: "hidden",
-                        textOverflow: "ellipsis",
-                        whiteSpace: "nowrap",
-                      }}
-                    >
+                    <p className="text-xs font-family-medium text-slate-800 truncate !m-0">
                       {item?.address}
                     </p>
-                    <div
+                    <button
+                      type="button"
                       onClick={() => RemoveStop(index)}
-                      style={{ color: "#ef4444", flexShrink: 0 }}
+                      className="text-rose-500 hover:text-rose-700 bg-transparent !border-none p-0 flex items-center shrink-0 cursor-pointer"
                     >
                       <IoMdCloseCircle size={18} />
-                    </div>
+                    </button>
                   </div>
                 ))}
               </div>
 
-              <div
-                style={{ height: 1, background: "#f3f4f6", margin: "20px 0" }}
-              />
-
               {/* End Location */}
               <div>
-                <p
-                  className="font-family-medium"
-                  style={{
-                    fontSize: 13,
-                    color: "#374151",
-                    display: "block",
-                    marginBottom: 6,
-                  }}
-                >
+                <label className="text-xs text-slate-700 block !mb-2 font-family-semibold">
                   End Location
-                </p>
+                </label>
                 <Controller
                   name="metaTitle"
                   control={control}
                   render={({ field }) => (
-                    <div style={{ position: "relative" }}>
+                    <div className="relative">
                       <input
                         {...field}
                         placeholder="Enter end location"
                         value={SearchQueryEnd}
                         onChange={(e) => HandleEndSearch(e.target.value)}
-                        style={inputStyle(errors.metaTitle)}
+                        className={`w-full px-4 py-3 bg-slate-50/50 !border-2 rounded-xl text-sm font-family-medium text-slate-900 focus:bg-white outline-none transition-all duration-200 ${
+                          errors.metaTitle ? "!border-rose-300 focus:!border-rose-500" : "!border-slate-100 focus:!border-brand-600"
+                        }`}
                       />
                       {errors.metaTitle && (
-                        <span
-                          className="font-family-regular"
-                          style={{
-                            fontSize: 12,
-                            marginTop: 4,
-                            color: "#ef4444",
-                            display: "block",
-                          }}
-                        >
+                        <span className="text-xs text-rose-500 block !mt-1.5 font-family-medium">
                           {errors.metaTitle.message}
                         </span>
                       )}
                       {PridicLoadingEnd && (
-                        <div
-                          className="font-family-regular"
-                          style={{
-                            fontSize: 13,
-                            color: "#9ca3af",
-                            marginTop: 4,
-                          }}
-                        >
-                          Loading...
+                        <div className="text-xs text-slate-400 !mt-2 font-family-medium flex items-center gap-1.5">
+                          <Spinner animation="border" size="sm" style={{ width: 12, height: 12 }} />
+                          <span>Fetching locations...</span>
                         </div>
                       )}
                       {EndPredictions.length > 0 && (
-                        <ListGroup
-                          style={{
-                            position: "absolute",
-                            zIndex: 10,
-                            width: "100%",
-                            maxHeight: "200px",
-                            overflowY: "auto",
-                            marginTop: 2,
-                            borderRadius: 8,
-                          }}
-                        >
+                        <ListGroup className="absolute z-20 w-full bg-white/95 backdrop-blur-md rounded-2xl shadow-xl !border !border-slate-100 max-h-[200px] overflow-y-auto !mt-2.5">
                           {EndPredictions.map((prediction) => (
                             <ListGroupItem
                               key={prediction.place_id}
                               onClick={() => HadleEndPridication(prediction)}
-                              className="font-family-regular"
-                              style={{
-                                cursor: "pointer",
-                                fontSize: 13,
-                                padding: "8px 12px",
-                              }}
+                              className="px-4 py-3 text-xs text-slate-700 font-family-medium cursor-pointer hover:bg-slate-50 hover:text-slate-950 transition-colors !border-b !border-slate-100 last:!border-none"
                             >
                               {prediction.description}
                             </ListGroupItem>
                           ))}
                         </ListGroup>
                       )}
-                      {noData && (
-                        <div
-                          className="font-family-regular"
-                          style={{
-                            fontSize: 13,
-                            color: "#9ca3af",
-                            marginTop: 4,
-                          }}
-                        >
-                          No results found
-                        </div>
-                      )}
                     </div>
                   )}
                 />
+                <p className="text-[11px] text-slate-400 !mt-2 !m-0 font-family-regular">
+                  Copy and paste End location if it doesn&rsquo;t fetch automatically
+                </p>
               </div>
-
-              <p
-                className="font-family-regular"
-                style={{ fontSize: 12, color: "#6b7280", margin: "8px 0 4px" }}
-              >
-                Copy and paste End location if it doesn&rsquo;t fetch
-                automatically
-              </p>
 
               {/* Schedule Checkbox */}
               {!RideTime && (
-                <label
-                  className="font-family-medium"
-                  style={{
-                    display: "flex",
-                    alignItems: "center",
-                    gap: 8,
-                    margin: "12px 0",
-                    cursor: "pointer",
-                    fontSize: 14,
-                    color: "#374151",
-                  }}
-                >
+                <label className="flex items-center gap-2.5 !my-4 cursor-pointer text-sm font-family-semibold text-slate-700 select-none">
                   <input
                     type="checkbox"
                     checked={Schuale}
                     onChange={onChangeSchedule}
-                    style={{
-                      width: 16,
-                      height: 16,
-                      accentColor: "#004a70",
-                      cursor: "pointer",
-                    }}
+                    className="w-4 h-4 accent-brand-900 rounded cursor-pointer"
                   />
-                  Schedule
+                  <span>Schedule Ride</span>
                 </label>
               )}
 
               {/* Travelers */}
               {RideTime && (
-                <div style={{ marginTop: 12 }}>
-                  <p
-                    className="font-family-medium"
-                    style={{
-                      fontSize: 13,
-                      color: "#374151",
-                      display: "block",
-                      marginBottom: 6,
-                    }}
-                  >
+                <div>
+                  <label className="text-xs text-slate-700 block !mb-2 font-family-semibold">
                     Travelers
-                  </p>
+                  </label>
                   <Controller
                     name="travlers"
                     control={control}
@@ -1374,19 +1097,13 @@ const RidePage = () => {
                           type="number"
                           required
                           {...field}
-                          placeholder="Travelers"
-                          style={inputStyle(errors.travlers)}
+                          placeholder="Travelers Count"
+                          className={`w-full px-4 py-3 bg-slate-50/50 !border-2 rounded-xl text-sm font-family-medium text-slate-900 focus:bg-white outline-none transition-all duration-200 ${
+                            errors.travlers ? "!border-rose-300 focus:!border-rose-500" : "!border-slate-100 focus:!border-brand-600"
+                          }`}
                         />
                         {errors.travlers && (
-                          <span
-                            className="font-family-regular"
-                            style={{
-                              fontSize: 12,
-                              marginTop: 4,
-                              color: "#ef4444",
-                              display: "block",
-                            }}
-                          >
+                          <span className="text-xs text-rose-500 block !mt-1.5 font-family-medium">
                             {errors.travlers.message}
                           </span>
                         )}
@@ -1396,17 +1113,10 @@ const RidePage = () => {
                 </div>
               )}
 
-              {/* Schedule Calendar & Time */}
+              {/* Calendar & Time section */}
               {Schuale && (
-                <div style={{ marginTop: 16 }}>
-                  <div
-                    style={{
-                      border: "1px solid #e5e7eb",
-                      borderRadius: 12,
-                      padding: 12,
-                      marginBottom: 12,
-                    }}
-                  >
+                <div className="!mt-5 space-y-4">
+                  <div className="!border !border-slate-100 p-4 rounded-3xl bg-slate-50/30">
                     <Controller
                       name="date"
                       control={control}
@@ -1429,18 +1139,12 @@ const RidePage = () => {
                       defaultValue={null}
                       render={({ field }) => (
                         <TimePicker
-                          style={{ width: "100%", borderRadius: 10 }}
+                          className="w-full h-12 rounded-xl !border-2 !border-slate-100 bg-slate-50/50 focus:bg-white"
                           use12Hours
                           format="h:mm a"
                           {...field}
-                          value={
-                            field.value ? moment(field.value, "h:mm a") : null
-                          }
-                          onChange={(value) =>
-                            field.onChange(
-                              value ? value.format("h:mm a") : null,
-                            )
-                          }
+                          value={field.value ? moment(field.value, "h:mm a") : null}
+                          onChange={(value) => field.onChange(value ? value.format("h:mm a") : null)}
                         />
                       )}
                     />
@@ -1448,109 +1152,76 @@ const RidePage = () => {
                 </div>
               )}
 
-              <div
-                style={{ height: 1, background: "#f3f4f6", margin: "20px 0" }}
-              />
-
-              {/* Submit */}
-              <CustomButton
-                type="submit"
-                variant="primary"
-                size="md"
-                loading={isLoading}
-                className="!w-full !h-12 !mt-2 font-family-medium"
-              >
-                Next
-              </CustomButton>
+              {/* Submit CTA */}
+              <div className="!pt-4">
+                <CustomButton
+                  type="submit"
+                  variant="primary"
+                  size="md"
+                  loading={isLoading}
+                  className="w-full h-12 bg-gradient-to-r from-brand-600 to-brand-700 hover:from-brand-700 hover:to-brand-800 text-white font-family-semibold rounded-full shadow-lg shadow-brand-600/10 hover:shadow-xl hover:-translate-y-0.5 active:translate-y-0 transition-all duration-300"
+                >
+                  Next
+                </CustomButton>
+              </div>
             </form>
           </div>
 
-          {/* Map Card */}
-          <div
-            className={mounted ? "animate-fade-in-up" : "opacity-0"}
-            style={{
-              background: "#fff",
-              borderRadius: 14,
-              border: "1px solid #f0f0f0",
-              overflow: "hidden",
-              minHeight: isMobile ? 300 : 500,
-              animationDelay: "250ms",
-            }}
-          >
+          {/* Map Card (7 Cols) */}
+          <div className="lg:col-span-7 bg-white rounded-3xl !border !border-slate-100 shadow-[0_8px_30px_rgba(0,0,0,0.02)] overflow-hidden min-h-[500px] h-[550px] relative">
             <div
               id="map-container"
               ref={mapContainerRef}
-              style={{ width: "100%", height: isMobile ? 300 : 500 }}
+              className="w-full h-full"
             />
+            
+            {/* Map Placeholder Prompt Overlay */}
+            {!hasAnyLocation && (
+              <div className="absolute inset-0 bg-slate-50/50 backdrop-blur-[2px] flex flex-col items-center justify-center p-6 text-center z-10 select-none">
+                <div className="w-16 h-16 rounded-2xl bg-white text-brand-600 flex items-center justify-center !mb-4 shadow-md !border !border-slate-100 flex-shrink-0 animate-bounce" style={{ animationDuration: '4s' }}>
+                  <BiCurrentLocation size={28} />
+                </div>
+                <h3 className="text-base font-family-bold text-slate-800 !m-0">
+                  Ready to Map Your Route?
+                </h3>
+                <p className="text-xs text-slate-400 !m-0 !mt-2 leading-relaxed max-w-[280px] font-family-regular">
+                  Please enter your start and end locations in the booking form to display the live map route.
+                </p>
+              </div>
+            )}
           </div>
+
         </div>
       </div>
 
-      {/* Location Permission Dialog */}
+      {/* Geolocation Permission Dialog */}
       {ShowPermissionDialog && (
-        <div
-          className={mounted ? "animate-fade-in" : "opacity-0"}
-          style={{
-            position: "fixed",
-            inset: 0,
-            background: "rgba(0,0,0,0.5)",
-            display: "flex",
-            alignItems: "center",
-            justifyContent: "center",
-            padding: 16,
-            zIndex: 1050,
-          }}
-        >
-          <div
-            className={mounted ? "animate-fade-in-up" : "opacity-0"}
-            style={{
-              background: "#fff",
-              borderRadius: 14,
-              maxWidth: 400,
-              width: "100%",
-              padding: "clamp(20px, 3vw, 28px)",
-              animationDelay: "50ms",
-            }}
-          >
-            <h2
-              className="font-family-semibold"
-              style={{ fontSize: 18, color: "#1f2937", margin: "0 0 8px" }}
-            >
+        <div className="fixed inset-0 bg-slate-900/65 backdrop-blur-sm flex items-center justify-center p-4 z-[9999] animate-fade-in">
+          <div className="bg-white rounded-3xl p-6 md:p-8 shadow-2xl max-w-sm w-full text-center relative !border !border-slate-100">
+            <div className="w-16 h-16 rounded-full bg-brand-50 text-brand-600 flex items-center justify-center mx-auto !mb-4">
+              <BiCurrentLocation size={30} />
+            </div>
+            <h2 className="text-lg font-family-bold text-slate-900 !mb-2">
               Location Access Required
             </h2>
-            <p
-              className="font-family-regular"
-              style={{ fontSize: 14, color: "#6b7280", margin: "0 0 20px" }}
-            >
-              Please enable location access to use this feature. You can enable
-              it in your browser settings.
+            <p className="text-xs text-slate-500 font-family-regular leading-relaxed !mb-6">
+              Please enable location access to use this feature. You can enable it in your browser settings.
             </p>
-            <div
-              style={{ display: "flex", justifyContent: "flex-end", gap: 8 }}
-            >
+            <div className="flex gap-3 justify-center">
               <button
-                onClick={() => handlePermissionGuide(false)}
-                className="font-family-semibold hover:bg-gray-200"
-                style={{
-                  padding: "10px 24px",
-                  borderRadius: "9999px",
-                  background: "#f3f4f6",
-                  border: "none",
-                  color: "#374151",
-                  fontSize: 14,
-                  cursor: "pointer",
-                  transition: "background 0.2s",
-                }}
+                type="button"
+                onClick={() => setShowPermissionDialog(false)}
+                className="px-6 py-2.5 rounded-full !border-2 !border-slate-150 bg-white text-slate-550 hover:bg-slate-50 font-family-semibold text-sm transition-all duration-200 cursor-pointer"
               >
                 Cancel
               </button>
-              <CustomButton
+              <button
+                type="button"
                 onClick={handlePermissionGuide}
-                variant="primary"
-                size="md"
+                className="px-6 py-2.5 rounded-full bg-brand-900 hover:bg-brand-950 text-white font-family-semibold text-sm transition-all duration-200 !border-none cursor-pointer"
               >
-                Show Instructions
-              </CustomButton>
+                Show Guide
+              </button>
             </div>
           </div>
         </div>
@@ -1559,23 +1230,17 @@ const RidePage = () => {
   );
 };
 
-const inputStyle = (error) => ({
-  borderRadius: 10,
-  border: error ? "1px solid #ef4444" : "1px solid #d1d5db",
-  padding: "10px 14px",
-  fontSize: 14,
-  marginTop: 0,
-  width: "100%",
-});
-
 const selectStyles = (error) => ({
   control: (base) => ({
     ...base,
-    borderRadius: 10,
-    borderColor: error ? "#ef4444" : "#d1d5db",
-    minHeight: 42,
+    borderRadius: 12,
+    borderColor: error ? "#fca5a5" : "#f1f5f9",
+    borderWidth: 2,
+    minHeight: 46,
     fontSize: 14,
+    fontFamily: "Inter, sans-serif",
     boxShadow: "none",
+    backgroundColor: "#f8fafc80",
     "&:hover": { borderColor: "#004a70" },
   }),
   placeholder: (base) => ({ ...base, fontSize: 14, color: "#9ca3af" }),
@@ -1583,9 +1248,10 @@ const selectStyles = (error) => ({
 
 const MakeRIde = () => {
   return (
-    <Suspense fallback={<Spinner animation="border" />}>
+    <Suspense fallback={<div className="flex items-center justify-center p-12"><Spinner animation="border" /></div>}>
       <RidePage />
     </Suspense>
   );
 };
+
 export default MakeRIde;

@@ -1,7 +1,7 @@
 "use client";
 import React, { useEffect, useState, useRef } from "react";
 import { mainBanner } from "@/components/assets/Images";
-import { FaStar, FaStarHalfAlt, FaRegStar, FaQuoteLeft, FaQuoteRight } from "react-icons/fa";
+import { FaStar, FaStarHalfAlt, FaRegStar, FaQuoteRight } from "react-icons/fa";
 import { FiArrowRight, FiAward, FiStar, FiMessageCircle } from "react-icons/fi";
 import CustomButton from "../../components/CustomButton";
 import { useRouter } from "next/navigation";
@@ -35,172 +35,245 @@ const gradients = [
   "from-blue-600 to-cyan-400",
 ];
 
-const renderStars = (rating) => {
+const renderStars = (rating, size = 13) => {
   const stars = [];
   const full = Math.floor(rating);
   const half = rating % 1 >= 0.5;
   for (let i = 0; i < 5; i++) {
-    if (i < full) stars.push(<FaStar key={i} size={13} color="#f59e0b" />);
-    else if (i === full && half) stars.push(<FaStarHalfAlt key={i} size={13} color="#f59e0b" />);
-    else stars.push(<FaRegStar key={i} size={13} color="#d1d5db" />);
+    if (i < full) stars.push(<FaStar key={i} size={size} color="#f59e0b" />);
+    else if (i === full && half) stars.push(<FaStarHalfAlt key={i} size={size} color="#f59e0b" />);
+    else stars.push(<FaRegStar key={i} size={size} color="#d1d5db" />);
   }
   return stars;
 };
 
+const ratingsBreakdown = [
+  { stars: 5, percentage: 92, count: "2,300" },
+  { stars: 4, percentage: 6, count: "150" },
+  { stars: 3, percentage: 2, count: "50" },
+  { stars: 2, percentage: 0, count: "0" },
+  { stars: 1, percentage: 0, count: "0" },
+];
+
 export default function Testimonials() {
   const [mounted, setMounted] = useState(false);
+  const [activeTab, setActiveTab] = useState("All");
   const router = useRouter();
   useEffect(() => { setMounted(true); }, []);
 
   const testimonials = [
-    { name: "Sarah Johnson", role: "Regular Commuter", rating: 5, text: "Cabkn has completely changed how I travel between Nevis and Saint Kitts. The drivers are always on time, professional, and the cars are spotless. I use it every day for work and have never been let down." },
-    { name: "Michael Thompson", role: "Business Traveler", rating: 5, text: "As a frequent business traveler, reliability is everything. Cabkn delivers every single time. The real-time tracking and transparent pricing give me peace of mind. Highly recommended." },
-    { name: "Emily Davis", role: "Tourist", rating: 4.5, text: "Discovered Cabkn during my vacation in St. Kitts and it made my trip so much easier. The drivers were friendly and gave great local tips. Will definitely use again on my next visit!" },
-    { name: "James Williams", role: "University Student", rating: 5, text: "Affordable rides that actually show up on time! As a student, the fair pricing is a lifesaver. The app is super easy to use and I love being able to track my ride." },
-    { name: "Maria Garcia", role: "Healthcare Professional", rating: 5, text: "I work late shifts and Cabkn has been a godsend. The safety features like ride sharing and 24/7 support mean I always feel secure, no matter what time I need to travel." },
-    { name: "David Brown", role: "Tour Guide", rating: 4.5, text: "I recommend Cabkn to all my clients looking for reliable transportation. The service is consistent, the drivers know the islands well, and the booking process couldn't be simpler." },
+    { name: "Sarah Johnson", role: "Regular Commuter", category: "Commuter", rating: 5, text: "Cabkn has completely changed how I travel between Nevis and Saint Kitts. The drivers are always on time, professional, and the cars are spotless. I use it every day for work and have never been let down." },
+    { name: "Michael Thompson", role: "Business Traveler", category: "Business", rating: 5, text: "As a frequent business traveler, reliability is everything. Cabkn delivers every single time. The real-time tracking and transparent pricing give me peace of mind. Highly recommended." },
+    { name: "Emily Davis", role: "Tourist", category: "Tourist", rating: 4.5, text: "Discovered Cabkn during my vacation in St. Kitts and it made my trip so much easier. The drivers were friendly and gave great local tips. Will definitely use again on my next visit!" },
+    { name: "James Williams", role: "University Student", category: "Commuter", rating: 5, text: "Affordable rides that actually show up on time! As a student, the fair pricing is a lifesaver. The app is super easy to use and I love being able to track my ride." },
+    { name: "Maria Garcia", role: "Healthcare Professional", category: "Business", rating: 5, text: "I work late shifts and Cabkn has been a godsend. The safety features like ride sharing and 24/7 support mean I always feel secure, no matter what time I need to travel." },
+    { name: "David Brown", role: "Tour Guide", category: "Tourist", rating: 4.5, text: "I recommend Cabkn to all my clients looking for reliable transportation. The service is consistent, the drivers know the islands well, and the booking process couldn't be simpler." },
   ];
 
+  const filteredTestimonials = activeTab === "All"
+    ? testimonials
+    : testimonials.filter((t) => t.category === activeTab);
+
+  const categories = ["All", "Commuter", "Business", "Tourist"];
+
   return (
-    <div className={`min-h-screen bg-white ${mounted ? "animate-fade-in" : "opacity-0"}`}>
+    <div className={`min-h-screen bg-slate-50/50 ${mounted ? "animate-fade-in" : "opacity-0"}`}>
       {/* ===== HERO ===== */}
-      <section className="relative overflow-hidden bg-gradient-to-br from-slate-900 via-brand-900 to-brand-950 pt-28 pb-28 md:pt-36 md:pb-32">
-        <div className="absolute inset-0 opacity-[0.07] bg-cover bg-center" style={{ backgroundImage: `url(${mainBanner.src})` }} />
-        <div className="absolute top-20 -left-20 w-72 h-72 bg-brand-400/10 rounded-full blur-3xl" />
-        <div className="absolute bottom-10 -right-20 w-96 h-96 bg-brand-300/5 rounded-full blur-3xl" />
+      <section className="relative overflow-hidden bg-gradient-to-br from-slate-900 via-brand-900 to-brand-950 pt-28 pb-32 md:pt-36 md:pb-40">
+        {/* Banner Overlay */}
+        <div className="absolute inset-0 opacity-[0.05] bg-cover bg-center mix-blend-overlay" style={{ backgroundImage: `url(${mainBanner.src})` }} />
+
+        {/* High-tech Grid overlay */}
+        <div className="absolute inset-0 opacity-[0.04]" style={{
+          backgroundImage: `radial-gradient(circle at 1px 1px, white 1px, transparent 0)`,
+          backgroundSize: "24px 24px"
+        }} />
+
+        {/* Neon blurred blobs */}
+        <div className="absolute top-1/4 -left-20 w-80 h-80 bg-brand-500/10 rounded-full blur-[100px] animate-pulse" style={{ animationDuration: "8s" }} />
+        <div className="absolute bottom-1/4 -right-20 w-96 h-96 bg-indigo-500/10 rounded-full blur-[120px] animate-pulse" style={{ animationDuration: "12s" }} />
+
         <div className="absolute inset-0 bg-gradient-to-t from-brand-950/60 via-transparent to-transparent" />
+
         <div className={`relative z-10 max-w-4xl mx-auto px-4 sm:px-6 lg:px-8 text-center ${mounted ? "animate-fade-in-up" : "opacity-0"}`} style={{ animationDelay: "100ms" }}>
-          <span className={`inline-flex items-center gap-2 bg-white/10 backdrop-blur-sm border border-white/10 text-white/80 text-xs sm:text-sm font-family-semibold tracking-widest uppercase px-4 py-2 rounded-full mb-6 ${mounted ? "animate-fade-in-down" : "opacity-0"}`} style={{ animationDelay: "200ms" }}>
-            <FiMessageCircle size={14} />
-            Rider Testimonials
-          </span>
-          <h1 className={`text-white text-4xl sm:text-5xl md:text-6xl lg:text-7xl font-family-bold mt-4 mb-6 leading-[1.1] tracking-tight ${mounted ? "animate-fade-in-up" : "opacity-0"}`} style={{ animationDelay: "300ms" }}>
+          <div className={`inline-flex items-center gap-2 bg-white/5 backdrop-blur-md border border-white/10 text-white/80 text-xs sm:text-sm font-family-semibold tracking-wider uppercase px-4 py-2 rounded-full mb-6 ${mounted ? "animate-fade-in-down" : "opacity-0"}`} style={{ animationDelay: "200ms" }}>
+            <span className="relative flex h-2 w-2">
+              <span className="animate-ping absolute inline-flex h-full w-full rounded-full bg-emerald-400 opacity-75"></span>
+              <span className="relative inline-flex rounded-full h-2 w-2 bg-emerald-500"></span>
+            </span>
+            <span>Verified Customer Reviews</span>
+          </div>
+          <h1 className={`text-white text-4xl sm:text-5xl md:text-6xl lg:text-7xl font-family-bold mt-4 !mb-6 leading-[1.1] tracking-tight ${mounted ? "animate-fade-in-up" : "opacity-0"}`} style={{ animationDelay: "300ms" }}>
             What Our{" "}
-            <span className="text-transparent bg-clip-text bg-gradient-to-r from-brand-300 to-brand-100">
+            <span className="text-transparent bg-clip-text bg-gradient-to-r from-brand-300 via-sky-300 to-indigo-200">
               Riders
             </span>{" "}
             Say
           </h1>
-          <p className={`text-white/60 text-base sm:text-lg max-w-2xl mx-auto leading-relaxed font-family-regular ${mounted ? "animate-fade-in-up" : "opacity-0"}`} style={{ animationDelay: "400ms" }}>
-            Real feedback from real riders. Here is why the community loves Cabkn.
+          <p className={`text-slate-400 text-base sm:text-lg max-w-2xl mx-auto leading-relaxed font-family-regular ${mounted ? "animate-fade-in-up" : "opacity-0"}`} style={{ animationDelay: "400ms" }}>
+            Real feedback from our community. Discover why travelers trust Cabkn for their transfers between Saint Kitts and Nevis.
           </p>
         </div>
       </section>
 
-      {/* ===== RATING SUMMARY ===== */}
-      <section className="relative z-20 px-4 sm:px-6 lg:px-8 -mt-14">
+      {/* ===== RATING SUMMARY CARD ===== */}
+      <section className="relative z-20 px-4 sm:px-6 lg:px-8 -mt-16">
         <div className="max-w-5xl mx-auto">
-          <div className={`bg-white rounded-2xl p-6 md:p-10 shadow-[0_8px_30px_rgba(0,0,0,0.06)] border border-slate-100 ${mounted ? "animate-fade-in-up" : "opacity-0"}`} style={{ animationDelay: "250ms" }}>
-            <div className="flex flex-col md:flex-row items-center justify-between gap-6 text-center md:text-left">
-              <div className="flex flex-col md:flex-row items-center gap-6 md:gap-10 w-full md:w-auto">
-                <div className="flex items-center gap-5">
-                  <div className="relative">
-                    <div className="text-5xl md:text-6xl font-family-bold text-slate-900 leading-none tracking-tight">4.9</div>
-                    <div className="flex gap-0.5 mt-2 justify-center md:justify-start">{renderStars(4.9)}</div>
-                  </div>
-                  <div className="hidden md:block w-px h-16 bg-slate-200" />
-                </div>
-                <div className="text-left">
-                  <div className="flex items-center gap-2 mb-1">
-                    <FiStar className="text-amber-400" size={16} />
-                    <span className="text-sm font-family-semibold text-slate-900">Average Rating</span>
-                  </div>
-                  <p className="text-sm text-slate-500 leading-relaxed font-family-regular m-0">
-                    Based on <strong className="text-slate-900">2,500+</strong> verified reviews from riders across Nevis and Saint Kitts
-                  </p>
-                </div>
+          <div className={`bg-white rounded-3xl p-6 md:p-10 shadow-[0_20px_50px_rgba(0,0,0,0.03)] border border-slate-100 ${mounted ? "animate-fade-in-up" : "opacity-0"}`} style={{ animationDelay: "250ms" }}>
+            <div className="grid grid-cols-1 lg:grid-cols-12 gap-8 items-center">
+              {/* Avg rating score */}
+              <div className="lg:col-span-4 flex flex-col items-center lg:items-start text-center lg:text-left gap-2 lg:border-r lg:border-slate-100 lg:pr-8">
+                <span className="text-sm font-family-bold text-brand-600 uppercase tracking-widest">Average Rating</span>
+                <h2 className="text-6xl md:text-7xl font-family-black text-slate-900 m-0">4.9</h2>
+                <div className="flex gap-1 mt-1 justify-center lg:justify-start">{renderStars(4.9, 18)}</div>
+                <p className="text-xs text-slate-400 font-family-regular mt-2 m-0">
+                  Based on <strong className="text-slate-800 font-family-semibold">2,500+</strong> reviews from verified riders.
+                </p>
               </div>
-              <CustomButton
-                onClick={() => router.push('/auth/stepOne')}
-                variant="primary"
-                size="lg"
-                className="!shrink-0 font-family-semibold"
-              >
-                Book a Ride
-              </CustomButton>
+
+              {/* Progress chart breakdown */}
+              <div className="lg:col-span-5 flex flex-col gap-2.5">
+                {ratingsBreakdown.map((row, idx) => (
+                  <div key={idx} className="flex items-center gap-3 text-xs">
+                    <span className="w-3 text-slate-500 font-family-medium text-right">{row.stars}</span>
+                    <FiStar className="text-amber-400 fill-amber-400 flex-shrink-0" size={12} />
+                    <div className="flex-1 h-2 bg-slate-100 rounded-full overflow-hidden">
+                      <div
+                        className="h-full bg-amber-400 rounded-full transition-all duration-1000 ease-out"
+                        style={{ width: `${mounted ? row.percentage : 0}%` }}
+                      />
+                    </div>
+                    <span className="w-8 text-slate-400 font-family-regular text-right">{row.percentage}%</span>
+                    <span className="w-12 text-slate-350 text-right hidden sm:inline-block">({row.count})</span>
+                  </div>
+                ))}
+              </div>
+
+              {/* CTA button */}
+              <div className="lg:col-span-3 flex justify-center lg:justify-end lg:pl-6">
+                <CustomButton
+                  onClick={() => router.push('/auth/stepOne')}
+                  variant="primary"
+                  size="lg"
+                  className="w-full font-family-semibold shadow-lg shadow-brand-600/20 bg-gradient-to-r from-brand-600 to-brand-700 border-none hover:from-brand-700 hover:to-brand-800 hover:shadow-brand-600/35 hover:!-translate-y-0.5 active:!translate-y-0"
+                >
+                  Book a Ride
+                </CustomButton>
+              </div>
             </div>
           </div>
         </div>
       </section>
 
       {/* ===== TESTIMONIALS GRID ===== */}
-      <SectionReveal>
-        <section className="max-w-7xl mx-auto py-20 md:py-28 px-4 sm:px-6 lg:px-8">
-          <div className="text-center mb-14 md:mb-18">
-            <span className="inline-flex items-center gap-2 text-brand-600 text-xs md:text-sm font-family-semibold tracking-widest uppercase mb-4">
-              <span className="w-8 h-px bg-brand-600" />
-              Real Stories
-            </span>
-            <h2 className="text-3xl sm:text-4xl md:text-5xl font-family-bold text-slate-900 mt-3 tracking-tight">
-              What Our Community Says
-            </h2>
-            <p className="text-slate-400 text-sm md:text-base mt-4 max-w-xl mx-auto font-family-regular">
-              Hear from the people who ride with us every day.
-            </p>
-          </div>
+      <section className="max-w-7xl mx-auto py-16 md:py-24 px-4 sm:px-6 lg:px-8">
+        <div className="text-center mb-10 md:mb-14">
+          <span className="inline-flex items-center gap-2 text-brand-600 text-xs md:text-sm font-family-semibold tracking-widest uppercase mb-3">
+            <span className="w-6 h-px bg-brand-600" />
+            Rider Stories
+          </span>
+          <h2 className="text-3xl sm:text-4xl md:text-5xl font-family-bold text-slate-900 mt-2 tracking-tight">
+            What Our Community Says
+          </h2>
+          <p className="text-slate-400 text-sm md:text-base mt-3 max-w-xl mx-auto font-family-regular">
+            Hear first-hand details from local daily commuters and visiting tourists.
+          </p>
 
-          <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-6">
-            {testimonials.map((t, i) => (
-              <SectionReveal key={i} delay={i * 80}>
-                <div className="group bg-white rounded-2xl border border-slate-100 shadow-sm hover:shadow-[0_12px_40px_rgba(0,0,0,0.08)] hover:-translate-y-1.5 transition-all duration-300 relative h-full flex flex-col overflow-hidden">
-                  <div className={`absolute inset-0 bg-gradient-to-br ${gradients[i % gradients.length]} opacity-[0.03]`} />
-                  <div className="absolute top-5 right-5 text-slate-200 group-hover:text-brand-600/20 transition-colors duration-300">
-                    <FaQuoteRight size={20} />
-                  </div>
-                  <div className="p-7 md:p-8 flex flex-col flex-grow relative z-10">
-                    <div className="flex gap-0.5 mb-4">{renderStars(t.rating)}</div>
-                    <p className="text-sm text-slate-600 leading-relaxed flex-grow font-family-regular">
+          {/* Interactive filter tabs */}
+          <div className="flex flex-wrap justify-center items-center gap-2 md:gap-3 mt-10">
+            {categories.map((cat) => (
+              <button
+                key={cat}
+                onClick={() => setActiveTab(cat)}
+                className={`px-5 py-2 rounded-full text-xs font-family-semibold transition-all duration-300 border ${activeTab === cat
+                  ? "bg-slate-900 border-slate-900 text-white shadow-md shadow-slate-900/10 scale-105"
+                  : "bg-white border-slate-200 text-slate-500 hover:border-slate-350 hover:text-slate-700"
+                  }`}
+              >
+                {cat} Reviews
+              </button>
+            ))}
+          </div>
+        </div>
+
+        {/* Dynamic masonry/grid review items */}
+        <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-6 md:gap-8 items-stretch">
+          {filteredTestimonials.map((t, i) => (
+            <SectionReveal key={`${activeTab}-${i}`} delay={i * 60}>
+              <div className="group bg-white rounded-3xl border border-slate-100 shadow-[0_8px_30px_rgba(0,0,0,0.02)] hover:shadow-[0_20px_50px_rgba(0,74,112,0.06)] hover:-translate-y-2 transition-all duration-500 relative h-full flex flex-col overflow-hidden">
+                {/* Visual glow backdrop overlay */}
+                <div className={`absolute inset-0 bg-gradient-to-br ${gradients[i % gradients.length]} opacity-[0.02] group-hover:opacity-[0.04] transition-opacity duration-300`} />
+
+                {/* Floating quote bubble icon */}
+                <div className="absolute top-6 right-6 text-slate-100 group-hover:text-brand-600/10 transition-colors duration-500 pointer-events-none">
+                  <FaQuoteRight size={32} />
+                </div>
+
+                <div className="p-7 md:p-8 flex flex-col justify-between flex-grow relative z-10 h-full">
+                  <div>
+                    {/* Stars rating */}
+                    <div className="flex gap-0.5 mb-5">{renderStars(t.rating)}</div>
+
+                    {/* Testimonial message content */}
+                    <p className="text-slate-655 text-[13.5px] sm:text-sm leading-relaxed font-family-regular m-0 italic">
                       &ldquo;{t.text}&rdquo;
                     </p>
-                    <div className="flex items-center gap-3 mt-6 pt-4 border-t border-slate-100">
-                      <div className={`w-10 h-10 rounded-full bg-gradient-to-br ${gradients[i % gradients.length]} flex items-center justify-center text-white text-sm font-family-semibold shrink-0 shadow-sm`}>
-                        {t.name.charAt(0)}
-                      </div>
-                      <div>
-                        <div className="text-sm font-family-semibold text-slate-900">{t.name}</div>
-                        <div className="text-xs text-slate-400 font-family-regular flex items-center gap-1">
-                          <FiAward size={10} className="text-brand-400" />
-                          {t.role}
-                        </div>
+                  </div>
+
+                  {/* User bio element */}
+                  <div className="flex items-center gap-3.5 mt-8 pt-5 border-t border-slate-100">
+                    <div className={`w-10 h-10 rounded-full bg-gradient-to-br ${gradients[i % gradients.length]} flex items-center justify-center text-white text-xs font-family-bold shrink-0 shadow-sm border border-white`}>
+                      {t.name.charAt(0)}
+                    </div>
+                    <div>
+                      <div className="text-sm font-family-semibold text-slate-900 leading-tight">{t.name}</div>
+                      <div className="text-[11px] text-slate-400 font-family-regular flex items-center gap-1 mt-0.5">
+                        <FiAward size={11} className="text-brand-500" />
+                        {t.role}
                       </div>
                     </div>
                   </div>
                 </div>
-              </SectionReveal>
-            ))}
-          </div>
-        </section>
-      </SectionReveal>
+              </div>
+            </SectionReveal>
+          ))}
+        </div>
+      </section>
 
-      {/* ===== CTA ===== */}
+      {/* ===== BOTTOM CTA CARD ===== */}
       <SectionReveal>
         <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 pb-20 md:pb-28">
-          <div className="relative overflow-hidden bg-gradient-to-br from-slate-900 via-brand-900 to-brand-950 rounded-[2rem] py-16 md:py-20 px-6 sm:px-10 text-center">
-            <div className="absolute top-0 left-1/2 -translate-x-1/2 w-[600px] h-[600px] bg-brand-400/5 rounded-full blur-3xl" />
+          <div className="relative overflow-hidden bg-gradient-to-br from-slate-900 via-brand-900 to-brand-950 rounded-[2.5rem] py-16 md:py-20 px-6 sm:px-10 text-center shadow-xl">
+            {/* Mesh background overlays */}
+            <div className="absolute inset-0 opacity-[0.03]" style={{
+              backgroundImage: `radial-gradient(circle at 1px 1px, white 1px, transparent 0)`,
+              backgroundSize: "24px 24px"
+            }} />
+            <div className="absolute top-0 left-1/2 -translate-x-1/2 w-[600px] h-[600px] bg-brand-500/10 rounded-full blur-[120px] pointer-events-none" />
+
             <div className="relative z-10 max-w-3xl mx-auto">
               <h2 className="text-white text-3xl sm:text-4xl md:text-5xl font-family-bold mb-5 leading-tight tracking-tight">
                 Ready to Become Our{" "}
-                <span className="text-transparent bg-clip-text bg-gradient-to-r from-brand-300 to-brand-100">
+                <span className="text-transparent bg-clip-text bg-gradient-to-r from-brand-300 via-sky-300 to-indigo-200">
                   Next Happy Rider
                 </span>
                 ?
               </h2>
-              <p className="text-white/60 text-base md:text-lg mb-10 leading-relaxed max-w-2xl mx-auto font-family-regular">
-                Sign up today and experience the Cabkn difference for yourself.
+              <p className="text-slate-400 text-sm md:text-base mb-10 leading-relaxed max-w-xl mx-auto font-family-regular">
+                Sign up today and experience Nevis and Saint Kitts transport optimized around your convenience.
               </p>
-              <div className="flex flex-wrap justify-center gap-4">
-                <CustomButton
+
+              <div className="flex flex-wrap justify-center items-center gap-4 !mt-10">
+                <button
                   onClick={() => router.push('/auth/stepOne')}
-                  variant="primary"
-                  size="lg"
-                  className="!bg-white !text-slate-900 hover:!bg-slate-100 !shadow-lg !shadow-black/10 font-family-semibold"
-                  endContent={<FiArrowRight className="group-hover:translate-x-1 transition-transform duration-300" />}
+                  className="inline-flex items-center justify-center gap-2 px-8 py-3.5 rounded-full bg-white text-slate-900 hover:bg-slate-100 hover:text-slate-950 shadow-lg shadow-black/10 transition-all duration-300 font-family-semibold text-sm hover:-translate-y-1 active:translate-y-0 group border-none"
                 >
-                  Get Started Today
-                </CustomButton>
+                  <span>Get Started Today</span>
+                  <FiArrowRight className="group-hover:translate-x-1 transition-transform duration-300 text-slate-800" />
+                </button>
                 <button
                   onClick={() => router.push('/ride')}
-                  className="inline-flex items-center gap-2 px-6 py-3 rounded-full border border-white/20 text-white/80 hover:text-white hover:bg-white/10 transition-all duration-300 font-family-medium text-sm"
+                  className="inline-flex items-center justify-center gap-2 px-8 py-3.5 rounded-full !border !border-slate-700/85 text-slate-300 hover:text-white hover:border-slate-500 hover:bg-slate-900/50 transition-all duration-300 font-family-semibold text-sm hover:-translate-y-1 active:translate-y-0"
                 >
                   Book a Ride
                 </button>

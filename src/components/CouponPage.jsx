@@ -69,176 +69,121 @@ export default function CouponPage() {
   };
 
   const SkeletonCard = () => (
-    <div style={{ background: "#fff", borderRadius: 14, overflow: "hidden", boxShadow: "0 1px 3px rgba(0,0,0,0.04)" }}>
-      <div style={{ height: 4, background: "#e5e7eb" }} />
-      <div style={{ padding: "18px 20px 16px" }}>
-        <div style={{ display: "flex", gap: 14, alignItems: "center" }}>
-          <div style={{ width: 48, height: 48, borderRadius: 12, background: "linear-gradient(90deg, #e5e7eb 25%, #f3f4f6 50%, #e5e7eb 75%)", backgroundSize: "200% 100%", animation: "shimmer 1.5s infinite" }} />
-          <div style={{ flex: 1 }}>
-            <div style={{ width: "70%", height: 14, borderRadius: 4, background: "linear-gradient(90deg, #e5e7eb 25%, #f3f4f6 50%, #e5e7eb 75%)", backgroundSize: "200% 100%", animation: "shimmer 1.5s infinite", marginBottom: 8 }} />
-            <div style={{ width: "40%", height: 11, borderRadius: 4, background: "linear-gradient(90deg, #e5e7eb 25%, #f3f4f6 50%, #e5e7eb 75%)", backgroundSize: "200% 100%", animation: "shimmer 1.5s infinite" }} />
-          </div>
+    <div className="bg-white rounded-2xl overflow-hidden !border !border-slate-100 p-5 shadow-sm">
+      <div className="h-1 bg-slate-100" />
+      <div className="flex gap-4 items-center !mt-4">
+        <div className="w-12 h-12 rounded-xl bg-slate-100 animate-pulse shrink-0" />
+        <div className="flex-grow space-y-2">
+          <div className="h-3 w-2/3 bg-slate-100 rounded-full animate-pulse" />
+          <div className="h-2.5 w-1/3 bg-slate-50 rounded-full animate-pulse" />
         </div>
-        <div style={{ width: "50%", height: 10, borderRadius: 4, background: "linear-gradient(90deg, #e5e7eb 25%, #f3f4f6 50%, #e5e7eb 75%)", backgroundSize: "200% 100%", animation: "shimmer 1.5s infinite", marginTop: 12 }} />
       </div>
     </div>
   );
 
   return (
-    <>
-      <div
-        className={`bg-gradient-to-br from-brand-800 to-brand-950 ${mounted ? 'animate-fade-in-down' : 'opacity-0'}`}
-        style={{
-          padding: "28px 0 52px",
-          position: "relative",
-          overflow: "hidden",
-        }}
-      >
-        <div style={{ position: "absolute", top: -60, right: -60, width: 180, height: 180, borderRadius: "50%", background: "rgba(255,255,255,0.02)" }} />
-        <div style={{ position: "absolute", bottom: -40, left: -40, width: 140, height: 140, borderRadius: "50%", background: "rgba(255,255,255,0.015)" }} />
+    <div className="min-h-screen bg-slate-50/50">
+      {/* ===== HERO BANNER ===== */}
+      <section className={`relative overflow-hidden bg-gradient-to-br from-slate-900 via-brand-900 to-brand-950 !pt-28 !pb-28 ${mounted ? 'animate-fade-in-down' : 'opacity-0'}`} style={{ animationDelay: "50ms" }}>
+        <div className="absolute inset-0 opacity-[0.04]" style={{
+          backgroundImage: `radial-gradient(circle at 1px 1px, white 1px, transparent 0)`,
+          backgroundSize: "24px 24px"
+        }} />
+        
+        <div className="absolute top-1/4 -left-20 w-80 h-80 bg-brand-500/10 rounded-full blur-[100px] animate-pulse pointer-events-none" style={{ animationDuration: "8s" }} />
+        <div className="absolute bottom-1/4 -right-20 w-96 h-96 bg-indigo-500/10 rounded-full blur-[120px] animate-pulse pointer-events-none" style={{ animationDuration: "12s" }} />
+        
+        <div className="absolute inset-0 bg-gradient-to-t from-brand-950/60 via-transparent to-transparent pointer-events-none" />
 
-        <div style={{ maxWidth: 1200, margin: "0 auto", padding: "0 16px" }}>
-          <div className="font-family-medium" style={{ color: "rgba(255,255,255,0.5)", fontSize: 13, marginBottom: 10, display: "flex", alignItems: "center", gap: 6 }}>
-            <span>Home</span>
-            <span style={{ opacity: 0.4 }}>/</span>
-            <span style={{ color: "rgba(255,255,255,0.8)" }}>Offers</span>
+        <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 relative z-10">
+          <div className="flex items-center gap-2 text-slate-400 text-xs font-family-medium !mb-4">
+            <a href="/" className="text-slate-400 hover:text-white transition-colors">Home</a>
+            <span className="text-slate-500">/</span>
+            <span className="text-slate-200">Offers</span>
           </div>
-          <div style={{ display: "flex", alignItems: "center", gap: 16 }}>
-            <div
-              style={{
-                width: 48,
-                height: 48,
-                borderRadius: 14,
-                background: "rgba(255,255,255,0.1)",
-                backdropFilter: "blur(8px)",
-                display: "flex",
-                alignItems: "center",
-                justifyContent: "center",
-                flexShrink: 0,
-                border: "1px solid rgba(255,255,255,0.06)",
-              }}
-            >
-              <MdLocalOffer size={22} color="#fbbf24" />
-            </div>
-            <div>
-              <h1 className="font-family-bold" style={{ color: "#fff", fontSize: "clamp(22px, 4vw, 28px)", margin: 0, letterSpacing: "-0.5px" }}>
-                Offers
-              </h1>
-              <p className="font-family-regular" style={{ color: "rgba(255,255,255,0.5)", fontSize: 13.5, margin: "2px 0 0" }}>
-                {loading ? "Loading offers..." : `${Coupons.length} offer${Coupons.length !== 1 ? "s" : ""} available`}
-              </p>
+
+          <div className="flex flex-wrap justify-between items-center gap-4">
+            <div className="flex items-center gap-4">
+              <div className="w-13 h-13 rounded-2xl bg-white/10 backdrop-blur-md flex items-center justify-center shrink-0">
+                <MdLocalOffer size={22} color="#fbbf24" />
+              </div>
+              <div>
+                <h1 className="text-white text-3xl font-family-bold tracking-tight !m-0 leading-tight">
+                  Special{" "}
+                  <span className="text-transparent bg-clip-text bg-gradient-to-r from-brand-300 via-sky-300 to-indigo-200">
+                    Coupons
+                  </span>
+                </h1>
+                <p className="text-slate-400 text-sm !mt-1 !m-0 font-family-regular">
+                  {loading ? "Loading offers..." : `${Coupons.length} offer${Coupons.length !== 1 ? "s" : ""} available`}
+                </p>
+              </div>
             </div>
           </div>
         </div>
-      </div>
+      </section>
 
-      <div style={{ maxWidth: 1200, margin: "-28px auto 0", padding: "0 16px 48px" }}>
+      {/* ===== CONTENT LAYOUT ===== */}
+      <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 relative z-10 !-mt-12 !pb-24">
         {loading ? (
-          <div style={{ display: "grid", gridTemplateColumns: "repeat(auto-fill, minmax(280px, 1fr))", gap: 16 }}>
+          <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-3 xl:grid-cols-4 gap-4">
             {[1, 2, 3, 4, 5, 6].map((i) => <SkeletonCard key={i} />)}
           </div>
         ) : Coupons?.length === 0 ? (
-          <div style={{
-            background: "#fff",
-            borderRadius: 16,
-            padding: "60px 24px",
-            textAlign: "center",
-            boxShadow: "0 1px 3px rgba(0,0,0,0.06)",
-          }}>
-            <div style={{
-              width: 72,
-              height: 72,
-              borderRadius: 20,
-              background: "#f0f7ff",
-              display: "flex",
-              alignItems: "center",
-              justifyContent: "center",
-              margin: "0 auto 20px",
-            }}>
-              <MdLocalOffer size={28} color="#004a70" opacity={0.4} />
+          <div className="py-16 bg-white rounded-3xl !border !border-slate-100 text-center shadow-sm">
+            <div className="w-14 h-14 rounded-3xl bg-slate-50 flex items-center justify-center !border !border-slate-150/85 shadow-[0_2px_10px_rgba(0,0,0,0.01)] text-slate-450 !mb-4 mx-auto">
+              <MdLocalOffer size={22} className="text-slate-400" />
             </div>
-            <h3 className="font-family-semibold" style={{ fontSize: 20, color: "#1f2937", margin: "0 0 8px" }}>
-              No offers available
+            <h3 className="text-sm font-family-semibold text-slate-800 !m-0 !mb-1">
+              No Coupons Available
             </h3>
-            <p className="font-family-regular" style={{ fontSize: 14, color: "#9ca3af", margin: 0, maxWidth: 360, marginInline: "auto" }}>
-              New offers and coupons will appear here. Check back later for exciting deals!
+            <p className="text-xs text-slate-400 font-family-medium max-w-xs !m-0 mx-auto leading-relaxed">
+              You don't have any special offers or coupons assigned yet. Check back soon for exclusive commuter deals!
             </p>
           </div>
         ) : (
-          <div style={{ display: "grid", gridTemplateColumns: `repeat(${gridCols}, 1fr)`, gap: 16 }}>
+          <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-3 xl:grid-cols-4 gap-4">
             {Coupons?.map((item, index) => (
               <div
                 key={index}
                 onClick={() => handleShow(item)}
-                className={`${mounted ? 'animate-fade-in-up' : 'opacity-0'} hover:shadow-lg hover:-translate-y-1`}
-                style={{
-                  background: "#fff",
-                  borderRadius: 14,
-                  border: "1px solid rgba(0,0,0,0.06)",
-                  cursor: "pointer",
-                  transition: "all 0.3s cubic-bezier(0.4, 0, 0.2, 1)",
-                  boxShadow: "0 1px 3px rgba(0,0,0,0.04)",
-                  overflow: "hidden",
-                  animationDelay: `${100 + index * 60}ms`,
-                }}
+                className={`relative bg-white !border !border-slate-100 rounded-2xl overflow-hidden shadow-[0_4px_20px_rgba(0,0,0,0.02)] hover:shadow-xl hover:-translate-y-1 transition-all duration-300 cursor-pointer ${
+                  mounted ? 'animate-fade-in-up' : 'opacity-0'
+                }`}
+                style={{ animationDelay: `${100 + index * 60}ms` }}
               >
-                <div style={{ height: 4, background: "linear-gradient(90deg, #004a70, #006994, #f59e0b)" }} />
-                <div style={{ padding: "18px 20px 16px" }}>
-                  <div style={{ display: "flex", alignItems: "flex-start", gap: 14 }}>
-                    <div style={{
-                      width: 48,
-                      height: 48,
-                      borderRadius: 12,
-                      background: "linear-gradient(135deg, #fef3c7, #fde68a)",
-                      display: "flex",
-                      alignItems: "center",
-                      justifyContent: "center",
-                      flexShrink: 0,
-                    }}>
-                      <FaTag size={20} color="#d97706" />
+                {/* Top Gradient Accent Notch */}
+                <div className="h-1.5 bg-gradient-to-r from-brand-800 via-brand-600 to-amber-500" />
+                
+                {/* Ticket side notches */}
+                <div className="absolute top-1/2 -left-2.5 w-5 h-5 bg-slate-50/50 rounded-full !border !border-slate-150/40 z-10" />
+                <div className="absolute top-1/2 -right-2.5 w-5 h-5 bg-slate-50/50 rounded-full !border !border-slate-150/40 z-10" />
+                
+                <div className="p-5 flex gap-4 items-start relative z-10">
+                  <div className="w-12 h-12 rounded-2xl bg-amber-50 flex items-center justify-center shrink-0">
+                    <FaTag className="text-amber-600" size={18} />
+                  </div>
+                  <div className="flex-grow min-w-0">
+                    <h3 className="text-sm font-family-bold text-slate-800 truncate !m-0 leading-tight">
+                      {item?.title}
+                    </h3>
+                    
+                    <div className="inline-flex items-center gap-1.5 !mt-2.5 bg-brand-50/50 !border !border-brand-100/60 rounded-lg px-2.5 py-1">
+                      <MdContentCopy size={11} className="text-brand-900" />
+                      <span className="text-xs font-family-semibold text-brand-950 font-mono tracking-wider">
+                        {item?.code}
+                      </span>
                     </div>
-                    <div style={{ flex: 1, minWidth: 0 }}>
-                      <p className="font-family-semibold" style={{ fontSize: 15, color: "#1f2937", margin: 0, overflowWrap: "anywhere", lineHeight: 1.3 }}>
-                        {item?.title}
-                      </p>
-                      <div style={{ display: "inline-flex", alignItems: "center", gap: 4, marginTop: 6, background: "#f0f7ff", borderRadius: 6, padding: "2px 8px" }}>
-                        <MdContentCopy size={11} color="#004a70" />
-                        <span className="font-family-semibold" style={{ fontSize: 12, color: "#004a70", fontFamily: "monospace", letterSpacing: 0.5 }}>
-                          {item?.code}
+
+                    <div className="flex items-center gap-2.5 !mt-3">
+                      {getDiscountLabel(item) && (
+                        <span className="text-[10px] font-family-extrabold text-amber-900 bg-amber-100/80 rounded-md px-2 py-0.5 uppercase tracking-wide">
+                          {getDiscountLabel(item)}
                         </span>
-                      </div>
-                      <div style={{ display: "flex", alignItems: "center", gap: 8, marginTop: 8 }}>
-                        {getDiscountLabel(item) && (
-                          <span className="font-family-bold" style={{
-                            fontSize: 11,
-                            color: "#fff",
-                            background: "linear-gradient(135deg, #f59e0b, #d97706)",
-                            borderRadius: 6,
-                            padding: "2px 8px",
-                            lineHeight: "18px",
-                          }}>
-                            {getDiscountLabel(item)}
-                          </span>
-                        )}
-                        <span className="font-family-regular" style={{ fontSize: 12, color: "#9ca3af" }}>
-                          Exp: {moment(item?.expirey_date).format("MMM DD, YYYY")}
-                        </span>
-                      </div>
-                    </div>
-                    <div style={{
-                      width: 28,
-                      height: 28,
-                      borderRadius: "50%",
-                      background: "#f0f7ff",
-                      display: "flex",
-                      alignItems: "center",
-                      justifyContent: "center",
-                      flexShrink: 0,
-                      marginTop: 2,
-                    }}>
-                      <svg xmlns="http://www.w3.org/2000/svg" fill="none" viewBox="0 0 24 24" stroke="#004a70" strokeWidth={2} width={12} height={12}>
-                        <path strokeLinecap="round" strokeLinejoin="round" d="M9 5l7 7-7 7" />
-                      </svg>
+                      )}
+                      <span className="text-[10px] text-slate-400 font-family-medium">
+                        Exp: {moment(item?.expirey_date).format("MMM DD, YYYY")}
+                      </span>
                     </div>
                   </div>
                 </div>
@@ -248,6 +193,7 @@ export default function CouponPage() {
         )}
       </div>
 
+      {/* Coupon Modal */}
       <Modal
         centered
         show={show}
@@ -255,126 +201,58 @@ export default function CouponPage() {
         style={{ borderRadius: 20, overflow: "hidden" }}
         size="sm"
       >
-        <div style={{
-          background: "linear-gradient(135deg, #0a2540 0%, #004a70 50%, #005f8a 100%)",
-          padding: "clamp(28px, 4vw, 36px) clamp(24px, 4vw, 32px)",
-          textAlign: "center",
-          position: "relative",
-          overflow: "hidden",
-        }}>
-          <div style={{ position: "absolute", top: -50, right: -50, width: 150, height: 150, borderRadius: "50%", background: "rgba(255,255,255,0.03)" }} />
+        <div className="relative text-center px-6 py-8 bg-gradient-to-br from-slate-900 via-brand-900 to-brand-950">
+          <div className="absolute top-0 right-0 w-24 h-24 bg-white/5 rounded-full pointer-events-none" />
           <button
             onClick={handleClose}
-            style={{
-              position: "absolute",
-              top: 12,
-              right: 12,
-              width: 32,
-              height: 32,
-              borderRadius: 8,
-              background: "rgba(255,255,255,0.1)",
-              border: "none",
-              color: "#fff",
-              fontSize: 16,
-              cursor: "pointer",
-              display: "flex",
-              alignItems: "center",
-              justifyContent: "center",
-              transition: "all 0.2s",
-              backdropFilter: "blur(4px)",
-            }}
-            onMouseEnter={(e) => { e.currentTarget.style.background = "rgba(255,255,255,0.25)"; e.currentTarget.style.transform = "rotate(90deg)"; }}
-            onMouseLeave={(e) => { e.currentTarget.style.background = "rgba(255,255,255,0.1)"; e.currentTarget.style.transform = "rotate(0deg)"; }}
+            className="absolute top-3 right-3 w-8 h-8 rounded-lg bg-white/10 hover:bg-white/20 border-none text-white text-xs flex items-center justify-center transition-colors cursor-pointer"
           >
             ✕
           </button>
-          <div style={{
-            width: 64,
-            height: 64,
-            borderRadius: 18,
-            background: "rgba(255,255,255,0.12)",
-            backdropFilter: "blur(8px)",
-            display: "flex",
-            alignItems: "center",
-            justifyContent: "center",
-            margin: "0 auto 16px",
-            border: "1px solid rgba(255,255,255,0.06)",
-          }}>
-            <FaGift size={28} color="#fbbf24" />
+          
+          <div className="w-14 h-14 rounded-2xl bg-white/10 backdrop-blur-md flex items-center justify-center mx-auto !mb-3">
+            <FaGift size={24} className="text-amber-400" />
           </div>
-          <h2 className="font-family-bold" style={{ color: "#fff", fontSize: 22, margin: "0 0 4px", letterSpacing: "-0.5px" }}>
-            Special Offer
-          </h2>
-          <p className="font-family-regular" style={{ color: "rgba(255,255,255,0.55)", fontSize: 14, margin: 0 }}>
-            Use this coupon code to save
-          </p>
+          <h2 className="text-white text-lg font-family-bold !m-0">Special Offer</h2>
+          <p className="text-slate-400 text-xs !mt-1 !m-0 font-family-regular">Use this coupon code to save</p>
         </div>
 
-        <div style={{ padding: "clamp(20px, 3vw, 28px)", textAlign: "center" }}>
-          <p className="font-family-medium" style={{ fontSize: 14, color: "#4b5563", margin: "0 0 14px", overflowWrap: "anywhere" }}>
+        <div className="p-6 text-center">
+          <p className="text-xs text-slate-500 font-family-semibold !m-0 !mb-4 leading-normal">
             {CouponCode?.title}
           </p>
 
           {getDiscountLabel(CouponCode) && (
-            <div style={{
-              display: "inline-flex",
-              alignItems: "center",
-              gap: 6,
-              background: "linear-gradient(135deg, #fef3c7, #fde68a)",
-              borderRadius: 8,
-              padding: "4px 14px",
-              marginBottom: 14,
-            }}>
-              <FaPercentage size={12} color="#d97706" />
-              <span className="font-family-bold" style={{ fontSize: 13, color: "#92400e" }}>
+            <div className="inline-flex items-center gap-1.5 bg-amber-50 !border !border-amber-200 rounded-lg px-3 py-1 !mb-4">
+              <FaPercentage size={10} className="text-amber-700" />
+              <span className="text-xs font-family-bold text-amber-800">
                 {getDiscountLabel(CouponCode)}
               </span>
             </div>
           )}
 
-          <div style={{
-            background: "#f1f5f9",
-            border: "1.5px dashed #94a3b8",
-            borderRadius: 12,
-            padding: "14px 16px",
-            display: "flex",
-            alignItems: "center",
-            justifyContent: "space-between",
-            gap: 10,
-            marginBottom: 12,
-          }}>
-            <div style={{ display: "flex", alignItems: "center", gap: 8, minWidth: 0 }}>
-              <MdContentCopy size={16} color="#64748b" />
-              <span className="font-family-bold" style={{ fontSize: 16, color: "#0f172a", fontFamily: "monospace", letterSpacing: 2 }}>
+          <div className="bg-slate-50 !border !border-dashed !border-slate-300 rounded-xl p-3.5 flex items-center justify-between gap-3 !mb-4">
+            <div className="flex items-center gap-2 min-w-0">
+              <MdContentCopy size={14} className="text-slate-400" />
+              <span className="text-sm font-family-bold text-slate-800 font-mono tracking-widest truncate">
                 {CouponCode?.code}
               </span>
             </div>
-              <button
-                onClick={() => handleCopy(CouponCode?.code)}
-                className="font-family-semibold"
-                style={{
-                  padding: "6px 16px",
-                  borderRadius: 8,
-                  background: copied ? "#059669" : "#004a70",
-                  border: "none",
-                  color: "#fff",
-                  fontSize: 12,
-                  cursor: "pointer",
-                  transition: "all 0.2s",
-                  flexShrink: 0,
-                }}
-              onMouseEnter={(e) => { if (!copied) e.currentTarget.style.background = "#003353"; }}
-              onMouseLeave={(e) => { if (!copied) e.currentTarget.style.background = "#004a70"; }}
+            <button
+              onClick={() => handleCopy(CouponCode?.code)}
+              className={`px-4 py-1.5 rounded-lg text-white font-family-semibold text-xs border-none cursor-pointer transition-colors ${
+                copied ? "bg-emerald-600" : "bg-brand-900 hover:bg-brand-950"
+              }`}
             >
               {copied ? "Copied!" : "Copy"}
             </button>
           </div>
 
-          <p className="font-family-regular" style={{ fontSize: 12, color: "#9ca3af", margin: 0 }}>
+          <p className="text-[10px] text-slate-400 font-family-medium !m-0">
             Expires: {moment(CouponCode?.expirey_date).format("MMM DD, YYYY")}
           </p>
         </div>
       </Modal>
-    </>
+    </div>
   );
 }

@@ -31,36 +31,19 @@ const paymentUrl = "https://jad.cash/HAPI/cardpayment";
 
 const StatusBadge = ({ status }) => {
   const statusColorMap = {
-    completed: { bg: "#e8f5e9", text: "#2e7d32", border: "#a5d6a7" },
-    cancelled: { bg: "#fbe9e7", text: "#c62828", border: "#ffab91" },
-    accepted: { bg: "#e3f2fd", text: "#1565c0", border: "#90caf9" },
-    pending: { bg: "#fff3e0", text: "#e65100", border: "#ffcc80" },
-    upcoming: { bg: "#f3e5f5", text: "#7b1fa2", border: "#ce93d8" },
-    active: { bg: "#e0f7fa", text: "#00695c", border: "#80deea" },
+    completed: { bg: "bg-emerald-50", text: "text-emerald-700", border: "!border-emerald-200" },
+    cancelled: { bg: "bg-rose-50", text: "text-rose-700", border: "!border-rose-200" },
+    accepted: { bg: "bg-blue-50", text: "text-blue-700", border: "!border-blue-200" },
+    pending: { bg: "bg-amber-50", text: "text-amber-700", border: "!border-amber-200" },
+    upcoming: { bg: "bg-purple-50", text: "text-purple-700", border: "!border-purple-200" },
+    active: { bg: "bg-cyan-50", text: "text-cyan-700", border: "!border-cyan-200" },
   };
-  
-  const st = statusColorMap[(status || "").toLowerCase()] || { bg: "#f5f5f5", text: "#616161", border: "#e0e0e0" };
-  
+
+  const st = statusColorMap[(status || "").toLowerCase()] || { bg: "bg-slate-50", text: "text-slate-600", border: "!border-slate-200" };
+
   return (
-    <span style={{
-      display: "inline-flex",
-      alignItems: "center",
-      gap: "6px",
-      padding: "6px 12px",
-      borderRadius: "8px",
-      fontSize: "12px",
-      fontWeight: "600",
-      backgroundColor: st.bg,
-      color: st.text,
-      border: `1px solid ${st.border}`,
-      textTransform: "capitalize",
-    }}>
-      <span style={{
-        width: "6px",
-        height: "6px",
-        borderRadius: "50%",
-        backgroundColor: st.text,
-      }} />
+    <span className={`inline-flex items-center gap-1.5 px-3 py-1.5 rounded-xl text-xs font-family-semibold capitalize ${st.bg} ${st.text} !border ${st.border}`}>
+      <span className={`w-1.5 h-1.5 rounded-full ${st.text.replace("text-", "bg-")}`} />
       {status}
     </span>
   );
@@ -96,11 +79,11 @@ function Page() {
     const el = contentRef.current;
     if (!el) return;
     const observer = new IntersectionObserver(
-      ([entry]) => { 
-        if (entry.isIntersecting) { 
-          setContentInView(true); 
-          observer.disconnect(); 
-        } 
+      ([entry]) => {
+        if (entry.isIntersecting) {
+          setContentInView(true);
+          observer.disconnect();
+        }
       },
       { threshold: 0.05 }
     );
@@ -351,14 +334,14 @@ function Page() {
       const endpoint = activeTab === "completed" || activeTab === "cancelled"
         ? `order/customer/${activeTab}/${lastId}`
         : activeTab === "upcoming" || activeTab === "active"
-        ? `order/customer/accepted/${lastId}`
-        : activeTab === "requested"
-        ? `order/customer/pending/${lastId}`
-        : `order/customer/${activeTab}/${lastId}`;
+          ? `order/customer/accepted/${lastId}`
+          : activeTab === "requested"
+            ? `order/customer/pending/${lastId}`
+            : `order/customer/${activeTab}/${lastId}`;
 
       const res = await postData(endpoint, body, header1);
       setCount(res?.count?.totalPage);
-      
+
       if (isFirstPage) {
         setOrders(res?.orders);
       } else {
@@ -455,531 +438,212 @@ function Page() {
   ];
 
   return (
-    <div className={mounted ? "animate-fade-in" : "opacity-0"} style={{ minHeight: "100vh", backgroundColor: "#f8fafc" }}>
-      <div
-        className={`bg-gradient-to-br from-brand-800 to-brand-950 ${mounted ? "animate-fade-in-down" : "opacity-0"}`}
-        style={{
-          padding: "28px 0 80px",
-          position: "relative",
-          animationDelay: "50ms",
-        }}
-      >
-        <div style={{
-          position: "absolute",
-          top: -60,
-          right: -60,
-          width: 200,
-          height: 200,
-          borderRadius: "50%",
-          background: "rgba(255,255,255,0.03)",
-        }} />
-        <div style={{
-          position: "absolute",
-          bottom: -40,
-          left: -40,
-          width: 160,
-          height: 160,
-          borderRadius: "50%",
-          background: "rgba(255,255,255,0.03)",
+    <div className={`min-h-screen bg-slate-50/50 ${mounted ? "animate-fade-in" : "opacity-0"}`}>
+      {/* ===== HERO DASHBOARD HEADER ===== */}
+      <section className="relative overflow-hidden bg-gradient-to-br from-slate-900 via-brand-900 to-brand-950 !pt-28 !pb-28">
+        {/* High-tech Grid overlay */}
+        <div className="absolute inset-0 opacity-[0.04]" style={{
+          backgroundImage: `radial-gradient(circle at 1px 1px, white 1px, transparent 0)`,
+          backgroundSize: "24px 24px"
         }} />
 
-        <div style={{ maxWidth: 1200, margin: "0 auto", padding: "0 24px", position: "relative" }}>
-          <div style={{
-            display: "flex",
-            alignItems: "center",
-            gap: 8,
-            color: "rgba(255,255,255,0.5)",
-            fontSize: 13,
-            fontWeight: 500,
-            marginBottom: 16,
-          }}>
-            <a href="/" style={{
-              color: "rgba(255,255,255,0.5)",
-              textDecoration: "none",
-              transition: "color 0.2s",
-            }}
-            onMouseEnter={(e) => e.currentTarget.style.color = "#fff"}
-            onMouseLeave={(e) => e.currentTarget.style.color = "rgba(255,255,255,0.5)"}>
+        {/* Neon blurred blobs */}
+        <div className="absolute top-1/4 -left-20 w-80 h-80 bg-brand-500/10 rounded-full blur-[100px] animate-pulse pointer-events-none" style={{ animationDuration: "8s" }} />
+        <div className="absolute bottom-1/4 -right-20 w-96 h-96 bg-indigo-500/10 rounded-full blur-[120px] animate-pulse pointer-events-none" style={{ animationDuration: "12s" }} />
+
+        <div className="absolute inset-0 bg-gradient-to-t from-brand-950/60 via-transparent to-transparent pointer-events-none" />
+
+        <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 relative z-10">
+          {/* Breadcrumb row */}
+          <div className="flex items-center gap-2 text-slate-400 text-xs font-family-medium !mb-4">
+            <a href="/" className="text-slate-400 hover:text-white transition-colors">
               Home
             </a>
-            <span style={{ color: "rgba(255,255,255,0.3)" }}>/</span>
-            <span style={{ color: "rgba(255,255,255,0.8)" }}>My Bookings</span>
+            <span className="text-slate-500">/</span>
+            <span className="text-slate-200">My Bookings</span>
           </div>
 
-          <div style={{
-            display: "flex",
-            alignItems: "center",
-            justifyContent: "space-between",
-            flexWrap: "wrap",
-            gap: 12,
-          }}>
-            <div style={{ display: "flex", alignItems: "center", gap: "16px" }}>
-              <div style={{
-                width: 52,
-                height: 52,
-                borderRadius: 16,
-                background: "rgba(255,255,255,0.12)",
-                backdropFilter: "blur(8px)",
-                display: "flex",
-                alignItems: "center",
-                justifyContent: "center",
-                flexShrink: 0,
-              }}>
-                <MdOutlineBookOnline size={26} color="#fff" />
+          <div className="flex flex-wrap justify-between items-center gap-4">
+            <div className="flex items-center gap-4">
+              <div className="w-13 h-13 rounded-2xl bg-white/10 backdrop-blur-md flex items-center justify-center shrink-0">
+                <MdOutlineBookOnline size={26} className="text-white" />
               </div>
               <div>
-                <h1 style={{
-                  color: "#fff",
-                  fontSize: 30,
-                  fontWeight: 700,
-                  margin: 0,
-                  letterSpacing: "-0.5px",
-                  lineHeight: 1.2,
-                }}>
+                <h1 className="text-white text-3xl font-family-bold tracking-tight !m-0 leading-tight">
                   My Bookings
                 </h1>
-                <p style={{
-                  color: "rgba(255,255,255,0.55)",
-                  fontSize: 14,
-                  margin: "2px 0 0",
-                  fontWeight: 400,
-                }}>
-                  {Orders?.length || 0} booking{Orders?.length !== 1 ? "s" : ""}
+                <p className="text-slate-400 text-sm !mt-1 !m-0 font-family-regular">
+                  Manage and track your Nevis & Saint Kitts transfers
                 </p>
               </div>
             </div>
-            <div style={{
-              display: "flex",
-              alignItems: "center",
-              gap: 8,
-              background: "rgba(255,255,255,0.08)",
-              backdropFilter: "blur(8px)",
-              borderRadius: 12,
-              padding: "6px 14px",
-              border: "1px solid rgba(255,255,255,0.06)",
-              height: 36,
-            }}>
-              <MdOutlineCalendarMonth size={14} color="#fbbf24" />
-              <span style={{
-                color: "#fff",
-                fontSize: 13,
-                fontWeight: 500,
-              }}>
-                {Orders?.length || 0} Active
+
+            <div className="flex items-center gap-2 bg-white/5 backdrop-blur-md !border !border-white/10 rounded-2xl px-4 py-2 text-xs font-family-semibold text-white shadow-sm select-none">
+              <MdOutlineCalendarMonth size={16} className="text-amber-400" />
+              <span>
+                {Orders?.length || 0} Booking{Orders?.length !== 1 ? "s" : ""}
               </span>
             </div>
           </div>
         </div>
-      </div>
+      </section>
 
-      <div ref={contentRef} style={{
-        maxWidth: 1200,
-        margin: "-40px auto 0",
-        padding: "0 16px 48px",
-        position: "relative",
-        zIndex: 10,
-      }}>
-        <div className={`reveal ${contentInView ? "visible" : ""}`} style={{
-          background: "#fff",
-          borderRadius: 20,
-          boxShadow: "0 4px 6px -1px rgba(0, 0, 0, 0.03), 0 2px 4px -1px rgba(0, 0, 0, 0.02)",
-          overflow: "hidden",
-          border: "1px solid #e2e8f0",
-        }}>
-          <div style={{
-            padding: "20px 24px",
-            borderBottom: "1px solid #f1f5f9",
-            overflowX: "auto",
-            background: "#fafbfc",
-          }}>
-            <div style={{
-              display: "flex",
-              gap: 8,
-              minWidth: "max-content",
-              paddingBottom: "2px",
-            }}>
+      {/* ===== TABS & MAIN CONTENT GRID ===== */}
+      <div ref={contentRef} className="!-mt-12 max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 relative z-10 !pb-20">
+        <div className="bg-white rounded-3xl !border !border-slate-100 shadow-[0_8px_30px_rgba(0,0,0,0.02)] overflow-hidden">
+
+          {/* Tabs bar */}
+          <div className="px-6 py-4 !border-b !border-slate-100 overflow-x-auto bg-slate-50/50">
+            <div className="flex gap-2 min-w-max pb-1">
               {tabs.map((tab) => (
                 <button
                   key={tab.key}
                   onClick={() => handleTabSelect(tab.key)}
-                  style={{
-                    display: "flex",
-                    alignItems: "center",
-                    gap: 8,
-                    padding: "10px 18px",
-                    borderRadius: 10,
-                    border: "none",
-                    cursor: "pointer",
-                    background: activeTab === tab.key ? "#004a70" : "transparent",
-                    color: activeTab === tab.key ? "#fff" : "#64748b",
-                    fontWeight: activeTab === tab.key ? 600 : 500,
-                    fontSize: 13,
-                    transition: "all 0.2s ease",
-                    whiteSpace: "nowrap",
-                    fontFamily: "Inter, sans-serif",
-                  }}
-                  onMouseEnter={(e) => {
-                    if (activeTab !== tab.key) {
-                      e.currentTarget.style.background = "#f1f5f9";
-                      e.currentTarget.style.color = "#334155";
-                    }
-                  }}
-                  onMouseLeave={(e) => {
-                    if (activeTab !== tab.key) {
-                      e.currentTarget.style.background = "transparent";
-                      e.currentTarget.style.color = "#64748b";
-                    }
-                  }}
+                  className={`px-5 py-2.5 rounded-2xl flex items-center gap-2 text-xs font-family-semibold transition-all duration-350 cursor-pointer !border-none ${activeTab === tab.key
+                      ? "bg-brand-900 text-white shadow-md shadow-brand-900/10 scale-105"
+                      : "bg-transparent text-slate-500 hover:bg-slate-100 hover:text-slate-800"
+                    }`}
                 >
-                  <span style={{ opacity: activeTab === tab.key ? 1 : 0.8 }}>{tab.icon}</span>
+                  <span className={activeTab === tab.key ? "opacity-100" : "opacity-80"}>
+                    {tab.icon}
+                  </span>
                   {tab.label}
                 </button>
               ))}
             </div>
           </div>
 
-          <div style={{ padding: "24px" }}>
-            <div style={{
-              display: "flex",
-              alignItems: "center",
-              justifyContent: "space-between",
-              marginBottom: "20px",
-            }}>
-              <h3 style={{
-                fontSize: 16,
-                color: "#0f172a",
-                margin: 0,
-                fontWeight: 600,
-                fontFamily: "Inter, sans-serif",
-              }}>
-                {activeTab === "all" ? "All" : activeTab.charAt(0).toUpperCase() + activeTab.slice(1)} Bookings
+          <div className="p-6 md:p-8">
+            <div className="flex justify-between items-center !mb-6">
+              <h3 className="text-base font-family-bold text-slate-900 !m-0">
+                {activeTab === "all" ? "All" : activeTab.charAt(0).toUpperCase() + activeTab.slice(1)} Records
               </h3>
-              <span style={{
-                fontSize: 13,
-                color: "#64748b",
-                fontWeight: 500,
-                fontFamily: "Inter, sans-serif",
-              }}>
-                {Orders?.length || 0} booking{Orders?.length !== 1 ? "s" : ""}
-              </span>
             </div>
 
             {isLoading ? (
-              <div style={{
-                display: "flex",
-                flexDirection: "column",
-                alignItems: "center",
-                justifyContent: "center",
-                padding: "60px 20px",
-              }}>
-                <div style={{
-                  position: "relative",
-                  width: 40,
-                  height: 40,
-                }}>
-                  <div style={{
-                    position: "absolute",
-                    inset: 0,
-                    borderRadius: "50%",
-                    border: "2px solid #e2e8f0",
-                  }} />
-                  <div style={{
-                    position: "absolute",
-                    inset: 0,
-                    borderRadius: "50%",
-                    border: "2px solid #004a70",
-                    borderTopColor: "transparent",
-                    animation: "spin 1s linear infinite",
-                  }} />
+              <div className="flex flex-col items-center justify-center !py-20">
+                <div className="relative w-10 h-10">
+                  <div className="absolute inset-0 rounded-full !border-2 !border-slate-100" />
+                  <div className="absolute inset-0 rounded-full !border-2 !border-brand-900 !border-t-transparent animate-spin" />
                 </div>
-                <p style={{
-                  marginTop: 16,
-                  color: "#64748b",
-                  fontWeight: 500,
-                  fontSize: 14,
-                  fontFamily: "Inter, sans-serif",
-                }}>Loading bookings...</p>
+                <p className="!mt-4 text-sm font-family-semibold text-slate-400">Loading bookings...</p>
               </div>
             ) : Orders?.length === 0 ? (
-              <div style={{ padding: "40px 0" }}>
-                <EmptyState
-                  title={`No ${activeTab === "all" ? "" : activeTab} bookings found`}
-                  message="You don't have any bookings in this category yet."
-                  showBg={false}
-                />
+              <div className="flex flex-col items-center text-center !py-12 bg-slate-50/40 rounded-3xl !border !border-slate-100/80 max-w-md mx-auto !my-2">
+                <div className="w-12 h-12 rounded-2xl bg-white text-brand-600 flex items-center justify-center !mb-4 shadow-sm !border !border-slate-100 flex-shrink-0">
+                  <MdOutlineBookOnline size={22} />
+                </div>
+                <h4 className="text-sm font-family-semibold text-slate-800 !m-0 capitalize">
+                  No {activeTab === "all" ? "" : activeTab} bookings found
+                </h4>
+                <p className="text-xs text-slate-400 !m-0 !mt-1.5 leading-relaxed max-w-[280px] font-family-regular">
+                  We couldn't find any data matching this category in your account.
+                </p>
               </div>
             ) : (
               <>
-                <div style={{
-                  display: "grid",
-                  gridTemplateColumns: "repeat(auto-fill, minmax(300px, 1fr))",
-                  gap: "20px",
-                  marginBottom: lastId < count ? "20px" : "0px",
-                }}>
+                {/* Bookings Card Grid */}
+                <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-6 !mb-8">
                   {Orders?.map((order, index) => (
                     <div
                       key={`${order?._id}-${index}`}
-                      style={{
-                        background: "#fff",
-                        border: "1px solid #e2e8f0",
-                        borderRadius: 16,
-                        padding: "20px",
-                        transition: "all 0.3s ease",
-                        display: "flex",
-                        flexDirection: "column",
-                        minHeight: "360px",
-                      }}
-                      onMouseEnter={(e) => {
-                        e.currentTarget.style.boxShadow = "0 12px 32px rgba(0, 74, 112, 0.12)";
-                        e.currentTarget.style.borderColor = "#004a70";
-                        e.currentTarget.style.transform = "translateY(-2px)";
-                      }}
-                      onMouseLeave={(e) => {
-                        e.currentTarget.style.boxShadow = "none";
-                        e.currentTarget.style.borderColor = "#e2e8f0";
-                        e.currentTarget.style.transform = "translateY(0)";
-                      }}
+                      className="group bg-white rounded-3xl !border !border-slate-100 p-6 hover:shadow-[0_20px_50px_rgba(0,74,112,0.06)] hover:-translate-y-1.5 transition-all duration-500 flex flex-col justify-between min-h-[380px] relative overflow-hidden"
                     >
-                      <div style={{
-                        display: "flex",
-                        justifyContent: "space-between",
-                        alignItems: "flex-start",
-                        marginBottom: "16px",
-                      }}>
+                      <div className="flex justify-between items-start !mb-5">
                         <StatusBadge status={order?.status} />
-                        <div style={{ textAlign: "right" }}>
-                          <p style={{
-                            fontSize: 20,
-                            fontWeight: 800,
-                            color: "#059669",
-                            margin: 0,
-                            fontFamily: "Inter, sans-serif",
-                          }}>
+                        <div className="text-right">
+                          <p className="text-2xl font-family-bold text-emerald-600 !m-0 leading-none">
                             ${order?.price || 0}
                           </p>
-                          <p style={{
-                            fontSize: 12,
-                            color: "#94a3b8",
-                            margin: "4px 0 0",
-                            fontFamily: "Inter, sans-serif",
-                          }}>
+                          <p className="text-[11px] text-slate-400 !mt-2 leading-none font-family-regular">
                             {moment(order?.createdAt).format("DD MMM YYYY")} • {moment(order?.createdAt).format("hh:mm A")}
                           </p>
                         </div>
                       </div>
 
-                      <div style={{
-                        display: "flex",
-                        gap: "12px",
-                        marginBottom: "16px",
-                        flex: 1,
-                      }}>
-                        <div style={{
-                          width: 56,
-                          height: 56,
-                          borderRadius: 14,
-                          overflow: "hidden",
-                          flexShrink: 0,
-                          border: "1px solid #f1f5f9",
-                          background: "linear-gradient(135deg, #f8fafc 0%, #e2e8f0 100%)",
-                          display: "flex",
-                          alignItems: "center",
-                          justifyContent: "center",
-                        }}>
+                      {/* Timeline addresses row */}
+                      <div className="flex gap-3.5 !mb-5 flex-grow">
+                        <div className="w-14 h-14 rounded-2xl overflow-hidden shrink-0 !border !border-slate-100 bg-gradient-to-br from-slate-50 to-slate-100 flex items-center justify-center shadow-inner">
                           <Image
-                            alt=""
+                            alt="trip-map"
                             width={56}
                             height={56}
                             src={tableMap}
-                            style={{ objectFit: "cover" }}
+                            className="object-cover w-full h-full"
                           />
                         </div>
 
-                        <div style={{ flex: 1, minWidth: 0 }}>
-                          <div style={{ display: "flex", gap: "8px", alignItems: "flex-start" }}>
-                            <div style={{
-                              width: 20,
-                              height: 20,
-                              borderRadius: "50%",
-                              background: "linear-gradient(135deg, #004a70 0%, #006699 100%)",
-                              display: "flex",
-                              alignItems: "center",
-                              justifyContent: "center",
-                              flexShrink: 0,
-                              marginTop: "2px",
-                              boxShadow: "0 3px 8px rgba(0, 74, 112, 0.2)",
-                            }}>
-                              <FaLocationDot size={10} color="#fff" />
+                        <div className="flex-1 min-w-0 flex flex-col justify-between">
+                          {/* Pickup */}
+                          <div className="flex gap-2 items-start">
+                            <div className="w-5 h-5 rounded-full bg-brand-50 text-brand-650 flex items-center justify-center shrink-0 shadow-inner">
+                              <FaLocationDot size={10} />
                             </div>
-                            <div style={{ flex: 1, minWidth: 0 }}>
-                              <p style={{
-                                fontSize: 13,
-                                color: "#0f172a",
-                                margin: 0,
-                                fontWeight: 700,
-                                whiteSpace: "nowrap",
-                                overflow: "hidden",
-                                textOverflow: "ellipsis",
-                                fontFamily: "Inter, sans-serif",
-                              }}>
-                                {order?.start_address || "Pickup location"}
+                            <div className="flex-1 min-w-0">
+                              <p className="text-xs font-family-bold text-slate-800 truncate !m-0 leading-none">
+                                {order?.start_address || "Pickup point"}
                               </p>
                             </div>
                           </div>
 
-                          <div style={{
-                            width: 2,
-                            height: 20,
-                            background: "linear-gradient(180deg, #004a70 0%, #e2e8f0 100%)",
-                            marginLeft: "9px",
-                            marginRight: "9px",
-                            marginTop: 3,
-                            marginBottom: 3,
-                          }} />
+                          {/* Connector vertical dashed line */}
+                          <div className="w-0.5 h-5 bg-slate-100 !ml-2.5 !my-1 border-l border-dashed border-slate-300" />
 
-                          <div style={{ display: "flex", gap: "8px", alignItems: "flex-start" }}>
-                            <div style={{
-                              width: 20,
-                              height: 20,
-                              borderRadius: "5px",
-                              background: "linear-gradient(135deg, #004a70 0%, #006699 100%)",
-                              display: "flex",
-                              alignItems: "center",
-                              justifyContent: "center",
-                              flexShrink: 0,
-                              marginTop: "2px",
-                              boxShadow: "0 3px 8px rgba(0, 74, 112, 0.2)",
-                            }}>
-                              <MdOutlineMyLocation size={10} color="#fff" />
+                          {/* Dropoff */}
+                          <div className="flex gap-2 items-start">
+                            <div className="w-5 h-5 rounded-lg bg-brand-50 text-brand-650 flex items-center justify-center shrink-0 shadow-inner">
+                              <MdOutlineMyLocation size={10} />
                             </div>
-                            <div style={{ flex: 1, minWidth: 0 }}>
-                              <p style={{
-                                fontSize: 13,
-                                color: "#64748b",
-                                margin: 0,
-                                whiteSpace: "nowrap",
-                                overflow: "hidden",
-                                textOverflow: "ellipsis",
-                                fontFamily: "Inter, sans-serif",
-                              }}>
-                                {order?.end_address || "Dropoff location"}
+                            <div className="flex-1 min-w-0">
+                              <p className="text-xs font-family-medium text-slate-500 truncate !m-0 leading-none">
+                                {order?.end_address || "Dropoff point"}
                               </p>
                             </div>
                           </div>
                         </div>
                       </div>
 
+                      {/* Driver Partner Box */}
                       {order?.to_id && (
-                        <div style={{
-                          display: "flex",
-                          alignItems: "center",
-                          gap: 10,
-                          padding: "12px",
-                          background: "linear-gradient(135deg, #f8fafc 0%, #f1f5f9 100%)",
-                          borderRadius: 12,
-                          marginBottom: "16px",
-                          border: "1px solid #e2e8f0",
-                        }}>
-                          <div style={{
-                            width: 44,
-                            height: 44,
-                            borderRadius: "50%",
-                            overflow: "hidden",
-                            flexShrink: 0,
-                            border: "2px solid #fff",
-                            boxShadow: "0 3px 10px rgba(0, 0, 0, 0.06)",
-                          }}>
+                        <div className="flex items-center gap-3 p-3 bg-slate-50/70 !border !border-slate-100 rounded-2xl !mb-5">
+                          <div className="w-11 h-11 rounded-full overflow-hidden shrink-0 !border-2 !border-white shadow-sm">
                             <img
-                              alt=""
+                              alt="driver-avatar"
                               width={44}
                               height={44}
                               src={order?.to_id?.image || "/placeholder.jpg"}
-                              style={{ width: 44, height: 44, objectFit: "cover" }}
+                              className="w-full h-full object-cover"
                             />
                           </div>
-                          <div style={{ flex: 1, minWidth: 0 }}>
-                            <p style={{
-                              fontSize: 14,
-                              color: "#0f172a",
-                              margin: 0,
-                              fontWeight: 700,
-                              whiteSpace: "nowrap",
-                              overflow: "hidden",
-                              textOverflow: "ellipsis",
-                              fontFamily: "Inter, sans-serif",
-                            }}>
+                          <div className="flex-1 min-w-0">
+                            <p className="text-sm font-family-semibold text-slate-900 !m-0 leading-tight truncate">
                               {order?.to_id?.name || "Driver"}
                             </p>
-                            <p style={{
-                              fontSize: 11,
-                              color: "#94a3b8",
-                              margin: "3px 0 0",
-                              whiteSpace: "nowrap",
-                              overflow: "hidden",
-                              textOverflow: "ellipsis",
-                              fontFamily: "Inter, sans-serif",
-                            }}>
+                            <p className="text-[11px] text-slate-400 !m-0 mt-0.5 leading-none truncate">
                               {order?.to_id?.email || ""}
                             </p>
                           </div>
                         </div>
                       )}
 
-                      <div style={{ display: "flex", gap: "10px", marginTop: "auto" }}>
+                      {/* Card Buttons */}
+                      <div className="flex gap-2.5 !mt-auto">
                         <Button
                           disabled={order?.tip === 1}
                           onClick={() => { openModal(true); setTipOrderId(order?._id); }}
-                          style={{
-                            flex: 1,
-                            height: 44,
-                            fontSize: 13,
-                            fontWeight: 700,
-                            borderRadius: 10,
-                            border: order?.tip === 1 ? "1px solid #e2e8f0" : "none",
-                            background: order?.tip === 1 ? "#f8fafc" : "linear-gradient(135deg, #004a70 0%, #003353 100%)",
-                            color: order?.tip === 1 ? "#94a3b8" : "#fff",
-                            padding: "0 14px",
-                            cursor: order?.tip === 1 ? "not-allowed" : "pointer",
-                            transition: "all 0.2s ease",
-                            display: "flex",
-                            alignItems: "center",
-                            justifyContent: "center",
-                            gap: 6,
-                            fontFamily: "Inter, sans-serif",
-                            boxShadow: order?.tip === 1 ? "none" : "0 6px 16px rgba(0, 74, 112, 0.2)",
-                          }}
+                          className={`flex-grow h-11 rounded-xl font-family-semibold text-xs transition-all duration-300 flex items-center justify-center gap-1.5 ${order?.tip === 1
+                              ? "bg-slate-100 text-slate-400 !border !border-slate-200 cursor-not-allowed shadow-none"
+                              : "bg-gradient-to-r from-brand-600 to-brand-700 hover:from-brand-700 hover:to-brand-800 text-white shadow-md shadow-brand-600/10 hover:-translate-y-0.5 active:translate-y-0 !border-none"
+                            }`}
                         >
-                          <FaPlus size={14} />
+                          <FaPlus size={12} />
                           {order?.tip === 1 ? "Tipped" : "Add Tip"}
                         </Button>
 
                         <button
                           onClick={() => gotoDetails(order)}
                           title="View Details"
-                          style={{
-                            width: 44,
-                            height: 44,
-                            borderRadius: 10,
-                            border: "1px solid #e2e8f0",
-                            background: "linear-gradient(135deg, #fff 0%, #f8fafc 100%)",
-                            display: "flex",
-                            alignItems: "center",
-                            justifyContent: "center",
-                            cursor: "pointer",
-                            color: "#64748b",
-                            transition: "all 0.2s ease",
-                            boxShadow: "0 3px 10px rgba(0, 0, 0, 0.03)",
-                          }}
-                          onMouseEnter={(e) => {
-                            e.currentTarget.style.borderColor = "#004a70";
-                            e.currentTarget.style.color = "#fff";
-                            e.currentTarget.style.background = "linear-gradient(135deg, #004a70 0%, #003353 100%)";
-                          }}
-                          onMouseLeave={(e) => {
-                            e.currentTarget.style.borderColor = "#e2e8f0";
-                            e.currentTarget.style.color = "#64748b";
-                            e.currentTarget.style.background = "linear-gradient(135deg, #fff 0%, #f8fafc 100%)";
-                          }}
+                          className="w-11 h-11 rounded-xl !border !border-slate-200 bg-white text-slate-550 hover:bg-slate-100 hover:text-slate-800 flex items-center justify-center shrink-0 shadow-sm transition-all duration-350"
                         >
                           <FaEye size={16} />
                         </button>
@@ -988,38 +652,13 @@ function Page() {
                   ))}
                 </div>
 
+                {/* See More pagination */}
                 {lastId < count && (
-                  <div style={{ display: "flex", justifyContent: "center", marginTop: "16px" }}>
+                  <div className="flex justify-center !mt-8">
                     <button
                       onClick={handleSeeMore}
                       disabled={seeMoreLoading}
-                      style={{
-                        padding: "12px 28px",
-                        borderRadius: 12,
-                        border: "2px solid #004a70",
-                        background: "#fff",
-                        color: "#004a70",
-                        fontSize: 14,
-                        fontWeight: 700,
-                        fontFamily: "Inter, sans-serif",
-                        cursor: seeMoreLoading ? "not-allowed" : "pointer",
-                        display: "flex",
-                        alignItems: "center",
-                        gap: 8,
-                        transition: "all 0.2s ease",
-                      }}
-                      onMouseEnter={(e) => {
-                        if (!seeMoreLoading) {
-                          e.currentTarget.style.background = "#004a70";
-                          e.currentTarget.style.color = "#fff";
-                        }
-                      }}
-                      onMouseLeave={(e) => {
-                        if (!seeMoreLoading) {
-                          e.currentTarget.style.background = "#fff";
-                          e.currentTarget.style.color = "#004a70";
-                        }
-                      }}
+                      className="px-7 py-3 rounded-full !border-2 !border-brand-600 bg-white text-brand-600 hover:bg-brand-600 hover:text-white font-family-semibold text-sm transition-all duration-300 flex items-center gap-2"
                     >
                       {seeMoreLoading ? (
                         <Spinner animation="border" role="status" style={{ width: 16, height: 16 }} />
@@ -1035,106 +674,46 @@ function Page() {
         </div>
       </div>
 
+      {/* ===== TIP MODAL ===== */}
       {isModalOpen && (
         <div
-          className={mounted ? "animate-fade-in" : "opacity-0"}
-          style={{
-            position: "fixed",
-            inset: 0,
-            background: "rgba(15, 23, 42, 0.5)",
-            backdropFilter: "blur(4px)",
-            display: "flex",
-            alignItems: "center",
-            justifyContent: "center",
-            padding: 16,
-            zIndex: 5000,
-          }}
+          className="fixed inset-0 bg-slate-900/65 backdrop-blur-sm flex items-center justify-center p-4 z-50 animate-fade-in"
           onClick={closeModal}
         >
           <div
-            className={mounted ? "animate-fade-in-up" : "opacity-0"}
+            className="bg-white rounded-3xl shadow-2xl w-full max-w-[420px] relative overflow-hidden !border !border-slate-100 animate-fade-in-up"
             onClick={(e) => e.stopPropagation()}
-            style={{
-              background: "#fff",
-              borderRadius: 20,
-              boxShadow: "0 25px 50px rgba(0,0,0,0.15)",
-              width: "100%",
-              maxWidth: 440,
-              position: "relative",
-              overflow: "hidden",
-              animationDelay: "50ms",
-            }}
+            style={{ animationDelay: "50ms" }}
           >
-            <div style={{
-              background: "linear-gradient(135deg, #004a70 0%, #003353 100%)",
-              padding: "28px 28px 24px",
-              textAlign: "center",
-              position: "relative",
-            }}>
+            <div className="bg-gradient-to-br from-slate-900 via-brand-900 to-brand-950 p-7 text-center relative">
               <button
                 onClick={closeModal}
-                className="hover:bg-white/25"
-                style={{
-                  position: "absolute",
-                  top: 14,
-                  right: 14,
-                  width: 32,
-                  height: 32,
-                  borderRadius: 10,
-                  background: "rgba(255,255,255,0.12)",
-                  border: "none",
-                  color: "#fff",
-                  fontSize: 16,
-                  cursor: "pointer",
-                  display: "flex",
-                  alignItems: "center",
-                  justifyContent: "center",
-                  transition: "all 0.2s",
-                }}
+                className="absolute top-4 right-4 w-8 h-8 rounded-lg bg-white/10 hover:bg-white/20 text-white flex items-center justify-center transition-all !border-none cursor-pointer"
               >
                 <X size={18} />
               </button>
-              <div style={{
-                width: 56,
-                height: 56,
-                borderRadius: 16,
-                background: "rgba(255,255,255,0.12)",
-                display: "flex",
-                alignItems: "center",
-                justifyContent: "center",
-                margin: "0 auto 14px",
-              }}>
+              <div className="w-14 h-14 rounded-2xl bg-white/10 flex items-center justify-center mx-auto !mb-4 shadow-inner">
                 <svg width={28} height={28} viewBox="0 0 24 24" fill="none" stroke="#fff" strokeWidth={1.5}>
                   <path strokeLinecap="round" strokeLinejoin="round" d="M12 2v20M2 12h20" />
                   <path strokeLinecap="round" strokeLinejoin="round" d="M8 12h8" />
                 </svg>
               </div>
-              <h3 style={{ color: "#fff", fontSize: 20, fontWeight: 700, margin: 0, fontFamily: "Inter, sans-serif" }}>
+              <h3 className="text-white text-xl font-family-bold !m-0">
                 Add a Tip
               </h3>
-              <p style={{ color: "rgba(255,255,255,0.6)", fontSize: 13, margin: "6px 0 0", fontFamily: "Inter, sans-serif" }}>
+              <p className="text-slate-400 text-xs mt-1.5 !m-0 font-family-regular">
                 Show appreciation for great service
               </p>
             </div>
 
-            <div style={{ padding: "24px 28px 28px" }}>
+            <div className="p-6 md:p-8">
               {CustomAmount && (
-                <div style={{ marginBottom: 16 }}>
-                  <label style={{ fontSize: 13, color: "#374151", display: "block", marginBottom: 6, fontFamily: "Inter, sans-serif", fontWeight: 500 }}>
-                    Enter amount
+                <div className="!mb-5">
+                  <label className="text-xs text-slate-700 block !mb-2 font-family-semibold">
+                    Enter Amount
                   </label>
                   <input
-                    style={{
-                      width: "100%",
-                      padding: "12px 16px",
-                      border: "1.5px solid #e2e8f0",
-                      borderRadius: 12,
-                      fontSize: 16,
-                      fontFamily: "Inter, sans-serif",
-                      color: "#0f172a",
-                      outline: "none",
-                      transition: "border-color 0.2s",
-                    }}
+                    className="w-full px-4 py-3 !border-2 !border-slate-100 rounded-xl text-sm font-family-medium text-slate-900 focus:!border-brand-600 outline-none transition-all duration-200 bg-slate-50/50"
                     type="text"
                     name="price"
                     placeholder="Enter amount"
@@ -1142,46 +721,24 @@ function Page() {
                     onChange={(e) => setTipAmount(e.target.value)}
                     maxLength="16"
                     required
-                    onFocus={(e) => e.currentTarget.style.borderColor = "#004a70"}
-                    onBlur={(e) => e.currentTarget.style.borderColor = "#e2e8f0"}
                   />
                 </div>
               )}
+
               {!CustomAmount && (
                 <>
-                  <p style={{ fontSize: 13, color: "#64748b", margin: "0 0 12px", fontFamily: "Inter, sans-serif", fontWeight: 500 }}>
-                    Quick select
+                  <p className="text-xs text-slate-400 !mb-3 font-family-semibold uppercase tracking-wider">
+                    Quick Select
                   </p>
-                  <div style={{ display: "grid", gridTemplateColumns: "repeat(5, 1fr)", gap: 8, marginBottom: 12 }}>
+                  <div className="grid grid-cols-5 gap-2 !mb-4">
                     {["1", "2", "5", "10", "20"].map((amount) => (
                       <button
                         key={amount}
                         onClick={() => handleTipSelection(amount)}
-                        style={{
-                          padding: "12px 8px",
-                          borderRadius: 12,
-                          border: tipAmount === amount ? "1.5px solid #004a70" : "1.5px solid #e2e8f0",
-                          background: tipAmount === amount ? "#eef2ff" : "#fff",
-                          color: tipAmount === amount ? "#004a70" : "#64748b",
-                          fontWeight: 600,
-                          fontSize: 15,
-                          cursor: "pointer",
-                          transition: "all 0.2s",
-                          textAlign: "center",
-                          fontFamily: "Inter, sans-serif",
-                        }}
-                        onMouseEnter={(e) => {
-                          if (tipAmount !== amount) {
-                            e.currentTarget.style.borderColor = "#004a70";
-                            e.currentTarget.style.background = "#f8fafc";
-                          }
-                        }}
-                        onMouseLeave={(e) => {
-                          if (tipAmount !== amount) {
-                            e.currentTarget.style.borderColor = "#e2e8f0";
-                            e.currentTarget.style.background = "#fff";
-                          }
-                        }}
+                        className={`py-2.5 rounded-xl !border font-family-semibold text-sm cursor-pointer transition-all duration-200 text-center ${tipAmount === amount
+                            ? "!border-brand-600 bg-brand-50 text-brand-600"
+                            : "!border-slate-200 text-slate-500 bg-white hover:!border-brand-600"
+                          }`}
                       >
                         ${amount}
                       </button>
@@ -1189,80 +746,27 @@ function Page() {
                   </div>
                   <button
                     onClick={handleChangeCustom}
-                    style={{
-                      background: "none",
-                      border: "none",
-                      color: "#004a70",
-                      fontWeight: 500,
-                      fontSize: 13,
-                      cursor: "pointer",
-                      padding: "8px 0",
-                      display: "block",
-                      width: "100%",
-                      textAlign: "center",
-                      transition: "color 0.2s",
-                      fontFamily: "Inter, sans-serif",
-                    }}
-                    onMouseEnter={(e) => e.currentTarget.style.color = "#003353"}
-                    onMouseLeave={(e) => e.currentTarget.style.color = "#004a70"}
+                    className="bg-transparent !border-none text-brand-600 hover:text-brand-700 font-family-semibold text-xs cursor-pointer py-2 block w-full text-center transition-colors font-family-semibold"
                   >
                     Enter other amount
                   </button>
                 </>
               )}
 
-              <div style={{ marginTop: 20, display: "flex", flexDirection: "column", gap: 10 }}>
+              <div className="!mt-6 flex flex-col gap-2.5">
                 <button
                   onClick={() => { setShow(true); setIsModalOpen(false); }}
-                  style={{
-                    width: "100%",
-                    height: 48,
-                    borderRadius: 12,
-                    border: "none",
-                    background: "linear-gradient(135deg, #004a70 0%, #003353 100%)",
-                    color: "#fff",
-                    fontWeight: 600,
-                    fontSize: 14,
-                    cursor: "pointer",
-                    display: "flex",
-                    alignItems: "center",
-                    justifyContent: "center",
-                    gap: 8,
-                    transition: "all 0.2s",
-                    fontFamily: "Inter, sans-serif",
-                  }}
-                  onMouseEnter={(e) => e.currentTarget.style.opacity = "0.92"}
-                  onMouseLeave={(e) => e.currentTarget.style.opacity = "1"}
+                  className="w-full h-12 rounded-xl bg-gradient-to-r from-brand-600 to-brand-700 hover:from-brand-700 hover:to-brand-800 text-white font-family-semibold text-sm flex items-center justify-center gap-2 hover:shadow-lg hover:shadow-brand-600/10 hover:-translate-y-0.5 active:translate-y-0 transition-all duration-300 !border-none cursor-pointer"
                 >
                   <MdPayment size={18} />
                   Pay with Card
                 </button>
                 <button
                   onClick={handlePay}
-                  style={{
-                    width: "100%",
-                    height: 48,
-                    borderRadius: 12,
-                    border: "1.5px solid #e2e8f0",
-                    background: "#fff",
-                    color: "#0f172a",
-                    fontWeight: 600,
-                    fontSize: 14,
-                    cursor: "pointer",
-                    display: "flex",
-                    alignItems: "center",
-                    justifyContent: "center",
-                    gap: 8,
-                    transition: "all 0.2s",
-                    fontFamily: "Inter, sans-serif",
-                  }}
-                  onMouseEnter={(e) => { e.currentTarget.style.borderColor = "#004a70"; e.currentTarget.style.background = "#f8fafc"; }}
-                  onMouseLeave={(e) => { e.currentTarget.style.borderColor = "#e2e8f0"; e.currentTarget.style.background = "#fff"; }}
+                  className="w-full h-12 rounded-xl !border-2 !border-slate-100 bg-white text-slate-800 hover:bg-slate-50 font-family-semibold text-sm flex items-center justify-center gap-2 hover:-translate-y-0.5 active:translate-y-0 transition-all duration-300 cursor-pointer"
                 >
                   {Loading ? (
-                    <Spinner animation="border" role="status" style={{ width: 18, height: 18 }}>
-                      <span className="visually-hidden">Loading...</span>
-                    </Spinner>
+                    <Spinner animation="border" role="status" style={{ width: 18, height: 18 }} />
                   ) : (
                     <><IoWallet size={18} /> Pay with Wallet</>
                   )}
@@ -1273,64 +777,42 @@ function Page() {
         </div>
       )}
 
-      <Modal centered size="lg" show={show} onHide={handleClose} style={{ borderRadius: 20 }}>
-        <div style={{ borderRadius: 20, overflow: "hidden" }}>
-          <div style={{
-            background: "linear-gradient(135deg, #f8fafc 0%, #f1f5f9 100%)",
-            padding: "20px 24px",
-            borderBottom: "1px solid #e2e8f0",
-            display: "flex",
-            alignItems: "center",
-            justifyContent: "space-between",
-          }}>
-            <h3 style={{ fontSize: 18, fontWeight: 700, color: "#0f172a", margin: 0, fontFamily: "Inter, sans-serif" }}>
-              <MdPayment size={20} style={{ marginRight: 8, verticalAlign: "middle" }} />
+      {/* ===== CARD PAYMENT MODAL ===== */}
+      <Modal centered size="lg" show={show} onHide={handleClose}>
+        <div className="bg-white rounded-3xl overflow-hidden shadow-2xl">
+          <div className="bg-slate-50/50 p-6 !border-b !border-slate-100 flex justify-between items-center">
+            <h3 className="text-lg font-family-bold text-slate-900 !m-0 flex items-center gap-2">
+              <MdPayment size={20} className="text-slate-700" />
               Payment Details
             </h3>
             <button
               onClick={handleClose}
-              style={{
-                width: 32, height: 32,
-                borderRadius: 8, border: "1px solid #e2e8f0",
-                background: "#fff", cursor: "pointer", display: "flex",
-                alignItems: "center", justifyContent: "center", color: "#94a3b8",
-              }}
+              className="w-8 h-8 rounded-lg !border !border-slate-200 bg-white hover:bg-slate-50 flex items-center justify-center color-slate-400 cursor-pointer"
             >
               <X size={16} />
             </button>
           </div>
-          <div style={{ padding: "24px 24px 28px" }}>
+
+          <div className="p-6 md:p-8">
             {paymentCards?.length ? (
-              <div style={{ marginBottom: 20 }}>
-                <p style={{ fontSize: 14, color: "#0f172a", marginBottom: 12, fontWeight: 700, fontFamily: "Inter, sans-serif" }}>
+              <div className="!mb-6">
+                <p className="text-sm font-family-bold text-slate-900 !mb-3">
                   Saved Cards
                 </p>
-                <div style={{ display: "flex", flexDirection: "column", gap: 8 }}>
+                <div className="flex flex-col gap-2.5">
                   {paymentCards?.map((item, i) => (
                     <div
                       onClick={() => onSelectCard(item)}
                       key={i}
-                      style={{
-                        padding: "14px 18px",
-                        borderRadius: 12,
-                        border: "1.5px solid #e2e8f0",
-                        background: "#fff",
-                        cursor: "pointer",
-                        display: "flex",
-                        justifyContent: "space-between",
-                        alignItems: "center",
-                        transition: "all 0.2s",
-                      }}
-                      onMouseEnter={(e) => e.currentTarget.style.borderColor = "#004a70"}
-                      onMouseLeave={(e) => e.currentTarget.style.borderColor = "#e2e8f0"}
+                      className="p-4 rounded-xl !border !border-slate-150 bg-white hover:!border-brand-600 cursor-pointer flex justify-between items-center transition-all"
                     >
                       <div>
-                        <p style={{ fontSize: 12, color: "#94a3b8", margin: "0 0 2px", fontFamily: "Inter, sans-serif" }}>Email</p>
-                        <p style={{ fontSize: 14, color: "#0f172a", margin: 0, fontWeight: 600, fontFamily: "Inter, sans-serif" }}>{item?.email}</p>
+                        <p className="text-[10px] text-slate-400 uppercase tracking-wider !m-0 leading-none">Email</p>
+                        <p className="text-sm text-slate-800 font-family-semibold !mt-1.5 !m-0">{item?.email}</p>
                       </div>
-                      <div style={{ textAlign: "right" }}>
-                        <p style={{ fontSize: 12, color: "#94a3b8", margin: "0 0 2px", fontFamily: "Inter, sans-serif" }}>Card</p>
-                        <p style={{ fontSize: 14, color: "#0f172a", margin: 0, fontWeight: 600, fontFamily: "Inter, sans-serif" }}>
+                      <div className="text-right">
+                        <p className="text-[10px] text-slate-400 uppercase tracking-wider !m-0 leading-none">Card</p>
+                        <p className="text-sm text-slate-850 font-family-bold !mt-1.5 !m-0">
                           •••• {item?.cardnumber?.slice(-4) || item?.cardnumber}
                         </p>
                       </div>
@@ -1340,12 +822,12 @@ function Page() {
               </div>
             ) : null}
 
-            <p style={{ fontSize: 16, color: "#0f172a", marginBottom: 16, fontWeight: 700, fontFamily: "Inter, sans-serif" }}>
+            <p className="text-sm font-family-bold text-slate-900 !mb-4">
               {paymentCards?.length ? "Add New Card" : "Card Information"}
             </p>
 
-            <div style={{ display: "grid", gridTemplateColumns: "1fr 1fr", gap: 20 }}>
-              <div>
+            <div className="grid grid-cols-1 md:grid-cols-2 gap-6 items-center">
+              <div className="flex justify-center">
                 <Cards
                   cvc={cardDetails.cvc}
                   expiry={cardDetails.expiry}
@@ -1353,17 +835,9 @@ function Page() {
                   number={cardDetails.number}
                 />
               </div>
-              <div style={{ display: "flex", flexDirection: "column", gap: 10 }}>
+              <div className="flex flex-col gap-3">
                 <input
-                  style={{
-                    padding: "10px 14px",
-                    border: "1.5px solid #e2e8f0",
-                    borderRadius: 10,
-                    fontSize: 13,
-                    outline: "none",
-                    transition: "border-color 0.2s",
-                    fontFamily: "Inter, sans-serif",
-                  }}
+                  className="px-4 py-3 !border-2 !border-slate-100 rounded-xl text-sm outline-none focus:!border-brand-600 transition-all bg-slate-50/50"
                   type="text"
                   name="number"
                   placeholder="Card Number"
@@ -1371,39 +845,19 @@ function Page() {
                   onChange={handleInputChange}
                   maxLength="16"
                   required
-                  onFocus={(e) => e.currentTarget.style.borderColor = "#004a70"}
-                  onBlur={(e) => e.currentTarget.style.borderColor = "#e2e8f0"}
                 />
                 <input
-                  style={{
-                    padding: "10px 14px",
-                    border: "1.5px solid #e2e8f0",
-                    borderRadius: 10,
-                    fontSize: 13,
-                    outline: "none",
-                    transition: "border-color 0.2s",
-                    fontFamily: "Inter, sans-serif",
-                  }}
+                  className="px-4 py-3 !border-2 !border-slate-100 rounded-xl text-sm outline-none focus:!border-brand-600 transition-all bg-slate-50/50"
                   type="text"
                   name="name"
                   placeholder="Cardholder Name"
                   value={cardDetails.name}
                   onChange={handleInputChange}
                   required
-                  onFocus={(e) => e.currentTarget.style.borderColor = "#004a70"}
-                  onBlur={(e) => e.currentTarget.style.borderColor = "#e2e8f0"}
                 />
-                <div style={{ display: "grid", gridTemplateColumns: "1fr 1fr", gap: 8 }}>
+                <div className="grid grid-cols-2 gap-3">
                   <input
-                    style={{
-                      padding: "10px 14px",
-                      border: "1.5px solid #e2e8f0",
-                      borderRadius: 10,
-                      fontSize: 13,
-                      outline: "none",
-                      transition: "border-color 0.2s",
-                      fontFamily: "Inter, sans-serif",
-                    }}
+                    className="px-4 py-3 !border-2 !border-slate-100 rounded-xl text-sm outline-none focus:!border-brand-600 transition-all bg-slate-50/50"
                     type="text"
                     name="expiry"
                     placeholder="MM/YY"
@@ -1411,19 +865,9 @@ function Page() {
                     onChange={handleInputChange}
                     maxLength="5"
                     required
-                    onFocus={(e) => e.currentTarget.style.borderColor = "#004a70"}
-                    onBlur={(e) => e.currentTarget.style.borderColor = "#e2e8f0"}
                   />
                   <input
-                    style={{
-                      padding: "10px 14px",
-                      border: "1.5px solid #e2e8f0",
-                      borderRadius: 10,
-                      fontSize: 13,
-                      outline: "none",
-                      transition: "border-color 0.2s",
-                      fontFamily: "Inter, sans-serif",
-                    }}
+                    className="px-4 py-3 !border-2 !border-slate-100 rounded-xl text-sm outline-none focus:!border-brand-600 transition-all bg-slate-50/50"
                     type="text"
                     name="cvc"
                     placeholder="CVC"
@@ -1431,74 +875,42 @@ function Page() {
                     onChange={handleInputChange}
                     maxLength="4"
                     required
-                    onFocus={(e) => e.currentTarget.style.borderColor = "#004a70"}
-                    onBlur={(e) => e.currentTarget.style.borderColor = "#e2e8f0"}
                   />
                 </div>
                 <input
-                  style={{
-                    padding: "10px 14px",
-                    border: "1.5px solid #e2e8f0",
-                    borderRadius: 10,
-                    fontSize: 13,
-                    outline: "none",
-                    transition: "border-color 0.2s",
-                    fontFamily: "Inter, sans-serif",
-                  }}
+                  className="px-4 py-3 !border-2 !border-slate-100 rounded-xl text-sm outline-none focus:!border-brand-600 transition-all bg-slate-50/50"
                   type="email"
                   name="email"
-                  placeholder="Email"
+                  placeholder="Email Address"
                   value={cardDetails.email}
                   onChange={handleInputChange}
                   required
-                  onFocus={(e) => e.currentTarget.style.borderColor = "#004a70"}
-                  onBlur={(e) => e.currentTarget.style.borderColor = "#e2e8f0"}
                 />
                 <input
-                  style={{
-                    padding: "10px 14px",
-                    border: "1.5px solid #e2e8f0",
-                    borderRadius: 10,
-                    fontSize: 13,
-                    outline: "none",
-                    transition: "border-color 0.2s",
-                    fontFamily: "Inter, sans-serif",
-                  }}
+                  className="px-4 py-3 !border-2 !border-slate-100 rounded-xl text-sm outline-none focus:!border-brand-600 transition-all bg-slate-50/50"
                   type="tel"
                   name="phone"
-                  placeholder="Phone"
+                  placeholder="Phone Number"
                   value={cardDetails.phone}
                   onChange={handleInputChange}
                   required
-                  onFocus={(e) => e.currentTarget.style.borderColor = "#004a70"}
-                  onBlur={(e) => e.currentTarget.style.borderColor = "#e2e8f0"}
                 />
               </div>
             </div>
-            <div style={{ marginTop: 24 }}>
+
+            <div className="!mt-6">
               <button
                 onClick={jadAPiFunction}
                 disabled={!areAllFieldsFilled()}
-                style={{
-                  width: "100%",
-                  height: 48,
-                  borderRadius: 12,
-                  border: "none",
-                  background: areAllFieldsFilled() ? "linear-gradient(135deg, #004a70 0%, #003353 100%)" : "#e2e8f0",
-                  color: areAllFieldsFilled() ? "#fff" : "#94a3b8",
-                  fontWeight: 600,
-                  fontSize: 14,
-                  cursor: areAllFieldsFilled() ? "pointer" : "not-allowed",
-                  transition: "all 0.2s",
-                  fontFamily: "Inter, sans-serif",
-                }}
+                className={`w-full h-12 rounded-xl text-sm font-family-semibold flex items-center justify-center gap-2 transition-all duration-300 ${areAllFieldsFilled()
+                    ? "bg-gradient-to-r from-brand-600 to-brand-700 hover:from-brand-700 hover:to-brand-800 text-white hover:shadow-lg hover:shadow-brand-600/10 hover:-translate-y-0.5 active:translate-y-0 !border-none cursor-pointer"
+                    : "bg-slate-100 text-slate-400 !border !border-slate-200 cursor-not-allowed shadow-none"
+                  }`}
               >
                 {loading ? (
-                  <div style={{ display: "flex", alignItems: "center", justifyContent: "center", gap: 8 }}>
-                    <Spinner animation="border" role="status" style={{ width: 18, height: 18 }}>
-                      <span className="visually-hidden">Loading...</span>
-                    </Spinner>
-                    Processing...
+                  <div className="flex items-center justify-center gap-2">
+                    <Spinner animation="border" role="status" style={{ width: 18, height: 18 }} />
+                    <span>Processing...</span>
                   </div>
                 ) : (
                   "Pay Now"
@@ -1509,63 +921,26 @@ function Page() {
         </div>
       </Modal>
 
+      {/* ===== SUCCESS ALERT MODAL ===== */}
       {show1 && (
         <Modal
           show={show1}
           onHide={() => setShow1(false)}
           centered
         >
-          <div style={{
-            background: "#fff",
-            borderRadius: 20,
-            overflow: "hidden",
-            textAlign: "center",
-            padding: "40px 30px",
-          }}>
-            <div style={{
-              width: 80,
-              height: 80,
-              borderRadius: "50%",
-              background: "#dcfce7",
-              display: "flex",
-              alignItems: "center",
-              justifyContent: "center",
-              margin: "0 auto 20px",
-            }}>
-              <MdDoneAll size={40} color="#16a34a" />
+          <div className="bg-white rounded-3xl text-center p-8 md:p-10 shadow-2xl relative overflow-hidden">
+            <div className="w-20 h-20 rounded-full bg-emerald-50 text-emerald-600 flex items-center justify-center mx-auto !mb-5 shadow-inner">
+              <MdDoneAll size={40} />
             </div>
-            <h2 style={{
-              fontSize: 24,
-              fontWeight: 700,
-              color: "#0f172a",
-              margin: "0 0 8px",
-              fontFamily: "Inter, sans-serif",
-            }}>
+            <h2 className="text-2xl font-family-bold text-slate-900 !mb-2">
               Tip Added!
             </h2>
-            <p style={{
-              fontSize: 14,
-              color: "#64748b",
-              margin: 0,
-              fontFamily: "Inter, sans-serif",
-            }}>
-              Your tip has been added successfully
+            <p className="text-sm text-slate-500 font-family-regular !m-0">
+              Your driver tip has been processed successfully.
             </p>
             <button
               onClick={() => setShow1(false)}
-              style={{
-                marginTop: 24,
-                width: "100%",
-                height: 44,
-                borderRadius: 10,
-                border: "none",
-                background: "#004a70",
-                color: "#fff",
-                fontWeight: 600,
-                fontSize: 14,
-                cursor: "pointer",
-                fontFamily: "Inter, sans-serif",
-              }}
+              className="!mt-6 w-full h-11 rounded-xl bg-brand-900 hover:bg-brand-950 text-white font-family-semibold text-sm transition-all duration-200 !border-none cursor-pointer"
             >
               Done
             </button>
@@ -1573,54 +948,27 @@ function Page() {
         </Modal>
       )}
 
+      {/* ===== REVIEW MODAL ===== */}
       {reviewModal && (
         <Modal
           show={reviewModal}
           onHide={() => setReviewModal(false)}
           centered
         >
-          <div style={{
-            background: "#fff",
-            borderRadius: 20,
-            overflow: "hidden",
-          }}>
-            <div style={{
-              background: "linear-gradient(135deg, #f8fafc 0%, #f1f5f9 100%)",
-              padding: "20px 24px",
-              borderBottom: "1px solid #e2e8f0",
-              display: "flex",
-              alignItems: "center",
-              justifyContent: "space-between",
-            }}>
-              <h3 style={{
-                fontSize: 18,
-                fontWeight: 700,
-                color: "#0f172a",
-                margin: 0,
-                fontFamily: "Inter, sans-serif",
-              }}>
+          <div className="bg-white rounded-3xl overflow-hidden shadow-2xl">
+            <div className="bg-slate-50/50 p-6 !border-b !border-slate-100 flex justify-between items-center">
+              <h3 className="text-lg font-family-bold text-slate-900 !m-0">
                 Leave a Review
               </h3>
               <button
                 onClick={() => setReviewModal(false)}
-                style={{
-                  width: 32,
-                  height: 32,
-                  borderRadius: 8,
-                  border: "1px solid #e2e8f0",
-                  background: "#fff",
-                  cursor: "pointer",
-                  display: "flex",
-                  alignItems: "center",
-                  justifyContent: "center",
-                  color: "#94a3b8",
-                }}
+                className="w-8 h-8 rounded-lg !border !border-slate-200 bg-white hover:bg-slate-50 flex items-center justify-center color-slate-400 cursor-pointer"
               >
                 <X size={16} />
               </button>
             </div>
-            <div style={{ padding: "24px" }}>
-              <div style={{ textAlign: "center", marginBottom: 20 }}>
+            <div className="p-6">
+              <div className="text-center !mb-5">
                 <Rate
                   value={reviewRating}
                   onChange={setReviewRating}
@@ -1628,53 +976,21 @@ function Page() {
                 />
               </div>
               <textarea
-                style={{
-                  width: "100%",
-                  minHeight: 120,
-                  padding: "12px 16px",
-                  border: "1.5px solid #e2e8f0",
-                  borderRadius: 12,
-                  fontSize: 14,
-                  outline: "none",
-                  resize: "vertical",
-                  fontFamily: "Inter, sans-serif",
-                }}
+                className="w-full min-h-[120px] p-4 !border-2 !border-slate-100 rounded-2xl text-sm outline-none resize-none focus:!border-brand-600 transition-all duration-200 bg-slate-50/50"
                 placeholder="Write your review here..."
                 value={reviewText}
                 onChange={(e) => setReviewText(e.target.value)}
               />
-              <div style={{ marginTop: 20, display: "flex", gap: 10 }}>
+              <div className="!mt-5 flex gap-3">
                 <button
                   onClick={() => setReviewModal(false)}
-                  style={{
-                    flex: 1,
-                    height: 44,
-                    borderRadius: 10,
-                    border: "1px solid #e2e8f0",
-                    background: "#fff",
-                    color: "#64748b",
-                    fontWeight: 500,
-                    fontSize: 14,
-                    cursor: "pointer",
-                    fontFamily: "Inter, sans-serif",
-                  }}
+                  className="flex-grow h-11 rounded-xl !border-2 !border-slate-150 bg-white text-slate-500 font-family-semibold text-sm hover:bg-slate-50 transition-all duration-200 cursor-pointer"
                 >
                   Cancel
                 </button>
                 <button
                   onClick={submitReview}
-                  style={{
-                    flex: 1,
-                    height: 44,
-                    borderRadius: 10,
-                    border: "none",
-                    background: "#004a70",
-                    color: "#fff",
-                    fontWeight: 600,
-                    fontSize: 14,
-                    cursor: "pointer",
-                    fontFamily: "Inter, sans-serif",
-                  }}
+                  className="flex-grow h-11 rounded-xl bg-brand-900 hover:bg-brand-950 text-white font-family-semibold text-sm transition-all duration-200 !border-none cursor-pointer"
                 >
                   Submit Review
                 </button>
