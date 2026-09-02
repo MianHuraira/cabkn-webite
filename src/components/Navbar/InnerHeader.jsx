@@ -327,6 +327,30 @@ const InnerHeader = () => {
 
           {/* Right: Icons + User + Mobile Toggle */}
           <div className="flex items-center gap-2 flex-shrink-0">
+            {/* Chat Icon Button */}
+            <Link
+              href="/chat"
+              title="Messages"
+              className="no-underline"
+            >
+              <Badge
+                count={unreadCount}
+                size="small"
+                offset={[-2, 2]}
+                style={{ backgroundColor: "#ef4444" }}
+              >
+                <div
+                  className={`w-9 h-9 rounded-full flex items-center justify-center cursor-pointer transition-all duration-200 !border ${
+                    isScrolled
+                      ? "!border-slate-200/90 bg-slate-100 hover:bg-slate-200 text-slate-700 hover:text-[#004a70] shadow-sm"
+                      : "!border-white/30 bg-white/15 hover:bg-white/25 text-white"
+                  }`}
+                >
+                  <HiOutlineChatBubbleOvalLeft size={18} />
+                </div>
+              </Badge>
+            </Link>
+
             {/* Notification Dropdown Button (Visible on Both Desktop & Mobile) */}
             <div ref={notifMenuRef} className="relative">
               <Badge

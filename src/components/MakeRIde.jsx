@@ -11,12 +11,15 @@ import Select from "react-select";
 import { Spinner } from "react-bootstrap";
 import { message, TimePicker, Calendar, ConfigProvider } from "antd";
 import moment from "moment";
+import axios from "axios";
 import { Loader } from "@googlemaps/js-api-loader";
 import { getDistance } from "geolib";
-import { IoMdCloseCircle } from "react-icons/io";
-import { IoMdAddCircleOutline } from "react-icons/io";
+import { IoMdCloseCircle, IoMdAddCircleOutline } from "react-icons/io";
 import { BiCurrentLocation } from "react-icons/bi";
-import { FaCar, FaBox, FaMapMarkedAlt, FaHistory } from "react-icons/fa";
+import { FaCar, FaBox, FaMapMarkedAlt, FaHistory, FaSearch } from "react-icons/fa";
+import { FaLocationDot } from "react-icons/fa6";
+import { MdOutlineMyLocation, MdOutlinePlace } from "react-icons/md";
+import { FiUploadCloud, FiTrash2, FiCamera } from "react-icons/fi";
 import { Swiper, SwiperSlide } from "swiper/react";
 import { FreeMode, Mousewheel } from "swiper/modules";
 import "swiper/css";
@@ -45,7 +48,7 @@ const RidePage = () => {
 
   const [error, setError] = useState("");
   const [ShowPermissionDialog, setShowPermissionDialog] = useState(false);
-  const { getData, header1 } = ApiFunction();
+  const { getData, header1, postData, header2 } = ApiFunction();
   const [Next, setNext] = useState(false);
   const [lastId, setLastId] = useState(1);
   const [MutiplePrice, setMutiplePrice] = useState("");
@@ -58,7 +61,7 @@ const RidePage = () => {
   const [productData, setProductData] = useState("");
   const mapRef = useRef();
   const mapContainerRef = useRef();
-  const [TypeRide, setTypeRide] = useState("");
+  const [TypeRide, setTypeRide] = useState("driver");
   const [predictions, setPredictions] = useState([]);
   const [noData, setNoData] = useState(false);
   const [searchQuery, setSearchQuery] = useState("");
@@ -76,6 +79,48 @@ const RidePage = () => {
   const [selectedStop, setSelectedStop] = useState(null);
   const [FavUserId, setFavUserId] = useState("");
   const [isMobile, setIsMobile] = useState(false);
+
+  // Geo loading state for inside locate spinner
+  const [geoLoading, setGeoLoading] = useState(false);
+
+  // Parcel Specific States
+  const [parcelTitle, setParcelTitle] = useState("");
+  const [parcelImage, setParcelImage] = useState(null);
+  const [uploadLoading, setUploadLoading] = useState(false);
+  const parcelInputRef = useRef(null);
+
+  const handleParcelImageChange = async (e) => {
+    const file = e.target.files?.[0];
+    if (!file) return;
+
+    // Convert to Base64 data URL immediately (100% reliable across pages, never breaks)
+    const reader = new FileReader();
+    reader.onload = async (event) => {
+      const base64Data = event.target?.result;
+      if (base64Data) {
+        setParcelImage(base64Data);
+      }
+
+      setUploadLoading(true);
+      try {
+        const formData = new FormData();
+        formData.append("image", file);
+        // Direct axios post without hardcoding Content-Type header so browser adds boundary correctly
+        const res = await axios.post("https://api.cabkn.com/api/image/upload", formData, {
+          headers: header1?.["x-auth-token"] ? { "x-auth-token": header1["x-auth-token"] } : {},
+        });
+        const serverUrl = res?.data?.image || res?.data?.imageUrl;
+        if (serverUrl) {
+          setParcelImage(serverUrl);
+        }
+      } catch (err) {
+        console.warn("Parcel image server upload notice (using local data URL):", err);
+      } finally {
+        setUploadLoading(false);
+      }
+    };
+    reader.readAsDataURL(file);
+  };
 
   const [mounted, setMounted] = useState(false);
   useEffect(() => {
@@ -136,6 +181,7 @@ const RidePage = () => {
 
   const getLocation = async () => {
     if (navigator.geolocation) {
+      setGeoLoading(true);
       navigator.geolocation.getCurrentPosition(
         async (position) => {
           const latitude = position.coords.latitude;
@@ -166,9 +212,12 @@ const RidePage = () => {
             }
           } catch (error) {
             setError("Error fetching address.");
+          } finally {
+            setGeoLoading(false);
           }
         },
         (err) => {
+          setGeoLoading(false);
           if (err.code === 1) {
             setShowPermissionDialog(true);
           }
@@ -203,33 +252,83 @@ const RidePage = () => {
 
   useEffect(() => {
     try {
-      const row = encodedData
-        ? JSON.parse(decodeURIComponent(encodedData))
-        : null;
+      let row = null;
+      if (encodedData) {
+        row = JSON.parse(decodeURIComponent(encodedData));
+      } else if (typeof window !== "undefined") {
+        const saved = sessionStorage.getItem("cabkn_ride_draft");
+        if (saved) {
+          row = JSON.parse(saved);
+        }
+      }
 
       if (row) {
-        setFavUserId(row?.favUserId);
+        setFavUserId(row?.favUserId || row?.FavUserId || "");
         setRowData(row);
-        if (row?.time) {
-          const time = JSON?.parse(row?.time);
-          SetRideTime(time);
-          setSchuale(time ? true : false);
+
+        // 1. Restore Category & Tab
+        const cat = row?.rideType || row?.category || "driver";
+        setTypeRide(cat);
+        setValue("category", cat);
+
+        // 2. Restore Parcel Fields
+        if (row?.parcelTitle || row?.title) {
+          setParcelTitle(row.parcelTitle || row.title);
         }
-        if (row) {
-          setValue("metaTitle", row?.address || "");
-          setSearchQueryEnd(row.address);
-          setLocationDetails1({
-            address: row?.address || "",
-            lat: row?.lat || 0,
-            lng: row?.lng || 0,
+        if (row?.parcelImage || row?.image) {
+          setParcelImage(row.parcelImage || row.image);
+        }
+
+        // 3. Restore Start Location
+        const startAddr = row?.name || row?.start_address || "";
+        if (startAddr) {
+          setValue("name", startAddr);
+          setSearchQuery(startAddr);
+          if (row?.start && Array.isArray(row.start) && row.start.length === 2 && row.start[0] && row.start[1]) {
+            setLocationDetails({
+              address: startAddr,
+              lng: row.start[0],
+              lat: row.start[1],
+            });
+          }
+        }
+
+        // 4. Restore End Location
+        const endAddr = row?.metaTitle || row?.end_address || row?.address || "";
+        if (endAddr) {
+          setValue("metaTitle", endAddr);
+          setSearchQueryEnd(endAddr);
+          if (row?.end && Array.isArray(row.end) && row.end.length === 2 && row.end[0] && row.end[1]) {
+            setLocationDetails1({
+              address: endAddr,
+              lng: row.end[0],
+              lat: row.end[1],
+            });
+          }
+        }
+
+        // 5. Restore Stops
+        if (row?.stop && Array.isArray(row.stop) && row.stop.length > 0) {
+          setLocationDetails3(row.stop);
+        }
+
+        // 6. Restore Distance
+        if (row?.distance) {
+          setDistance(row.distance);
+        }
+
+        // 7. Trigger route drawing on map
+        if (row?.end && Array.isArray(row.end) && row.end.length === 2 && row.end[1]) {
+          locationSet({
+            lat: row.end[1],
+            lng: row.end[0],
           });
-          locationSet(row);
         }
       }
     } catch (error) {
       console.error("Error parsing row or data:", error);
     }
-  }, [Currentlocation?.latitude]);
+  }, [encodedData]);
 
   const onChangeSchedule = (e) => {
     setSchuale(e.target.checked);
@@ -781,73 +880,99 @@ const RidePage = () => {
   });
 
   const onSubmit = (data) => {
+    if (uploadLoading) {
+      message.warning("Please wait for parcel image to finish uploading");
+      return;
+    }
     if (Number(distance) === 0) {
       message.error("Distance cannot be 0 Km");
-    } else {
-      const utcDate = moment(data?.date?.$d).utc().format();
-      const body = {
-        ...data,
-        bookingtype: Schuale || RideTime ? "schedule" : "live",
-        rideType: TypeRide,
-        schedule_date: utcDate,
-        schedule_time: RideTime ? RideTime : data?.time,
-        distance: distance,
-        start: [locationDetails?.lng || Currentlocation?.longitude, locationDetails?.lat || Currentlocation?.latitude],
-        end: [locationDetails1?.lng, locationDetails1.lat],
-        stop: LocationDetails3,
-        service: RowData?._id,
-        perPersonPrice: RowData?.price_per_person,
-        servicePrice: RowData?.location_price,
-        color: RowData?.ProductColor,
-        size: RowData?.Size,
-        qty: RowData?.incDec,
-        productPrice: RowData?.productPrice,
-        ...(FavUserId ? { FavUserId } : {}),
-      };
-      const encodedData = encodeURIComponent(JSON.stringify(body));
-      router.push(`/bookRide?data=${encodedData}`);
+      return;
     }
+    if (TypeRide === "parcel" && !parcelTitle.trim()) {
+      message.error("Please enter a parcel title");
+      return;
+    }
+
+    const body = {
+      ...data,
+      name: data.name || searchQuery || locationDetails?.address,
+      start_address: searchQuery || locationDetails?.address,
+      metaTitle: data.metaTitle || SearchQueryEnd || locationDetails1?.address,
+      end_address: SearchQueryEnd || locationDetails1?.address,
+      bookingtype: "live",
+      rideType: TypeRide,
+      category: TypeRide,
+      distance: distance,
+      start: [
+        locationDetails?.lng || Currentlocation?.longitude,
+        locationDetails?.lat || Currentlocation?.latitude,
+      ],
+      end: [locationDetails1?.lng, locationDetails1.lat],
+      stop: LocationDetails3,
+      title: parcelTitle || "",
+      image: parcelImage || "",
+      parcelTitle: parcelTitle || "",
+      parcelImage: parcelImage || "",
+      service: RowData?._id,
+      perPersonPrice: RowData?.price_per_person,
+      servicePrice: RowData?.location_price,
+      color: RowData?.ProductColor,
+      size: RowData?.Size,
+      qty: RowData?.incDec,
+      productPrice: RowData?.productPrice,
+      ...(FavUserId ? { FavUserId } : {}),
+    };
+    const encodedData = encodeURIComponent(JSON.stringify(body));
+    if (typeof window !== "undefined") {
+      try {
+        sessionStorage.setItem("cabkn_ride_draft", JSON.stringify(body));
+      } catch (err) {
+        console.warn("Could not save to sessionStorage:", err);
+      }
+    }
+    router.push(`/bookRide?data=${encodedData}`);
   };
 
   const hasAnyLocation = (locationDetails?.lng && locationDetails?.lat) || (Currentlocation?.longitude && Currentlocation?.latitude) || (locationDetails1?.lng && locationDetails1?.lat) || (LocationDetails3 && LocationDetails3.length > 0) || (selectedStop && selectedStop.latLng && selectedStop.latLng.lng);
 
   return (
-    <div className={`min-h-screen bg-slate-50/50 ${mounted ? "animate-fade-in" : "opacity-0"}`}>
+    <div className={`min-h-screen bg-[#f8fafc] font-poppins ${mounted ? "animate-fade-in" : "opacity-0"}`}>
       {/* ===== HERO BANNER ===== */}
-      <section className="relative overflow-hidden bg-gradient-to-br from-slate-900 via-brand-900 to-brand-950 !pt-28 !pb-28">
+      <section className="relative overflow-hidden bg-gradient-to-br from-[#001726] via-[#002842] to-[#002f4a] !pt-28 !pb-14 sm:!pb-16 text-white">
         <div className="absolute inset-0 opacity-[0.04]" style={{
           backgroundImage: `radial-gradient(circle at 1px 1px, white 1px, transparent 0)`,
           backgroundSize: "24px 24px"
         }} />
         
-        <div className="absolute top-1/4 -left-20 w-80 h-80 bg-brand-500/10 rounded-full blur-[100px] animate-pulse pointer-events-none" style={{ animationDuration: "8s" }} />
-        <div className="absolute bottom-1/4 -right-20 w-96 h-96 bg-indigo-500/10 rounded-full blur-[120px] animate-pulse pointer-events-none" style={{ animationDuration: "12s" }} />
-        
-        <div className="absolute inset-0 bg-gradient-to-t from-brand-950/60 via-transparent to-transparent pointer-events-none" />
+        <div className="absolute top-1/4 -left-20 w-80 h-80 bg-sky-500/10 rounded-full blur-[100px] animate-pulse pointer-events-none" style={{ animationDuration: "8s" }} />
+        <div className="absolute bottom-1/4 -right-20 w-96 h-96 bg-brand-500/10 rounded-full blur-[120px] animate-pulse pointer-events-none" style={{ animationDuration: "12s" }} />
 
         <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 relative z-10">
           <div className="flex items-center gap-2 text-slate-400 text-xs font-family-medium !mb-4">
-            <Link href="/" className="text-slate-400 hover:text-white transition-colors">Home</Link>
+            <Link href="/" className="text-slate-400 hover:text-white transition-colors no-underline">Home</Link>
             <span className="text-slate-500">/</span>
-            <span className="text-slate-200">Book a Ride</span>
+            <span className="text-slate-200">
+              {TypeRide === "parcel" ? "Send a Parcel" : "Book a Ride"}
+            </span>
           </div>
 
           <div className="flex flex-wrap justify-between items-center gap-4">
             <div className="flex items-center gap-4">
-              <div className="w-13 h-13 rounded-2xl bg-white/10 backdrop-blur-md flex items-center justify-center shrink-0">
-                <svg width={26} height={26} viewBox="0 0 24 24" fill="none" stroke="#fff" strokeWidth={1.5}>
-                  <path strokeLinecap="round" strokeLinejoin="round" d="M8.25 18.75a1.5 1.5 0 01-3 0m3 0a1.5 1.5 0 00-3 0m3 0h6m-9 0H3.375a1.125 1.125 0 01-1.125-1.125V14.25m17.25 4.5a1.5 1.5 0 01-3 0m3 0a1.5 1.5 0 00-3 0m3 0h1.125c.621 0 1.129-.504 1.09-1.124a17.902 17.902 0 00-3.213-9.193 2.056 2.056 0 00-1.58-.86H14.25M16.5 18.75h-2.25m0-11.177v-.958c0-.568-.422-1.048-.987-1.106a48.554 48.554 0 00-10.026 0 1.106 1.106 0 00-.987 1.106v7.635m12-6.677v6.677m0 4.5v-4.5m0 0h-12" />
-                </svg>
+              <div className="w-13 h-13 rounded-2xl bg-white/10 backdrop-blur-md border border-white/15 flex items-center justify-center shrink-0 shadow-inner">
+                {TypeRide === "parcel" ? (
+                  <FaBox className="text-white text-2xl" />
+                ) : (
+                  <FaCar className="text-white text-2xl" />
+                )}
               </div>
               <div>
-                <h1 className="text-white text-3xl font-family-bold tracking-tight !m-0 leading-tight">
-                  Book a{" "}
-                  <span className="text-transparent bg-clip-text bg-gradient-to-r from-brand-300 via-sky-300 to-indigo-200">
-                    Ride
-                  </span>
+                <h1 className="text-white text-2xl sm:text-3xl font-family-bold tracking-tight !m-0 leading-tight">
+                  {TypeRide === "parcel" ? "Send a Parcel" : "Book a Driver"}
                 </h1>
-                <p className="text-slate-400 text-sm !mt-1 !m-0 font-family-regular">
-                  Set pickup, drop-off, and schedule your trip details
+                <p className="text-slate-300 text-xs sm:text-sm !mt-1 !m-0 font-family-regular">
+                  {TypeRide === "parcel"
+                    ? "Schedule direct package delivery across Saint Kitts & Nevis"
+                    : "Set pickup, drop-off, and find professional drivers in real-time"}
                 </p>
               </div>
             </div>
@@ -855,61 +980,76 @@ const RidePage = () => {
         </div>
       </section>
 
-      {/* ===== FORM & MAP CONTAINER ===== */}
-      <div className="!-mt-8 max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 relative z-10 !pb-24">
-        {/* Swiper Tabs */}
-        <div className="w-full max-w-full overflow-hidden !mb-8">
-          <Swiper
-            modules={[FreeMode, Mousewheel]}
-            slidesPerView="auto"
-            spaceBetween={10}
-            freeMode={true}
-            mousewheel={{ forceToAxis: true }}
-            className="w-full py-1 category-swiper"
-          >
-            {rideTabs.map((tab) => {
-              const isSelected = (TypeRide === tab.key) || (!TypeRide && tab.key === "driver");
-              return (
-                <SwiperSlide key={tab.key} style={{ width: "auto" }}>
-                  <button
-                    type="button"
-                    onClick={() => {
-                      if (tab.key === "tour") {
-                        router.push("/makeowntours");
-                      } else if (tab.key === "myBookings") {
-                        router.push("/admin");
-                      } else {
-                        setTypeRide(tab.key);
-                        setValue("category", tab.key);
-                      }
-                    }}
-                    className={`cursor-pointer transition-all duration-300 select-none flex items-center gap-2 px-5 py-2.5 rounded-full text-xs sm:text-sm font-family-semibold whitespace-nowrap !border shadow-none ${
-                      isSelected
-                        ? "text-white bg-brand-600 !border-brand-600"
-                        : "text-slate-700 bg-white !border-slate-200/90 hover:!border-brand-600 hover:bg-slate-50 hover:text-brand-600"
-                    }`}
-                  >
-                    <span className={isSelected ? "opacity-100" : "opacity-75"}>
-                      {tab.icon}
-                    </span>
-                    <span>{tab.label}</span>
-                  </button>
-                </SwiperSlide>
-              );
-            })}
-          </Swiper>
-        </div>
+      {/* ===== NAVIGATION TABS (Perfect 50/50 Top/Bottom Centered on Edge with Position) ===== */}
+      <div className="relative z-30 -translate-y-1/2 max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 pointer-events-auto">
+        <Swiper
+          modules={[FreeMode, Mousewheel]}
+          slidesPerView="auto"
+          spaceBetween={10}
+          freeMode={true}
+          mousewheel={{ forceToAxis: true }}
+          className="w-full py-1 category-swiper"
+        >
+          {rideTabs.map((tab) => {
+            const isSelected = (TypeRide === tab.key) || (!TypeRide && tab.key === "driver");
+            return (
+              <SwiperSlide key={tab.key} style={{ width: "auto" }}>
+                <button
+                  type="button"
+                  onClick={() => {
+                    if (tab.key === "tour") {
+                      router.push("/makeowntours");
+                    } else if (tab.key === "myBookings") {
+                      router.push("/admin");
+                    } else {
+                      setTypeRide(tab.key);
+                      setValue("category", tab.key);
+                    }
+                  }}
+                  className={`cursor-pointer transition-all duration-200 select-none flex items-center gap-2 px-5 py-2.5 rounded-full text-xs sm:text-sm font-family-semibold whitespace-nowrap !border shadow-[0_4px_16px_rgba(0,0,0,0.08)] ${
+                    isSelected
+                      ? "text-white bg-[#004a70] !border-[#004a70] shadow-md"
+                      : "text-slate-700 bg-white !border-slate-200/90 hover:!border-[#004a70] hover:bg-slate-50 hover:text-[#004a70]"
+                  }`}
+                >
+                  <span>{tab.icon}</span>
+                  <span>{tab.label}</span>
+                </button>
+              </SwiperSlide>
+            );
+          })}
+        </Swiper>
+      </div>
 
-        <div className="grid grid-cols-1 lg:grid-cols-12 gap-8 items-start">
+      {/* ===== FORM & MAP CONTAINER ===== */}
+      <div className="!-mt-2 sm:!-mt-3 max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 relative z-10 !pb-24">
+        <div className="grid grid-cols-1 lg:grid-cols-12 gap-6 lg:gap-8 items-start">
           
-          {/* Form Card (5 Cols) */}
-          <div className="lg:col-span-5 bg-white/95 backdrop-blur-xl rounded-3xl !border !border-slate-100 p-6 md:p-8 shadow-[0_8px_30px_rgba(0,0,0,0.02)]">
-            <form onSubmit={handleSubmit(onSubmit)} className="space-y-6">
+          {/* Form Card (5 Cols) with Auth Styling */}
+          <div className="lg:col-span-5 bg-white rounded-2xl border border-slate-200/90 !p-5 sm:!p-6 shadow-[0_4px_25px_rgba(0,0,0,0.04)] lg:sticky lg:top-24 z-10">
+            <div className="flex items-center justify-between mb-4 pb-3 border-b border-slate-100">
+              <div>
+                <h2 className="text-base font-family-bold text-slate-800 !m-0">
+                  {TypeRide === "parcel" ? "Parcel Details" : "Ride Request"}
+                </h2>
+                <p className="text-xs text-slate-500 font-family-regular !m-0 mt-0.5">
+                  {TypeRide === "parcel"
+                    ? "Enter item information and delivery route"
+                    : "Specify your pickup & destination"}
+                </p>
+              </div>
+              <span className="px-2.5 py-1 rounded-full bg-sky-50 text-[#004a70] text-[11px] font-family-bold uppercase tracking-wider">
+                {TypeRide === "parcel" ? "Parcel" : "Driver"}
+              </span>
+            </div>
+
+            <form onSubmit={handleSubmit(onSubmit)} className="space-y-4">
               
               {/* Category */}
-              <div>
-                <label className="text-xs text-slate-700 block !mb-2 font-family-semibold">
-                  Category
+              <div className="relative z-30">
+                <label className="text-xs text-slate-700 block !mb-1.5 font-family-semibold flex items-center gap-1.5">
+                  <FaCar size={12} className="text-[#004a70]" />
+                  <span>Category</span>
                 </label>
                 <Controller
                   name="category"
@@ -921,19 +1061,29 @@ const RidePage = () => {
                         ref={ref}
                         placeholder="Select Category"
                         options={[
-                          { value: "driver", label: "Driver" },
-                          { value: "parcel", label: "Parcel" },
+                          { value: "driver", label: "Driver / Ride" },
+                          { value: "parcel", label: "Parcel Delivery" },
                         ]}
                         styles={selectStyles(errors.category)}
+                        menuPortalTarget={typeof document !== "undefined" ? document.body : null}
+                        menuPosition="fixed"
                         onChange={(selectedOption) => {
-                          setTypeRide(selectedOption?.value);
-                          onChange(selectedOption ? selectedOption.value : null);
+                          const val = selectedOption?.value || "driver";
+                          setTypeRide(val);
+                          onChange(val);
                         }}
-                        value={value ? { value, label: value.charAt(0).toUpperCase() + value.slice(1) } : null}
-                        isClearable
+                        value={
+                          value
+                            ? {
+                                value,
+                                label: value === "parcel" ? "Parcel Delivery" : "Driver / Ride",
+                              }
+                            : { value: "driver", label: "Driver / Ride" }
+                        }
+                        isClearable={false}
                       />
                       {errors.category && (
-                        <span className="text-xs text-rose-500 block !mt-1.5 font-family-medium">
+                        <span className="text-[11px] text-rose-500 block !mt-1 font-family-medium">
                           {errors.category.message}
                         </span>
                       )}
@@ -942,175 +1092,141 @@ const RidePage = () => {
                 />
               </div>
 
-              {/* Start Location */}
+              {/* Parcel Title & Image Upload (Only shown when category is parcel) */}
+              {TypeRide === "parcel" && (
+                <div className="space-y-3.5 p-3.5 bg-sky-50/60 rounded-2xl border border-sky-100 animate-fade-in">
+                  {/* Parcel Title */}
+                  <div>
+                    <label className="text-xs text-slate-700 block !mb-1.5 font-family-semibold flex items-center gap-1.5">
+                      <FaBox size={12} className="text-[#004a70]" />
+                      <span>Parcel Title <span className="text-rose-500">*</span></span>
+                    </label>
+                    <input
+                      type="text"
+                      placeholder="Enter parcel title (e.g. Documents, Gift, Food)"
+                      value={parcelTitle}
+                      onChange={(e) => setParcelTitle(e.target.value)}
+                      className="w-full px-3.5 py-2.5 rounded-xl bg-white border border-gray-200 text-[13.5px] text-gray-900 placeholder-gray-400 focus:outline-none focus:ring-1 focus:ring-primary-500 focus:ring-offset-1 focus:border-none transition-all duration-200 shadow-xs hover:shadow-sm font-family-medium"
+                    />
+                  </div>
+
+                  {/* Parcel Image Upload */}
+                  <div>
+                    <label className="text-xs text-slate-700 block !mb-1.5 font-family-semibold flex items-center gap-1.5">
+                      <FiCamera size={13} className="text-[#004a70]" />
+                      <span>Parcel Image (Optional)</span>
+                    </label>
+                    <input
+                      type="file"
+                      accept="image/*"
+                      ref={parcelInputRef}
+                      onChange={handleParcelImageChange}
+                      className="hidden"
+                    />
+                    {parcelImage ? (
+                      <div className="relative rounded-xl border border-slate-200 bg-white p-2.5 flex items-center gap-3 shadow-xs">
+                        <img
+                          src={parcelImage}
+                          alt="Parcel"
+                          className="w-14 h-14 rounded-lg object-cover border border-slate-200"
+                        />
+                        <div className="flex-1 min-w-0">
+                          <span className="text-xs font-family-semibold text-slate-800 block truncate">
+                            Parcel photo attached
+                          </span>
+                          {uploadLoading ? (
+                            <span className="text-[11px] text-brand-600 font-family-medium flex items-center gap-1 mt-0.5">
+                              <div className="w-3 h-3 border-2 border-brand-600 border-t-transparent rounded-full animate-spin" />
+                              Uploading...
+                            </span>
+                          ) : (
+                            <span className="text-[11px] text-emerald-600 font-family-medium block mt-0.5">
+                              Ready to send with courier
+                            </span>
+                          )}
+                        </div>
+                        <button
+                          type="button"
+                          onClick={() => setParcelImage(null)}
+                          className="w-8 h-8 rounded-lg bg-rose-50 hover:bg-rose-100 text-rose-600 flex items-center justify-center border-none transition-colors cursor-pointer mr-1"
+                          title="Remove photo"
+                        >
+                          <FiTrash2 size={15} />
+                        </button>
+                      </div>
+                    ) : (
+                      <div
+                        onClick={() => parcelInputRef.current?.click()}
+                        className="border-2 border-dashed border-sky-200 hover:border-[#004a70] bg-white hover:bg-sky-50/50 rounded-xl p-3.5 flex flex-col items-center justify-center text-center cursor-pointer transition-all group"
+                      >
+                        <div className="w-9 h-9 rounded-xl bg-sky-50 text-[#004a70] flex items-center justify-center border border-sky-100 mb-1.5 transition-colors group-hover:scale-105">
+                          <FiUploadCloud size={18} />
+                        </div>
+                        <span className="text-xs font-family-semibold text-slate-800 group-hover:text-[#004a70] transition-colors">
+                          Click to upload parcel photo
+                        </span>
+                        <span className="text-[10.5px] text-slate-400 font-family-medium mt-0.5">
+                          PNG, JPG or JPEG (Max 5MB)
+                        </span>
+                      </div>
+                    )}
+                  </div>
+                </div>
+              )}
+
+              {/* Start Location Input with Inside Locate Button & Loading Spinner */}
               <div>
-                <label className="text-xs text-slate-700 block !mb-2 font-family-semibold">
-                  Start Location
+                <label className="text-xs text-slate-700 block !mb-1.5 font-family-semibold flex items-center gap-1.5">
+                  <FaLocationDot size={11} className="text-[#004a70]" />
+                  <span>Start Location</span>
                 </label>
-                <div className="flex items-center gap-2.5">
-                  <Controller
-                    name="name"
-                    control={control}
-                    render={({ field }) => (
-                      <div className="relative flex-grow">
+                <Controller
+                  name="name"
+                  control={control}
+                  render={({ field }) => (
+                    <div className="relative">
+                      <div className="relative flex items-center">
+                        <div className="absolute left-3.5 flex items-center pointer-events-none text-slate-400 z-10">
+                          <FaSearch className="w-3.5 h-3.5" />
+                        </div>
                         <input
                           {...field}
                           placeholder="Enter start location"
                           value={searchQuery}
                           onChange={(e) => handleSearch(e.target.value)}
-                          className={`w-full px-4 py-3 bg-slate-50/50 !border-2 rounded-xl text-sm font-family-medium text-slate-900 focus:bg-white outline-none transition-all duration-200 ${
-                            errors.name ? "!border-rose-300 focus:!border-rose-500" : "!border-slate-100 focus:!border-brand-600"
-                          }`}
+                          className="w-full pl-10 pr-11 py-2.5 rounded-xl bg-white border border-gray-200 text-[13.5px] text-gray-900 placeholder-gray-400 focus:outline-none focus:ring-1 focus:ring-primary-500 focus:ring-offset-1 focus:border-none transition-all duration-200 shadow-xs hover:shadow-sm font-family-medium"
                         />
-                        {errors.name && (
-                          <span className="text-xs text-rose-500 block !mt-1.5 font-family-medium">
-                            {errors.name.message}
-                          </span>
-                        )}
-                        {PridicLoading && (
-                          <div className="text-xs text-slate-400 !mt-2 font-family-medium flex items-center gap-1.5">
-                            <Spinner animation="border" size="sm" style={{ width: 12, height: 12 }} />
-                            <span>Fetching locations...</span>
-                          </div>
-                        )}
-                        {predictions.length > 0 && (
-                          <ListGroup className="absolute z-20 w-full bg-white/95 backdrop-blur-md rounded-2xl shadow-xl !border !border-slate-100 max-h-[200px] overflow-y-auto !mt-2.5">
-                            {predictions.map((prediction) => (
-                              <ListGroupItem
-                                key={prediction.place_id}
-                                onClick={() => handlePredictionPress(prediction)}
-                                className="px-4 py-3 text-xs text-slate-700 font-family-medium cursor-pointer hover:bg-slate-50 hover:text-slate-950 transition-colors !border-b !border-slate-100 last:!border-none"
-                              >
-                                {prediction.description}
-                              </ListGroupItem>
-                            ))}
-                          </ListGroup>
-                        )}
+
+                        {/* Inside End Locate Icon / Spinner */}
+                        <div className="absolute right-2.5 flex items-center gap-1 z-10">
+                          {geoLoading || PridicLoading ? (
+                            <div className="h-4 w-4 animate-spin rounded-full border-2 border-slate-200 border-t-brand-600" />
+                          ) : (
+                            <button
+                              type="button"
+                              onClick={getLocation}
+                              title="Use Current Location"
+                              className="w-7 h-7 rounded-lg bg-brand-50 hover:bg-brand-100 text-[#004a70] flex items-center justify-center border-none transition-colors cursor-pointer"
+                            >
+                              <BiCurrentLocation size={16} />
+                            </button>
+                          )}
+                        </div>
                       </div>
-                    )}
-                  />
-                  <button
-                    type="button"
-                    onClick={getLocation}
-                    className="w-11 h-11 rounded-xl bg-brand-50 hover:bg-brand-100 text-brand-650 flex items-center justify-center shrink-0 !border !border-brand-100 transition-colors shadow-inner"
-                  >
-                    <BiCurrentLocation size={18} />
-                  </button>
-                </div>
-              </div>
 
-              {/* Add Stop */}
-              <div>
-                <label className="text-xs text-slate-700 block !mb-2 font-family-semibold">
-                  Add Stop
-                </label>
-                <div className="flex items-center gap-2.5">
-                  <Controller
-                    name="stop"
-                    control={control}
-                    render={({ field }) => (
-                      <div className="relative flex-grow">
-                        <input
-                          {...field}
-                          placeholder="Enter stop location"
-                          value={SearchQueryStop}
-                          onChange={(e) => HandleStopSearch(e.target.value)}
-                          className={`w-full px-4 py-3 bg-slate-50/50 !border-2 rounded-xl text-sm font-family-medium text-slate-900 focus:bg-white outline-none transition-all duration-200 ${
-                            errors.stop ? "!border-rose-300 focus:!border-rose-500" : "!border-slate-100 focus:!border-brand-600"
-                          }`}
-                        />
-                        {errors.stop && (
-                          <span className="text-xs text-rose-500 block !mt-1.5 font-family-medium">
-                            {errors.stop.message}
-                          </span>
-                        )}
-                        {PridicLoadingStop && (
-                          <div className="text-xs text-slate-400 !mt-2 font-family-medium flex items-center gap-1.5">
-                            <Spinner animation="border" size="sm" style={{ width: 12, height: 12 }} />
-                            <span>Fetching locations...</span>
-                          </div>
-                        )}
-                        {StopPredictions.length > 0 && (
-                          <ListGroup className="absolute z-20 w-full bg-white/95 backdrop-blur-md rounded-2xl shadow-xl !border !border-slate-100 max-h-[200px] overflow-y-auto !mt-2.5">
-                            {StopPredictions.map((prediction) => (
-                              <ListGroupItem
-                                key={prediction.place_id}
-                                onClick={() => HadleStopPridication(prediction)}
-                                className="px-4 py-3 text-xs text-slate-700 font-family-medium cursor-pointer hover:bg-slate-50 hover:text-slate-950 transition-colors !border-b !border-slate-100 last:!border-none"
-                              >
-                                {prediction.description}
-                              </ListGroupItem>
-                            ))}
-                          </ListGroup>
-                        )}
-                      </div>
-                    )}
-                  />
-                  <button
-                    type="button"
-                    onClick={addlocation}
-                    className="w-11 h-11 rounded-xl bg-brand-50 hover:bg-brand-100 text-brand-650 flex items-center justify-center shrink-0 !border !border-brand-100 transition-colors shadow-inner"
-                  >
-                    <IoMdAddCircleOutline size={20} />
-                  </button>
-                </div>
-
-                {LocationDetails3.map((item, index) => (
-                  <div
-                    key={index}
-                    className="flex items-center justify-between gap-3 p-3 bg-slate-50/70 !border !border-slate-100 rounded-2xl !mt-2.5 shadow-sm"
-                  >
-                    <p className="text-xs font-family-medium text-slate-800 truncate !m-0">
-                      {item?.address}
-                    </p>
-                    <button
-                      type="button"
-                      onClick={() => RemoveStop(index)}
-                      className="text-rose-500 hover:text-rose-700 bg-transparent !border-none p-0 flex items-center shrink-0 cursor-pointer"
-                    >
-                      <IoMdCloseCircle size={18} />
-                    </button>
-                  </div>
-                ))}
-              </div>
-
-              {/* End Location */}
-              <div>
-                <label className="text-xs text-slate-700 block !mb-2 font-family-semibold">
-                  End Location
-                </label>
-                <Controller
-                  name="metaTitle"
-                  control={control}
-                  render={({ field }) => (
-                    <div className="relative">
-                      <input
-                        {...field}
-                        placeholder="Enter end location"
-                        value={SearchQueryEnd}
-                        onChange={(e) => HandleEndSearch(e.target.value)}
-                        className={`w-full px-4 py-3 bg-slate-50/50 !border-2 rounded-xl text-sm font-family-medium text-slate-900 focus:bg-white outline-none transition-all duration-200 ${
-                          errors.metaTitle ? "!border-rose-300 focus:!border-rose-500" : "!border-slate-100 focus:!border-brand-600"
-                        }`}
-                      />
-                      {errors.metaTitle && (
-                        <span className="text-xs text-rose-500 block !mt-1.5 font-family-medium">
-                          {errors.metaTitle.message}
+                      {errors.name && (
+                        <span className="text-[11px] text-rose-500 block !mt-1 font-family-medium">
+                          {errors.name.message}
                         </span>
                       )}
-                      {PridicLoadingEnd && (
-                        <div className="text-xs text-slate-400 !mt-2 font-family-medium flex items-center gap-1.5">
-                          <Spinner animation="border" size="sm" style={{ width: 12, height: 12 }} />
-                          <span>Fetching locations...</span>
-                        </div>
-                      )}
-                      {EndPredictions.length > 0 && (
-                        <ListGroup className="absolute z-20 w-full bg-white/95 backdrop-blur-md rounded-2xl shadow-xl !border !border-slate-100 max-h-[200px] overflow-y-auto !mt-2.5">
-                          {EndPredictions.map((prediction) => (
+
+                      {predictions.length > 0 && (
+                        <ListGroup className="absolute z-30 w-full bg-white rounded-2xl shadow-xl border border-slate-100 max-h-[220px] overflow-y-auto !mt-1.5 p-1">
+                          {predictions.map((prediction) => (
                             <ListGroupItem
                               key={prediction.place_id}
-                              onClick={() => HadleEndPridication(prediction)}
-                              className="px-4 py-3 text-xs text-slate-700 font-family-medium cursor-pointer hover:bg-slate-50 hover:text-slate-950 transition-colors !border-b !border-slate-100 last:!border-none"
+                              onClick={() => handlePredictionPress(prediction)}
+                              className="px-3 py-2 text-xs text-slate-700 font-family-medium cursor-pointer hover:bg-slate-50 hover:text-[#004a70] rounded-xl transition-colors border-none"
                             >
                               {prediction.description}
                             </ListGroupItem>
@@ -1120,111 +1236,164 @@ const RidePage = () => {
                     </div>
                   )}
                 />
-                <p className="text-[11px] text-slate-400 !mt-2 !m-0 font-family-regular">
+              </div>
+
+              {/* Add Stop */}
+              <div>
+                <label className="text-xs text-slate-700 block !mb-1.5 font-family-semibold flex items-center gap-1.5">
+                  <MdOutlinePlace size={14} className="text-[#004a70]" />
+                  <span>Add Stop (Optional)</span>
+                </label>
+                <Controller
+                  name="stop"
+                  control={control}
+                  render={({ field }) => (
+                    <div className="relative">
+                      <div className="relative flex items-center">
+                        <div className="absolute left-3.5 flex items-center pointer-events-none text-slate-400 z-10">
+                          <FaSearch className="w-3.5 h-3.5" />
+                        </div>
+                        <input
+                          {...field}
+                          placeholder="Enter stop location"
+                          value={SearchQueryStop}
+                          onChange={(e) => HandleStopSearch(e.target.value)}
+                          className="w-full pl-10 pr-11 py-2.5 rounded-xl bg-white border border-gray-200 text-[13.5px] text-gray-900 placeholder-gray-400 focus:outline-none focus:ring-1 focus:ring-primary-500 focus:ring-offset-1 focus:border-none transition-all duration-200 shadow-xs hover:shadow-sm font-family-medium"
+                        />
+
+                        {/* Inside Add Button / Spinner */}
+                        <div className="absolute right-2.5 flex items-center gap-1 z-10">
+                          {PridicLoadingStop ? (
+                            <div className="h-4 w-4 animate-spin rounded-full border-2 border-slate-200 border-t-brand-600" />
+                          ) : (
+                            <button
+                              type="button"
+                              onClick={addlocation}
+                              disabled={!selectedStop}
+                              title="Add Stop"
+                              className="w-7 h-7 rounded-lg bg-[#004a70] hover:bg-[#003855] text-white flex items-center justify-center border-none transition-colors disabled:opacity-35 cursor-pointer shadow-xs"
+                            >
+                              <IoMdAddCircleOutline size={16} />
+                            </button>
+                          )}
+                        </div>
+                      </div>
+
+                      {StopPredictions.length > 0 && (
+                        <ListGroup className="absolute z-30 w-full bg-white rounded-2xl shadow-xl border border-slate-100 max-h-[220px] overflow-y-auto !mt-1.5 p-1">
+                          {StopPredictions.map((prediction) => (
+                            <ListGroupItem
+                              key={prediction.place_id}
+                              onClick={() => HadleStopPridication(prediction)}
+                              className="px-3 py-2 text-xs text-slate-700 font-family-medium cursor-pointer hover:bg-slate-50 hover:text-[#004a70] rounded-xl transition-colors border-none"
+                            >
+                              {prediction.description}
+                            </ListGroupItem>
+                          ))}
+                        </ListGroup>
+                      )}
+                    </div>
+                  )}
+                />
+
+                {LocationDetails3.map((item, index) => (
+                  <div
+                    key={index}
+                    className="flex items-center justify-between gap-3 p-2.5 bg-slate-50 border border-slate-200/80 rounded-xl !mt-2 shadow-2xs"
+                  >
+                    <span className="text-xs font-family-medium text-slate-800 truncate">
+                      {item?.address}
+                    </span>
+                    <button
+                      type="button"
+                      onClick={() => RemoveStop(index)}
+                      className="text-rose-500 hover:text-rose-700 bg-transparent border-none p-0 flex items-center shrink-0 cursor-pointer"
+                    >
+                      <IoMdCloseCircle size={16} />
+                    </button>
+                  </div>
+                ))}
+              </div>
+
+              {/* End Location */}
+              <div>
+                <label className="text-xs text-slate-700 block !mb-1.5 font-family-semibold flex items-center gap-1.5">
+                  <MdOutlineMyLocation size={12} className="text-[#004a70]" />
+                  <span>End Location</span>
+                </label>
+                <Controller
+                  name="metaTitle"
+                  control={control}
+                  render={({ field }) => (
+                    <div className="relative">
+                      <div className="relative flex items-center">
+                        <div className="absolute left-3.5 flex items-center pointer-events-none text-slate-400 z-10">
+                          <FaSearch className="w-3.5 h-3.5" />
+                        </div>
+                        <input
+                          {...field}
+                          placeholder="Enter destination location"
+                          value={SearchQueryEnd}
+                          onChange={(e) => HandleEndSearch(e.target.value)}
+                          className="w-full pl-10 pr-10 py-2.5 rounded-xl bg-white border border-gray-200 text-[13.5px] text-gray-900 placeholder-gray-400 focus:outline-none focus:ring-1 focus:ring-primary-500 focus:ring-offset-1 focus:border-none transition-all duration-200 shadow-xs hover:shadow-sm font-family-medium"
+                        />
+
+                        {PridicLoadingEnd && (
+                          <div className="absolute right-3 flex items-center z-10">
+                            <div className="h-4 w-4 animate-spin rounded-full border-2 border-slate-200 border-t-brand-600" />
+                          </div>
+                        )}
+                      </div>
+
+                      {errors.metaTitle && (
+                        <span className="text-[11px] text-rose-500 block !mt-1 font-family-medium">
+                          {errors.metaTitle.message}
+                        </span>
+                      )}
+
+                      {EndPredictions.length > 0 && (
+                        <ListGroup className="absolute z-30 w-full bg-white rounded-2xl shadow-xl border border-slate-100 max-h-[220px] overflow-y-auto !mt-1.5 p-1">
+                          {EndPredictions.map((prediction) => (
+                            <ListGroupItem
+                              key={prediction.place_id}
+                              onClick={() => HadleEndPridication(prediction)}
+                              className="px-3 py-2 text-xs text-slate-700 font-family-medium cursor-pointer hover:bg-slate-50 hover:text-[#004a70] rounded-xl transition-colors border-none"
+                            >
+                              {prediction.description}
+                            </ListGroupItem>
+                          ))}
+                        </ListGroup>
+                      )}
+                    </div>
+                  )}
+                />
+                <p className="text-[11px] text-slate-400 !mt-1.5 !m-0 font-family-regular">
                   Copy and paste End location if it doesn&rsquo;t fetch automatically
                 </p>
               </div>
 
-              {/* Schedule Checkbox */}
-              {!RideTime && (
-                <label className="flex items-center gap-2.5 !my-4 cursor-pointer text-sm font-family-semibold text-slate-700 select-none">
-                  <input
-                    type="checkbox"
-                    checked={Schuale}
-                    onChange={onChangeSchedule}
-                    className="w-4 h-4 accent-brand-900 rounded cursor-pointer"
-                  />
-                  <span>Schedule Ride</span>
-                </label>
-              )}
-
-              {/* Travelers */}
-              {RideTime && (
-                <div>
-                  <label className="text-xs text-slate-700 block !mb-2 font-family-semibold">
-                    Travelers
-                  </label>
-                  <Controller
-                    name="travlers"
-                    control={control}
-                    render={({ field }) => (
-                      <div>
-                        <input
-                          type="number"
-                          required
-                          {...field}
-                          placeholder="Travelers Count"
-                          className={`w-full px-4 py-3 bg-slate-50/50 !border-2 rounded-xl text-sm font-family-medium text-slate-900 focus:bg-white outline-none transition-all duration-200 ${
-                            errors.travlers ? "!border-rose-300 focus:!border-rose-500" : "!border-slate-100 focus:!border-brand-600"
-                          }`}
-                        />
-                        {errors.travlers && (
-                          <span className="text-xs text-rose-500 block !mt-1.5 font-family-medium">
-                            {errors.travlers.message}
-                          </span>
-                        )}
-                      </div>
-                    )}
-                  />
-                </div>
-              )}
-
-              {/* Calendar & Time section */}
-              {Schuale && (
-                <div className="!mt-5 space-y-4">
-                  <div className="!border !border-slate-100 p-4 rounded-3xl bg-slate-50/30">
-                    <Controller
-                      name="date"
-                      control={control}
-                      defaultValue={null}
-                      render={({ field }) => (
-                        <Calendar
-                          fullscreen={false}
-                          {...field}
-                          onSelect={(value) => {
-                            field.onChange(value);
-                          }}
-                        />
-                      )}
-                    />
-                  </div>
-                  {!RideTime && (
-                    <Controller
-                      name="time"
-                      control={control}
-                      defaultValue={null}
-                      render={({ field }) => (
-                        <TimePicker
-                          className="w-full h-12 rounded-xl !border-2 !border-slate-100 bg-slate-50/50 focus:bg-white"
-                          use12Hours
-                          format="h:mm a"
-                          {...field}
-                          value={field.value ? moment(field.value, "h:mm a") : null}
-                          onChange={(value) => field.onChange(value ? value.format("h:mm a") : null)}
-                        />
-                      )}
-                    />
-                  )}
-                </div>
-              )}
-
-              {/* Submit CTA */}
-              <div className="!pt-4">
-                <CustomButton
+              {/* Submit CTA (Disabled when uploading parcel image or loading) */}
+              <div className="!pt-3">
+                <button
                   type="submit"
-                  variant="primary"
-                  size="md"
-                  loading={isLoading}
-                  className="w-full h-12 bg-gradient-to-r from-brand-600 to-brand-700 hover:from-brand-700 hover:to-brand-800 text-white font-family-semibold rounded-full shadow-lg shadow-brand-600/10 hover:shadow-xl hover:-translate-y-0.5 active:translate-y-0 transition-all duration-300"
+                  disabled={isLoading || uploadLoading}
+                  className="w-full !py-3 rounded-xl bg-[#004a70] hover:bg-[#003855] text-white font-family-semibold text-sm shadow-md hover:shadow-lg transition-all border-none cursor-pointer active:scale-[0.99] flex items-center justify-center gap-2 disabled:opacity-50 disabled:cursor-not-allowed"
                 >
-                  Next
-                </CustomButton>
+                  {isLoading || uploadLoading ? (
+                    <div className="flex items-center gap-2">
+                      <div className="h-4 w-4 animate-spin rounded-full border-2 border-white border-t-transparent" />
+                      <span>{uploadLoading ? "Uploading Image..." : "Please wait..."}</span>
+                    </div>
+                  ) : (
+                    <span>Next</span>
+                  )}
+                </button>
               </div>
             </form>
           </div>
 
           {/* Map Card (7 Cols) */}
-          <div className="lg:col-span-7 bg-white rounded-3xl !border !border-slate-100 shadow-[0_8px_30px_rgba(0,0,0,0.02)] overflow-hidden min-h-[500px] h-[550px] relative">
+          <div className="lg:col-span-7 bg-white rounded-3xl border border-slate-200/90 shadow-[0_4px_25px_rgba(0,0,0,0.04)] overflow-hidden min-h-[480px] h-[540px] relative">
             <div
               id="map-container"
               ref={mapContainerRef}
@@ -1287,19 +1456,39 @@ const RidePage = () => {
 };
 
 const selectStyles = (error) => ({
-  control: (base) => ({
+  control: (base, state) => ({
     ...base,
     borderRadius: 12,
-    borderColor: error ? "#fca5a5" : "#f1f5f9",
-    borderWidth: 2,
-    minHeight: 46,
-    fontSize: 14,
+    borderColor: error ? "#f43f5e" : state.isFocused ? "#004a70" : "#e2e8f0",
+    borderWidth: 1,
+    minHeight: 44,
+    fontSize: 13.5,
     fontFamily: "Inter, sans-serif",
-    boxShadow: "none",
-    backgroundColor: "#f8fafc80",
+    boxShadow: state.isFocused ? "0 0 0 1px #004a70" : "none",
+    backgroundColor: "#ffffff",
     "&:hover": { borderColor: "#004a70" },
   }),
-  placeholder: (base) => ({ ...base, fontSize: 14, color: "#9ca3af" }),
+  menu: (base) => ({
+    ...base,
+    zIndex: 99999,
+    borderRadius: 12,
+    overflow: "hidden",
+    boxShadow: "0 10px 25px -5px rgba(0, 0, 0, 0.15), 0 8px 10px -6px rgba(0, 0, 0, 0.1)",
+    border: "1px solid #e2e8f0",
+    backgroundColor: "#ffffff",
+  }),
+  menuPortal: (base) => ({
+    ...base,
+    zIndex: 99999,
+  }),
+  placeholder: (base) => ({ ...base, fontSize: 13.5, color: "#94a3b8" }),
+  option: (base, state) => ({
+    ...base,
+    fontSize: 13,
+    backgroundColor: state.isSelected ? "#004a70" : state.isFocused ? "#f0f9ff" : "#fff",
+    color: state.isSelected ? "#fff" : "#1e293b",
+    cursor: "pointer",
+  }),
 });
 
 const MakeRIde = () => {

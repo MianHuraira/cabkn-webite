@@ -519,7 +519,7 @@ function MakeYourTour() {
   return (
     <div className={`!min-h-screen !bg-[#f8fafc] !select-none ${mounted ? "animate-fade-in" : "!opacity-0"}`}>
       {/* ===== 1. HERO BANNER ===== */}
-      <section className="!relative !overflow-hidden !bg-gradient-to-br !from-[#001726] !via-[#002842] !to-[#002f4a] !pt-28 !pb-24 sm:!pb-28">
+      <section className="!relative !overflow-hidden !bg-gradient-to-br !from-[#001726] !via-[#002842] !to-[#002f4a] !pt-28 !pb-14 sm:!pb-16">
         {/* Subtle grid pattern */}
         <div
           className="!absolute !inset-0 !opacity-[0.05]"
@@ -584,46 +584,48 @@ function MakeYourTour() {
         </div>
       </section>
 
-      {/* ===== 2. CONTENT LAYOUT ===== */}
-      <div className="!-mt-10 sm:!-mt-10 !max-w-7xl !mx-auto !px-4 sm:!px-6 lg:!px-8 !relative !z-20 !pb-24">
-        {/* Navigation Tabs */}
-        <div className="!w-full !max-w-full !overflow-hidden !mb-5">
-          <Swiper
-            modules={[FreeMode, Mousewheel]}
-            slidesPerView="auto"
-            spaceBetween={10}
-            freeMode={true}
-            mousewheel={{ forceToAxis: true }}
-            className="!w-full !py-1 category-swiper"
-          >
-            {tourTabs.map((tab) => {
-              const isSelected = tab.key === "tour";
-              return (
-                <SwiperSlide key={tab.key} style={{ width: "auto" }}>
-                  <button
-                    type="button"
-                    onClick={() => {
-                      if (tab.key === "driver" || tab.key === "parcel") {
-                        router.push("/ride");
-                      } else if (tab.key === "myBookings") {
-                        router.push("/admin");
-                      }
-                    }}
-                    className={`!cursor-pointer !transition-all !duration-300 !select-none !flex !items-center !gap-2 !px-4 !py-2 !rounded-full !text-xs sm:!text-sm !font-family-semibold !whitespace-nowrap !border !shadow-sm ${
-                      isSelected
-                        ? "!text-white !bg-[#004a70] !border-[#004a70]"
-                        : "!text-slate-700 !bg-white !border-slate-200/90 hover:!border-[#004a70] hover:!bg-slate-50 hover:!text-[#004a70]"
-                    }`}
-                  >
-                    <span>{tab.icon}</span>
-                    <span>{tab.label}</span>
-                  </button>
-                </SwiperSlide>
-              );
-            })}
-          </Swiper>
-        </div>
+      {/* ===== NAVIGATION TABS (Perfect 50/50 Top/Bottom Centered on Edge with Position) ===== */}
+      <div className="!relative !z-30 !-translate-y-1/2 !max-w-7xl !mx-auto !px-4 sm:!px-6 lg:!px-8 !pointer-events-auto">
+        <Swiper
+          modules={[FreeMode, Mousewheel]}
+          slidesPerView="auto"
+          spaceBetween={10}
+          freeMode={true}
+          mousewheel={{ forceToAxis: true }}
+          className="!w-full !py-1 category-swiper"
+        >
+          {tourTabs.map((tab) => {
+            const isSelected = tab.key === "tour";
+            return (
+              <SwiperSlide key={tab.key} style={{ width: "auto" }}>
+                <button
+                  type="button"
+                  onClick={() => {
+                    if (tab.key === "driver" || tab.key === "parcel") {
+                      router.push("/ride");
+                    } else if (tab.key === "myBookings") {
+                      router.push("/admin");
+                    }
+                  }}
+                  className={`!cursor-pointer !transition-all !duration-200 !select-none !flex !items-center !gap-2 !px-5 !py-2.5 !rounded-full !text-xs sm:!text-sm !font-family-semibold !whitespace-nowrap !border ${
+                    isSelected
+                      ? "!text-white !bg-[#004a70] !border-[#004a70] "
+                      : "!text-slate-700 !bg-white !border-slate-200/90 hover:!border-[#004a70] hover:!bg-slate-50 hover:!text-[#004a70]"
+                  }`}
+                >
+                  <span className={isSelected ? "opacity-100" : "opacity-75"}>
+                    {tab.icon}
+                  </span>
+                  <span>{tab.label}</span>
+                </button>
+              </SwiperSlide>
+            );
+          })}
+        </Swiper>
+      </div>
 
+      {/* ===== 2. CONTENT LAYOUT ===== */}
+      <div className="!-mt-2 sm:!-mt-3 !max-w-7xl !mx-auto !px-4 sm:!px-6 lg:!px-8 !relative !z-20 !pb-24">
         <div className="!grid !grid-cols-1 lg:!grid-cols-12 !gap-5 !items-start">
           {/* ===== Left Column: Compact Form Card (4 Cols) ===== */}
           <div className="lg:!col-span-4 !bg-white !rounded-2xl !border !border-slate-200/90 !p-4 sm:!p-4.5 !shadow-[0_4px_25px_rgba(0,0,0,0.04)] lg:!sticky lg:!top-24 !z-10">

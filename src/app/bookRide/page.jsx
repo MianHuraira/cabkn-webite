@@ -6,7 +6,7 @@ import mapboxgl from "mapbox-gl";
 import "mapbox-gl/dist/mapbox-gl.css";
 import { FaLocationDot, FaCheck, FaCar, FaUsers, FaStar, FaShieldHalved } from "react-icons/fa6";
 import { MdOutlineMyLocation, MdOutlinePlace, MdAccessTime, MdOutlineDirectionsCar, MdZoomOutMap, MdOutlineLocalOffer } from "react-icons/md";
-import { FaCalendarAlt, FaWallet } from "react-icons/fa";
+import { FaCalendarAlt, FaWallet, FaBox } from "react-icons/fa";
 import { IoMdClose } from "react-icons/io";
 import { BsCashCoin, BsCreditCard2Back } from "react-icons/bs";
 import { FiArrowRight, FiCheckCircle, FiX } from "react-icons/fi";
@@ -94,6 +94,7 @@ function BookRideComponent() {
   const [RefIdPayement, setRefId] = useState("");
   const [jadLoading, setJadLoading] = useState(false);
   const [isMounted, setIsMounted] = useState(false);
+  const [parcelImgFailed, setParcelImgFailed] = useState(false);
 
   useEffect(() => {
     setIsMounted(true);
@@ -198,6 +199,24 @@ function BookRideComponent() {
   useEffect(() => {
     fetchLiabilities();
   }, []);
+
+  // Booking Type Identification (Parcel vs Tour vs Ride)
+  const isParcelBooking = useMemo(() => {
+    return (
+      productDetail?.rideType === "parcel" ||
+      productDetail?.category === "parcel" ||
+      Boolean(productDetail?.parcelTitle)
+    );
+  }, [productDetail]);
+
+  const isTourBooking = useMemo(() => {
+    if (isParcelBooking) return false;
+    return Boolean(
+      productDetail?.isTour ||
+      productDetail?.isTourSec ||
+      (productDetail?.stop && Array.isArray(productDetail?.stop) && productDetail.stop.length > 0 && !productDetail?.rideType)
+    );
+  }, [isParcelBooking, productDetail]);
 
   // EXACT Mobile App Pricing Algorithm:
   const distanceKM = useMemo(() => Number(productDetail?.distance || 0), [productDetail]);
@@ -679,6 +698,9 @@ function BookRideComponent() {
       start_lat: productDetail?.start?.[1],
       start_lng: productDetail?.start?.[0],
       type: productDetail?.type || "driver",
+      rideType: productDetail?.rideType || (isParcelBooking ? "parcel" : "driver"),
+      title: productDetail?.parcelTitle || productDetail?.title || "",
+      image: productDetail?.parcelImage || productDetail?.image || "",
       distance: productDetail?.distance,
       stops: productDetail?.stop || [],
       note: note || "",
@@ -881,27 +903,45 @@ function BookRideComponent() {
               Home
             </Link>
             <span className="!text-slate-500">/</span>
-            <Link href="/makeowntours" className="!text-slate-400 hover:!text-white !transition-colors !no-underline">
-              Make Tour
-            </Link>
+            {isParcelBooking ? (
+              <Link href={`/ride${encodedData ? `?data=${encodedData}` : ""}`} className="!text-slate-400 hover:!text-white !transition-colors !no-underline">
+                Send a Parcel
+              </Link>
+            ) : isTourBooking ? (
+              <Link href="/makeowntours" className="!text-slate-400 hover:!text-white !transition-colors !no-underline">
+                Make Tour
+              </Link>
+            ) : (
+              <Link href={`/ride${encodedData ? `?data=${encodedData}` : ""}`} className="!text-slate-400 hover:!text-white !transition-colors !no-underline">
+                Book a Ride
+              </Link>
+            )}
             <span className="!text-slate-500">/</span>
-            <span className="!text-slate-200">Confirm & Book Ride</span>
+            <span className="!text-slate-200">
+              {isParcelBooking ? "Choose Parcel Vehicle" : "Choose Your Ride"}
+            </span>
           </div>
 
           <div className="!flex !flex-wrap !justify-between !items-center !gap-4">
             <div className="!flex !items-center !gap-3.5 sm:!gap-4">
               <div className="!w-12 !h-12 sm:!w-14 sm:!h-14 !rounded-2xl !bg-white/10 !backdrop-blur-md !border !border-white/15 !flex !items-center !justify-center !shrink-0 !shadow-inner">
-                <MdOutlineDirectionsCar className="!text-white !text-2xl sm:!text-3xl" />
+                {isParcelBooking ? (
+                  <FaBox className="!text-white !text-2xl sm:!text-3xl" />
+                ) : (
+                  <MdOutlineDirectionsCar className="!text-white !text-2xl sm:!text-3xl" />
+                )}
               </div>
               <div>
                 <h1 className="!text-white !text-2xl sm:!text-3xl md:!text-4xl !font-family-bold !tracking-tight !m-0 !leading-tight">
-                  Confirm Your{" "}
+                  {isParcelBooking ? "Choose Parcel " : "Confirm Your "}
                   <span className="!text-transparent !bg-clip-text !bg-gradient-to-r !from-brand-300 !via-sky-300 !to-indigo-200">
-                    Ride
+                    {isParcelBooking ? "Courier" : "Ride"}
                   </span>
                 </h1>
                 <p className="!text-slate-300 !text-xs sm:!text-sm !mt-1.5 !m-0 !font-family-regular">
-                  Review your route, choose vehicle tier & find nearby drivers
+                  {isParcelBooking
+                    ? "Review delivery route, pick vehicle size & dispatch parcel"
+                    : "Review your route, choose vehicle tier & find nearby drivers"}
                 </p>
               </div>
             </div>
@@ -1016,11 +1056,42 @@ function BookRideComponent() {
             {/* Header Card */}
             <div className="!bg-white !rounded-3xl !border !border-slate-200/90 !p-5 !shadow-[0_4px_25px_rgba(0,0,0,0.04)]">
               <h2 className="!text-lg sm:!text-xl !font-family-bold !text-slate-800 !m-0">
-                Choose your ride
+                {isParcelBooking ? "Choose parcel courier" : "Choose your ride"}
               </h2>
               <p className="!text-xs !text-slate-500 !font-family-regular !m-0 !mt-1">
-                Schedule if you want, then pick a vehicle.
+                {isParcelBooking
+                  ? "Schedule delivery time if needed, then select a vehicle."
+                  : "Schedule if you want, then pick a vehicle."}
               </p>
+
+              {/* Parcel Info Banner */}
+              {isParcelBooking && productDetail?.parcelTitle && (
+                <div className="!mt-4 !p-3.5 !bg-sky-50/80 !border !border-sky-200/80 !rounded-2xl !flex !items-center !gap-3">
+                  {productDetail?.parcelImage && !parcelImgFailed ? (
+                    <img
+                      src={productDetail.parcelImage}
+                      alt={productDetail.parcelTitle || "Parcel"}
+                      onError={() => setParcelImgFailed(true)}
+                      className="!w-12 !h-12 !rounded-xl !object-cover !border !border-sky-200 !shadow-xs"
+                    />
+                  ) : (
+                    <div className="!w-12 !h-12 !rounded-xl !bg-sky-100 !text-[#004a70] !flex !items-center !justify-center !shrink-0">
+                      <FaBox size={20} />
+                    </div>
+                  )}
+                  <div className="!flex-1 !min-w-0">
+                    <span className="!text-[10px] !font-family-bold !uppercase !tracking-wider !text-[#004a70] !block">
+                      Parcel Delivery
+                    </span>
+                    <h4 className="!text-xs sm:!text-sm !font-family-bold !text-slate-900 !m-0 !truncate">
+                      {productDetail.parcelTitle}
+                    </h4>
+                    <span className="!text-[11px] !text-slate-500 !font-family-regular !block !mt-0.5">
+                      Ready for courier dispatch
+                    </span>
+                  </div>
+                </div>
+              )}
 
               {/* 1. Custom Themed "Want to Schedule Tour?" Card */}
               <div className="!mt-4 !p-3.5 !bg-slate-50/80 !border !border-slate-200/80 !rounded-2xl !transition-all">
@@ -1038,7 +1109,7 @@ function BookRideComponent() {
                     {wantToScheduleTour && <FaCheck size={10} />}
                   </div>
                   <span className="!text-xs sm:!text-[13.5px] !font-family-semibold !text-slate-800">
-                    Want to Schedule Tour?
+                    Want to Schedule {isParcelBooking ? "Parcel Delivery" : isTourBooking ? "Tour" : "Ride"}?
                   </span>
                 </div>
 
