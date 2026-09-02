@@ -58,21 +58,38 @@ export default function TopServices() {
 
   const handleServiceClick = (service) => {
     if (service?._id) {
-      router.push(`/serviceDetail?id=${service._id}`);
+      if (typeof window !== "undefined") {
+        try {
+          sessionStorage.setItem(`service_${service._id}`, JSON.stringify(service));
+          sessionStorage.setItem("selected_service", JSON.stringify(service));
+        } catch (e) {
+          console.warn("sessionStorage save error:", e);
+        }
+      }
+      router.push(`/serviceDetails/${service._id}`);
     }
   };
 
   const handleBookClick = (e, service) => {
     e.stopPropagation();
-    const encodedData = encodeURIComponent(JSON.stringify(service));
-    router.push(`/ride?data=${encodedData}`);
+    if (service?._id) {
+      if (typeof window !== "undefined") {
+        try {
+          sessionStorage.setItem(`service_${service._id}`, JSON.stringify(service));
+          sessionStorage.setItem("selected_service", JSON.stringify(service));
+        } catch (e) {
+          console.warn("sessionStorage save error:", e);
+        }
+      }
+      router.push(`/bookService?id=${service._id}`);
+    }
   };
 
   return (
-    <div ref={sectionRef} className="w-full max-w-full overflow-hidden py-6">
+    <div ref={sectionRef} className="w-full max-w-full overflow-hidden pt-2 pb-6">
       {/* Header Row */}
       <div
-        className={`mx-auto flex flex-row justify-between items-center mb-6 reveal ${
+        className={`mx-auto flex flex-row justify-between items-center !mb-2 reveal ${
           inView ? "visible" : ""
         }`}
         style={{ maxWidth: 1200, padding: "0 16px", transitionDelay: "50ms" }}
@@ -81,7 +98,7 @@ export default function TopServices() {
           <h2 className="text-2xl sm:text-3xl lg:text-[34px] font-family-bold text-slate-800 tracking-tight m-0 leading-tight">
             Top Services
           </h2>
-          <p className="text-slate-500 font-family-regular text-sm sm:text-[15px] !m-0 mt-1">
+          <p className="text-slate-500 font-family-regular text-sm sm:text-[15px] !m-0 mt-0.5">
             Massage, spa & on-location care
           </p>
         </div>
@@ -96,7 +113,7 @@ export default function TopServices() {
       </div>
 
       {/* Swiper Content Container */}
-      <div className="mx-auto p-3 w-full max-w-full overflow-hidden" style={{ maxWidth: 1200 }}>
+      <div className="mx-auto px-3 !pt-0 pb-3 w-full max-w-full overflow-hidden" style={{ maxWidth: 1200 }}>
         {loading ? (
           <div className="flex gap-4 overflow-x-auto pb-4 scrollbar-hide">
             {[1, 2, 3, 4].map((item) => (
@@ -118,7 +135,7 @@ export default function TopServices() {
             <Swiper
               slidesPerView={1.15}
               spaceBetween={14}
-              className="w-full top-services-swiper !py-2"
+              className="w-full top-services-swiper !pt-0.5 !pb-2"
               breakpoints={{
                 0: { slidesPerView: 1.15, spaceBetween: 12 },
                 480: { slidesPerView: 1.5, spaceBetween: 14 },

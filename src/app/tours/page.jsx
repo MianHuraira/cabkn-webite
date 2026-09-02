@@ -3,27 +3,28 @@
 import React, { useEffect, useState } from "react";
 import { useRouter } from "next/navigation";
 import Link from "next/link";
-import { FaStar, FaClock, FaArrowRight, FaXmark } from "react-icons/fa6";
+import { FaStar, FaClock, FaUsers, FaArrowRight, FaXmark } from "react-icons/fa6";
 import { FaSearch } from "react-icons/fa";
-import { MdOutlineLocationOn } from "react-icons/md";
 import ApiFunction from "@/components/ApiFunction/ApiFunction";
+import EmptyState from "@/components/EmptyState";
+import { NoshowData } from "@/components/assets/Images";
 import { AuthSpinner } from "@/components/auth/AuthShell";
 
-export default function AllServicesPage() {
+export default function AllToursPage() {
   const router = useRouter();
   const { getData, header1 } = ApiFunction();
 
-  const [services, setServices] = useState([]);
+  const [tours, setTours] = useState([]);
   const [loading, setLoading] = useState(true);
   const [searchQuery, setSearchQuery] = useState("");
 
-  // Pagination states for `top-services/public/${page}`
+  // Pagination states for `tours/public/${page}`
   const [page, setPage] = useState(1);
   const [hasMore, setHasMore] = useState(true);
   const [loadingMore, setLoadingMore] = useState(false);
 
-  // Fetch services from `top-services/public/${pageNum}` with backend search query
-  const fetchServicesData = async (pageNum = 1, isLoadMore = false, query = searchQuery) => {
+  // Fetch tours from `tours/public/${pageNum}` with backend search query
+  const fetchToursData = async (pageNum = 1, isLoadMore = false, query = searchQuery) => {
     if (isLoadMore) {
       setLoadingMore(true);
     } else {
@@ -31,22 +32,21 @@ export default function AllServicesPage() {
     }
 
     try {
-      const trimmed = query.trim();
-      const searchParam = trimmed ? `?search=${encodeURIComponent(trimmed)}` : "";
-      const res = await getData(`top-services/public/${pageNum}${searchParam}`, header1);
-      const fetchedList = res?.services || res?.data?.services || [];
-      const totalPage = res?.count?.totalPage || res?.data?.count?.totalPage || 1;
+      const searchParam = query.trim() ? `?search=${encodeURIComponent(query.trim())}` : "";
+      const res = await getData(`tours/public/${pageNum}${searchParam}`, header1);
+      const fetchedList = res?.tours || res?.data?.tours || [];
+      const totalPage = res?.count?.totalPage || 1;
 
       if (isLoadMore) {
-        setServices((prev) => [...prev, ...fetchedList]);
+        setTours((prev) => [...prev, ...fetchedList]);
       } else {
-        setServices(fetchedList);
+        setTours(fetchedList);
       }
 
       setHasMore(pageNum < totalPage);
     } catch (error) {
-      console.error("Failed to load top services:", error);
-      if (!isLoadMore) setServices([]);
+      console.error("Failed to load tours:", error);
+      if (!isLoadMore) setTours([]);
       setHasMore(false);
     } finally {
       setLoading(false);
@@ -57,7 +57,7 @@ export default function AllServicesPage() {
   useEffect(() => {
     setPage(1);
     const timer = setTimeout(() => {
-      fetchServicesData(1, false, searchQuery);
+      fetchToursData(1, false, searchQuery);
     }, 400);
     return () => clearTimeout(timer);
   }, [searchQuery]);
@@ -65,37 +65,48 @@ export default function AllServicesPage() {
   const handleLoadMore = () => {
     const nextPage = page + 1;
     setPage(nextPage);
-    fetchServicesData(nextPage, true, searchQuery);
+    fetchToursData(nextPage, true, searchQuery);
   };
 
-  const handleServiceClick = (service) => {
-    if (service?._id) {
+  const handleTourClick = (tour) => {
+    if (tour?._id) {
       if (typeof window !== "undefined") {
         try {
-          sessionStorage.setItem(`service_${service._id}`, JSON.stringify(service));
-          sessionStorage.setItem("selected_service", JSON.stringify(service));
+          sessionStorage.setItem(`tour_${tour._id}`, JSON.stringify(tour));
+          sessionStorage.setItem("selected_tour", JSON.stringify(tour));
         } catch (e) {
           console.warn("sessionStorage save error:", e);
         }
       }
-      router.push(`/serviceDetails/${service._id}`);
+      router.push(`/tourDetails/${tour._id}`);
     }
   };
 
-  const handleBookClick = (e, service) => {
+  const handleBookClick = (e, tour) => {
     e.stopPropagation();
-    if (service?._id) {
+    if (tour?._id) {
       if (typeof window !== "undefined") {
         try {
-          sessionStorage.setItem(`service_${service._id}`, JSON.stringify(service));
-          sessionStorage.setItem("selected_service", JSON.stringify(service));
+          sessionStorage.setItem(`tour_${tour._id}`, JSON.stringify(tour));
+          sessionStorage.setItem("selected_tour", JSON.stringify(tour));
         } catch (e) {
           console.warn("sessionStorage save error:", e);
         }
       }
-      router.push(`/bookService?id=${service._id}`);
+      router.push(`/bookTour?id=${tour._id}`);
     }
   };
+
+  // Filtered tours for client-side search input
+  const filteredTours = tours.filter((tour) => {
+    if (!searchQuery.trim()) return true;
+    const query = searchQuery.toLowerCase();
+    return (
+      tour.title?.toLowerCase().includes(query) ||
+      tour.address?.toLowerCase().includes(query) ||
+      tour.about?.toLowerCase().includes(query)
+    );
+  });
 
   return (
     <div className="min-h-screen bg-[#f8fafc] font-poppins text-slate-800">
@@ -107,21 +118,21 @@ export default function AllServicesPage() {
               Home
             </Link>
             <span>/</span>
-            <span className="text-white font-family-semibold">Top Services</span>
+            <span className="text-white font-family-semibold">Top Tours</span>
           </div>
 
           <div>
             <h1 className="text-2xl sm:text-3xl md:text-4xl font-family-bold text-white tracking-tight !m-0 leading-tight">
-              Top <span className="bg-gradient-to-r from-sky-400 via-teal-300 to-emerald-400 bg-clip-text text-transparent">Services</span>
+              Top <span className="bg-gradient-to-r from-sky-400 via-teal-300 to-emerald-400 bg-clip-text text-transparent">Tours</span>
             </h1>
             <p className="text-xs sm:text-sm text-slate-300 font-family-regular !m-0 mt-1.5 max-w-2xl">
-              Massage, spa, private island videography & on-location care across St. Kitts & Nevis
+              Unforgettable experiences and guided excursions around St. Kitts & Nevis
             </p>
           </div>
         </div>
       </section>
 
-      {/* Main Content Container matching standard layout */}
+      {/* Main Content Container matching /admin max-w-7xl standard layout */}
       <div className="max-w-7xl mx-auto px-3 sm:px-6 lg:px-8 pt-8 pb-16 relative z-30 space-y-6">
         {/* Search Header Bar - Right Aligned with X clear icon & end spinner */}
         <div className="flex justify-end w-full">
@@ -132,7 +143,7 @@ export default function AllServicesPage() {
 
             <input
               type="text"
-              placeholder="Search services or care types..."
+              placeholder="Search tours or locations..."
               value={searchQuery}
               onChange={(e) => setSearchQuery(e.target.value)}
               className="input-field !pl-10 !pr-16"
@@ -157,7 +168,7 @@ export default function AllServicesPage() {
           </div>
         </div>
 
-        {/* Services Grid matching website TopServices & TopTours card UI */}
+        {/* Tours Grid matching website TopTours card UI */}
         {loading ? (
           <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-3 xl:grid-cols-4 gap-6">
             {[1, 2, 3, 4, 5, 6, 7, 8].map((item) => (
@@ -174,24 +185,18 @@ export default function AllServicesPage() {
               </div>
             ))}
           </div>
-        ) : services.length === 0 ? (
+        ) : tours.length === 0 ? (
           <div className="w-full bg-white rounded-2xl p-10 sm:p-14 text-center border border-slate-200/80 shadow-xs space-y-4 my-4">
             <div className="w-14 h-14 rounded-2xl bg-sky-50 text-[#004a70] flex items-center justify-center mx-auto border border-sky-100/80 shadow-xs">
               <FaSearch size={22} />
             </div>
 
             <div className="space-y-1.5 max-w-md mx-auto">
-              <h3 className="text-lg sm:text-xl font-family-bold text-slate-900 !m-0">No Services Found</h3>
+              <h3 className="text-lg sm:text-xl font-family-bold text-slate-900 !m-0">No Tours Found</h3>
               <p className="text-xs sm:text-sm text-slate-500 font-family-regular !m-0">
-                {searchQuery ? (
-                  <>
-                    We couldn&apos;t find any services matching &ldquo;
-                    <span className="font-family-semibold text-slate-700">{searchQuery}</span>
-                    &rdquo;. Try searching for massage, care, or videography.
-                  </>
-                ) : (
-                  "No services are currently available."
-                )}
+                {searchQuery
+                  ? <>We couldn&apos;t find any tours matching &ldquo;<span className="font-family-semibold text-slate-700">{searchQuery}</span>&rdquo;. Try searching for another destination or activity.</>
+                  : "No tours are currently available."}
               </p>
             </div>
 
@@ -208,63 +213,60 @@ export default function AllServicesPage() {
         ) : (
           <>
             <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-3 xl:grid-cols-4 gap-6">
-              {services.map((service, index) => {
+              {tours.map((tour, index) => {
                 const imageUrl =
-                  service?.images?.[0] ||
-                  "https://images.unsplash.com/photo-1540555700478-4be289fbecef?w=600&auto=format&fit=crop&q=80";
-                const isGroup = service?.bookingType === "group";
-                const duration = service?.durationHours
-                  ? service?.durationHoursMax && service?.durationHoursMax !== service?.durationHours
-                    ? `${service.durationHours}–${service.durationHoursMax} hrs`
-                    : `${service.durationHours} hr${service.durationHours > 1 ? "s" : ""}`
+                  tour?.images?.[0] ||
+                  "https://images.unsplash.com/photo-1544620347-c4fd4a3d5957?w=600&auto=format&fit=crop&q=80";
+                const isGroup = tour?.bookingType === "group";
+                const duration = tour?.durationHours
+                  ? `${tour.durationHours} hr${tour.durationHours > 1 ? "s" : ""}`
                   : null;
-                const price = service?.price || service?.location_price || 0;
-                const locationType =
-                  service?.locationType === "at_your_location"
-                    ? "At Your Location"
-                    : service?.address || service?.meetingPoint?.address || "St. Kitts";
-                const discountPct = Number(service?.discountPercent ?? service?.discount ?? 0);
-                const hasDiscount = discountPct > 0;
+                const capacity =
+                  tour?.minPersons && tour?.maxPersons
+                    ? `${tour.minPersons}–${tour.maxPersons} persons`
+                    : null;
+                const price = tour?.price || tour?.location_price || tour?.price_per_adult || 0;
+                const hasDiscount = tour?.discountPercent > 0;
 
                 return (
                   <div
-                    key={service._id || index}
-                    onClick={() => handleServiceClick(service)}
+                    key={tour._id || index}
+                    onClick={() => handleTourClick(tour)}
                     className="w-full flex flex-col bg-white rounded-2xl overflow-hidden !border !border-slate-200/90 shadow-[0_4px_20px_rgba(0,0,0,0.04)] hover:shadow-[0_12px_30px_rgba(0,74,112,0.12)] hover:-translate-y-1.5 transition-all duration-300 cursor-pointer group select-none"
                   >
                     {/* Image Container */}
                     <div className="relative h-[190px] w-full overflow-hidden bg-slate-100">
                       <img
                         src={imageUrl}
-                        alt={service?.title || "Service"}
+                        alt={tour?.title || "Tour"}
                         className="w-full h-full object-cover group-hover:scale-105 transition-transform duration-500"
                       />
                       <div className="absolute inset-0 bg-gradient-to-t from-black/50 via-transparent to-transparent pointer-events-none" />
 
-                      {/* Category Badge */}
+                      {/* Top Badges */}
                       <div className="absolute top-3 left-3 flex items-center gap-1.5">
                         <span
                           className={`px-2.5 py-1 rounded-full text-[10.5px] font-family-semibold text-white uppercase tracking-wider backdrop-blur-md shadow-sm ${
                             isGroup ? "bg-amber-600/90" : "bg-[#004a70]/90"
                           }`}
                         >
-                          {service?.category?.name || (isGroup ? "Group Service" : "Service")}
+                          {isGroup ? "Group Tour" : "Individual"}
                         </span>
                       </div>
 
                       {/* Rating Pill */}
                       <div className="absolute top-3 right-3 flex items-center gap-1 px-2.5 py-1 rounded-full bg-black/50 backdrop-blur-md text-white text-xs font-family-semibold shadow-sm">
                         <FaStar className="text-amber-400 text-[11px]" />
-                        <span>{service?.avgRating?.toFixed(1) || "5.0"}</span>
+                        <span>{tour?.avgRating?.toFixed(1) || tour?.ratingsAverage?.toFixed(1) || "5.0"}</span>
                         <span className="text-white/60 text-[10px]">
-                          ({service?.totalReviews || 0})
+                          ({tour?.totalReviews || 0})
                         </span>
                       </div>
 
                       {/* Discount Badge */}
                       {hasDiscount && (
                         <div className="absolute bottom-3 left-3 px-2 py-0.5 rounded-md bg-emerald-600 text-white text-[10px] font-family-bold uppercase tracking-wider shadow-sm">
-                          {discountPct}% OFF
+                          {tour.discountPercent}% OFF
                         </div>
                       )}
                     </div>
@@ -273,7 +275,7 @@ export default function AllServicesPage() {
                     <div className="p-4 flex-1 flex flex-col justify-between">
                       <div>
                         <h3 className="text-[15px] font-family-bold text-slate-800 line-clamp-2 !m-0 !mb-2 leading-snug group-hover:text-[#004a70] transition-colors">
-                          {service?.title}
+                          {tour?.title}
                         </h3>
 
                         {/* Meta details */}
@@ -284,10 +286,12 @@ export default function AllServicesPage() {
                               {duration}
                             </span>
                           )}
-                          <span className="flex items-center gap-1 truncate max-w-[170px]">
-                            <MdOutlineLocationOn className="text-slate-400 text-sm shrink-0" />
-                            <span className="truncate">{locationType}</span>
-                          </span>
+                          {capacity && (
+                            <span className="flex items-center gap-1">
+                              <FaUsers className="text-slate-400 text-[11px]" />
+                              {capacity}
+                            </span>
+                          )}
                         </div>
                       </div>
 
@@ -295,7 +299,7 @@ export default function AllServicesPage() {
                       <div className="pt-3 !border-t !border-slate-100 flex items-center justify-between mt-auto">
                         <div>
                           <span className="text-[11px] text-slate-400 block font-family-medium leading-none mb-0.5">
-                            {isGroup ? "Per Group" : "Starting from"}
+                            {isGroup ? "Per Group" : "Per Person"}
                           </span>
                           <span className="text-[16px] font-family-bold text-[#004a70]">
                             ${price} <span className="text-xs font-family-regular text-slate-400">USD</span>
@@ -303,7 +307,7 @@ export default function AllServicesPage() {
                         </div>
 
                         <button
-                          onClick={(e) => handleBookClick(e, service)}
+                          onClick={(e) => handleBookClick(e, tour)}
                           className="px-4 py-2 rounded-xl bg-[#004a70] hover:bg-[#003855] text-white text-xs font-family-semibold transition-all shadow-sm flex items-center gap-1.5 cursor-pointer !border-none"
                         >
                           <span>Book Now</span>
@@ -328,10 +332,10 @@ export default function AllServicesPage() {
                   {loadingMore ? (
                     <>
                       <div className="h-4 w-4 animate-spin rounded-full border-2 border-white border-t-transparent" />
-                      <span>Loading More Services...</span>
+                      <span>Loading More Tours...</span>
                     </>
                   ) : (
-                    <span>Load More Services</span>
+                    <span>Load More Tours</span>
                   )}
                 </button>
               </div>

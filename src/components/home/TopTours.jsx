@@ -57,7 +57,7 @@ export default function TopTours() {
   }, []);
 
   const handleTourClick = (tour) => {
-    // Navigate to tour / place details
+    // Navigate to tour details
     if (tour?._id) {
       if (typeof window !== "undefined") {
         try {
@@ -67,7 +67,7 @@ export default function TopTours() {
           console.warn("sessionStorage save error:", e);
         }
       }
-      router.push(`/popular/${tour._id}`);
+      router.push(`/tourDetails/${tour._id}`);
     }
   };
 
@@ -82,7 +82,7 @@ export default function TopTours() {
           console.warn("sessionStorage save error:", e);
         }
       }
-      router.push(`/popular/${tour._id}`);
+      router.push(`/bookTour?id=${tour._id}`);
     }
   };
 
@@ -105,7 +105,7 @@ export default function TopTours() {
         </div>
 
         <Link
-          href="/services"
+          href="/tours"
           className="flex items-center gap-1.5 px-4 py-2 rounded-full bg-brand-50 hover:bg-brand-100 text-[#004a70] font-family-semibold text-xs sm:text-sm transition-all duration-200 no-underline shrink-0 group"
         >
           <span>See All</span>
@@ -256,7 +256,7 @@ export default function TopTours() {
               {/* Final "See More" Card Slide */}
               <SwiperSlide className="h-auto flex">
                 <div
-                  onClick={() => router.push("/services")}
+                  onClick={() => router.push("/tours")}
                   className="w-full h-full min-h-[360px] sm:min-h-[380px] rounded-2xl bg-gradient-to-br from-[#002842] via-[#004a70] to-[#006699] p-6 sm:p-7 flex flex-col items-center justify-center text-center text-white cursor-pointer shadow-md hover:shadow-2xl hover:-translate-y-1.5 transition-all duration-300 group relative overflow-hidden !border !border-white/15 select-none"
                 >
                   <div className="absolute -top-12 -right-12 w-32 h-32 bg-white/10 rounded-full blur-2xl group-hover:scale-150 transition-transform duration-500 pointer-events-none" />

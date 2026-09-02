@@ -1,10 +1,18 @@
-import ServiceLocation from '@/components/ServiceLocation'
-import React from 'react'
-export default function page() {
-  
+"use client";
+
+import React, { Suspense } from "react";
+import ServiceDetailsComponent from "@/components/ServiceDetailsComponent";
+
+export default function ServiceDetailPage() {
   return (
-    <div>
-      <ServiceLocation/>
-    </div>
-  )
+    <Suspense
+      fallback={
+        <div className="min-h-screen flex items-center justify-center bg-[#f8fafc]">
+          <div className="h-8 w-8 animate-spin rounded-full border-2 border-slate-300 border-t-[#004a70]" />
+        </div>
+      }
+    >
+      <ServiceDetailsComponent />
+    </Suspense>
+  );
 }

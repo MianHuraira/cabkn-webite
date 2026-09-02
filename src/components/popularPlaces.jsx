@@ -59,6 +59,145 @@ const stripHtml = (html) => {
     .trim();
 };
 
+const PrecisionRatingInput = ({ value, onChange }) => {
+  const containerRef = useRef(null);
+  const [hoverValue, setHoverValue] = useState(null);
+  const [isDragging, setIsDragging] = useState(false);
+
+  const calculateRating = (clientX) => {
+    if (!containerRef.current) return 0;
+    const rect = containerRef.current.getBoundingClientRect();
+    const x = Math.max(0, Math.min(clientX - rect.left, rect.width));
+    const raw = (x / rect.width) * 5;
+    const rounded = Math.round(raw * 10) / 10;
+    return Math.max(0.1, Math.min(5.0, Number(rounded.toFixed(1))));
+  };
+
+  const handleMouseMove = (e) => {
+    const r = calculateRating(e.clientX);
+    setHoverValue(r);
+    if (isDragging) onChange(r);
+  };
+  const handleClick = (e) => { onChange(calculateRating(e.clientX)); setHoverValue(null); };
+  const handleMouseDown = (e) => { setIsDragging(true); onChange(calculateRating(e.clientX)); };
+  const handleMouseLeave = () => setHoverValue(null);
+
+  useEffect(() => {
+    const up = () => setIsDragging(false);
+    window.addEventListener("mouseup", up);
+    return () => window.removeEventListener("mouseup", up);
+  }, []);
+
+  const handleTouchMove = (e) => {
+    if (e.touches?.[0]) { const r = calculateRating(e.touches[0].clientX); onChange(r); setHoverValue(r); }
+  };
+  const handleTouchEnd = () => setHoverValue(null);
+
+  const score = hoverValue !== null ? hoverValue : (value || 0);
+  const fillPct = Math.min(100, Math.max(0, (score / 5) * 100));
+
+  const getColor = (s) => {
+    if (s <= 0) return "#94a3b8";
+    if (s < 2) return "#f97316";
+    if (s < 3) return "#eab308";
+    if (s < 4) return "#84cc16";
+    return "#22c55e";
+  };
+  const getLabel = (s) => {
+    if (s <= 0) return "Tap or slide to rate";
+    if (s < 1.5) return "Poor 😞";
+    if (s < 2.5) return "Fair 😐";
+    if (s < 3.5) return "Good 🙂";
+    if (s < 4.5) return "Very Good 😊";
+    return "Exceptional! 🤩";
+  };
+
+  const accentColor = getColor(score);
+  const gradId = "starGrad";
+  const starPath = "M12 2l3.09 6.26L22 9.27l-5 4.87 1.18 6.88L12 17.77l-6.18 3.25L7 14.14 2 9.27l6.91-1.01L12 2z";
+
+  return (
+    <div className="!space-y-3 !select-none">
+      {/* Stars row + score badge */}
+      <div className="!flex !items-center !gap-4">
+        {/* Interactive SVG stars strip */}
+        <div
+          ref={containerRef}
+          onMouseMove={handleMouseMove}
+          onMouseDown={handleMouseDown}
+          onClick={handleClick}
+          onMouseLeave={handleMouseLeave}
+          onTouchMove={handleTouchMove}
+          onTouchEnd={handleTouchEnd}
+          className="!relative !cursor-pointer !touch-none !leading-none"
+          style={{ width: 160, height: 32 }}
+          title="Click or drag to set rating"
+        >
+          {/* SVG with gradient fill - single flat strip approach */}
+          <svg
+            width="160"
+            height="32"
+            viewBox="0 0 160 32"
+            className="!block"
+            style={{ pointerEvents: "none" }}
+          >
+            <defs>
+              <linearGradient id={gradId} x1="0%" y1="0%" x2="100%" y2="0%">
+                <stop offset={`${fillPct}%`} stopColor={accentColor} />
+                <stop offset={`${fillPct}%`} stopColor="#e2e8f0" />
+              </linearGradient>
+              <clipPath id="starsClip">
+                {[0, 1, 2, 3, 4].map((i) => (
+                  <path
+                    key={i}
+                    transform={`translate(${i * 32}, 0) scale(1.33)`}
+                    d={starPath}
+                  />
+                ))}
+              </clipPath>
+            </defs>
+            {/* Gray background bar */}
+            <rect x="0" y="0" width="160" height="32" fill="#e2e8f0" clipPath="url(#starsClip)" />
+            {/* Gradient fill bar */}
+            <rect x="0" y="0" width="160" height="32" fill={`url(#${gradId})`} clipPath="url(#starsClip)" />
+          </svg>
+        </div>
+
+        {/* Score badge */}
+        <div
+          className="!flex !items-center !gap-1.5 !px-3 !py-1.5 !rounded-xl !font-bold !border !transition-all !duration-200"
+          style={{
+            background: `${accentColor}15`,
+            borderColor: `${accentColor}40`,
+            color: accentColor,
+          }}
+        >
+          <svg width={13} height={13} viewBox="0 0 24 24" fill={accentColor}>
+            <path d={starPath} />
+          </svg>
+          <span className="!text-sm font-family-bold !font-bold">
+            {score > 0 ? score.toFixed(1) : "0.0"}
+          </span>
+          <span className="!text-[11px] font-family-regular !opacity-60">/ 5.0</span>
+        </div>
+      </div>
+
+      {/* Label row */}
+      <div className="!flex !items-center !justify-between !px-0.5">
+        <span
+          className="!text-xs font-family-semibold !font-semibold !transition-all"
+          style={{ color: score > 0 ? accentColor : "#94a3b8" }}
+        >
+          {getLabel(score)}
+        </span>
+        <span className="!text-[11px] !text-slate-400 font-family-regular">
+          Slide to adjust
+        </span>
+      </div>
+    </div>
+  );
+};
+
 const PopularAA = () => {
   const { id } = useParams();
   const mapContainerRef = useRef(null);
@@ -361,36 +500,52 @@ const PopularAA = () => {
   };
 
   const HandleClick = () => {
+    const lat = Number(SubcatData?.lat ?? SubcatData?.latitude ?? 17.302605);
+    const lng = Number(SubcatData?.lng ?? SubcatData?.longitude ?? -62.717692);
+    // St. Kitts central pickup fallback if only destination exists
+    const pickupLat = 17.2965;
+    const pickupLng = -62.7252;
+
     if (SubcatData?.category?.name === "Excursion") {
       if (SelectedTime) {
         const data = {
           data: JSON.stringify(SubcatData),
           time: JSON.stringify(SelectedTime),
           isTour: true,
-          tourPrice: SubcatData?.location_price || 0,
+          tourPrice: SubcatData?.location_price || SubcatData?.price || 0,
+          title: SubcatData?.title,
+          name: SubcatData?.title,
+          address: SubcatData?.address,
+          start: [pickupLng, pickupLat],
+          end: [lng, lat],
+          distance: 5.2,
         };
         const encodedData = encodeURIComponent(JSON.stringify(data));
-        router.push(`/ride?data=${encodedData}`);
+        router.push(`/bookRide?data=${encodedData}`);
       } else {
         toast.error("Please Select Date and Time");
       }
     } else {
       let data = {
         address: SubcatData?.address,
-        lat: SubcatData?.lat,
-        lng: SubcatData?.lng,
+        lat: lat,
+        lng: lng,
+        start: [pickupLng, pickupLat],
+        end: [lng, lat],
+        distance: 5.2,
         _id: SubcatData?._id,
         schedule: SubcatData?.schedule,
         title: SubcatData?.title,
+        name: SubcatData?.title,
         user: SubcatData?.user,
-        location_price: SubcatData?.location_price || 0,
-        tourPrice: SubcatData?.location_price || 0,
+        location_price: SubcatData?.location_price || SubcatData?.price || 0,
+        tourPrice: SubcatData?.location_price || SubcatData?.price || 0,
         isTour: true,
         images: SubcatData?.images,
         category: SubcatData?.category,
       };
       const encodedData = encodeURIComponent(JSON.stringify(data));
-      router.push(`/ride?data=${encodedData}`);
+      router.push(`/bookRide?data=${encodedData}`);
     }
   };
 
@@ -404,7 +559,7 @@ const PopularAA = () => {
       .required("Comment is required"),
     rating: Yup.number()
       .required("Rating is required")
-      .min(1, "Please provide a rating"),
+      .min(0.1, "Please provide a rating"),
   });
   const [show, setShow] = useState(false);
 
@@ -561,7 +716,7 @@ const PopularAA = () => {
       {/* 1. HERO TOP BANNER (Luxury Navy Blue with ambient glow)                    */}
       {/* ========================================================================= */}
       <section
-        className={`!relative !overflow-hidden !bg-gradient-to-br !from-[#001726] !via-[#002f4a] !to-[#001f33] !pt-20 sm:!pt-24 !pb-10 sm:!pb-12 !text-white ${
+        className={`!relative !overflow-hidden !bg-gradient-to-br !from-[#001726] !via-[#002f4a] !to-[#001f33] !pt-20 sm:!pt-24 !pb-14 !text-white ${
           mounted ? "!animate-fade-in-down" : "!opacity-0"
         }`}
       >
@@ -597,51 +752,7 @@ const PopularAA = () => {
             </span>
           </div>
 
-          {/* Title Header */}
-          <div className="!flex !flex-wrap !items-center !justify-between !gap-3">
-            <div className="!flex !items-center !gap-3 !max-w-3xl">
-              <div className="!w-11 !h-11 sm:!w-12 sm:!h-12 !rounded-xl !bg-white/10 !backdrop-blur-md !border !border-white/15 !flex !items-center !justify-center !shrink-0 !shadow-inner">
-                <FaLocationDot className="!text-amber-400 !text-xl sm:!text-2xl" />
-              </div>
-              <div>
-                <div className="!flex !items-center !gap-2 !mb-1 !flex-wrap">
-                  {SubcatData?.category?.name && (
-                    <span className="!px-2.5 !py-0.5 !rounded-full !text-[10.5px] !font-family-bold !bg-white/15 !backdrop-blur-md !border !border-white/20 !text-white !uppercase !tracking-wider">
-                      {SubcatData.category.name}
-                    </span>
-                  )}
-                  {SubcatData?.avgRating > 0 && (
-                    <div
-                      onClick={scrollToReviews}
-                      className="!flex !items-center !gap-1 !bg-amber-400/20 !backdrop-blur-md !px-2.5 !py-0.5 !rounded-full !border !border-amber-300/40 !text-amber-300 !text-xs !font-family-bold !cursor-pointer hover:!bg-amber-400/30 !transition-all"
-                    >
-                      <FaStar className="!text-amber-400 !text-[10px]" />
-                      <span>{SubcatData.avgRating.toFixed(1)}</span>
-                      <span className="!text-amber-200/80 !text-[10.5px] !font-family-medium">
-                        ({SubcatData.totalReviews || ratingLength || 0})
-                      </span>
-                    </div>
-                  )}
-                </div>
 
-                <h1 className="!text-white !text-xl sm:!text-2xl md:!text-3xl !font-family-bold !tracking-tight !m-0 !leading-tight">
-                  {cleanTitle}
-                </h1>
-              </div>
-            </div>
-
-            {/* Quick Share / Action */}
-            <div className="!flex !items-center !gap-2">
-              <button
-                type="button"
-                onClick={handleShare}
-                className="!h-9 !px-3.5 !rounded-xl !bg-white/10 hover:!bg-white/20 !border !border-white/15 !text-white !text-xs !font-family-bold !backdrop-blur-md !flex !items-center !justify-center !gap-1.5 !cursor-pointer !transition-all !shadow-sm"
-              >
-                <FiShare2 size={12} />
-                <span>Share</span>
-              </button>
-            </div>
-          </div>
         </div>
       </section>
 
@@ -649,182 +760,198 @@ const PopularAA = () => {
       {/* 2. MAIN COCKPIT SECTION                                                    */}
       {/* ========================================================================= */}
       <div className="!w-full !px-4 sm:!px-6 lg:!px-8 !relative !z-20 !max-w-7xl !mx-auto !-mt-5 !pb-16">
-        {/* ========================================================================= */}
-        {/* SWIPER JS HIGH-END IMAGE SHOWCASE WITH THUMBNAILS CAROUSEL                */}
-        {/* ========================================================================= */}
-        <div className="!relative !bg-white !rounded-3xl !p-2.5 sm:!p-3.5 !border !border-slate-200/90 !shadow-lg !overflow-hidden">
-          {/* Main Swiper */}
-          <div className="!relative !w-full !h-[300px] sm:!h-[400px] md:!h-[480px] !rounded-2xl !overflow-hidden !bg-slate-950">
-            <Swiper
-              key={`main-slider-${displayImages.length}-${SubcatData?._id || "ready"}`}
-              modules={[Navigation, Autoplay]}
-              loop={displayImages.length > 1}
-              speed={600}
-              grabCursor={true}
-              navigation={{
-                prevEl: ".swiper-custom-prev",
-                nextEl: ".swiper-custom-next",
-              }}
-              autoplay={{
-                delay: 3000,
-                disableOnInteraction: false,
-              }}
-              onSwiper={(swiper) => {
-                mainSwiperRef.current = swiper;
-                try {
-                  swiper.autoplay?.start();
-                } catch (e) {}
-              }}
-              onSlideChange={(swiper) => {
-                const realIdx = swiper.realIndex ?? swiper.activeIndex;
-                setActiveSlideIdx(realIdx);
-                if (thumbsSwiper && !thumbsSwiper.destroyed) {
-                  thumbsSwiper.slideTo(realIdx);
-                }
-              }}
-              className="!w-full !h-full !rounded-2xl"
-            >
-              {displayImages.map((item, index) => (
-                <SwiperSlide key={index} className="!w-full !h-full !relative">
-                  <div
-                    onClick={() => openLightbox(index)}
-                    className="!w-full !h-full !relative !cursor-pointer !group"
-                  >
-                    <img
-                      src={item}
-                      alt={`${cleanTitle}-${index}`}
-                      className="!w-full !h-full !object-cover group-hover:!scale-105 !transition-transform !duration-700"
-                    />
-                    <div className="!absolute !inset-0 !bg-gradient-to-t !from-black/60 !via-transparent !to-transparent !pointer-events-none" />
-                  </div>
-                </SwiperSlide>
-              ))}
-            </Swiper>
+       
+        <div className="!relative !w-full !overflow-hidden !rounded-3xl !shadow-[0_20px_80px_rgba(0,0,0,0.35)]"
+          style={{ height: "clamp(380px, 54vw, 620px)" }}
+        >
+          {/* ── Background Image Swiper ── */}
+          <Swiper
+            key={`hero-${displayImages.length}-${SubcatData?._id || "rdy"}`}
+            modules={[Autoplay, Navigation, Pagination]}
+            loop={displayImages.length > 1}
+            speed={900}
+            grabCursor={true}
+            autoplay={{ delay: 4500, disableOnInteraction: false }}
+            pagination={{ clickable: true }}
+            navigation={{
+              prevEl: ".hero-prev",
+              nextEl: ".hero-next",
+            }}
+            onSwiper={(sw) => {
+              mainSwiperRef.current = sw;
+              try { sw.autoplay?.start(); } catch (_) {}
+            }}
+            onSlideChange={(sw) => setActiveSlideIdx(sw.realIndex ?? sw.activeIndex)}
+            className="!w-full !h-full hero-gallery-swiper"
+          >
+            {displayImages.map((img, i) => (
+              <SwiperSlide key={i} className="!w-full !h-full">
+                <div className="!w-full !h-full !relative">
+                  <img
+                    src={img}
+                    alt={`${cleanTitle} ${i + 1}`}
+                    className="!w-full !h-full !object-cover !object-center"
+                  />
+                  {/* Dark cinematic vignette */}
+                  <div className="!absolute !inset-0"
+                    style={{
+                      background: "linear-gradient(90deg, rgba(0,0,0,0.90) 0%, rgba(0,0,0,0.55) 42%, rgba(0,0,0,0.12) 72%, rgba(0,0,0,0.20) 100%)"
+                    }}
+                  />
+                  {/* Bottom fade */}
+                  <div className="!absolute !bottom-0 !left-0 !right-0 !h-40"
+                    style={{ background: "linear-gradient(to top, rgba(0,0,0,0.75) 0%, transparent 100%)" }}
+                  />
+                </div>
+              </SwiperSlide>
+            ))}
+          </Swiper>
 
-            {/* Custom Navigation Arrows */}
-            {displayImages.length > 1 && (
-              <>
-                <button
-                  type="button"
-                  className="swiper-custom-prev !absolute !left-3 sm:!left-4 !top-1/2 !-translate-y-1/2 !z-20 !w-10 !h-10 !rounded-full !bg-black/45 hover:!bg-black/75 !text-white !backdrop-blur-md !border !border-white/25 !flex !items-center !justify-center !cursor-pointer !transition-all hover:!scale-110 !shadow-lg"
-                  title="Previous Image"
-                >
-                  <FaChevronLeft size={13} />
-                </button>
-                <button
-                  type="button"
-                  className="swiper-custom-next !absolute !right-3 sm:!right-4 !top-1/2 !-translate-y-1/2 !z-20 !w-10 !h-10 !rounded-full !bg-black/45 hover:!bg-black/75 !text-white !backdrop-blur-md !border !border-white/25 !flex !items-center !justify-center !cursor-pointer !transition-all hover:!scale-110 !shadow-lg"
-                  title="Next Image"
-                >
-                  <FaChevronRight size={13} />
-                </button>
-              </>
-            )}
+          {/* ── Nav Arrows ── */}
+          {/* {displayImages.length > 1 && (
+            <>
+              <button type="button" className="hero-prev !absolute !left-4 !top-1/2 !-translate-y-1/2 !z-30 !w-10 !h-10 !rounded-full !bg-white/10 hover:!bg-white/25 !backdrop-blur-md !border !border-white/20 !text-white !flex !items-center !justify-center !cursor-pointer !transition-all !shadow-lg">
+                <FaChevronLeft size={14} />
+              </button>
+              <button type="button" className="hero-next !absolute !right-4 !top-1/2 !-translate-y-1/2 !z-30 !w-10 !h-10 !rounded-full !bg-white/10 hover:!bg-white/25 !backdrop-blur-md !border !border-white/20 !text-white !flex !items-center !justify-center !cursor-pointer !transition-all !shadow-lg">
+                <FaChevronRight size={14} />
+              </button>
+            </>
+          )} */}
 
-            {/* Floating Location Pill, Auth-Onboarding Style Pagination, and Photo Index Pill */}
-            <div className="!absolute !bottom-3.5 !left-3.5 !right-3.5 !z-20 !flex !items-center !justify-between !gap-2 !pointer-events-none">
-              {/* Location Pill */}
-              <div className="!flex !items-center !gap-2 !text-white !text-xs !font-family-medium !bg-black/50 !backdrop-blur-md !px-3 !py-1.5 !rounded-xl !border !border-white/15 !shadow-md !max-w-[32%] sm:!max-w-xs">
-                <FaLocationDot className="!text-amber-400 !shrink-0" />
-                <span className="!truncate !font-family-medium">{cleanAddress}</span>
+          {/* ── LEFT SIDE CONTENT OVERLAY ── */}
+          <div className="!absolute !inset-0 !z-20 !flex !flex-col !justify-end !pb-8 sm:!pb-10 !px-6 sm:!px-10 !pointer-events-none">
+            <div className="!max-w-[520px] !pointer-events-auto">
+
+              {/* Top Meta Tags Row */}
+              <div className="!flex !items-center !gap-2 !flex-wrap !mb-3">
+                {SubcatData?.category?.name && (
+                  <span className="!px-2.5 !py-1 !rounded-md !text-[11px] !font-family-bold !font-bold !uppercase !tracking-wider !bg-amber-500 !text-black !shadow-sm">
+                    {SubcatData.category.name}
+                  </span>
+                )}
+                <span className="!text-white/70 !text-xs !font-family-medium">
+                  {new Date().getFullYear()}
+                </span>
+                {SubcatData?.avgRating > 0 && (
+                  <span className="!text-white/50 !text-xs">•</span>
+                )}
+                {SubcatData?.avgRating > 0 && (
+                  <span className="!text-white/70 !text-xs !font-family-medium">
+                    ★ {SubcatData.avgRating.toFixed(1)} Rating
+                  </span>
+                )}
+                <span className="!text-white/50 !text-xs">•</span>
+                <span className="!text-white/70 !text-xs !font-family-medium">St. Kitts</span>
               </div>
 
-              {/* Center: Auth Onboarding-style Pagination (Exact match to AuthOnboardingSwiper) */}
-              {displayImages.length > 1 && (
-                <div
-                  className="!flex !items-center !gap-1.5 !bg-black/50 !backdrop-blur-md !px-3 !py-2 !rounded-full !border !border-white/15 !shadow-md !pointer-events-auto !overflow-x-auto !max-w-[150px] sm:!max-w-[280px] md:!max-w-none no-scrollbar"
-                  role="tablist"
-                  aria-label="Photo gallery slides"
-                >
-                  {displayImages.map((_, i) => (
-                    <button
-                      key={i}
-                      type="button"
-                      role="tab"
-                      aria-selected={i === activeSlideIdx}
-                      aria-label={`Go to slide ${i + 1}`}
-                      onClick={(e) => {
-                        e.stopPropagation();
-                        if (mainSwiperRef.current) {
-                          if (typeof mainSwiperRef.current.slideToLoop === "function") {
-                            mainSwiperRef.current.slideToLoop(i);
-                          } else {
-                            mainSwiperRef.current.slideTo(i);
-                          }
-                        }
-                      }}
-                      className={`!h-[6px] !rounded-full !transition-all !duration-300 !outline-none focus-visible:!ring-2 focus-visible:!ring-white !cursor-pointer !border-0 !p-0 ${
-                        i === activeSlideIdx
-                          ? "!w-[22px] !bg-white !shadow-[0_0_8px_rgba(255,255,255,0.7)]"
-                          : "!w-[6px] !bg-white/35 hover:!bg-white/60 hover:!w-[10px]"
-                      }`}
-                    />
-                  ))}
-                </div>
-              )}
+              {/* Title */}
+              <h1 className="!text-white !text-3xl sm:!text-4xl md:!text-5xl !font-family-bold !font-bold !tracking-tight !m-0 !mb-3 !leading-[1.1]">
+                {cleanTitle}
+              </h1>
 
-              {/* Photo Index / Lightbox Pill */}
-              <div className="!flex !items-center !gap-2 !pointer-events-auto !shrink-0">
+              {/* Rating / Info Badges */}
+              <div className="!flex !items-center !gap-2 !mb-3 !flex-wrap">
+                {SubcatData?.avgRating > 0 && (
+                  <div className="!flex !items-center !gap-1 !bg-amber-500/20 !border !border-amber-400/40 !px-2.5 !py-1 !rounded-md">
+                    <FaStar size={11} className="!text-amber-400" />
+                    <span className="!text-amber-400 !text-xs !font-family-bold !font-bold">{SubcatData.avgRating.toFixed(1)}</span>
+                    <span className="!text-white/60 !text-[11px] !font-family-medium">IMDb</span>
+                  </div>
+                )}
+                <span className="!px-2.5 !py-1 !rounded-md !text-[11px] !font-family-semibold !text-white/80 !bg-white/10 !border !border-white/15">
+                  {SubcatData?.category?.name || "Tour"}
+                </span>
+                <span className="!px-2.5 !py-1 !rounded-md !text-[11px] !font-family-semibold !text-white/80 !bg-white/10 !border !border-white/15">
+                  Verified
+                </span>
+                {priceXcd > 0 && (
+                  <span className="!px-2.5 !py-1 !rounded-md !text-[11px] !font-family-semibold !text-white/80 !bg-white/10 !border !border-white/15">
+                    ${priceXcd.toFixed(0)} XCD
+                  </span>
+                )}
+              </div>
+
+              {/* Description */}
+              <p className="!text-white/75 !text-sm !font-family-regular !leading-relaxed !m-0 !mb-5 !line-clamp-3">
+                {cleanAbout}
+              </p>
+
+              {/* Price bar */}
+              <div className="!mb-4">
+                <div className="!flex !items-center !justify-between !mb-1.5">
+                  <span className="!text-white/60 !text-xs !font-family-medium !truncate !max-w-[200px]">
+                    {cleanAddress}
+                  </span>
+                  <span className="!text-white/60 !text-xs !font-family-medium">
+                    {displayImages.length} photos
+                  </span>
+                </div>
+                <div className="!h-[2px] !w-full !bg-white/15 !rounded-full !overflow-hidden">
+                  <div
+                    className="!h-full !bg-amber-500 !rounded-full !transition-all !duration-700"
+                    style={{ width: `${Math.min(100, ((activeSlideIdx + 1) / displayImages.length) * 100)}%` }}
+                  />
+                </div>
+              </div>
+
+              {/* CTA Buttons */}
+              <div className="!flex !items-center !gap-3 !flex-wrap">
                 <button
                   type="button"
-                  onClick={() => openLightbox(activeSlideIdx)}
-                  className="!flex !items-center !gap-1.5 !text-white !text-xs !font-family-bold !bg-black/55 hover:!bg-black/80 !backdrop-blur-md !px-3 !py-1.5 !rounded-xl !border !border-white/20 !cursor-pointer !transition-all hover:!scale-105 !shadow-md"
+                  onClick={HandleClick}
+                  className="!flex !items-center !gap-2 !px-6 !py-3 !rounded-xl !text-white !text-sm !font-family-bold !font-bold !cursor-pointer !transition-all hover:!scale-105 !shadow-xl !border-none !select-none"
+                  style={{ background: "#004a70", boxShadow: "0 8px 30px rgba(0,74,112,0.45)" }}
+                  onMouseEnter={e => e.currentTarget.style.background = "#005f8e"}
+                  onMouseLeave={e => e.currentTarget.style.background = "#004a70"}
                 >
-                  <FiMaximize2 size={12} />
-                  <span className="!whitespace-nowrap">
-                    {activeSlideIdx + 1} / {displayImages.length}
-                  </span>
+                  <FaCarSide size={15} />
+                  <span>Book a Ride</span>
                 </button>
+
+                <button
+                  type="button"
+                  onClick={handleShow}
+                  className="!flex !items-center !justify-center !w-11 !h-11 !rounded-xl !bg-white/10 hover:!bg-white/20 !backdrop-blur-md !border !border-white/20 !text-white !cursor-pointer !transition-all !shadow-md"
+                  title="Write a Review"
+                >
+                  <MdOutlineRateReview size={17} />
+                </button>
+
+                <div className="!flex-1" />
+
+                {/* Right Side: Share + Gallery */}
+                <div className="!flex !items-center !gap-2">
+                  <button
+                    type="button"
+                    onClick={handleShare}
+                    className="!flex !items-center !justify-center !w-11 !h-11 !rounded-xl !bg-white/10 hover:!bg-white/20 !backdrop-blur-md !border !border-white/20 !text-white !cursor-pointer !transition-all"
+                    title="Share"
+                  >
+                    <FiShare2 size={15} />
+                  </button>
+
+                  <button
+                    type="button"
+                    onClick={() => openLightbox(activeSlideIdx)}
+                    className="!flex !items-center !justify-center !w-11 !h-11 !rounded-xl !bg-white/10 hover:!bg-white/20 !backdrop-blur-md !border !border-white/20 !text-white !cursor-pointer !transition-all"
+                    title="View all photos"
+                  >
+                    <FiMaximize2 size={15} />
+                  </button>
+                </div>
               </div>
             </div>
           </div>
 
-          {/* Thumbs Swiper Bar */}
-          {displayImages.length > 1 && (
-            <div className="!mt-2.5 !px-0.5">
-              <Swiper
-                onSwiper={setThumbsSwiper}
-                modules={[FreeMode, Navigation, Thumbs]}
-                watchSlidesProgress
-                freeMode
-                spaceBetween={8}
-                slidesPerView="auto"
-                className="!w-full !py-1"
-              >
-                {displayImages.map((item, index) => (
-                  <SwiperSlide
-                    key={index}
-                    style={{ width: "auto" }}
-                    className="!w-auto !cursor-pointer"
-                    onClick={() => {
-                      if (mainSwiperRef.current) {
-                        if (typeof mainSwiperRef.current.slideToLoop === "function") {
-                          mainSwiperRef.current.slideToLoop(index);
-                        } else {
-                          mainSwiperRef.current.slideTo(index);
-                        }
-                      }
-                    }}
-                  >
-                    <div
-                      className={`!w-20 sm:!w-24 !h-14 sm:!h-16 !rounded-xl !overflow-hidden !border-2 !transition-all ${
-                        index === activeSlideIdx
-                          ? "!border-[#004a70] !ring-2 !ring-sky-300/80 !scale-[1.03]"
-                          : "!border-transparent !opacity-60 hover:!opacity-100"
-                      }`}
-                    >
-                      <img
-                        src={item}
-                        alt=""
-                        className="!w-full !h-full !object-cover"
-                      />
-                    </div>
-                  </SwiperSlide>
-                ))}
-              </Swiper>
-            </div>
-          )}
+          {/* ── Slide counter pill (top-right) ── */}
+          <div className="!absolute !top-4 !right-4 !z-30 !flex !items-center !gap-1.5 !bg-black/45 !backdrop-blur-md !border !border-white/15 !text-white !text-xs !font-family-medium !px-3 !py-1.5 !rounded-xl !pointer-events-none">
+            <FaRegImages size={11} />
+            <span>{activeSlideIdx + 1} / {displayImages.length}</span>
+          </div>
         </div>
+
+
 
         {/* Quick Facts Strip (with generous bottom spacing) */}
         <div className="!grid !grid-cols-2 md:!grid-cols-4 !gap-3.5 !mt-5 !mb-6">
@@ -1536,16 +1663,15 @@ const PopularAA = () => {
                 {({ setFieldValue, handleChange, handleBlur, values }) => (
                   <Form className="!space-y-3.5">
                     <div>
-                      <label className="!block !text-xs !font-family-bold !text-slate-700 !mb-1">
+                      <label className="!block !text-xs !font-family-bold !text-slate-700 !mb-1.5">
                         Your Rating
                       </label>
-                      <Rate
+                      <PrecisionRatingInput
+                        value={values.rating || value}
                         onChange={(val) => {
                           setValue(val);
                           setFieldValue("rating", val);
                         }}
-                        value={value}
-                        className="!text-2xl !text-amber-400"
                       />
                       <ErrorMessage
                         name="rating"

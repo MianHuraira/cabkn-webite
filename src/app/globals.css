@@ -280,32 +280,38 @@
   font-weight: 300 !important;
 }
 
-.font-family-regular {
+.font-family-regular,
+.\!font-family-regular {
   font-family: var(--font-poppins-local), sans-serif !important;
   font-weight: 400 !important;
 }
 
-.font-family-medium {
+.font-family-medium,
+.\!font-family-medium {
   font-family: var(--font-poppins-local), sans-serif !important;
   font-weight: 500 !important;
 }
 
-.font-family-semibold {
+.font-family-semibold,
+.\!font-family-semibold {
   font-family: var(--font-poppins-local), sans-serif !important;
   font-weight: 600 !important;
 }
 
-.font-family-bold {
+.font-family-bold,
+.\!font-family-bold {
   font-family: var(--font-poppins-local), sans-serif !important;
   font-weight: 700 !important;
 }
 
-.font-family-extrabold {
+.font-family-extrabold,
+.\!font-family-extrabold {
   font-family: var(--font-poppins-local), sans-serif !important;
   font-weight: 800 !important;
 }
 
-.font-family-black {
+.font-family-black,
+.\!font-family-black {
   font-family: var(--font-poppins-local), sans-serif !important;
   font-weight: 900 !important;
 }
@@ -518,4 +524,29 @@
   box-shadow: 0 12px 30px -4px rgba(0, 74, 112, 0.16), 0 4px 12px rgba(0, 0, 0, 0.08) !important;
   border: 1px solid rgba(226, 232, 240, 0.95) !important;
   font-family: var(--font-poppins-local), 'Inter', sans-serif !important;
+}
+
+/* ─── Cinematic Hero Gallery — White Pill Pagination ─── */
+.hero-gallery-swiper .swiper-pagination {
+  bottom: 16px !important;
+  display: flex !important;
+  align-items: center !important;
+  justify-content: center !important;
+  gap: 5px !important;
+}
+
+.hero-gallery-swiper .swiper-pagination-bullet {
+  width: 7px !important;
+  height: 7px !important;
+  border-radius: 99px !important;
+  background: rgba(255, 255, 255, 0.50) !important;
+  opacity: 1 !important;
+  transition: width 0.3s ease, background 0.3s ease !important;
+  margin: 0 !important;
+}
+
+.hero-gallery-swiper .swiper-pagination-bullet-active {
+  width: 26px !important;
+  background: #ffffff !important;
+  box-shadow: 0 0 8px rgba(255, 255, 255, 0.6) !important;
 }

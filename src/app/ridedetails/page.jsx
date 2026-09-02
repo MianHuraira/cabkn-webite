@@ -158,6 +158,8 @@ const RideDetail = () => {
   const [FavLoading, setFavLoading] = useState(false);
   const [detailLoading, setDetailLoading] = useState(true);
   const [copied, setCopied] = useState(false);
+  const [showCancelModal, setShowCancelModal] = useState(false);
+  const [cancelLoading, setCancelLoading] = useState(false);
   const [messageApi, contextHolder] = message.useMessage();
 
   // Extract initial ride data safely from sessionStorage or search params
@@ -253,14 +255,24 @@ const RideDetail = () => {
     }
   };
 
-  const CancelRide = () => {
+  const handleConfirmCancel = () => {
     if (socket && orderId) {
+      setCancelLoading(true);
       const body = { orderId: orderId };
       const endpoint = "cancel-order-customer";
       socket.emit(endpoint, body, (res) => {
-        messageApi.success(res?.message || "Ride cancelled successfully");
+        setCancelLoading(false);
+        setShowCancelModal(false);
+        if (res?.success || res?.message) {
+          messageApi.success(res?.message || "Ride cancelled successfully");
+        } else {
+          messageApi.error(res?.message || "Ride not found or cannot be cancelled.");
+        }
         getDetail();
       });
+    } else {
+      setShowCancelModal(false);
+      messageApi.error("Ride not found or cannot be cancelled.");
     }
   };
 
@@ -885,9 +897,9 @@ const RideDetail = () => {
                 </button>
               )}
 
-              {currentOrder?.status === "accepted" && (
+              {(currentOrder?.status === "accepted" || currentOrder?.status === "pending" || currentOrder?.status === "driver_assigned") && (
                 <button
-                  onClick={CancelRide}
+                  onClick={() => setShowCancelModal(true)}
                   className="w-full h-8 rounded-xl !border !border-slate-200 bg-white hover:bg-rose-50 text-slate-600 hover:text-rose-600 text-xs font-family-medium flex items-center justify-center gap-1.5 transition-colors cursor-pointer"
                 >
                   Cancel Ride
@@ -1154,6 +1166,53 @@ const RideDetail = () => {
 
         </div>
       </div>
+
+      {/* Cancel Confirmation Modal */}
+      {showCancelModal && (
+        <div className="fixed inset-0 z-50 flex items-center justify-center bg-slate-900/60 backdrop-blur-xs !p-4 animate-fade-in">
+          <div className="bg-white rounded-2xl max-w-sm w-full !p-5 shadow-2xl border border-slate-100 space-y-4 animate-scale-up">
+            <div className="w-12 h-12 rounded-full bg-rose-50 border border-rose-100 flex items-center justify-center mx-auto text-rose-600">
+              <IoShieldCheckmark size={24} />
+            </div>
+
+            <div className="text-center space-y-1">
+              <h3 className="text-base font-family-bold text-slate-900 !m-0">
+                Cancel Your Ride?
+              </h3>
+              <p className="text-xs text-slate-500 font-family-regular !m-0">
+                Are you sure you want to cancel this ride request? This action cannot be undone.
+              </p>
+            </div>
+
+            <div className="flex items-center gap-3 pt-2">
+              <button
+                type="button"
+                disabled={cancelLoading}
+                onClick={() => setShowCancelModal(false)}
+                className="flex-1 h-10 rounded-xl border border-slate-200 bg-white hover:bg-slate-50 text-slate-700 text-xs font-family-semibold transition-colors cursor-pointer disabled:opacity-50"
+              >
+                Keep Ride
+              </button>
+
+              <button
+                type="button"
+                disabled={cancelLoading}
+                onClick={handleConfirmCancel}
+                className="flex-1 h-10 rounded-xl bg-rose-600 hover:bg-rose-700 text-white text-xs font-family-bold flex items-center justify-center gap-2 transition-colors cursor-pointer shadow-md shadow-rose-600/20 disabled:opacity-50"
+              >
+                {cancelLoading ? (
+                  <>
+                    <div className="h-4 w-4 animate-spin rounded-full border-2 border-white/30 border-t-white" />
+                    <span>Cancelling...</span>
+                  </>
+                ) : (
+                  <span>Yes, Cancel</span>
+                )}
+              </button>
+            </div>
+          </div>
+        </div>
+      )}
     </div>
   );
 };

@@ -2,9 +2,10 @@
 
 "use client";
 
-import React, { useEffect, useState, useRef } from "react";
+import React, { useEffect, useState, useRef, useMemo } from "react";
+import { createPortal } from "react-dom";
 import moment from "moment/moment";
-import { FaEye, FaStar, FaPlus } from "react-icons/fa";
+import { FaEye, FaStar, FaPlus, FaUsers } from "react-icons/fa";
 import { FaLocationDot } from "react-icons/fa6";
 import {
   MdOutlineMyLocation,
@@ -47,11 +48,14 @@ const paymentUrl = "https://jad.cash/HAPI/cardpayment";
 const StatusBadge = ({ status }) => {
   const statusColorMap = {
     completed: { bg: "bg-emerald-50 text-emerald-700 !border-emerald-200/80", dot: "bg-emerald-500" },
+    confirmed: { bg: "bg-sky-50 text-sky-700 !border-sky-200/80", dot: "bg-sky-500" },
     cancelled: { bg: "bg-rose-50 text-rose-700 !border-rose-200/80", dot: "bg-rose-500" },
     accepted: { bg: "bg-sky-50 text-sky-700 !border-sky-200/80", dot: "bg-sky-500" },
     pending: { bg: "bg-amber-50 text-amber-700 !border-amber-200/80", dot: "bg-amber-500" },
     upcoming: { bg: "bg-purple-50 text-purple-700 !border-purple-200/80", dot: "bg-purple-500" },
     active: { bg: "bg-teal-50 text-teal-700 !border-teal-200/80", dot: "bg-teal-500" },
+    "on the way": { bg: "bg-indigo-50 text-indigo-700 !border-indigo-200/80", dot: "bg-indigo-500" },
+    way: { bg: "bg-indigo-50 text-indigo-700 !border-indigo-200/80", dot: "bg-indigo-500" },
   };
 
   const st = statusColorMap[(status || "").toLowerCase()] || {
@@ -357,8 +361,39 @@ function Page() {
   const [show1, setShow1] = useState(false);
   const [reviewModal, setReviewModal] = useState(false);
   const [selectedOrder, setSelectedOrder] = useState(null);
+  const [selectedTourBooking, setSelectedTourBooking] = useState(null);
+  const [selectedServiceBooking, setSelectedServiceBooking] = useState(null);
+  const [selectedShopOrder, setSelectedShopOrder] = useState(null);
   const [reviewRating, setReviewRating] = useState(5);
   const [reviewText, setReviewText] = useState("");
+
+  // Suppress Tidio chat and lock scroll when detail modals are open
+  useEffect(() => {
+    const isAnyModalOpen = Boolean(selectedTourBooking || selectedServiceBooking || selectedShopOrder);
+    if (isAnyModalOpen) {
+      document.body.style.overflow = "hidden";
+      if (typeof window !== "undefined" && window.tidioChatApi) {
+        try {
+          window.tidioChatApi.hide();
+        } catch (e) {}
+      }
+    } else {
+      document.body.style.overflow = "";
+      if (typeof window !== "undefined" && window.tidioChatApi) {
+        try {
+          window.tidioChatApi.show();
+        } catch (e) {}
+      }
+    }
+    return () => {
+      document.body.style.overflow = "";
+      if (typeof window !== "undefined" && window.tidioChatApi) {
+        try {
+          window.tidioChatApi.show();
+        } catch (e) {}
+      }
+    };
+  }, [selectedTourBooking, selectedServiceBooking, selectedShopOrder]);
 
   const handleClose = () => setShow(false);
 
@@ -394,31 +429,136 @@ function Page() {
     }
   };
 
+  const [categoryTab, setCategoryTab] = useState("rides"); // rides | tours | services | shop
+  const [filterTab, setFilterTab] = useState("active"); // active | upcoming | completed | cancelled (or pending | on the way etc.)
+
+  const handleCategoryChange = (newCat) => {
+    if (newCat === categoryTab) return;
+    setCategoryTab(newCat);
+    setLastId(1);
+    if (newCat === "shop") {
+      setFilterTab("pending");
+    } else if (newCat === "tours" || newCat === "services") {
+      setFilterTab("all");
+    } else {
+      setFilterTab("active");
+    }
+  };
+
+  const currentFilterTabs = useMemo(() => {
+    if (categoryTab === "shop") {
+      return [
+        { key: "pending", label: "Pending" },
+        { key: "on the way", label: "On The Way" },
+        { key: "completed", label: "Completed" },
+        { key: "cancelled", label: "Cancelled" },
+      ];
+    }
+    if (categoryTab === "tours" || categoryTab === "services") {
+      return [
+        { key: "all", label: "All Bookings" },
+        { key: "confirmed", label: "Confirmed" },
+        { key: "completed", label: "Completed" },
+        { key: "cancelled", label: "Cancelled" },
+      ];
+    }
+    return [
+      { key: "active", label: "Active" },
+      { key: "upcoming", label: "Upcoming" },
+      { key: "completed", label: "Completed" },
+      { key: "cancelled", label: "Cancelled" },
+    ];
+  }, [categoryTab]);
+
   const fetchOrders = async ({ isFirstPage = false }) => {
     try {
-      const body = {
-        bookingtype: activeTab === "upcoming" ? "schedule" : "live",
-      };
+      const pageToUse = isFirstPage ? 1 : lastId;
+      let itemsList = [];
+      let nextTotalPages = 1;
 
-      const endpoint =
-        activeTab === "completed" || activeTab === "cancelled"
-          ? `order/customer/${activeTab}/${lastId}`
-          : activeTab === "upcoming" || activeTab === "active"
-            ? `order/customer/accepted/${lastId}`
-            : activeTab === "requested"
-              ? `order/customer/pending/${lastId}`
-              : `order/customer/${activeTab}/${lastId}`;
+      if (categoryTab === "rides") {
+        const status =
+          filterTab === "upcoming"
+            ? "accepted"
+            : filterTab === "active"
+            ? "accepted"
+            : filterTab;
 
-      const res = await postData(endpoint, body, header1);
-      setCount(res?.count?.totalPage);
+        if (filterTab === "active") {
+          const [liveRes, scheduledRes] = await Promise.all([
+            postData(`order/customer/${status}/${pageToUse}`, { bookingtype: "live" }, header1),
+            postData(`order/customer/${status}/${pageToUse}`, { bookingtype: "schedule" }, header1),
+          ]);
+          const liveOrders = liveRes?.orders || liveRes?.data?.orders || [];
+          const schedOrders = scheduledRes?.orders || scheduledRes?.data?.orders || [];
+          const idMap = new Map();
+          [...liveOrders, ...schedOrders].forEach((item) => {
+            if (item?._id && !idMap.has(item._id)) {
+              idMap.set(item._id, item);
+            }
+          });
+          itemsList = Array.from(idMap.values());
+          nextTotalPages = Math.max(
+            liveRes?.count?.totalPage || liveRes?.data?.count?.totalPage || 1,
+            scheduledRes?.count?.totalPage || scheduledRes?.data?.count?.totalPage || 1
+          );
+        } else if (filterTab === "upcoming") {
+          const res = await postData(
+            `order/customer/${status}/${pageToUse}`,
+            { bookingtype: "schedule" },
+            header1
+          );
+          itemsList = res?.orders || res?.data?.orders || [];
+          nextTotalPages = res?.count?.totalPage || res?.data?.count?.totalPage || 1;
+        } else {
+          const res = await postData(`order/customer/${status}/${pageToUse}`, {}, header1);
+          itemsList = res?.orders || res?.data?.orders || [];
+          nextTotalPages = res?.count?.totalPage || res?.data?.count?.totalPage || 1;
+        }
+      } else if (categoryTab === "tours") {
+        // Mobile parity: GET tour-bookings/mine/${page}
+        const res = await getData(`tour-bookings/mine/${pageToUse}`, header1);
+        const allBookings = res?.data?.bookings || res?.bookings || [];
+        nextTotalPages = res?.data?.count?.totalPage || res?.count?.totalPage || 1;
+
+        if (filterTab && filterTab !== "all") {
+          itemsList = allBookings.filter(
+            (b) => (b?.status || "").toLowerCase() === filterTab.toLowerCase()
+          );
+        } else {
+          itemsList = allBookings;
+        }
+      } else if (categoryTab === "services") {
+        // Mobile parity: GET service-bookings/mine/${page}
+        const res = await getData(`service-bookings/mine/${pageToUse}`, header1);
+        const allBookings = res?.data?.bookings || res?.bookings || [];
+        nextTotalPages = res?.data?.count?.totalPage || res?.count?.totalPage || 1;
+
+        if (filterTab && filterTab !== "all") {
+          itemsList = allBookings.filter(
+            (b) => (b?.status || "").toLowerCase() === filterTab.toLowerCase()
+          );
+        } else {
+          itemsList = allBookings;
+        }
+      } else if (categoryTab === "shop") {
+        // Mobile parity: GET shop-order/${status === "on the way" ? "way" : status}/${page}
+        const shopStatus = filterTab === "on the way" ? "way" : filterTab || "pending";
+        const res = await getData(`shop-order/${shopStatus}/${pageToUse}`, header1);
+        itemsList = res?.data?.data || res?.data?.orders || res?.data || [];
+        nextTotalPages = res?.data?.count?.totalPage || res?.count?.totalPage || 1;
+      }
+
+      setCount(nextTotalPages);
 
       if (isFirstPage) {
-        setOrders(res?.orders || []);
+        setOrders(itemsList);
       } else {
-        setOrders((prevOrders) => [...prevOrders, ...(res?.orders || [])]);
+        setOrders((prevOrders) => [...prevOrders, ...itemsList]);
       }
     } catch (error) {
-      console.log(error);
+      console.log("fetchOrders error:", error);
+      if (isFirstPage) setOrders([]);
     }
   };
 
@@ -451,7 +591,7 @@ function Page() {
   useEffect(() => {
     setLastId(1);
     getOrders();
-  }, [activeTab]);
+  }, [categoryTab, filterTab]);
 
   const handlePay = async () => {
     try {
@@ -554,30 +694,29 @@ function Page() {
             <span className="text-white">My Bookings</span>
           </div>
 
-          <div className="flex flex-wrap justify-between items-center gap-3">
-            <div className="flex items-center gap-3">
-              <div className="w-10 h-10 sm:w-11 sm:h-11 rounded-xl bg-white/10 backdrop-blur-md flex items-center justify-center shrink-0 !border !border-white/15">
-                <MdOutlineBookOnline size={22} className="text-white" />
-              </div>
-              <div>
-                <h1 className="text-xl sm:text-2xl font-family-semibold text-white tracking-tight !m-0 leading-tight">
-                  My Bookings
-                </h1>
-                <p className="text-slate-300 text-xs !mt-0.5 !m-0 font-family-regular">
-                  Manage and track your Nevis & Saint Kitts transfers
-                </p>
-              </div>
+          <div className="flex items-center gap-3 sm:gap-4">
+            <div className="w-12 h-12 sm:w-13 sm:h-13 rounded-2xl bg-white/10 backdrop-blur-md flex items-center justify-center shrink-0 !border border-white/15">
+              <MdOutlineBookOnline size={24} className="text-white" />
             </div>
-
-            
+            <div>
+              <h1 className="text-white text-2xl sm:text-3xl font-family-bold tracking-tight !m-0 leading-tight">
+                My{" "}
+                <span className="text-transparent bg-clip-text bg-gradient-to-r from-brand-300 via-sky-300 to-indigo-200">
+                  Bookings
+                </span>
+              </h1>
+              <p className="text-slate-300 text-xs sm:text-sm !mt-1 !m-0 font-family-regular">
+                Manage and track your Nevis & Saint Kitts transfers
+              </p>
+            </div>
           </div>
         </div>
       </section>
 
       {/* ===== 2. TABS & MAIN CONTENT GRID ===== */}
-      <div className="!-mt-12 sm:!-mt-14 max-w-7xl mx-auto px-3 sm:px-6 lg:px-8 relative z-20 !pb-16">
-        {/* Swiper Tabs */}
-        <div className="w-full max-w-full overflow-hidden !mb-8">
+      <div className="max-w-7xl mx-auto px-3 sm:px-6 lg:px-8 relative z-20 -mt-6 sm:-mt-7 !pb-16 space-y-4">
+        {/* Tier 1: Category Tabs (Matches Profile Page & Popular Places with Swiper) */}
+        <div className="w-full max-w-full overflow-hidden">
           <Swiper
             modules={[FreeMode, Mousewheel]}
             slidesPerView="auto"
@@ -586,21 +725,28 @@ function Page() {
             mousewheel={{ forceToAxis: true }}
             className="w-full py-1 category-swiper"
           >
-            {tabs.map((tab) => {
-              const isSelected = activeTab === tab.key;
+            {[
+              { key: "rides", label: "Rides", icon: <FaLocationDot size={12} /> },
+              { key: "tours", label: "Tours", icon: <MdOutlineBookOnline size={15} /> },
+              { key: "services", label: "Services", icon: <MdListAlt size={15} /> },
+              { key: "shop", label: "Shop Orders", icon: <IoWallet size={14} /> },
+            ].map((cat) => {
+              const isCatActive = categoryTab === cat.key;
               return (
-                <SwiperSlide key={tab.key} style={{ width: "auto" }}>
+                <SwiperSlide key={cat.key} style={{ width: "auto" }}>
                   <button
-                    onClick={() => handleTabSelect(tab.key)}
-                    className={`cursor-pointer transition-all duration-300 select-none flex items-center gap-2 px-5 py-2.5 rounded-full text-xs sm:text-sm font-family-semibold whitespace-nowrap !border shadow-none ${isSelected
-                        ? "text-white bg-[#004a70] !border-[#004a70]"
+                    type="button"
+                    onClick={() => handleCategoryChange(cat.key)}
+                    className={`cursor-pointer transition-all duration-300 select-none flex items-center gap-2 px-5 sm:px-6 py-2.5 rounded-full text-xs sm:text-sm font-family-semibold whitespace-nowrap !border shadow-sm ${
+                      isCatActive
+                        ? "text-white bg-[#004a70] !border-[#004a70] font-family-bold shadow-md"
                         : "text-slate-700 bg-white !border-slate-200/90 hover:!border-[#004a70] hover:bg-slate-50 hover:text-[#004a70]"
-                      }`}
+                    }`}
                   >
-                    <span className={isSelected ? "opacity-100" : "opacity-75"}>
-                      {tab.icon}
+                    <span className={isCatActive ? "opacity-100" : "opacity-75"}>
+                      {cat.icon}
                     </span>
-                    <span>{tab.label}</span>
+                    <span>{cat.label}</span>
                   </button>
                 </SwiperSlide>
               );
@@ -608,10 +754,31 @@ function Page() {
           </Swiper>
         </div>
 
+        {/* Tier 2: Dynamic Status Filter Pills for Active Category */}
+        <div className="flex items-center gap-2.5 overflow-x-auto no-scrollbar py-1">
+          {currentFilterTabs.map((filter) => {
+            const isFilterActive = filterTab === filter.key;
+            return (
+              <button
+                key={filter.key}
+                type="button"
+                onClick={() => setFilterTab(filter.key)}
+                className={`px-5 py-2 rounded-full text-xs font-family-semibold transition-all duration-300 cursor-pointer select-none border whitespace-nowrap shadow-xs ${
+                  isFilterActive
+                    ? "bg-[#004a70] text-white border-[#004a70] shadow-sm font-family-bold"
+                    : "bg-white text-slate-700 border-slate-200/90 hover:border-[#004a70] hover:bg-slate-50 hover:text-[#004a70]"
+                }`}
+              >
+                {filter.label}
+              </button>
+            );
+          })}
+        </div>
+
         <div>
-          <div className="flex justify-between items-center !mb-4 px-1">
-            <h3 className="text-base sm:text-lg font-family-semibold text-slate-900 !m-0">
-              {activeTab === "all" ? "All" : activeTab.charAt(0).toUpperCase() + activeTab.slice(1)} Records
+          <div className="flex justify-between items-center !mt-2 !mb-4 px-1">
+            <h3 className="text-base sm:text-lg font-family-semibold text-slate-900 !m-0 capitalize">
+              {filterTab} {categoryTab}
             </h3>
             <span className="text-xs font-family-medium text-slate-400">
               {Orders?.length || 0} item{Orders?.length !== 1 ? "s" : ""}
@@ -626,7 +793,7 @@ function Page() {
                 <MdOutlineBookOnline size={22} />
               </div>
               <h4 className="text-sm font-family-semibold text-slate-800 !m-0 capitalize">
-                No {activeTab === "all" ? "" : activeTab} bookings found
+                No {filterTab} {categoryTab} found
               </h4>
               <p className="text-xs text-slate-400 !m-0 !mt-1 leading-relaxed max-w-sm font-family-regular">
                 We couldn't find any data matching this category in your account.
@@ -636,124 +803,305 @@ function Page() {
             <>
               {/* Bookings Card Grid */}
               <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-4 sm:gap-5 !mb-8">
-                {Orders?.map((order, index) => (
-                  <div
-                    key={`${order?._id}-${index}`}
-                    className="group bg-white rounded-2xl !border !border-slate-200/90 shadow-sm hover:shadow-md hover:-translate-y-0.5 transition-all duration-300 p-4 sm:p-5 flex flex-col justify-between relative overflow-hidden"
-                  >
-                    {/* Top Row: Status + Price */}
-                    <div className="flex justify-between items-start mb-3">
-                      <div className="flex flex-col gap-1">
-                        <StatusBadge status={order?.status} />
-                        {order?.order_id && (
-                          <span className="text-[10.5px] font-family-medium text-slate-400 pl-0.5">
-                            #{order.order_id}
-                          </span>
-                        )}
-                      </div>
+                {Orders?.map((order, index) => {
+                  if (categoryTab === "tours" || categoryTab === "services") {
+                    const snap = categoryTab === "tours" ? (order?.tourSnapshot || order?.tour) : (order?.serviceSnapshot || order?.service);
+                    const title = snap?.title || (categoryTab === "tours" ? "Tour Booking" : "Service Booking");
+                    const image = snap?.image || snap?.images?.[0] || order?.tour?.images?.[0] || order?.service?.images?.[0] || "/placeholder.jpg";
+                    const dateLabel = order?.date ? moment(order.date, "YYYY-MM-DD").format("ddd, DD MMM YYYY") : "Date TBD";
+                    const timeLabel = order?.time || "";
+                    const totalPriceXCD = Number(order?.totalPrice || order?.price || 0) + Number(order?.serviceFee || 0) + Number(order?.convenienceFee || 0);
+                    const totalPriceUSD = (totalPriceXCD / 2.7).toFixed(2);
+                    const guestsLabel = order?.guests?.adults || order?.guests?.kids
+                      ? `${order.guests.adults || 0} Adult${order.guests.adults !== 1 ? "s" : ""}${order.guests.kids ? `, ${order.guests.kids} Kid${order.guests.kids !== 1 ? "s" : ""}` : ""}`
+                      : (order?.bookingType === "group" ? "Group Booking" : "Standard");
+                    const location = order?.pickup?.address || order?.location?.address || snap?.meetingPoint?.address || "St. Kitts & Nevis";
+                    const tourId = order?.tour?._id || order?.tour;
 
-                      <div className="text-right">
-                        <span className="text-lg sm:text-xl font-family-semibold text-emerald-600 block leading-tight">
-                          ${Number(order?.price || 0).toFixed(2)}
-                        </span>
-                        <span className="text-[11px] text-slate-400 font-family-regular block mt-0.5">
-                          {moment(order?.createdAt).format("DD MMM YYYY • hh:mm A")}
-                        </span>
-                      </div>
-                    </div>
-
-                    {/* Route Itinerary Strip */}
-                    <div className="bg-slate-50/70 p-2.5 rounded-xl !border !border-slate-100 space-y-2 mb-3 flex-grow">
-                      <div className="flex items-start gap-2">
-                        <div className="w-4 h-4 rounded-full bg-emerald-500 text-white flex items-center justify-center shrink-0 mt-0.5">
-                          <FaLocationDot size={8} />
-                        </div>
-                        <div className="min-w-0 flex-1">
-                          <span className="text-[9.5px] font-family-semibold uppercase tracking-wider text-emerald-600 block leading-tight">
-                            Pickup
-                          </span>
-                          <p className="text-xs font-family-medium text-slate-800 !m-0 leading-snug truncate">
-                            {order?.start_address || "Nevis Island"}
-                          </p>
-                        </div>
-                      </div>
-
-                      <div className="flex items-start gap-2">
-                        <div className="w-4 h-4 rounded-md bg-[#004a70] text-white flex items-center justify-center shrink-0 mt-0.5">
-                          <MdOutlineMyLocation size={9} />
-                        </div>
-                        <div className="min-w-0 flex-1">
-                          <span className="text-[9.5px] font-family-semibold uppercase tracking-wider text-[#004a70] block leading-tight">
-                            Destination
-                          </span>
-                          <p className="text-xs font-family-medium text-slate-800 !m-0 leading-snug truncate">
-                            {order?.end_address || "Saint Kitts"}
-                          </p>
-                        </div>
-                      </div>
-                    </div>
-
-                    {/* Driver Section */}
-                    {order?.to_id ? (
-                      <div className="flex items-center justify-between gap-2.5 p-2 bg-slate-50/80 !border !border-slate-100 rounded-xl mb-3">
-                        <div className="flex items-center gap-2 min-w-0 flex-1">
-                          <div className="w-8 h-8 rounded-lg overflow-hidden shrink-0 !border !border-slate-200 bg-slate-100">
+                    return (
+                      <div
+                        key={`${order?._id}-${index}`}
+                        className="group bg-white rounded-2xl !border !border-slate-200/90 shadow-sm hover:shadow-md hover:-translate-y-0.5 transition-all duration-300 p-4 sm:p-5 flex flex-col justify-between relative overflow-hidden"
+                      >
+                        <div>
+                          {/* Image Banner + Status Badge */}
+                          <div className="relative w-full h-36 rounded-xl overflow-hidden mb-3 bg-slate-100">
                             <img
-                              alt=""
-                              width={32}
-                              height={32}
-                              src={order?.to_id?.image || "/placeholder.jpg"}
-                              className="w-full h-full object-cover"
+                              src={image}
+                              alt={title}
+                              className="w-full h-full object-cover group-hover:scale-105 transition-transform duration-500"
                             />
+                            <div className="absolute top-2.5 left-2.5">
+                              <StatusBadge status={order?.status || "confirmed"} />
+                            </div>
+                            <div className="absolute bottom-2.5 right-2.5 bg-slate-900/85 backdrop-blur-md px-2.5 py-1 rounded-lg text-white text-right">
+                              <span className="text-xs font-family-bold block leading-tight">
+                                ${totalPriceXCD.toFixed(2)} XCD
+                              </span>
+                              <span className="text-[10px] text-slate-300 font-family-medium block">
+                                ≈ ${totalPriceUSD} USD
+                              </span>
+                            </div>
+                          </div>
+
+                          <h4 className="text-sm sm:text-base font-family-bold text-slate-900 !m-0 line-clamp-2 leading-snug mb-2">
+                            {title}
+                          </h4>
+
+                          {/* Details strip */}
+                          <div className="space-y-1.5 text-xs text-slate-600 bg-slate-50/70 p-2.5 rounded-xl border border-slate-100 mb-3">
+                            <div className="flex items-center gap-2">
+                              <MdOutlineCalendarMonth size={14} className="text-[#004a70] shrink-0" />
+                              <span className="font-family-medium truncate">
+                                {[dateLabel, timeLabel].filter(Boolean).join(" • ")}
+                              </span>
+                            </div>
+                            {categoryTab === "tours" && (
+                              <div className="flex items-center gap-2">
+                                <FaUsers size={12} className="text-[#004a70] shrink-0" />
+                                <span className="font-family-medium truncate">{guestsLabel}</span>
+                              </div>
+                            )}
+                            <div className="flex items-center gap-2">
+                              <FaLocationDot size={12} className="text-[#004a70] shrink-0" />
+                              <span className="font-family-medium truncate">{location}</span>
+                            </div>
+                          </div>
+                        </div>
+
+                        {/* Card Footer */}
+                        <div className="pt-2 border-t border-slate-100 mt-auto space-y-2">
+                          <div className="flex items-center justify-between text-xs text-slate-500">
+                            <span className="font-family-medium">Booking ID</span>
+                            <span className="font-mono text-[11px] text-slate-700">#{order?._id?.slice(-8)}</span>
+                          </div>
+                          <button
+                            type="button"
+                            onClick={() => {
+                              if (categoryTab === "tours") {
+                                setSelectedTourBooking(order);
+                              } else {
+                                setSelectedServiceBooking(order);
+                              }
+                            }}
+                            className="w-full h-9 sm:h-10 rounded-xl bg-[#004a70] hover:bg-[#003957] text-white text-xs font-family-semibold flex items-center justify-center gap-1.5 transition-all duration-200 cursor-pointer border-none shadow-xs"
+                          >
+                            <FaEye size={13} />
+                            <span>View Details</span>
+                          </button>
+                        </div>
+                      </div>
+                    );
+                  }
+
+                  if (categoryTab === "shop") {
+                    const orderNum = order?.id || order?.order_id || order?._id?.slice(-6);
+                    const priceXCD = Number(order?.price || order?.total_price || 0);
+                    const priceUSD = (priceXCD / 2.7).toFixed(2);
+                    const cartItems = order?.cart_items || [];
+
+                    return (
+                      <div
+                        key={`${order?._id}-${index}`}
+                        className="group bg-white rounded-2xl !border !border-slate-200/90 shadow-sm hover:shadow-md hover:-translate-y-0.5 transition-all duration-300 p-4 sm:p-5 flex flex-col justify-between relative overflow-hidden"
+                      >
+                        <div>
+                          {/* Top Row: Status + Price */}
+                          <div className="flex justify-between items-start mb-3">
+                            <div className="flex flex-col gap-1">
+                              <StatusBadge status={order?.status || "pending"} />
+                              <span className="text-[11px] font-family-bold text-slate-700">
+                                Order #{orderNum}
+                              </span>
+                            </div>
+
+                            <div className="text-right">
+                              <span className="text-base sm:text-lg font-family-bold text-emerald-600 block leading-tight">
+                                ${priceXCD.toFixed(2)} XCD
+                              </span>
+                              <span className="text-[10.5px] text-slate-400 font-family-medium block">
+                                ≈ ${priceUSD} USD
+                              </span>
+                            </div>
+                          </div>
+
+                          {/* Cart Items List */}
+                          <div className="bg-slate-50/70 p-2.5 rounded-xl border border-slate-100 mb-3 space-y-1.5">
+                            <span className="text-[10px] font-family-bold text-slate-400 uppercase tracking-wider block">
+                              Items Ordered ({cartItems.length})
+                            </span>
+                            {cartItems.length > 0 ? (
+                              <div className="space-y-1 max-h-28 overflow-y-auto">
+                                {cartItems.map((cItem, cIdx) => (
+                                  <div key={cIdx} className="flex justify-between items-center text-xs py-0.5 border-b border-slate-100 last:border-0">
+                                    <span className="font-family-medium text-slate-800 truncate max-w-[70%]">
+                                      {cItem?.name || cItem?.title || "Product"}
+                                    </span>
+                                    <span className="text-[11px] font-family-bold text-[#004a70] shrink-0">
+                                      Qty: {cItem?.cartQuantity || cItem?.quantity || 1}
+                                    </span>
+                                  </div>
+                                ))}
+                              </div>
+                            ) : (
+                              <p className="text-xs text-slate-500 font-family-medium !m-0">Shop Order</p>
+                            )}
+                          </div>
+
+                          {/* Delivery Location & Date */}
+                          <div className="space-y-1.5 text-xs text-slate-600 bg-slate-50/50 p-2.5 rounded-xl border border-slate-100 mb-3">
+                            {order?.drop_location && (
+                              <div className="flex items-start gap-2">
+                                <FaLocationDot size={12} className="text-[#004a70] shrink-0 mt-0.5" />
+                                <span className="font-family-medium line-clamp-1">{order.drop_location}</span>
+                              </div>
+                            )}
+                            <div className="flex items-center gap-2 text-slate-400 text-[11px]">
+                              <MdOutlineSchedule size={13} className="shrink-0" />
+                              <span>{moment(order?.createdAt).format("DD MMM YYYY • hh:mm A")}</span>
+                            </div>
+                          </div>
+                        </div>
+
+                        {/* Footer */}
+                        <div className="pt-2 border-t border-slate-100 mt-auto space-y-2">
+                          <div className="flex items-center justify-between text-xs text-slate-500">
+                            <span className="font-family-medium">Total Paid</span>
+                            <span className="font-family-bold text-slate-900">${priceXCD.toFixed(2)} XCD</span>
+                          </div>
+                          <button
+                            type="button"
+                            onClick={() => setSelectedShopOrder(order)}
+                            className="w-full h-9 sm:h-10 rounded-xl bg-[#004a70] hover:bg-[#003957] text-white text-xs font-family-semibold flex items-center justify-center gap-1.5 transition-all duration-200 cursor-pointer border-none shadow-xs"
+                          >
+                            <FaEye size={13} />
+                            <span>View Details</span>
+                          </button>
+                        </div>
+                      </div>
+                    );
+                  }
+
+                  // Default: Rides
+                  return (
+                    <div
+                      key={`${order?._id}-${index}`}
+                      className="group bg-white rounded-2xl !border !border-slate-200/90 shadow-sm hover:shadow-md hover:-translate-y-0.5 transition-all duration-300 p-4 sm:p-5 flex flex-col justify-between relative overflow-hidden"
+                    >
+                      {/* Top Row: Status + Price */}
+                      <div className="flex justify-between items-start mb-3">
+                        <div className="flex flex-col gap-1">
+                          <StatusBadge status={order?.status} />
+                          {order?.order_id && (
+                            <span className="text-[10.5px] font-family-medium text-slate-400 pl-0.5">
+                              #{order.order_id}
+                            </span>
+                          )}
+                        </div>
+
+                        <div className="text-right">
+                          <span className="text-lg sm:text-xl font-family-semibold text-emerald-600 block leading-tight">
+                            ${Number(order?.price || 0).toFixed(2)}
+                          </span>
+                          <span className="text-[11px] text-slate-400 font-family-regular block mt-0.5">
+                            {moment(order?.createdAt).format("DD MMM YYYY • hh:mm A")}
+                          </span>
+                        </div>
+                      </div>
+
+                      {/* Route Itinerary Strip */}
+                      <div className="bg-slate-50/70 p-2.5 rounded-xl !border !border-slate-100 space-y-2 mb-3 flex-grow">
+                        <div className="flex items-start gap-2">
+                          <div className="w-4 h-4 rounded-full bg-emerald-500 text-white flex items-center justify-center shrink-0 mt-0.5">
+                            <FaLocationDot size={8} />
                           </div>
                           <div className="min-w-0 flex-1">
-                            <h4 className="text-xs font-family-semibold text-slate-900 !m-0 truncate">
-                              {order?.to_id?.name || "Assigned Driver"}
-                            </h4>
-                            <p className="text-[10.5px] text-slate-400 font-family-regular !m-0 truncate">
-                              {order?.to_id?.email || "driver@cabkn.com"}
+                            <span className="text-[9.5px] font-family-semibold uppercase tracking-wider text-emerald-600 block leading-tight">
+                              Pickup
+                            </span>
+                            <p className="text-xs font-family-medium text-slate-800 !m-0 leading-snug truncate">
+                              {order?.start_address || "Nevis Island"}
                             </p>
                           </div>
                         </div>
-                        {order?.to_id?.rating && (
-                          <span className="inline-flex items-center gap-0.5 text-[10px] font-family-semibold text-amber-600 bg-amber-50 px-1.5 py-0.5 rounded !border !border-amber-200/50 shrink-0">
-                            <FaStar size={8} className="text-amber-500" />
-                            {order?.to_id?.rating}.0
-                          </span>
-                        )}
-                      </div>
-                    ) : (
-                      <div className="p-2 bg-slate-50/50 !border !border-slate-100 rounded-xl mb-3 text-center">
-                        <p className="text-[11px] text-slate-400 font-family-regular !m-0">
-                          Driver not assigned yet
-                        </p>
-                      </div>
-                    )}
 
-                    {/* Card Action Buttons */}
-                    <div className="flex items-center gap-2 pt-2.5 border-t border-slate-100 !mt-auto">
-                      <button
-                        onClick={() => gotoDetails(order)}
-                        className="flex-1 h-9 sm:h-10 rounded-xl bg-[#004a70] hover:bg-[#003957] text-white text-xs font-family-semibold flex items-center justify-center gap-1.5 transition-all duration-200 cursor-pointer !border-none shadow-xs active:scale-[0.99]"
-                      >
-                        <FaEye size={13} />
-                        <span>View Details</span>
-                      </button>
+                        <div className="flex items-start gap-2">
+                          <div className="w-4 h-4 rounded-md bg-[#004a70] text-white flex items-center justify-center shrink-0 mt-0.5">
+                            <MdOutlineMyLocation size={9} />
+                          </div>
+                          <div className="min-w-0 flex-1">
+                            <span className="text-[9.5px] font-family-semibold uppercase tracking-wider text-[#004a70] block leading-tight">
+                              Destination
+                            </span>
+                            <p className="text-xs font-family-medium text-slate-800 !m-0 leading-snug truncate">
+                              {order?.end_address || "Saint Kitts"}
+                            </p>
+                          </div>
+                        </div>
+                      </div>
 
-                      <button
-                        disabled={order?.tip === 1}
-                        onClick={() => { openModal(true); setTipOrderId(order?._id); }}
-                        className={`h-9 sm:h-10 px-3.5 rounded-xl text-xs font-family-medium transition-all duration-200 flex items-center justify-center gap-1.5 cursor-pointer active:scale-[0.99] ${order?.tip === 1
-                            ? "bg-slate-100 text-slate-400 !border !border-slate-200 cursor-not-allowed"
-                            : "bg-white hover:bg-slate-50 text-slate-700 !border !border-slate-200 hover:!border-[#004a70] shadow-xs"
-                          }`}
-                      >
-                        <FaPlus size={11} className={order?.tip === 1 ? "text-slate-400" : "text-[#004a70]"} />
-                        <span>{order?.tip === 1 ? "Tipped" : "Tip"}</span>
-                      </button>
+                      {/* Driver Section */}
+                      {order?.to_id ? (
+                        <div className="flex items-center justify-between gap-2.5 p-2 bg-slate-50/80 !border !border-slate-100 rounded-xl mb-3">
+                          <div className="flex items-center gap-2 min-w-0 flex-1">
+                            <div className="w-8 h-8 rounded-lg overflow-hidden shrink-0 !border !border-slate-200 bg-slate-100">
+                              <img
+                                alt=""
+                                width={32}
+                                height={32}
+                                src={order?.to_id?.image || "/placeholder.jpg"}
+                                className="w-full h-full object-cover"
+                              />
+                            </div>
+                            <div className="min-w-0 flex-1">
+                              <h4 className="text-xs font-family-semibold text-slate-900 !m-0 truncate">
+                                {order?.to_id?.name || "Assigned Driver"}
+                              </h4>
+                              <p className="text-[10.5px] text-slate-400 font-family-regular !m-0 truncate">
+                                {order?.to_id?.email || "driver@cabkn.com"}
+                              </p>
+                            </div>
+                          </div>
+                          {order?.to_id?.rating && (
+                            <span className="inline-flex items-center gap-0.5 text-[10px] font-family-semibold text-amber-600 bg-amber-50 px-1.5 py-0.5 rounded !border !border-amber-200/50 shrink-0">
+                              <FaStar size={8} className="text-amber-500" />
+                              {order?.to_id?.rating}.0
+                            </span>
+                          )}
+                        </div>
+                      ) : (
+                        <div className="p-2 bg-slate-50/50 !border !border-slate-100 rounded-xl mb-3 text-center">
+                          <p className="text-[11px] text-slate-400 font-family-regular !m-0">
+                            Driver not assigned yet
+                          </p>
+                        </div>
+                      )}
+
+                      {/* Card Action Buttons */}
+                      <div className="flex items-center gap-2 pt-2.5 border-t border-slate-100 !mt-auto">
+                        <button
+                          onClick={() => gotoDetails(order)}
+                          className="flex-1 h-9 sm:h-10 rounded-xl bg-[#004a70] hover:bg-[#003957] text-white text-xs font-family-semibold flex items-center justify-center gap-1.5 transition-all duration-200 cursor-pointer !border-none shadow-xs active:scale-[0.99]"
+                        >
+                          <FaEye size={13} />
+                          <span>View Details</span>
+                        </button>
+
+                        <button
+                          disabled={order?.tip === 1}
+                          onClick={() => { openModal(true); setTipOrderId(order?._id); }}
+                          className={`h-9 sm:h-10 px-3.5 rounded-xl text-xs font-family-medium transition-all duration-200 flex items-center justify-center gap-1.5 cursor-pointer active:scale-[0.99] ${order?.tip === 1
+                              ? "bg-slate-100 text-slate-400 !border !border-slate-200 cursor-not-allowed"
+                              : "bg-white hover:bg-slate-50 text-slate-700 !border !border-slate-200 hover:!border-[#004a70] shadow-xs"
+                            }`}
+                        >
+                          <FaPlus size={11} className={order?.tip === 1 ? "text-slate-400" : "text-[#004a70]"} />
+                          <span>{order?.tip === 1 ? "Tipped" : "Tip"}</span>
+                        </button>
+                      </div>
                     </div>
-                  </div>
-                ))}
+                  );
+                })}
               </div>
 
               {/* See More pagination */}
@@ -780,92 +1128,151 @@ function Page() {
         </div>
       </div>
 
-      {/* ===== TIP MODAL ===== */}
+      {/* ===== TIP MODAL (Redesigned Clean Modern UI) ===== */}
       {isModalOpen && (
         <div
           className="fixed inset-0 bg-slate-900/60 backdrop-blur-xs flex items-center justify-center p-4 z-50 animate-fade-in"
           onClick={closeModal}
         >
           <div
-            className="bg-white rounded-2xl shadow-2xl w-full max-w-[400px] relative overflow-hidden !border !border-slate-100"
+            className="bg-white rounded-3xl shadow-2xl w-full max-w-[380px] p-4 relative !border !border-slate-100 animate-scale-up space-y-4"
             onClick={(e) => e.stopPropagation()}
           >
-            <div className="bg-gradient-to-br from-[#001726] via-[#002f4a] to-[#001f33] p-5 text-center relative text-white">
+            {/* Top Bar: Icon + Title & Close */}
+            <div className="flex items-start justify-between">
+              <div className="flex items-center gap-3">
+                
+                <div>
+                  <h3 className="text-base font-family-bold text-slate-900 !m-0 leading-tight">
+                    Add a Tip
+                  </h3>
+                  <p className="text-xs text-slate-400 !m-0 font-family-regular mt-0.5">
+                    Show appreciation for great service
+                  </p>
+                </div>
+              </div>
+
               <button
+                type="button"
                 onClick={closeModal}
-                className="absolute top-3.5 right-3.5 w-7 h-7 rounded-lg bg-white/10 hover:bg-white/20 text-white flex items-center justify-center transition-all !border-none cursor-pointer"
+                className="w-8 h-8 rounded-full bg-slate-100 hover:bg-slate-200 text-slate-400 hover:text-slate-700 flex items-center justify-center transition-colors cursor-pointer border-none"
+                aria-label="Close"
               >
                 <X size={15} />
               </button>
-              <h3 className="text-white text-base font-family-semibold !m-0">
-                Add a Tip
-              </h3>
-              <p className="text-slate-300 text-xs mt-1 !m-0 font-family-regular">
-                Show appreciation for great service
-              </p>
             </div>
 
-            <div className="p-5">
+            {/* Content Body */}
+            <div>
               {CustomAmount ? (
-                <div className="!mb-4">
-                  <label className="text-xs text-slate-700 block !mb-1.5 font-family-medium">
-                    Enter Amount ($)
-                  </label>
-                  <input
-                    className="w-full px-3.5 py-2.5 !border !border-slate-200 rounded-xl text-sm font-family-medium text-slate-900 focus:!border-[#004a70] outline-none transition-colors bg-slate-50/50"
-                    type="text"
-                    name="price"
-                    placeholder="Enter amount"
-                    value={tipAmount}
-                    onChange={(e) => setTipAmount(e.target.value)}
-                    maxLength="16"
-                    required
-                  />
+                <div className="space-y-1.5">
+                  <div className="flex items-center justify-between text-xs">
+                    <label className="font-family-semibold text-slate-700">
+                      Enter Custom Amount
+                    </label>
+                    <button
+                      type="button"
+                      onClick={() => setCustomAmount(false)}
+                      className="text-[#004a70] hover:underline font-family-medium cursor-pointer bg-transparent border-none p-0"
+                    >
+                      Quick select
+                    </button>
+                  </div>
+                  <div className="relative">
+                    <span className="absolute left-3.5 top-1/2 -translate-y-1/2 text-sm font-family-bold text-slate-400">
+                      $
+                    </span>
+                    <input
+                      className="w-full pl-8 pr-4 py-2.5 bg-slate-50/80 border border-slate-200 rounded-xl text-sm font-family-semibold text-slate-900 focus:bg-white focus:border-[#004a70] outline-none transition-colors"
+                      type="number"
+                      step="0.5"
+                      name="price"
+                      placeholder="Enter amount"
+                      value={tipAmount}
+                      onChange={(e) => setTipAmount(e.target.value)}
+                      autoFocus
+                    />
+                  </div>
                 </div>
               ) : (
-                <>
-                  <p className="text-xs text-slate-400 !mb-2.5 font-family-medium uppercase tracking-wider">
-                    Quick Select
-                  </p>
-                  <div className="grid grid-cols-5 gap-2 !mb-3">
-                    {["1", "2", "5", "10", "20"].map((amount) => (
-                      <button
-                        key={amount}
-                        onClick={() => handleTipSelection(amount)}
-                        className={`py-2 rounded-xl !border font-family-semibold text-xs cursor-pointer transition-all text-center ${tipAmount === amount
-                            ? "!border-[#004a70] bg-[#004a70]/10 text-[#004a70]"
-                            : "!border-slate-200 text-slate-600 bg-white hover:!border-[#004a70]"
-                          }`}
-                      >
-                        ${amount}
-                      </button>
-                    ))}
+                <div className="space-y-2.5">
+                  <div className="flex items-center justify-between">
+                    <span className="text-[11px] font-family-bold text-slate-400 uppercase tracking-wider">
+                      Select Amount
+                    </span>
+                    <button
+                      type="button"
+                      onClick={handleChangeCustom}
+                      className="text-[11px] text-[#004a70] hover:underline font-family-semibold cursor-pointer bg-transparent border-none p-0"
+                    >
+                      Custom amount
+                    </button>
                   </div>
-                  <button
-                    onClick={handleChangeCustom}
-                    className="bg-transparent !border-none text-[#004a70] hover:underline font-family-medium text-xs cursor-pointer py-1 block w-full text-center"
-                  >
-                    Enter other amount
-                  </button>
-                </>
+
+                  <div className="grid grid-cols-5 gap-2">
+                    {["1", "2", "5", "10", "20"].map((amount) => {
+                      const isSelected = tipAmount === amount;
+                      return (
+                        <button
+                          key={amount}
+                          type="button"
+                          onClick={() => handleTipSelection(amount)}
+                          className={`py-2.5 rounded-xl border text-xs sm:text-sm font-family-bold cursor-pointer transition-all text-center select-none ${
+                            isSelected
+                              ? "bg-[#004a70] text-white border-[#004a70] shadow-sm shadow-[#004a70]/30 scale-[1.03]"
+                              : "bg-slate-50 hover:bg-slate-100 text-slate-700 border-slate-200/90"
+                          }`}
+                        >
+                          ${amount}
+                        </button>
+                      );
+                    })}
+                  </div>
+                </div>
               )}
 
-              <div className="!mt-5 flex flex-col gap-2">
+              {/* Conversion summary pill */}
+              <div className="mt-3.5 p-2 rounded-xl bg-sky-500/[0.06] border border-sky-400/20 flex items-center justify-between text-xs">
+                <span className="text-slate-500 font-family-medium">Total Tip</span>
+                <div className="flex items-baseline gap-1.5">
+                  <span className="font-family-bold text-[#004a70] text-sm">
+                    ${Number(tipAmount || 0).toFixed(2)} USD
+                  </span>
+                  <span className="text-[10.5px] text-slate-400 font-family-medium">
+                    (≈ ${(Number(tipAmount || 0) * 2.7).toFixed(2)} XCD)
+                  </span>
+                </div>
+              </div>
+
+              {/* Payment Actions */}
+              <div className="mt-4 space-y-2">
                 <button
-                  onClick={() => { setShow(true); setIsModalOpen(false); }}
-                  className="w-full h-10 rounded-xl bg-[#004a70] hover:bg-[#003957] text-white font-family-semibold text-xs flex items-center justify-center gap-1.5 transition-colors !border-none cursor-pointer"
+                  type="button"
+                  onClick={() => {
+                    setShow(true);
+                    setIsModalOpen(false);
+                  }}
+                  className="w-full h-11 rounded-xl bg-[#004a70] hover:bg-[#003855] text-white font-family-bold text-xs sm:text-sm flex items-center justify-center gap-2 transition-all cursor-pointer border-none shadow-sm shadow-[#004a70]/20 active:scale-[0.99]"
                 >
                   <MdPayment size={16} />
-                  Pay with Card
+                  <span>Pay with Card</span>
                 </button>
+
                 <button
+                  type="button"
                   onClick={handlePay}
-                  className="w-full h-10 rounded-xl !border !border-slate-200 bg-white text-slate-800 hover:bg-slate-50 font-family-medium text-xs flex items-center justify-center gap-1.5 transition-colors cursor-pointer"
+                  className="w-full h-10 rounded-xl bg-slate-50 hover:bg-slate-100 text-slate-700 font-family-semibold text-xs flex items-center justify-center gap-2 border border-slate-200/90 transition-all cursor-pointer active:scale-[0.99]"
                 >
                   {Loading ? (
                     <span className="inline-block w-3.5 h-3.5 border-2 border-slate-700 border-t-transparent rounded-full animate-spin" />
                   ) : (
-                    <><IoWallet size={16} /> Pay with Wallet</>
+                    <>
+                      <IoWallet size={15} className="text-[#004a70]" />
+                      <span>Pay with Wallet</span>
+                      <span className="text-[10.5px] text-slate-400 font-family-regular">
+                        (${Number(userDataStore?.amount || 0).toFixed(2)})
+                      </span>
+                    </>
                   )}
                 </button>
               </div>
@@ -1092,6 +1499,590 @@ function Page() {
             </div>
           </div>
         </Modal>
+      )}
+
+      {/* ===== TOUR BOOKING DETAIL MODAL (Matching Mobile TourBookingDetail.js) ===== */}
+      {mounted && typeof document !== "undefined" && selectedTourBooking && createPortal(
+        (() => {
+          const booking = selectedTourBooking;
+          const snap = booking?.tourSnapshot || booking?.tour || {};
+          const title = snap?.title || booking?.tour?.title || "Tour Booking";
+          const image = snap?.image || snap?.images?.[0] || booking?.tour?.images?.[0] || "/placeholder.jpg";
+          const status = String(booking?.status || "pending").toLowerCase();
+          const dateLabel = booking?.date ? moment(booking.date, "YYYY-MM-DD").format("ddd, DD MMM YYYY") : "Date TBD";
+          const timeLabel = booking?.time ? (moment(booking.time, ["HH:mm", "H:mm", "hh:mm A"]).isValid() ? moment(booking.time, ["HH:mm", "H:mm", "hh:mm A"]).format("hh:mm A") : booking.time) : "";
+          const tourId = booking?.tour?._id || booking?.tour;
+          const hasPickupDropoff = booking?.locationType === "pickup_dropoff" || snap?.locationType === "pickup_dropoff" || booking?.pickup?.address || booking?.dropoff?.address;
+          
+          const guestsText = booking?.bookingType === "group"
+            ? "Group Tour"
+            : [
+                booking?.guests?.adults ? `${booking.guests.adults} adult${booking.guests.adults === 1 ? "" : "s"}` : null,
+                booking?.guests?.kids ? `${booking.guests.kids} child${booking.guests.kids === 1 ? "" : "ren"}` : null,
+                booking?.guests?.infants ? `${booking.guests.infants} infant${booking.guests.infants === 1 ? "" : "s"}` : null,
+              ].filter(Boolean).join(", ") || `${booking?.totalGuests || 1} guests`;
+          
+          const priceFareXCD = Number(booking?.totalPrice || booking?.price || 0);
+          const serviceFeeXCD = Number(booking?.serviceFee || 0);
+          const convenienceFeeXCD = Number(booking?.convenienceFee || 0);
+          const totalXCD = priceFareXCD + serviceFeeXCD + convenienceFeeXCD;
+          const totalUSD = (totalXCD / 2.7).toFixed(2);
+
+          return (
+            <div
+              className="!fixed !inset-0 !z-[9999999] !flex !items-center !justify-center !p-4 !bg-black/75 !backdrop-blur-md !animate-fade-in"
+              onClick={() => setSelectedTourBooking(null)}
+            >
+              <div
+                className="relative w-full max-w-lg bg-white rounded-3xl !p-5 sm:!p-6 shadow-2xl border border-slate-100 max-h-[90vh] overflow-y-auto"
+                onClick={(e) => e.stopPropagation()}
+              >
+                {/* Header with Title and Close */}
+                <div className="flex items-center justify-between pb-3 border-b border-slate-100 mb-4">
+                  <div>
+                    <h3 className="text-base sm:text-lg font-family-bold text-slate-900 !m-0">
+                      Tour Booking Details
+                    </h3>
+                  </div>
+                  <button
+                    type="button"
+                    onClick={() => setSelectedTourBooking(null)}
+                    className="w-8 h-8 rounded-full bg-slate-100 hover:bg-slate-200 text-slate-500 flex items-center justify-center cursor-pointer border-none transition-colors"
+                  >
+                    <X size={16} />
+                  </button>
+                </div>
+
+                {/* Hero Image */}
+                <div className="relative w-full h-44 sm:h-48 rounded-2xl overflow-hidden mb-4 bg-slate-100 border border-slate-200/80">
+                  <img
+                    src={image}
+                    alt={title}
+                    className="w-full h-full object-cover"
+                  />
+                  <div className="absolute top-3 left-3">
+                    <StatusBadge status={status} />
+                  </div>
+                </div>
+
+                {/* Title & Status Notice */}
+                <div className="mb-4">
+                  <span className="text-[10px] font-family-bold uppercase tracking-wider text-[#004a70] block mb-1">
+                    {booking?.bookingType === "group" ? "Group Tour" : "Tour Booking"}
+                  </span>
+                  <h4 className="text-base sm:text-lg font-family-bold text-slate-900 !m-0 leading-snug">
+                    {title}
+                  </h4>
+
+                  {status === "pending" && (
+                    <div className="mt-2.5 p-2.5 rounded-xl bg-amber-50/80 border border-amber-200/80 text-[11.5px] text-amber-800 font-family-medium leading-relaxed">
+                      ⏳ Payment is held. Admin / guide will approve or reject this booking request.
+                    </div>
+                  )}
+                </div>
+
+                {/* Summary Breakdown Card (Matching Mobile TourBookingDetail.js) */}
+                <div className="bg-slate-50/80 rounded-2xl p-4 border border-slate-200/80 space-y-2.5 text-xs text-slate-600 mb-4">
+                  <h5 className="text-xs font-family-bold uppercase tracking-wider text-slate-800 !m-0 pb-1 border-b border-slate-200/80">
+                    Booking Summary
+                  </h5>
+                  <div className="flex items-center justify-between">
+                    <span className="text-slate-500">Date</span>
+                    <span className="font-family-semibold text-slate-900">{dateLabel}</span>
+                  </div>
+                  {timeLabel && (
+                    <div className="flex items-center justify-between">
+                      <span className="text-slate-500">Time Slot</span>
+                      <span className="font-family-semibold text-slate-900">{timeLabel}</span>
+                    </div>
+                  )}
+                  {booking?.day && (
+                    <div className="flex items-center justify-between">
+                      <span className="text-slate-500">Day</span>
+                      <span className="font-family-semibold text-slate-900">{booking.day}</span>
+                    </div>
+                  )}
+                  <div className="flex items-center justify-between">
+                    <span className="text-slate-500">Guests / Party</span>
+                    <span className="font-family-semibold text-slate-900">{guestsText}</span>
+                  </div>
+                  <div className="flex items-center justify-between">
+                    <span className="text-slate-500">Booking Type</span>
+                    <span className="font-family-semibold text-slate-900 capitalize">
+                      {booking?.bookingType === "group" ? "Group" : "Individual"}
+                    </span>
+                  </div>
+                  <div className="flex items-center justify-between">
+                    <span className="text-slate-500">Payment Method</span>
+                    <span className="font-family-semibold text-slate-900 capitalize">
+                      {booking?.paymentType === "wallet" ? "CabKn Wallet" : booking?.paymentType === "jad" || booking?.paymentType === "card" ? "Credit / Debit Card" : booking?.paymentType || "Card"}
+                    </span>
+                  </div>
+
+                  <div className="pt-2 border-t border-slate-200/80 space-y-1.5">
+                    <div className="flex items-center justify-between">
+                      <span className="text-slate-500">Fare</span>
+                      <span className="font-family-semibold text-slate-800">${priceFareXCD.toFixed(2)} XCD</span>
+                    </div>
+                    {serviceFeeXCD > 0 && (
+                      <div className="flex items-center justify-between">
+                        <span className="text-slate-500">Service Fee (20%)</span>
+                        <span className="font-family-semibold text-slate-800">${serviceFeeXCD.toFixed(2)} XCD</span>
+                      </div>
+                    )}
+                    {convenienceFeeXCD > 0 && (
+                      <div className="flex items-center justify-between">
+                        <span className="text-slate-500">Convenience Fee</span>
+                        <span className="font-family-semibold text-slate-800">${convenienceFeeXCD.toFixed(2)} XCD</span>
+                      </div>
+                    )}
+                    <div className="pt-2 border-t border-slate-200 flex items-center justify-between text-sm font-family-bold text-slate-900">
+                      <span>Total Amount</span>
+                      <div className="text-right">
+                        <span className="text-[#004a70] text-base font-family-bold block">
+                          ${totalXCD.toFixed(2)} XCD
+                        </span>
+                        <span className="text-[10.5px] text-slate-400 font-family-regular block">
+                          ≈ ${totalUSD} USD
+                        </span>
+                      </div>
+                    </div>
+                  </div>
+                </div>
+
+                {/* Pickup & Drop-off or Meeting Point Card */}
+                {hasPickupDropoff ? (
+                  <div className="bg-slate-50/80 rounded-2xl p-4 border border-slate-200/80 space-y-2 text-xs text-slate-600 mb-4">
+                    <div className="flex items-center gap-1.5 text-slate-800 font-family-bold">
+                      <FaLocationDot size={13} className="text-[#004a70]" />
+                      <span>Pickup & Drop-off</span>
+                    </div>
+                    {booking?.pickup?.address && (
+                      <div className="pl-4">
+                        <span className="text-[11px] font-family-semibold text-[#004a70] block">Pickup Location</span>
+                        <p className="text-slate-700 font-family-medium !m-0 mt-0.5">{booking.pickup.address}</p>
+                      </div>
+                    )}
+                    {booking?.dropoff?.address && (
+                      <div className="pl-4 pt-1">
+                        <span className="text-[11px] font-family-semibold text-[#004a70] block">Drop-off Location</span>
+                        <p className="text-slate-700 font-family-medium !m-0 mt-0.5">{booking.dropoff.address}</p>
+                      </div>
+                    )}
+                  </div>
+                ) : (snap?.meetingPoint?.address || booking?.tour?.meetingPoint?.address) ? (
+                  <div className="bg-slate-50/80 rounded-2xl p-4 border border-slate-200/80 space-y-1.5 text-xs text-slate-600 mb-4">
+                    <div className="flex items-center gap-1.5 text-slate-800 font-family-bold">
+                      <FaLocationDot size={13} className="text-[#004a70]" />
+                      <span>Meeting Point</span>
+                    </div>
+                    <p className="text-slate-600 font-family-medium leading-relaxed !m-0 pl-5">
+                      {snap?.meetingPoint?.address || booking?.tour?.meetingPoint?.address}
+                    </p>
+                  </div>
+                ) : null}
+
+                {/* Special Note if any */}
+                {booking?.note && (
+                  <div className="bg-slate-50/80 rounded-2xl p-4 border border-slate-200/80 space-y-1 text-xs text-slate-600 mb-4">
+                    <span className="text-slate-800 font-family-bold block">Special Instructions / Notes</span>
+                    <p className="text-slate-600 font-family-medium leading-relaxed !m-0 italic">
+                      "{booking.note}"
+                    </p>
+                  </div>
+                )}
+
+                {/* Action Buttons */}
+                <div className="flex items-center gap-3 pt-2">
+                  {tourId && (
+                    <Link
+                      href={`/tourDetails/${tourId}`}
+                      className="flex-1 py-2.5 rounded-xl bg-[#004a70] hover:bg-[#003957] text-white text-xs font-family-semibold text-center no-underline transition-all shadow-xs"
+                    >
+                      View Tour Page
+                    </Link>
+                  )}
+                  <button
+                    type="button"
+                    onClick={() => setSelectedTourBooking(null)}
+                    className="flex-1 py-2.5 rounded-xl bg-slate-100 hover:bg-slate-200 text-slate-700 text-xs font-family-semibold transition-all cursor-pointer border-none"
+                  >
+                    Close
+                  </button>
+                </div>
+              </div>
+            </div>
+          );
+        })(),
+        document.body
+      )}
+
+      {/* ===== SERVICE BOOKING DETAIL MODAL (Matching Mobile ServiceBookingDetail.js) ===== */}
+      {mounted && typeof document !== "undefined" && selectedServiceBooking && createPortal(
+        (() => {
+          const booking = selectedServiceBooking;
+          const snap = booking?.serviceSnapshot || booking?.service || {};
+          const title = snap?.title || booking?.service?.title || "Service Booking";
+          const image = snap?.image || snap?.images?.[0] || booking?.service?.images?.[0] || "/placeholder.jpg";
+          const status = String(booking?.status || "pending").toLowerCase();
+          const dateLabel = booking?.date ? moment(booking.date, "YYYY-MM-DD").format("ddd, DD MMM YYYY") : "Date TBD";
+          const timeLabel = booking?.time ? (moment(booking.time, ["HH:mm", "H:mm", "hh:mm A"]).isValid() ? moment(booking.time, ["HH:mm", "H:mm", "hh:mm A"]).format("hh:mm A") : booking.time) : "";
+          const atLocation = booking?.locationType === "at_your_location" || snap?.locationType === "at_your_location";
+          const serviceId = booking?.service?._id || booking?.service;
+          const guestsText = booking?.bookingType === "group"
+            ? "Group Service"
+            : [
+                booking?.guests?.adults ? `${booking.guests.adults} adult${booking.guests.adults === 1 ? "" : "s"}` : null,
+                booking?.guests?.kids ? `${booking.guests.kids} child${booking.guests.kids === 1 ? "" : "ren"}` : null,
+                booking?.guests?.infants ? `${booking.guests.infants} infant${booking.guests.infants === 1 ? "" : "s"}` : null,
+              ].filter(Boolean).join(", ") || `${booking?.totalGuests || 1} guests`;
+          
+          const priceFareXCD = Number(booking?.totalPrice || booking?.price || 0);
+          const serviceFeeXCD = Number(booking?.serviceFee || 0);
+          const convenienceFeeXCD = Number(booking?.convenienceFee || 0);
+          const totalXCD = priceFareXCD + serviceFeeXCD + convenienceFeeXCD;
+          const totalUSD = (totalXCD / 2.7).toFixed(2);
+
+          return (
+            <div
+              className="!fixed !inset-0 !z-[9999999] !flex !items-center !justify-center !p-4 !bg-black/75 !backdrop-blur-md !animate-fade-in"
+              onClick={() => setSelectedServiceBooking(null)}
+            >
+              <div
+                className="relative w-full max-w-lg bg-white rounded-3xl !p-5 sm:!p-6 shadow-2xl border border-slate-100 max-h-[90vh] overflow-y-auto"
+                onClick={(e) => e.stopPropagation()}
+              >
+                {/* Header with Title and Close */}
+                <div className="flex items-center justify-between pb-3 border-b border-slate-100 mb-4">
+                  <div>
+                    <h3 className="text-base sm:text-lg font-family-bold text-slate-900 !m-0">
+                      Service Booking Details
+                    </h3>
+                  
+                  </div>
+                  <button
+                    type="button"
+                    onClick={() => setSelectedServiceBooking(null)}
+                    className="w-8 h-8 rounded-full bg-slate-100 hover:bg-slate-200 text-slate-500 flex items-center justify-center cursor-pointer border-none transition-colors"
+                  >
+                    <X size={16} />
+                  </button>
+                </div>
+
+                {/* Hero Image */}
+                <div className="relative w-full h-44 sm:h-48 rounded-2xl overflow-hidden mb-4 bg-slate-100 border border-slate-200/80">
+                  <img
+                    src={image}
+                    alt={title}
+                    className="w-full h-full object-cover"
+                  />
+                  <div className="absolute top-3 left-3">
+                    <StatusBadge status={status} />
+                  </div>
+                </div>
+
+                {/* Title & Status Message */}
+                <div className="mb-4">
+                  <span className="text-[10px] font-family-bold uppercase tracking-wider text-[#004a70] block mb-1">
+                    {booking?.category?.name || (booking?.bookingType === "group" ? "Group Service" : "Service")}
+                  </span>
+                  <h4 className="text-base sm:text-lg font-family-bold text-slate-900 !m-0 leading-snug">
+                    {title}
+                  </h4>
+
+                  {status === "pending" && (
+                    <div className="mt-2.5 p-2.5 rounded-xl bg-amber-50/80 border border-amber-200/80 text-[11.5px] text-amber-800 font-family-medium leading-relaxed">
+                      ⏳ Payment is held. Admin / provider will approve or reject this booking request.
+                    </div>
+                  )}
+                </div>
+
+                {/* Summary Breakdown Card (Matching Mobile Row list) */}
+                <div className="bg-slate-50/80 rounded-2xl p-4 border border-slate-200/80 space-y-2.5 text-xs text-slate-600 mb-4">
+                  <h5 className="text-xs font-family-bold uppercase tracking-wider text-slate-800 !m-0 pb-1 border-b border-slate-200/80">
+                    Booking Summary
+                  </h5>
+                  <div className="flex items-center justify-between">
+                    <span className="text-slate-500">Date</span>
+                    <span className="font-family-semibold text-slate-900">{dateLabel}</span>
+                  </div>
+                  {timeLabel && (
+                    <div className="flex items-center justify-between">
+                      <span className="text-slate-500">Time Slot</span>
+                      <span className="font-family-semibold text-slate-900">{timeLabel}</span>
+                    </div>
+                  )}
+                  {booking?.day && (
+                    <div className="flex items-center justify-between">
+                      <span className="text-slate-500">Day</span>
+                      <span className="font-family-semibold text-slate-900">{booking.day}</span>
+                    </div>
+                  )}
+                  <div className="flex items-center justify-between">
+                    <span className="text-slate-500">Guests / Party</span>
+                    <span className="font-family-semibold text-slate-900">{guestsText}</span>
+                  </div>
+                  <div className="flex items-center justify-between">
+                    <span className="text-slate-500">Payment Method</span>
+                    <span className="font-family-semibold text-slate-900 capitalize">
+                      {booking?.paymentType === "wallet" ? "CabKn Wallet" : booking?.paymentType === "jad" || booking?.paymentType === "card" ? "Credit / Debit Card" : booking?.paymentType || "Card"}
+                    </span>
+                  </div>
+
+                  <div className="pt-2 border-t border-slate-200/80 space-y-1.5">
+                    <div className="flex items-center justify-between">
+                      <span className="text-slate-500">Fare</span>
+                      <span className="font-family-semibold text-slate-800">${priceFareXCD.toFixed(2)} XCD</span>
+                    </div>
+                    {serviceFeeXCD > 0 && (
+                      <div className="flex items-center justify-between">
+                        <span className="text-slate-500">Service Fee (20%)</span>
+                        <span className="font-family-semibold text-slate-800">${serviceFeeXCD.toFixed(2)} XCD</span>
+                      </div>
+                    )}
+                    {convenienceFeeXCD > 0 && (
+                      <div className="flex items-center justify-between">
+                        <span className="text-slate-500">Convenience Fee</span>
+                        <span className="font-family-semibold text-slate-800">${convenienceFeeXCD.toFixed(2)} XCD</span>
+                      </div>
+                    )}
+                    <div className="pt-2 border-t border-slate-200 flex items-center justify-between text-sm font-family-bold text-slate-900">
+                      <span>Total Amount</span>
+                      <div className="text-right">
+                        <span className="text-[#004a70] text-base font-family-bold block">
+                          ${totalXCD.toFixed(2)} XCD
+                        </span>
+                        <span className="text-[10.5px] text-slate-400 font-family-regular block">
+                          ≈ ${totalUSD} USD
+                        </span>
+                      </div>
+                    </div>
+                  </div>
+                </div>
+
+                {/* Location Card */}
+                <div className="bg-slate-50/80 rounded-2xl p-4 border border-slate-200/80 space-y-1.5 text-xs text-slate-600 mb-4">
+                  <div className="flex items-center gap-1.5 text-slate-800 font-family-bold">
+                    <FaLocationDot size={13} className="text-[#004a70]" />
+                    <span>{atLocation ? "Service Location (At Your Location)" : "Meeting Point"}</span>
+                  </div>
+                  <p className="text-slate-600 font-family-medium leading-relaxed !m-0 pl-5">
+                    {booking?.location?.address || booking?.pickup?.address || snap?.meetingPoint?.address || snap?.address || "Independence Square, Basseterre, St Kitts & Nevis"}
+                  </p>
+                </div>
+
+                {/* Special Note if any */}
+                {booking?.note && (
+                  <div className="bg-slate-50/80 rounded-2xl p-4 border border-slate-200/80 space-y-1 text-xs text-slate-600 mb-4">
+                    <span className="text-slate-800 font-family-bold block">Special Instructions / Notes</span>
+                    <p className="text-slate-600 font-family-medium leading-relaxed !m-0 italic">
+                      "{booking.note}"
+                    </p>
+                  </div>
+                )}
+
+                {/* Action Buttons */}
+                <div className="flex items-center gap-3 pt-2">
+                  {serviceId && (
+                    <Link
+                      href={`/serviceDetails/${serviceId}`}
+                      className="flex-1 py-2.5 rounded-xl bg-[#004a70] hover:bg-[#003957] text-white text-xs font-family-semibold text-center no-underline transition-all shadow-xs"
+                    >
+                      View Service Page
+                    </Link>
+                  )}
+                  <button
+                    type="button"
+                    onClick={() => setSelectedServiceBooking(null)}
+                    className="flex-1 py-2.5 rounded-xl bg-slate-100 hover:bg-slate-200 text-slate-700 text-xs font-family-semibold transition-all cursor-pointer border-none"
+                  >
+                    Close
+                  </button>
+                </div>
+              </div>
+            </div>
+          );
+        })(),
+        document.body
+      )}
+
+      {/* ===== SHOP ORDER DETAILS MODAL (Matching Mobile ShopOrderDetails.js) ===== */}
+      {mounted && typeof document !== "undefined" && selectedShopOrder && createPortal(
+        (() => {
+          const order = selectedShopOrder;
+          const orderNum = order?.id || order?.order_id || order?._id?.slice(-8) || "N/A";
+          const status = String(order?.status || "pending").toLowerCase();
+          const dateFormatted = order?.createdAt ? moment(order.createdAt).format("MMMM DD, YYYY") : "";
+          const timeFormatted = order?.createdAt ? moment(order.createdAt).format("hh:mm A") : "";
+          const cartItems = order?.cart_items || [];
+          
+          const priceXCD = Number(order?.price || order?.total_price || 0);
+          const serviceFee = Number(order?.serviceFee || 0);
+          const convenienceFee = Number(order?.convenienceFee || 0);
+          const catalogOff = Number(order?.catalogDiscount || 0);
+          const specialDiscountAmt = Number(order?.specialDiscountAmount || 0);
+          const priceUSD = (priceXCD / 2.7).toFixed(2);
+
+          return (
+            <div
+              className="!fixed !inset-0 !z-[9999999] !flex !items-center !justify-center !p-4 !bg-black/75 !backdrop-blur-md !animate-fade-in"
+              onClick={() => setSelectedShopOrder(null)}
+            >
+              <div
+                className="relative w-full max-w-lg bg-white rounded-3xl !p-5 sm:!p-6 shadow-2xl border border-slate-100 max-h-[90vh] overflow-y-auto"
+                onClick={(e) => e.stopPropagation()}
+              >
+                {/* Header with Title and Close */}
+                <div className="flex items-center justify-between pb-3 border-b border-slate-100 mb-4">
+                  <div>
+                    <span className="text-[10px] font-family-bold tracking-widest text-[#004a70] uppercase block">
+                      INVOICE
+                    </span>
+                    <h3 className="text-base sm:text-lg font-family-bold text-slate-900 !m-0">
+                      Order #{orderNum}
+                    </h3>
+                  </div>
+                  <div className="flex items-center gap-2">
+                    <StatusBadge status={status} />
+                    <button
+                      type="button"
+                      onClick={() => setSelectedShopOrder(null)}
+                      className="w-8 h-8 rounded-full bg-slate-100 hover:bg-slate-200 text-slate-500 flex items-center justify-center cursor-pointer border-none transition-colors"
+                    >
+                      <X size={16} />
+                    </button>
+                  </div>
+                </div>
+
+                {/* Order Date & Time Strip */}
+                <div className="flex items-center justify-between text-xs text-slate-500 bg-slate-50 p-2.5 rounded-xl border border-slate-100 mb-4">
+                  <span className="font-family-medium">Placed on: {dateFormatted}</span>
+                  {timeFormatted && <span className="font-family-medium">{timeFormatted}</span>}
+                </div>
+
+                {/* Ordered Items List */}
+                <div className="space-y-2 mb-4">
+                  <h4 className="text-xs font-family-bold uppercase tracking-wider text-slate-800 !m-0">
+                    Order Items ({cartItems.length})
+                  </h4>
+                  <div className="divide-y divide-slate-100 bg-slate-50/60 rounded-2xl p-3 border border-slate-100 max-h-48 overflow-y-auto">
+                    {cartItems.length > 0 ? (
+                      cartItems.map((cItem, cIdx) => {
+                        const itemPrice = Number(cItem?.location_price || cItem?.price || 0);
+                        const itemQty = parseInt(cItem?.cartQuantity || cItem?.quantity || 1);
+                        const itemTotal = itemPrice * itemQty;
+                        const itemImg = cItem?.images?.[0] || cItem?.image || "/placeholder.jpg";
+
+                        return (
+                          <div key={cIdx} className="flex items-center gap-3 py-2.5 first:pt-0 last:pb-0">
+                            <img
+                              src={itemImg}
+                              alt={cItem?.name || "Product"}
+                              className="w-12 h-12 rounded-lg object-cover shrink-0 border border-slate-200"
+                            />
+                            <div className="min-w-0 flex-1">
+                              <h5 className="text-xs font-family-semibold text-slate-900 !m-0 truncate">
+                                {cItem?.name || cItem?.title || "Product"}
+                              </h5>
+                              <span className="text-[11px] text-slate-400 font-family-regular block">
+                                ${itemPrice.toFixed(2)} each
+                              </span>
+                            </div>
+                            <div className="text-right shrink-0">
+                              <span className="text-xs font-family-bold text-[#004a70] block">
+                                Qty: {itemQty}
+                              </span>
+                              <span className="text-xs font-family-bold text-slate-800 block">
+                                ${itemTotal.toFixed(2)} XCD
+                              </span>
+                            </div>
+                          </div>
+                        );
+                      })
+                    ) : (
+                      <p className="text-xs text-slate-400 !m-0 py-2 text-center font-family-regular">
+                        No item details available
+                      </p>
+                    )}
+                  </div>
+                </div>
+
+                {/* Delivery Location */}
+                {order?.drop_location && (
+                  <div className="bg-slate-50/80 rounded-2xl p-3.5 border border-slate-100 space-y-1 text-xs text-slate-600 mb-4">
+                    <div className="flex items-center gap-1.5 text-slate-800 font-family-bold">
+                      <FaLocationDot size={12} className="text-[#004a70]" />
+                      <span>Delivery Location</span>
+                    </div>
+                    <p className="text-slate-600 font-family-medium leading-relaxed !m-0 pl-4">
+                      {order.drop_location}
+                    </p>
+                  </div>
+                )}
+
+                {/* Price Breakdown / Summary */}
+                <div className="bg-slate-50/80 rounded-2xl p-4 border border-slate-200/80 space-y-2 text-xs text-slate-600 mb-4">
+                  <h5 className="text-xs font-family-bold uppercase tracking-wider text-slate-800 !m-0 pb-1 border-b border-slate-200/80">
+                    Payment Summary
+                  </h5>
+                  <div className="flex items-center justify-between">
+                    <span className="text-slate-500">Subtotal</span>
+                    <span className="font-family-semibold text-slate-800">
+                      ${(priceXCD - serviceFee - convenienceFee + catalogOff).toFixed(2)} XCD
+                    </span>
+                  </div>
+                  {catalogOff > 0 && (
+                    <div className="flex items-center justify-between text-emerald-700">
+                      <span>Catalog Discount</span>
+                      <span>-${catalogOff.toFixed(2)} XCD</span>
+                    </div>
+                  )}
+                  {specialDiscountAmt > 0 && (
+                    <div className="flex items-center justify-between text-emerald-700">
+                      <span>Special Discount</span>
+                      <span>-${specialDiscountAmt.toFixed(2)} XCD</span>
+                    </div>
+                  )}
+                  {serviceFee > 0 && (
+                    <div className="flex items-center justify-between">
+                      <span className="text-slate-500">Service Fee</span>
+                      <span className="font-family-semibold text-slate-800">${serviceFee.toFixed(2)} XCD</span>
+                    </div>
+                  )}
+                  {convenienceFee > 0 && (
+                    <div className="flex items-center justify-between">
+                      <span className="text-slate-500">Convenience Fee</span>
+                      <span className="font-family-semibold text-slate-800">${convenienceFee.toFixed(2)} XCD</span>
+                    </div>
+                  )}
+                  <div className="pt-2 border-t border-slate-200 flex items-center justify-between text-sm font-family-bold text-slate-900">
+                    <span>Total Amount Paid</span>
+                    <div className="text-right">
+                      <span className="text-[#004a70] text-base font-family-bold block">
+                        ${priceXCD.toFixed(2)} XCD
+                      </span>
+                      <span className="text-[10.5px] text-slate-400 font-family-regular block">
+                        ≈ ${priceUSD} USD
+                      </span>
+                    </div>
+                  </div>
+                </div>
+
+                {/* Close Action */}
+                <div className="pt-1">
+                  <button
+                    type="button"
+                    onClick={() => setSelectedShopOrder(null)}
+                    className="w-full py-2.5 rounded-xl bg-slate-100 hover:bg-slate-200 text-slate-700 text-xs font-family-semibold transition-all cursor-pointer border-none"
+                  >
+                    Close Invoice
+                  </button>
+                </div>
+              </div>
+            </div>
+          );
+        })(),
+        document.body
       )}
     </div>
   );
