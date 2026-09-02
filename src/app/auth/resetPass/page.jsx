@@ -137,7 +137,7 @@ const Reset = () => {
                 <button
                   type="button"
                   onClick={togglePasswordVisibility}
-                  className="rounded-lg p-2 text-slate-500 transition hover:text-slate-800 focus:outline-none focus-visible:ring-4 focus-visible:ring-brand-200"
+                  className="rounded-lg p-2 text-slate-400 hover:text-slate-600 transition focus:outline-none"
                   aria-label={
                     passwordVisible ? "Hide password" : "Show password"
                   }
@@ -145,7 +145,7 @@ const Reset = () => {
                   <Image
                     src={passwordVisible ? Eye : EyeOff}
                     alt=""
-                    className="h-5 w-5"
+                    className="h-5 w-5 opacity-70"
                   />
                 </button>
               }
@@ -166,7 +166,7 @@ const Reset = () => {
                 <button
                   type="button"
                   onClick={togglePasswordVisibility1}
-                  className="rounded-lg p-2 text-slate-500 transition hover:text-slate-800 focus:outline-none focus-visible:ring-4 focus-visible:ring-brand-200"
+                  className="rounded-lg p-2 text-slate-400 hover:text-slate-600 transition focus:outline-none"
                   aria-label={
                     passwordVisible1 ? "Hide password" : "Show password"
                   }
@@ -174,7 +174,7 @@ const Reset = () => {
                   <Image
                     src={passwordVisible1 ? Eye : EyeOff}
                     alt=""
-                    className="h-5 w-5"
+                    className="h-5 w-5 opacity-70"
                   />
                 </button>
               }

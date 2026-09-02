@@ -10,6 +10,7 @@ import moment from "moment";
 import { Flex, message, Rate, Skeleton } from "antd";
 import ApiFunction from "@/components/ApiFunction/ApiFunction";
 import { useParams, useRouter, useSearchParams } from "next/navigation";
+import Link from "next/link";
 import toast from "react-hot-toast";
 import * as Yup from "yup";
 import { ErrorMessage, Field, Formik, Form } from "formik";
@@ -238,9 +239,9 @@ export default function ServiceLocation() {
 
         <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 relative z-10">
           <div className="flex items-center gap-2 text-slate-400 text-xs font-family-medium !mb-4">
-            <a href="/" className="text-slate-400 hover:text-white transition-colors">Home</a>
+            <Link href="/" className="text-slate-400 hover:text-white transition-colors">Home</Link>
             <span className="text-slate-500">/</span>
-            <a href="/serviceLocations" className="text-slate-400 hover:text-white transition-colors">Shop</a>
+            <Link href="/serviceLocations" className="text-slate-400 hover:text-white transition-colors">Shop</Link>
             <span className="text-slate-500">/</span>
             <span className="text-slate-200">Product Detail</span>
           </div>

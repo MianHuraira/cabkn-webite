@@ -125,12 +125,12 @@ export default function WhyUs() {
               <span className="animate-ping absolute inline-flex h-full w-full rounded-full bg-emerald-400 opacity-75"></span>
               <span className="relative inline-flex rounded-full h-2 w-2 bg-emerald-500"></span>
             </span>
-            <span>About Cabkn</span>
+            <span>About Welcome to Saint Kitts</span>
           </div>
           <h1 className={`text-white text-4xl sm:text-5xl md:text-6xl lg:text-7xl font-family-bold !mt-4 !mb-6 leading-[1.1] tracking-tight ${mounted ? "animate-fade-in-up" : "opacity-0"}`} style={{ animationDelay: "300ms" }}>
             Why Choose{" "}
             <span className="text-transparent bg-clip-text bg-gradient-to-r from-brand-300 via-sky-300 to-indigo-200">
-              Cabkn
+              Welcome to Saint Kitts
             </span>
             ?
           </h1>
@@ -195,9 +195,9 @@ export default function WhyUs() {
                 <span className="text-brand-600">Islands</span> Effortless
               </h2>
               <p className="text-slate-550 text-sm md:text-base leading-relaxed font-family-regular max-w-xl !m-0">
-                Cabkn was born from a simple idea: travel between Nevis and Saint Kitts should be as easy as booking a ride across town.
+                Welcome to Saint Kitts was born from a simple idea: travel between Nevis and Saint Kitts should be as easy as booking a ride across town.
                 We built a platform that connects riders with trusted drivers, providing real-time tracking, transparent pricing, and
-                a seamless booking experience. Today, thousands of riders rely on Cabkn for their daily commute, airport transfers,
+                a seamless booking experience. Today, thousands of riders rely on Welcome to Saint Kitts for their daily commute, airport transfers,
                 and island explorations.
               </p>
 
@@ -218,7 +218,7 @@ export default function WhyUs() {
             <div className="relative">
               <div className="absolute -inset-4 bg-gradient-to-br from-brand-600/10 to-brand-600/5 rounded-[2.5rem] -z-10 blur-md" />
               <div className="relative rounded-[2rem] overflow-hidden shadow-[0_20px_60px_rgba(0,0,0,0.08)] !border !border-slate-100">
-                <Image src={CarBanner} alt="Cabkn service" className="w-full h-auto object-cover hover:scale-105 transition-transform duration-700" />
+                <Image src={CarBanner} alt="Welcome to Saint Kitts service" className="w-full h-auto object-cover hover:scale-105 transition-transform duration-700" />
                 <div className="absolute inset-0 bg-gradient-to-tr from-brand-950/20 via-transparent to-transparent pointer-events-none" />
               </div>
 
@@ -372,7 +372,7 @@ export default function WhyUs() {
               <h2 className="text-white text-3xl sm:text-4xl md:text-5xl font-family-bold !mb-5 leading-tight tracking-tight">
                 Ready to Experience the{" "}
                 <span className="text-transparent bg-clip-text bg-gradient-to-r from-brand-300 via-sky-300 to-indigo-200">
-                  Cabkn Difference
+                  Welcome to Saint Kitts Difference
                 </span>
                 ?
               </h2>

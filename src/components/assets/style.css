@@ -17,8 +17,11 @@
   --border: #dde2e4;
 }
 
+html,
 body {
   background-color: #ffffff !important;
+  overflow-x: hidden !important;
+  max-width: 100vw;
 }
 /* font family start */
 /* Fredoka font */
@@ -3074,4 +3077,98 @@ element {
   .section-card {
     padding: 12px !important;
   }
+}
+
+/* Swiper custom styles for ThingstodoCard & Category slider */
+.thingstodo-swiper {
+  width: 100%;
+  height: 11rem; /* 176px - matches h-44 */
+}
+
+.thingstodo-swiper .swiper-pagination {
+  bottom: 8px !important;
+  z-index: 10;
+}
+
+.thingstodo-swiper {
+  overflow: hidden !important;
+  width: 100% !important;
+  max-width: 100% !important;
+  border-top-left-radius: 1rem !important;
+  border-top-right-radius: 1rem !important;
+  transform: translateZ(0);
+  -webkit-mask-image: -webkit-radial-gradient(white, black);
+  isolation: isolate;
+}
+
+.thingstodo-swiper .swiper-wrapper {
+  transform-style: flat !important;
+  width: 100% !important;
+}
+
+.thingstodo-swiper .swiper-slide {
+  overflow: hidden !important;
+  width: 100% !important;
+  position: relative !important;
+  border-radius: 0 !important;
+  transform: translateZ(0);
+}
+
+.thingstodo-swiper .swiper-slide img {
+  width: 100% !important;
+  height: 100% !important;
+  object-fit: cover !important;
+  display: block !important;
+  transform-origin: center center !important;
+}
+
+.thingstodo-swiper .swiper-pagination-bullet {
+  background: rgba(255, 255, 255, 0.75);
+  opacity: 1;
+  width: 6px;
+  height: 6px;
+  margin: 0 3px !important;
+  transition: all 0.3s cubic-bezier(0.4, 0, 0.2, 1);
+}
+
+.thingstodo-swiper .swiper-pagination-bullet-active {
+  background: #ffffff !important;
+  width: 18px;
+  border-radius: 9999px;
+  box-shadow: 0 1px 4px rgba(0, 0, 0, 0.35);
+}
+
+.category-swiper {
+  overflow: hidden !important;
+  max-width: 100% !important;
+  width: 100% !important;
+}
+
+.category-swiper .swiper-slide {
+  width: auto !important;
+}
+
+.cards-mobile-swiper {
+  overflow: hidden !important;
+  max-width: 100% !important;
+  width: 100% !important;
+  padding-bottom: 12px !important;
+  padding-top: 4px !important;
+}
+
+.cards-mobile-swiper .swiper-wrapper {
+  display: flex !important;
+  align-items: stretch !important;
+}
+
+.cards-mobile-swiper .swiper-slide {
+  height: auto !important;
+  display: flex !important;
+}
+
+.cards-mobile-swiper .swiper-slide > * {
+  width: 100% !important;
+  height: 100% !important;
+  display: flex !important;
+  flex-direction: column !important;
 }

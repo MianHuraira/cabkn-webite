@@ -14,7 +14,7 @@ import { useDispatch, useSelector } from "react-redux";
 import { Badge } from "antd";
 import { AiOutlineMenuFold } from "react-icons/ai";
 import { HiOutlineChatBubbleOvalLeft } from "react-icons/hi2";
-import { MdNotificationsActive, MdNotificationsNone } from "react-icons/md";
+import { MdNotificationsActive, MdNotificationsNone, MdLogout } from "react-icons/md";
 import { IoHeart } from "react-icons/io5";
 import moment from "moment";
 
@@ -27,6 +27,7 @@ import { useRouter, usePathname } from "next/navigation";
 import { encryptData } from "../ApiFunction/encrypted";
 import { useSocket } from "../ApiFunction/SoketProvider";
 import ApiFile from "../ApiFunction/ApiFile";
+import DriverModal from "./DriverModal";
 
 const InnerHeader = () => {
   const [show, setShow] = useState(false);
@@ -111,7 +112,6 @@ const InnerHeader = () => {
   const [driverModal, SetdriverModal] = useState(false);
   const handleClosedriver = () => SetdriverModal(false);
   const [userMenuOpen, setUserMenuOpen] = useState(false);
-  const [mobileProfileOpen, setMobileProfileOpen] = useState(false);
   const [mounted, setMounted] = useState(false);
   const [isScrolled, setIsScrolled] = useState(false);
 
@@ -119,6 +119,21 @@ const InnerHeader = () => {
   const [notifications, setNotifications] = useState([]);
   const [notifFilter, setNotifFilter] = useState("all");
   const [notifLoading, setNotifLoading] = useState(false);
+  const notifMenuRef = useRef(null);
+  const userMenuRef = useRef(null);
+
+  useEffect(() => {
+    const handleClickOutside = (event) => {
+      if (notifMenuRef.current && !notifMenuRef.current.contains(event.target)) {
+        setNotifShow(false);
+      }
+      if (userMenuRef.current && !userMenuRef.current.contains(event.target)) {
+        setUserMenuOpen(false);
+      }
+    };
+    document.addEventListener("mousedown", handleClickOutside);
+    return () => document.removeEventListener("mousedown", handleClickOutside);
+  }, []);
 
   useEffect(() => {
     const checkScroll = () => {
@@ -247,47 +262,6 @@ const InnerHeader = () => {
     { label: "Reviews", href: "/userreviews" },
   ];
 
-  const userMenuRef = useRef(null);
-
-  useEffect(() => {
-    const handleClickOutside = (event) => {
-      if (userMenuRef.current && !userMenuRef.current.contains(event.target)) {
-        setUserMenuOpen(false);
-      }
-    };
-    document.addEventListener("mousedown", handleClickOutside);
-    return () => document.removeEventListener("mousedown", handleClickOutside);
-  }, []);
-
-  const AuthDrop = [
-    {
-      label: "Profile",
-      key: "1",
-      to: "/profile",
-    },
-    {
-      label: "Chat",
-      key: "4",
-      to: "/chat",
-    },
-    {
-      label: "Favorites",
-      key: "5",
-      to: "/favorites",
-    },
-    {
-      label: "Signup as Driver",
-      key: "2",
-      onClick: HandleModal,
-    },
-    {
-      label: "Logout",
-      key: "3",
-      to: "/auth/login",
-      onClick: handleLogout,
-    },
-  ];
-
   const linkStyle = (href) => ({
     padding: "8px 12px",
     color: isActive(href) ? (isScrolled ? "#004a70" : "#fff") : (isScrolled ? "#4b5563" : "rgba(255,255,255,0.9)"),
@@ -302,240 +276,392 @@ const InnerHeader = () => {
 
   return (
     <div className="font-poppins">
-      <style jsx global>{`
-        .navBar00 {
-          background: transparent !important;
-          border-top: 1px solid rgba(255, 255, 255, 0.2) !important;
-          border-bottom: 1px solid rgba(255, 255, 255, 0.2) !important;
-        }
-        .navBar00.scrolled {
-          background-color: rgba(255, 255, 255, 0.75) !important;
-          background: rgba(255, 255, 255, 0.75) !important;
-          box-shadow: 0px 4px 22.9px 0px #0000000d !important;
-          backdrop-filter: blur(20px) !important;
-          -webkit-backdrop-filter: blur(20px) !important;
-          border-top: 1px solid rgba(255, 255, 255, 0.3) !important;
-          border-bottom: 1px solid rgba(255, 255, 255, 0.3) !important;
-        }
-      `}</style>
-      <Navbar
-        expand="xl"
-        className={`navBar00 ${mounted ? "animate-header-slide-down " : "opacity-0 "} ${isScrolled ? "scrolled" : ""} font-poppins`}
-        style={{
-          position: "fixed",
-          top: 0,
-          left: 0,
-          right: 0,
-          zIndex: 999,
-          width: "100%",
-          height: 64,
-          background: isScrolled ? "rgba(255,255,255,0.75)" : "transparent",
-          backdropFilter: isScrolled ? "blur(20px)" : "none",
-          WebkitBackdropFilter: isScrolled ? "blur(20px)" : "none",
-          borderTop: "1px solid rgba(255,255,255,0.2)",
-          borderBottom: "1px solid rgba(255,255,255,0.2)",
-          paddingLeft: 16,
-          paddingRight: 24,
-          display: "flex",
-          alignItems: "center",
-        }}
+      <header
+        className={`fixed top-0 left-0 right-0 w-full z-[999] transition-all duration-300 ${
+          mounted ? "animate-header-slide-down" : "opacity-0"
+        } ${
+          isScrolled
+            ? "bg-white/95 backdrop-blur-md shadow-sm !border-b !border-slate-200/80 py-2.5 sm:py-3"
+            : "bg-transparent py-3.5 sm:py-5 !border-b !border-transparent shadow-none"
+        }`}
       >
-        <div
-          style={{
-            width: "100%",
-            maxWidth: 1200,
-            margin: "0 auto",
-            display: "flex",
-            alignItems: "center",
-            justifyContent: "space-between",
-          }}
-        >
+        <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 flex items-center justify-between">
           {/* Logo */}
-          <Link href={"/"} style={{ textDecoration: "none", display: "flex", alignItems: "center", flexShrink: 0 }}>
+          <Link
+            href={"/"}
+            className="flex items-center flex-shrink-0 no-underline transition-transform duration-300 hover:scale-105"
+          >
             <Image
               src={isScrolled ? logoBlue : whiteLogo}
-              alt="Cabkn"
-              width={30}
-              height={26}
-              style={{ objectFit: "contain" }}
+              alt="Welcome to Saint Kitts"
+              width={72}
+              height={40}
+              className="h-8 sm:h-9 w-auto object-contain"
               priority
             />
           </Link>
 
           {/* Desktop Nav - Centered */}
-          <div
-            className="d-none d-xl-flex"
-            style={{
-              alignItems: "center",
-              gap: 1,
-              overflowX: "auto",
-              flex: 1,
-              justifyContent: "center",
-              paddingLeft: 16,
-              paddingRight: 16,
-            }}
-          >
-            {navLinks.map((link, index) => (
-              <Link
-                key={link.href}
-                href={link.href}
-                className={`animate-fade-in-down ${isActive(link.href) ? "font-family-semibold" : "font-family-medium"}`}
-                style={{ ...linkStyle(link.href), animationDelay: `${index * 50}ms` }}
-                onMouseEnter={(e) => {
-                  if (!isActive(link.href)) {
-                    e.currentTarget.style.color = isScrolled ? "#004a70" : "#fff";
-                    e.currentTarget.style.borderBottom = `2px solid ${isScrolled ? "#004a70" : "#fff"}`;
-                  }
-                }}
-                onMouseLeave={(e) => {
-                  if (!isActive(link.href)) {
-                    e.currentTarget.style.color = isScrolled ? "#4b5563" : "rgba(255,255,255,0.9)";
-                    e.currentTarget.style.borderBottom = "2px solid transparent";
-                  }
-                }}
-              >
-                {link.label}
-              </Link>
-            ))}
+          <div className="hidden xl:flex items-center gap-1 overflow-x-auto flex-1 justify-center px-4 no-scrollbar">
+            {navLinks.map((link) => {
+              const active = isActive(link.href);
+              return (
+                <Link
+                  key={link.href}
+                  href={link.href}
+                  className={`px-3.5 py-1.5 rounded-full text-[13.5px] transition-all duration-200 whitespace-nowrap select-none no-underline ${
+                    active
+                      ? isScrolled
+                        ? "bg-[#004a70] text-white font-family-semibold shadow-sm"
+                        : "bg-white/25 text-white font-family-semibold backdrop-blur-md shadow-sm"
+                      : isScrolled
+                      ? "text-slate-700 hover:text-[#004a70] hover:bg-slate-100/80 font-family-medium"
+                      : "text-white/90 hover:text-white hover:bg-white/15 font-family-medium"
+                  }`}
+                >
+                  {link.label}
+                </Link>
+              );
+            })}
           </div>
 
-          {/* Right: Icons + User */}
-          <div className="d-none d-xl-flex animate-fade-in" style={{ alignItems: "center", gap: 6, flexShrink: 0, animationDelay: "150ms" }}>
-            <Badge count={notifUnreadCount} size="small" offset={[-2, 2]} style={{ backgroundColor: "#ef4444" }}>
-              <button
-                onClick={() => { setNotifShow(true); }}
-                className="w-[34px] h-[34px] rounded-lg flex items-center justify-center cursor-pointer transition-all duration-200 border-0"
-                style={{
-                  background: isScrolled ? "rgba(0,0,0,0.05)" : "rgba(255,255,255,0.1)",
-                  color: isScrolled ? "#4b5563" : "#fff"
-                }}
+          {/* Right: Icons + User + Mobile Toggle */}
+          <div className="flex items-center gap-2 flex-shrink-0">
+            {/* Notification Dropdown Button (Visible on Both Desktop & Mobile) */}
+            <div ref={notifMenuRef} className="relative">
+              <Badge
+                count={notifUnreadCount}
+                size="small"
+                offset={[-2, 2]}
+                style={{ backgroundColor: "#ef4444" }}
               >
-                <MdNotificationsActive size={16} />
-              </button>
-            </Badge>
-
-            <div ref={userMenuRef} style={{ position: "relative" }}>
-              <button
-                onClick={() => setUserMenuOpen(!userMenuOpen)}
-                className="w-[34px] h-[34px] rounded-lg flex items-center justify-center cursor-pointer ml-[2px] transition-all duration-200 overflow-hidden border-0"
-                style={{
-                  background: isScrolled ? "rgba(0,0,0,0.05)" : "rgba(255,255,255,0.1)"
-                }}
-              >
-                {userData?.user?.image ? (
-                  <Image
-                    width={34}
-                    height={34}
-                    src={userData?.user?.image}
-                    style={{
-                      width: 34,
-                      height: 34,
-                      borderRadius: 8,
-                      objectFit: "cover",
-                    }}
-                    alt="userImage"
-                  />
-                ) : (
-                  <FaUser size={15} color={isScrolled ? "#6b7280" : "#fff"} />
-                )}
-              </button>
-              {userMenuOpen && (
-                <div
-                  className="animate-fade-in-up"
-                  style={{
-                    position: "absolute",
-                    top: "calc(100% + 8px)",
-                    right: 0,
-                    minWidth: 180,
-                    background: "#fff",
-                    borderRadius: 12,
-                    padding: 6,
-                    boxShadow: "0 10px 40px rgba(0,0,0,0.12)",
-                    border: "1px solid #f0f0f0",
-                    zIndex: 9999,
-                  }}
+                <button
+                  onClick={() => setNotifShow((prev) => !prev)}
+                  className={`w-9 h-9 rounded-full flex items-center justify-center cursor-pointer transition-all duration-200 !border ${
+                    isScrolled
+                      ? "!border-slate-200/90 bg-slate-100 hover:bg-slate-200 text-slate-700 hover:text-[#004a70] shadow-sm"
+                      : "!border-white/30 bg-white/15 hover:bg-white/25 text-white"
+                  }`}
                 >
-                  {AuthDrop.map((item) => (
-                    <div key={item.key}>
-                      {item.to ? (
-                        <Link
-                          href={item.to}
-                          onClick={() => {
-                            item.onClick?.();
-                            setUserMenuOpen(false);
-                          }}
-                          className="block px-3.5 py-2.5 rounded-lg text-gray-700 font-family-medium text-sm no-underline transition-all duration-150 hover:bg-gray-100 hover:translate-x-0.5"
-                          style={{
-                            display: "block",
-                            padding: "10px 14px",
-                            borderRadius: 8,
-                            color: "#374151",
-                            fontSize: 14,
-                            textDecoration: "none",
-                          }}
-                        >
-                          {item.label}
-                        </Link>
-                      ) : (
-                        <div
-                          onClick={() => {
-                            item.onClick?.();
-                            setUserMenuOpen(false);
-                          }}
-                          className="px-3.5 py-2.5 rounded-lg text-gray-700 font-family-medium text-sm cursor-pointer transition-all duration-150 hover:bg-gray-100 hover:translate-x-0.5"
-                          style={{
-                            padding: "10px 14px",
-                            borderRadius: 8,
-                            color: "#374151",
-                            fontSize: 14,
-                            cursor: "pointer",
-                          }}
-                        >
-                          {item.label}
-                        </div>
-                      )}
+                  <MdNotificationsActive size={17} />
+                </button>
+              </Badge>
+
+              {/* Notification Popover Dropdown */}
+              {notifShow && (
+                <div
+                  className="animate-fade-in-up absolute top-[calc(100%+12px)] right-[-60px] sm:right-0 w-[330px] sm:w-[380px] max-w-[calc(100vw-32px)] !bg-white rounded-2xl shadow-[0_20px_50px_rgba(0,0,0,0.15)] !border !border-slate-100 z-[9999] overflow-hidden flex flex-col max-h-[500px]"
+                  style={{ backgroundColor: "#ffffff" }}
+                >
+                  {/* Header */}
+                  <div className="p-4 sm:p-4.5 !border-b !border-slate-100 flex items-center justify-between bg-slate-50/70">
+                    <div className="flex items-center gap-2.5">
+                      <div className="w-8 h-8 rounded-lg bg-blue-50 flex items-center justify-center text-[#004a70]">
+                        <MdNotificationsActive size={16} color="#004a70" />
+                      </div>
+                      <div>
+                        <h4 className="font-family-bold text-sm text-slate-800 !m-0 leading-tight">
+                          Notifications
+                        </h4>
+                        <p className="font-family-medium text-[11px] text-slate-400 !m-0 mt-0.5">
+                          {notifications.length} {notifications.length === 1 ? "update" : "updates"}
+                        </p>
+                      </div>
                     </div>
-                  ))}
+
+                    <button
+                      onClick={() => setNotifShow(false)}
+                      className="w-7 h-7 rounded-lg !border-none bg-slate-200/70 hover:bg-slate-200 text-slate-500 hover:text-slate-700 flex items-center justify-center text-xs transition-colors cursor-pointer"
+                    >
+                      ✕
+                    </button>
+                  </div>
+
+                  {/* Filter Tabs */}
+                  <div className="flex gap-1.5 px-4 py-2.5 !border-b !border-slate-100 bg-white">
+                    {[
+                      { key: "all", label: "All" },
+                      { key: "unread", label: "Unread" },
+                      { key: "read", label: "Read" },
+                    ].map((btn) => {
+                      const isActive = notifFilter === btn.key;
+                      const count = btn.key === "all"
+                        ? notifications.length
+                        : btn.key === "unread"
+                          ? notifications.filter((n) => !n.isRead).length
+                          : notifications.filter((n) => n.isRead).length;
+                      return (
+                        <button
+                          key={btn.key}
+                          onClick={() => setNotifFilter(btn.key)}
+                          className={`px-3 py-1 rounded-full text-xs font-family-medium transition-all duration-200 cursor-pointer !border-0 ${
+                            isActive
+                              ? "bg-[#004a70] text-white font-family-semibold shadow-xs"
+                              : "bg-slate-100 text-slate-600 hover:bg-slate-200/80 hover:text-slate-900"
+                          }`}
+                        >
+                          {btn.label} {count > 0 && `(${count})`}
+                        </button>
+                      );
+                    })}
+                  </div>
+
+                  {/* List */}
+                  <div className="flex-1 overflow-y-auto max-h-[320px] divide-y divide-slate-100">
+                    {notifLoading ? (
+                      <div className="p-4 space-y-3">
+                        {[1, 2, 3].map((i) => (
+                          <div key={i} className="flex gap-3 items-start animate-pulse">
+                            <div className="w-8 h-8 rounded-lg bg-slate-200 shrink-0" />
+                            <div className="flex-1 space-y-1.5">
+                              <div className="h-3 w-3/4 bg-slate-200 rounded" />
+                              <div className="h-2.5 w-full bg-slate-100 rounded" />
+                              <div className="h-2 w-1/4 bg-slate-100 rounded" />
+                            </div>
+                          </div>
+                        ))}
+                      </div>
+                    ) : filteredNotifs.length === 0 ? (
+                      <div className="py-10 px-4 text-center">
+                        <div className="w-12 h-12 rounded-xl bg-slate-50 flex items-center justify-center mx-auto mb-2 text-slate-400">
+                          <MdNotificationsNone size={24} color="#004a70" opacity={0.4} />
+                        </div>
+                        <p className="font-family-semibold text-xs text-slate-600 !m-0">
+                          {notifFilter === "all"
+                            ? "No notifications yet"
+                            : notifFilter === "unread"
+                              ? "No unread notifications"
+                              : "No read notifications"}
+                        </p>
+                        <p className="font-family-regular text-[11px] text-slate-400 !m-0 mt-1">
+                          {notifFilter === "all"
+                            ? "Updates will appear here."
+                            : "Try switching the filter tab."}
+                        </p>
+                      </div>
+                    ) : (
+                      filteredNotifs.map((notification, index) => {
+                        const colors = getNotifColor(notification.type);
+                        return (
+                          <div
+                            key={notification.id || index}
+                            className={`p-3.5 flex gap-3 items-start transition-colors duration-150 cursor-pointer ${
+                              notification.isRead ? "bg-white hover:bg-slate-50/80" : "bg-blue-50/30 hover:bg-blue-50/60"
+                            }`}
+                          >
+                            <div
+                              className="w-8 h-8 rounded-xl flex items-center justify-center shrink-0 mt-0.5"
+                              style={{ backgroundColor: colors.bg, color: colors.icon }}
+                            >
+                              {notification.image ? (
+                                <img
+                                  src={notification.image}
+                                  alt=""
+                                  className="w-full h-full rounded-xl object-cover"
+                                />
+                              ) : (
+                                getNotifIcon(notification.type)
+                              )}
+                            </div>
+                            <div className="flex-1 min-w-0">
+                              <div className="flex items-center gap-1.5">
+                                {!notification.isRead && (
+                                  <span className="w-2 h-2 rounded-full bg-[#004a70] shrink-0 inline-block" />
+                                )}
+                                <p className={`text-xs !m-0 truncate leading-snug ${
+                                  notification.isRead ? "text-slate-700 font-family-medium" : "text-slate-900 font-family-semibold"
+                                }`}>
+                                  {notification.title}
+                                </p>
+                              </div>
+                              {notification.description && (
+                                <p className="text-[11.5px] text-slate-500 font-family-regular !m-0 mt-0.5 line-clamp-2 leading-relaxed">
+                                  {notification.description}
+                                </p>
+                              )}
+                              <div className="flex items-center gap-1 text-[10.5px] text-slate-400 font-family-medium mt-1">
+                                <IoMdTime size={11} color={getTimeColor(notification.createdAt)} />
+                                <span style={{ color: getTimeColor(notification.createdAt) }}>
+                                  {formatTime(notification.createdAt)}
+                                </span>
+                              </div>
+                            </div>
+                          </div>
+                        );
+                      })
+                    )}
+                  </div>
                 </div>
               )}
             </div>
-          </div>
 
-          {/* Mobile toggle */}
-          <button
-            onClick={() => setShow((prev) => !prev)}
-            className="d-xl-none transition-all duration-200"
-            style={{
-              background: isScrolled ? "rgba(0,0,0,0.05)" : "rgba(255,255,255,0.1)",
-              border: "none",
-              cursor: "pointer",
-              padding: 8,
-              borderRadius: 10,
-              display: "flex",
-              alignItems: "center",
-              justifyContent: "center",
-            }}
-          >
-            <AiOutlineMenuFold color={isScrolled ? "#004A70" : "#fff"} size={24} />
-          </button>
+            {/* Desktop User Avatar Menu / Auth Buttons */}
+            {userData?.user ? (
+              <div ref={userMenuRef} className="hidden xl:block relative">
+                <button
+                  onClick={() => setUserMenuOpen(!userMenuOpen)}
+                  className={`w-9 h-9 rounded-full flex items-center justify-center cursor-pointer transition-all duration-200 overflow-hidden !border-2 shadow-sm hover:scale-105 ${
+                    isScrolled ? "!border-slate-200 bg-slate-100" : "!border-white/40 bg-white/20"
+                  }`}
+                >
+                  {userData?.user?.image ? (
+                    <Image
+                      width={36}
+                      height={36}
+                      src={userData?.user?.image}
+                      className="w-full h-full object-cover"
+                      alt="userImage"
+                    />
+                  ) : (
+                    <FaUser size={15} className={isScrolled ? "text-slate-600" : "text-white"} />
+                  )}
+                </button>
+                {userMenuOpen && (
+                  <div
+                    className="animate-fade-in-up absolute top-[calc(100%+12px)] right-0 w-[230px] !bg-white rounded-2xl p-1.5 shadow-[0_20px_50px_rgba(0,0,0,0.15)] !border !border-slate-100 z-[9999]"
+                    style={{ backgroundColor: "#ffffff" }}
+                  >
+                    {/* User Header */}
+                    <div className="px-3 py-2.5 !border-b !border-slate-100 mb-1">
+                      <p className="font-family-semibold text-[13.5px] text-slate-800 !m-0 truncate leading-tight">
+                        {userData?.user?.name || "Account"}
+                      </p>
+                      <p className="font-family-medium text-[11.5px] text-slate-400 !m-0 truncate mt-0.5">
+                        {userData?.user?.email || "Logged In"}
+                      </p>
+                    </div>
+
+                    {/* Links */}
+                    <Link
+                      href="/profile"
+                      onClick={() => setUserMenuOpen(false)}
+                      className="flex items-center gap-2.5 px-3 py-2 rounded-xl text-slate-700 font-family-medium text-[13px] no-underline transition-all duration-150 hover:bg-slate-100/80 hover:text-[#004a70]"
+                    >
+                      <FaUser size={13} className="text-slate-400" />
+                      <span>Profile</span>
+                    </Link>
+
+                    <Link
+                      href="/chat"
+                      onClick={() => setUserMenuOpen(false)}
+                      className="flex items-center justify-between px-3 py-2 rounded-xl text-slate-700 font-family-medium text-[13px] no-underline transition-all duration-150 hover:bg-slate-100/80 hover:text-[#004a70]"
+                    >
+                      <div className="flex items-center gap-2.5">
+                        <HiOutlineChatBubbleOvalLeft size={15} className="text-slate-400" />
+                        <span>Chat</span>
+                      </div>
+                      {unreadCount > 0 && (
+                        <span className="bg-red-500 text-white text-[10px] font-family-bold px-1.5 py-0.2 rounded-full">
+                          {unreadCount}
+                        </span>
+                      )}
+                    </Link>
+
+                    <Link
+                      href="/favorites"
+                      onClick={() => setUserMenuOpen(false)}
+                      className="flex items-center gap-2.5 px-3 py-2 rounded-xl text-slate-700 font-family-medium text-[13px] no-underline transition-all duration-150 hover:bg-slate-100/80 hover:text-[#004a70]"
+                    >
+                      <IoHeart size={14} className="text-slate-400" />
+                      <span>Favorites</span>
+                    </Link>
+
+                    <div
+                      onClick={() => {
+                        HandleModal();
+                        setUserMenuOpen(false);
+                      }}
+                      className="flex items-center gap-2.5 px-3 py-2 rounded-xl text-slate-700 font-family-medium text-[13px] cursor-pointer transition-all duration-150 hover:bg-slate-100/80 hover:text-[#004a70]"
+                    >
+                      <svg width={15} height={15} viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth={1.75} className="text-slate-400">
+                        <path strokeLinecap="round" strokeLinejoin="round" d="M8.25 18.75a1.5 1.5 0 0 1-3 0m3 0a1.5 1.5 0 0 0-3 0m3 0h6m-9 0H3.375a1.125 1.125 0 0 1-1.125-1.125V14.25m17.25 4.5a1.5 1.5 0 0 1-3 0m3 0a1.5 1.5 0 0 0-3 0m3 0h1.125c.621 0 1.129-.504 1.09-1.124a17.902 17.902 0 0 0-3.213-9.193 2.056 2.056 0 0 0-1.58-.86H14.25M16.5 18.75h-2.25m0-11.177v-.958c0-.568-.422-1.048-.987-1.106a48.554 48.554 0 0 0-10.026 0 1.106 1.106 0 0 0-.987 1.106v7.635m12-6.677v6.677m0 4.5v-4.5m0 0h-12" />
+                      </svg>
+                      <span>Signup as Driver</span>
+                    </div>
+
+                    {/* Divider */}
+                    <div className="!border-t !border-slate-100 my-1" />
+
+                    {/* Logout Button (At the bottom, distinct danger style) */}
+                    <button
+                      onClick={() => {
+                        handleLogout();
+                        setUserMenuOpen(false);
+                        router.push("/auth/login");
+                      }}
+                      className="w-full flex items-center gap-2.5 px-3 py-2 rounded-xl text-red-600 font-family-semibold text-[13px] transition-all duration-150 hover:bg-red-50 cursor-pointer !border-none bg-transparent"
+                    >
+                      <MdLogout size={15} className="text-red-500" />
+                      <span>Logout</span>
+                    </button>
+                  </div>
+                )}
+              </div>
+            ) : (
+              <div className="hidden xl:flex items-center gap-2 flex-shrink-0 animate-fade-in">
+                <Link
+                  href="/auth/login"
+                  className={`font-family-medium px-4 py-2 rounded-full text-xs sm:text-sm transition-all duration-200 no-underline ${
+                    isScrolled
+                      ? "!border !border-slate-200 text-slate-700 hover:text-[#004a70] hover:!border-[#004a70] hover:bg-slate-50"
+                      : "!border !border-white/30 text-white hover:!border-white/60 hover:bg-white/10"
+                  }`}
+                >
+                  Login
+                </Link>
+                <Link
+                  href="/auth/stepOne"
+                  className={`font-family-semibold px-4 py-2 rounded-full text-xs sm:text-sm transition-all duration-200 no-underline shadow-sm ${
+                    isScrolled
+                      ? "bg-[#004a70] text-white hover:bg-[#003855]"
+                      : "bg-white text-[#004a70] hover:bg-slate-100"
+                  }`}
+                >
+                  Sign Up
+                </Link>
+                <button
+                  onClick={() => SetdriverModal(true)}
+                  className={`font-family-medium px-4 py-2 rounded-full text-xs sm:text-sm transition-all duration-200 cursor-pointer ${
+                    isScrolled
+                      ? "!border !border-[#004a70]/40 text-[#004a70] hover:bg-[#004a70] hover:text-white bg-transparent"
+                      : "!border !border-white/40 text-white hover:bg-white/15 bg-transparent"
+                  }`}
+                >
+                  Driver Sign Up
+                </button>
+              </div>
+            )}
+
+            {/* Mobile/Tablet Toggle Button */}
+            <button
+              onClick={() => setShow((prev) => !prev)}
+              className={`xl:hidden w-9 h-9 rounded-full flex items-center justify-center cursor-pointer transition-all duration-200 !border shadow-sm ${
+                isScrolled
+                  ? "!border-slate-200 bg-slate-100 hover:bg-slate-200 text-[#004A70]"
+                  : "!border-white/30 bg-white/15 hover:bg-white/25 text-white"
+              }`}
+            >
+              <AiOutlineMenuFold size={20} />
+            </button>
+          </div>
         </div>
-      </Navbar>
+      </header>
 
       {/* Mobile Offcanvas */}
       <Offcanvas
         show={show}
         onHide={handleClose}
         placement="start"
-        className="font-poppins"
+        className="font-poppins !bg-white"
         style={{
-          width: 300,
+          width: 320,
           maxWidth: "85vw",
           borderRight: "1px solid rgba(0,0,0,0.06)",
         }}
       >
         <Offcanvas.Header
           style={{
-            borderBottom: "1px solid #f0f0f0",
+            borderBottom: "1px solid #f1f5f9",
             padding: "16px 20px",
             display: "flex",
             alignItems: "center",
@@ -549,536 +675,169 @@ const InnerHeader = () => {
           >
             <Image
               src={logoBlue}
-              alt="Cabkn"
-              className="w-[4rem] h-[4rem] object-contain"
+              alt="Welcome to Saint Kitts"
+              width={72}
+              height={40}
+              className="h-9 w-auto object-contain"
               style={{ objectFit: "contain" }}
             />
           </Link>
           <button
             onClick={handleClose}
-            style={{
-              background: "#f3f4f6",
-              border: "none",
-              borderRadius: 8,
-              width: 32,
-              height: 32,
-              display: "flex",
-              alignItems: "center",
-              justifyContent: "center",
-              cursor: "pointer",
-              fontSize: 16,
-              color: "#6b7280",
-              flexShrink: 0,
-              marginLeft: "auto",
-            }}
+            className="bg-slate-100 rounded-lg w-8 h-8 flex items-center justify-center text-slate-500 hover:bg-slate-200 transition-all cursor-pointer !border-none"
           >
             ✕
           </button>
         </Offcanvas.Header>
-        <Offcanvas.Body style={{ padding: "12px 16px" }}>
-          <div style={{ display: "flex", flexDirection: "column", gap: 2 }}>
-            {/* Profile Dropdown */}
-            <div className="animate-fade-in" style={{ animationDelay: "0ms" }}>
-              <div
-                onClick={() => setMobileProfileOpen(!mobileProfileOpen)}
-                className="transition-all duration-150 hover:bg-gray-100 font-family-medium"
-                style={{
-                  padding: "11px 12px",
-                  borderRadius: 10,
-                  cursor: "pointer",
-                  color: "#374151",
-                  fontSize: 14,
-                  display: "flex",
-                  alignItems: "center",
-                  justifyContent: "space-between",
-                  gap: 12,
-                }}
-              >
-                <div style={{ display: "flex", alignItems: "center", gap: 12 }}>
-                  {/* Avatar */}
-                  <div
-                    style={{
-                      width: 40,
-                      height: 40,
-                      borderRadius: "50%",
-                      backgroundColor: "#f3f4f6",
-                      display: "flex",
-                      alignItems: "center",
-                      justifyContent: "center",
-                      overflow: "hidden",
-                      flexShrink: 0,
-                    }}
-                  >
+
+        <Offcanvas.Body className="!p-0 flex flex-col justify-between h-[calc(100vh-70px)] bg-white overflow-hidden">
+          {/* Scrollable content */}
+          <div className="flex-1 overflow-y-auto p-4 flex flex-col gap-2 no-scrollbar">
+            {/* If Logged In: User Profile Header Card */}
+            {userData?.user && (
+              <div className="bg-slate-50/80 !border !border-slate-100 rounded-2xl p-3.5 mb-1 animate-fade-in">
+                <div className="flex items-center gap-3">
+                  <div className="w-10 h-10 rounded-full bg-[#004a70]/10 flex items-center justify-center shrink-0 overflow-hidden !border !border-[#004a70]/20">
                     {userData?.user?.image ? (
                       <Image
                         width={40}
                         height={40}
                         src={userData.user.image}
-                        style={{
-                          width: 40,
-                          height: 40,
-                          borderRadius: "50%",
-                          objectFit: "cover",
-                        }}
-                        alt="userImage"
+                        className="w-full h-full object-cover"
+                        alt="user"
                       />
                     ) : (
-                      <FaUser size={18} color="#6b7280" />
+                      <FaUser size={16} className="text-[#004a70]" />
                     )}
                   </div>
-                  {/* User info */}
-                  <div>
-                    <div className="font-family-semibold" style={{ fontSize: 14, color: "#1f2937" }}>
-                      {userData?.user?.name || "Profile"}
-                    </div>
-                    <div className="font-family-regular" style={{ fontSize: 12, color: "#6b7280" }}>
-                      Profile actions
-                    </div>
+                  <div className="min-w-0 flex-1">
+                    <p className="font-family-semibold text-[14px] text-slate-800 !m-0 truncate leading-tight">
+                      {userData?.user?.name || "My Account"}
+                    </p>
+                    <p className="font-family-medium text-[11.5px] text-slate-400 !m-0 truncate mt-0.5">
+                      {userData?.user?.email || "Member"}
+                    </p>
                   </div>
                 </div>
-                {/* Chevron */}
-                <span style={{
-                  transform: mobileProfileOpen ? "rotate(180deg)" : "rotate(0deg)",
-                  transition: "transform 0.2s",
-                  color: "#6b7280",
-                  fontSize: 14,
-                }}>
-                  ▼
-                </span>
+
+                {/* Quick actions row */}
+                <div className="grid grid-cols-3 gap-1.5 mt-3 pt-3 !border-t !border-slate-200/60 text-center">
+                  <button
+                    onClick={() => {
+                      Route("profile");
+                    }}
+                    className="py-1.5 px-1 rounded-lg bg-white !border !border-slate-200/70 text-slate-700 font-family-medium text-[11.5px] hover:text-[#004a70] hover:!border-[#004a70] transition-all cursor-pointer"
+                  >
+                    Profile
+                  </button>
+                  <button
+                    onClick={() => {
+                      Route("chat");
+                    }}
+                    className="py-1.5 px-1 rounded-lg bg-white !border !border-slate-200/70 text-slate-700 font-family-medium text-[11.5px] hover:text-[#004a70] hover:!border-[#004a70] transition-all cursor-pointer relative"
+                  >
+                    Chat
+                    {unreadCount > 0 && (
+                      <span className="absolute -top-1 -right-1 bg-red-500 text-white text-[9px] font-family-bold w-4 h-4 rounded-full flex items-center justify-center">
+                        {unreadCount}
+                      </span>
+                    )}
+                  </button>
+                  <button
+                    onClick={() => {
+                      Route("favorites");
+                    }}
+                    className="py-1.5 px-1 rounded-lg bg-white !border !border-slate-200/70 text-slate-700 font-family-medium text-[11.5px] hover:text-[#004a70] hover:!border-[#004a70] transition-all cursor-pointer"
+                  >
+                    Favorites
+                  </button>
+                </div>
               </div>
-              {mobileProfileOpen && (
-                <div style={{ paddingLeft: 12, marginTop: 4 }}>
-                  {AuthDrop.map((item, idx) => (
-                    <div key={item.key} className="animate-fade-in" style={{ animationDelay: `${idx * 20}ms` }}>
-                      {item.to ? (
-                        <div
-                          onClick={() => {
-                            item.onClick?.();
-                            Route(item.to === "/" ? "" : item.to.slice(1));
-                          }}
-                          className="transition-all duration-150 hover:bg-gray-100 font-family-medium"
-                          style={{
-                            padding: "8px 12px",
-                            borderRadius: 8,
-                            cursor: "pointer",
-                            color: item.label === "Logout" ? "#ef4444" : "#374151",
-                            fontSize: 13,
-                          }}
-                        >
-                          {item.label}
-                        </div>
-                      ) : (
-                        <div
-                          onClick={() => {
-                            item.onClick?.();
-                          }}
-                          className="transition-all duration-150 hover:bg-gray-100 font-family-medium"
-                          style={{
-                            padding: "8px 12px",
-                            borderRadius: 8,
-                            cursor: "pointer",
-                            color: "#374151",
-                            fontSize: 13,
-                          }}
-                        >
-                          {item.label}
-                        </div>
-                      )}
-                    </div>
-                  ))}
-                  <div className="animate-fade-in" style={{ animationDelay: `${AuthDrop.length * 20}ms` }}>
-                    <div
-                      onClick={() => {
-                        setNotifShow(true);
-                        handleClose();
-                      }}
-                      className="transition-all duration-150 hover:bg-gray-100 font-family-medium"
-                      style={{
-                        padding: "8px 12px",
-                        borderRadius: 8,
-                        cursor: "pointer",
-                        color: "#374151",
-                        fontSize: 13,
-                      }}
-                    >
-                      Notifications
-                    </div>
-                  </div>
-                </div>
-              )}
-            </div>
+            )}
 
             {/* Navigation Links */}
-            {navLinks.map((link, index) => (
-              <div key={link.href} className="animate-fade-in" style={{ animationDelay: `${(index + 1) * 40}ms` }}>
-                <MobileNavItem
-                  label={link.label}
-                  active={isActive(link.href)}
-                  onClick={() => Route(link.href === "/" ? "" : link.href.slice(1))}
-                />
-              </div>
-            ))}
-          </div>
-        </Offcanvas.Body>
-      </Offcanvas>      <Modal
-        centered
-        backdrop="static"
-        show={driverModal}
-        onHide={handleClosedriver}
-        dialogClassName="!max-w-md font-poppins"
-        contentClassName="bg-transparent border-none shadow-none"
-      >
-        <div className="relative bg-white rounded-[24px] overflow-hidden shadow-2xl">
-          {/* Header Gradient */}
-          <div className="relative overflow-hidden bg-gradient-to-br from-slate-900 via-brand-900 to-brand-950 p-8 pt-10 text-center">
-            {/* Mesh pattern overlay */}
-            <div className="absolute inset-0 opacity-[0.05]" style={{
-              backgroundImage: `radial-gradient(circle at 1px 1px, white 1px, transparent 0)`,
-              backgroundSize: "24px 24px"
-            }} />
-
-            {/* Floating blobs */}
-            <div className="absolute -top-10 -right-10 w-32 h-32 bg-brand-400/20 rounded-full blur-[40px] animate-pulse" />
-            <div className="absolute -bottom-10 -left-10 w-32 h-32 bg-indigo-500/20 rounded-full blur-[40px] animate-pulse" style={{ animationDelay: '1s' }} />
-
-            <button
-              onClick={handleClosedriver}
-              className="absolute top-4 right-4 w-8 h-8 flex items-center justify-center rounded-xl bg-white/10 border-none text-white hover:bg-white/25 hover:rotate-90 transition-all duration-300 backdrop-blur-sm z-10 cursor-pointer"
-            >
-              <FaTimes size={14} />
-            </button>
-
-            <div className="relative z-10 flex justify-center mb-5">
-              <div className="w-16 h-16 rounded-2xl bg-white/10 backdrop-blur-md flex items-center justify-center !border border-white/20 shadow-lg relative overflow-hidden group">
-                <div className="absolute inset-0 bg-gradient-to-tr from-brand-400/20 to-transparent opacity-0 group-hover:opacity-100 transition-opacity" />
-                <svg width={30} height={30} viewBox="0 0 24 24" fill="none" stroke="#fff" strokeWidth={1.5} className="relative z-10">
-                  <path strokeLinecap="round" strokeLinejoin="round" d="M8.25 18.75a1.5 1.5 0 0 1-3 0m3 0a1.5 1.5 0 0 0-3 0m3 0h6m-9 0H3.375a1.125 1.125 0 0 1-1.125-1.125V14.25m17.25 4.5a1.5 1.5 0 0 1-3 0m3 0a1.5 1.5 0 0 0-3 0m3 0h1.125c.621 0 1.129-.504 1.09-1.124a17.902 17.902 0 0 0-3.213-9.193 2.056 2.056 0 0 0-1.58-.86H14.25M16.5 18.75h-2.25m0-11.177v-.958c0-.568-.422-1.048-.987-1.106a48.554 48.554 0 0 0-10.026 0 1.106 1.106 0 0 0-.987 1.106v7.635m12-6.677v6.677m0 4.5v-4.5m0 0h-12" />
-                </svg>
-              </div>
-            </div>
-
-            <h2 className="relative z-10 text-white text-[22px] font-family-bold !m-0 !mb-1 tracking-tight leading-tight">
-              Driver App
-            </h2>
-            <p className="relative z-10 text-brand-100/80 text-[13px] font-family-medium !m-0">
-              Take control of your rides
-            </p>
-          </div>
-
-          <div className="p-6">
-            <div className="bg-slate-50/70 border border-slate-100 rounded-2xl p-4 mb-5 flex items-center gap-4 transition-colors hover:bg-slate-50">
-              <div className="w-12 h-12 rounded-xl bg-white shadow-sm border border-slate-100 flex items-center justify-center shrink-0">
-                <svg width={22} height={22} viewBox="0 0 20 20" fill="#004a70">
-                  <path d="M10.362 1.093a.75.75 0 0 0-.724 0L2.523 5.018 10 9.143l7.477-4.125-7.115-3.925ZM18 6.443l-7.25 4v8.25l6.862-3.786A.75.75 0 0 0 18 14.25V6.443ZM9.25 18.693v-8.25l-7.25-4v7.807a.75.75 0 0 0 .388.657l6.862 3.786Z" />
-                </svg>
-              </div>
-              <div>
-                <p className="font-family-semibold text-[14px] text-slate-800 !m-0 leading-tight !mb-1">
-                  Download our app
-                </p>
-                <p className="text-[12px] text-slate-500 font-family-medium !m-0">
-                  Available on iOS & Android
-                </p>
-              </div>
-            </div>
-
-            <div className="grid grid-cols-2 gap-3">
-              <button
-                onClick={() => window.open("https://play.google.com/store/apps/details?id=com.cabkndriver.app&hl=en", "_blank")}
-                className="flex items-center justify-center gap-2.5 p-3 rounded-xl bg-slate-900 border border-slate-800 text-white hover:bg-slate-800 hover:-translate-y-0.5 hover:shadow-lg transition-all duration-300 group cursor-pointer"
-              >
-                <svg width={20} height={20} viewBox="0 0 512 512" fill="#fff" className="shrink-0 group-hover:scale-110 transition-transform">
-                  <path d="M325.3 234.3L104.6 13l280.8 161.2-60.1 60.1zM47 0C34 6.8 25.3 19.2 25.3 35.3v441.3c0 16.1 8.7 28.5 21.7 35.3l256.6-256L47 0zm425.2 225.6l-58.9-34.1-65.7 64.5 65.7 64.5 60.1-34.1c18-14.3 18-46.5-1.2-60.8zM104.6 499l280.8-161.2-60.1-60.1L104.6 499z" />
-                </svg>
-                <div className="text-left">
-                  <p className="text-[9px] text-white/60 !m-0 leading-none tracking-wider uppercase font-family-medium !mb-1">
-                    Get it on
-                  </p>
-                  <p className="text-[12px] font-family-bold !m-0 leading-none tracking-tight">
-                    Google Play
-                  </p>
+            <div className="flex flex-col gap-1">
+              {navLinks.map((link, index) => (
+                <div key={link.href} className="animate-fade-in" style={{ animationDelay: `${(index + 1) * 25}ms` }}>
+                  <MobileNavItem
+                    label={link.label}
+                    active={isActive(link.href)}
+                    onClick={() => Route(link.href === "/" ? "" : link.href.slice(1))}
+                  />
                 </div>
-              </button>
-
-              <button
-                onClick={() => window.open("https://apps.apple.com/pk/app/cabkn-driver/id6740235396", "_blank")}
-                className="flex items-center justify-center gap-2.5 p-3 rounded-xl bg-slate-900 border border-slate-800 text-white hover:bg-slate-800 hover:-translate-y-0.5 hover:shadow-lg transition-all duration-300 group cursor-pointer"
-              >
-                <svg width={22} height={22} viewBox="0 0 384 512" fill="#fff" className="shrink-0 group-hover:scale-110 transition-transform mb-1">
-                  <path d="M318.7 268.7c-.2-36.7 16.4-64.4 50-84.8-18.8-26.9-47.2-41.7-84.7-44.6-35.5-2.8-74.3 20.7-88.5 20.7-15 0-49.4-19.7-76.4-19.7C63.3 141.2 4 184.8 4 273.5q0 39.3 14.4 81.2c12.8 36.7 59 126.7 107.2 125.2 25.2-.6 43-17.9 75.8-17.9 31.8 0 48.3 17.9 76.4 17.9 48.6-.7 90.4-82.5 102.6-119.3-65.2-30.7-61.7-111.9-39.7-143.6zM240.5 25.3c-23.5-26.7-54.3-38.3-91.5-34.2-3.3 30.5 7.3 59.4 28.7 81.7 21.9 22.9 50.4 35.8 80.3 33.1 2.6-29-6.3-57.5-27.5-80.6z" />
-                </svg>
-                <div className="text-left">
-                  <p className="text-[9px] text-white/60 !m-0 leading-none tracking-wider uppercase font-family-medium !mb-1">
-                    Download on the
-                  </p>
-                  <p className="text-[12px] font-family-bold !m-0 leading-none tracking-tight">
-                    App Store
-                  </p>
-                </div>
-              </button>
+              ))}
             </div>
           </div>
-        </div>
-      </Modal>
 
-      {/* Notification Drawer - Right Side */}
-      <Offcanvas
-        show={notifShow}
-        onHide={() => setNotifShow(false)}
-        placement="end"
-        className="font-poppins"
-        style={{
-          width: 380,
-          maxWidth: "90vw",
-          borderRight: "1px solid rgba(0,0,0,0.06)",
-        }}
-      >
-        <div style={{ height: "100%", display: "flex", flexDirection: "column" }}>
-          {/* Header */}
-          <div
-            style={{
-              padding: "20px 20px 16px",
-              borderBottom: "1px solid #f0f0f0",
-              display: "flex",
-              alignItems: "center",
-              justifyContent: "space-between",
-              flexShrink: 0,
-            }}
-          >
-            <div style={{ display: "flex", alignItems: "center", gap: 10 }}>
-              <div
-                style={{
-                  width: 36,
-                  height: 36,
-                  borderRadius: 10,
-                  background: "#f0f7ff",
-                  display: "flex",
-                  alignItems: "center",
-                  justifyContent: "center",
-                }}
-              >
-                <MdNotificationsActive size={18} color="#004a70" />
-              </div>
-              <div>
-                <h3 className="font-family-bold" style={{ margin: 0, fontSize: 16, color: "#1f2937", lineHeight: 1.3 }}>
-                  Notifications
-                </h3>
-                <p className="font-family-medium" style={{ margin: 0, fontSize: 12, color: "#9ca3af" }}>
-                  {notifications.length} {notifications.length === 1 ? "notification" : "notifications"}
-                </p>
-              </div>
-            </div>
-            <button
-              onClick={() => setNotifShow(false)}
-              style={{
-                width: 30,
-                height: 30,
-                borderRadius: 8,
-                border: "none",
-                background: "#f3f4f6",
-                color: "#6b7280",
-                cursor: "pointer",
-                display: "flex",
-                alignItems: "center",
-                justifyContent: "center",
-                fontSize: 14,
-                transition: "all 0.15s",
-              }}
-              onMouseEnter={(e) => { e.currentTarget.style.background = "#e5e7eb"; }}
-              onMouseLeave={(e) => { e.currentTarget.style.background = "#f3f4f6"; }}
-            >
-              ✕
-            </button>
-          </div>
-
-          {/* Filter Buttons */}
-          <div
-            style={{
-              display: "flex",
-              gap: 6,
-              padding: "12px 20px",
-              borderBottom: "1px solid #f0f0f0",
-              flexShrink: 0,
-            }}
-          >
-            {[
-              { key: "all", label: "All" },
-              { key: "unread", label: "Unread" },
-              { key: "read", label: "Read" },
-            ].map((btn) => {
-              const isActive = notifFilter === btn.key;
-              const count = btn.key === "all"
-                ? notifications.length
-                : btn.key === "unread"
-                  ? notifications.filter((n) => !n.isRead).length
-                  : notifications.filter((n) => n.isRead).length;
-              return (
+          {/* Bottom Sticky Section ("niche") */}
+          <div className="p-4 !border-t !border-slate-100 bg-slate-50/80 shrink-0 flex flex-col gap-2">
+            {userData?.user ? (
+              <>
                 <button
-                  key={btn.key}
-                  onClick={() => setNotifFilter(btn.key)}
-                  style={{
-                    padding: "5px 14px",
-                    borderRadius: 8,
-                    border: "none",
-                    fontSize: 12,
-                    cursor: "pointer",
-                    transition: "all 0.15s",
-                    background: isActive ? "#004a70" : "#f3f4f6",
-                    color: isActive ? "#fff" : "#6b7280",
+                  onClick={() => {
+                    handleClose();
+                    HandleModal();
                   }}
-                  className={isActive ? "font-family-semibold" : "font-family-medium"}
-                  onMouseEnter={(e) => {
-                    if (!isActive) {
-                      e.currentTarget.style.background = "#e5e7eb";
-                    }
-                  }}
-                  onMouseLeave={(e) => {
-                    if (!isActive) {
-                      e.currentTarget.style.background = "#f3f4f6";
-                    }
-                  }}
+                  className="w-full py-2 px-3 rounded-xl bg-white !border !border-slate-200/80 text-slate-700 font-family-medium text-[12.5px] hover:text-[#004a70] hover:!border-[#004a70] transition-all flex items-center justify-center gap-1.5 cursor-pointer"
                 >
-                  {btn.label} {count > 0 && `(${count})`}
+                  <svg width={15} height={15} viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth={1.75} className="text-slate-500">
+                    <path strokeLinecap="round" strokeLinejoin="round" d="M8.25 18.75a1.5 1.5 0 0 1-3 0m3 0a1.5 1.5 0 0 0-3 0m3 0h6m-9 0H3.375a1.125 1.125 0 0 1-1.125-1.125V14.25m17.25 4.5a1.5 1.5 0 0 1-3 0m3 0a1.5 1.5 0 0 0-3 0m3 0h1.125c.621 0 1.129-.504 1.09-1.124a17.902 17.902 0 0 0-3.213-9.193 2.056 2.056 0 0 0-1.58-.86H14.25M16.5 18.75h-2.25m0-11.177v-.958c0-.568-.422-1.048-.987-1.106a48.554 48.554 0 0 0-10.026 0 1.106 1.106 0 0 0-.987 1.106v7.635m12-6.677v6.677m0 4.5v-4.5m0 0h-12" />
+                  </svg>
+                  <span>Signup as Driver</span>
                 </button>
-              );
-            })}
-          </div>
 
-          {/* Notification List */}
-          <div style={{ flex: 1, overflowY: "auto", padding: "8px 0" }}>
-            {notifLoading ? (
-              <div style={{ padding: "20px" }}>
-                {[1, 2, 3].map((i) => (
-                  <div key={i} style={{ display: "flex", gap: 12, padding: "12px 20px", alignItems: "flex-start" }}>
-                    <div style={{ width: 36, height: 36, borderRadius: 10, background: "#f0f0f0", flexShrink: 0, animation: "pulse 1.5s infinite" }} />
-                    <div style={{ flex: 1 }}>
-                      <div style={{ height: 12, width: "70%", background: "#f0f0f0", borderRadius: 6, marginBottom: 8, animation: "pulse 1.5s infinite" }} />
-                      <div style={{ height: 10, width: "90%", background: "#f0f0f0", borderRadius: 6, marginBottom: 6, animation: "pulse 1.5s infinite" }} />
-                      <div style={{ height: 8, width: "30%", background: "#f0f0f0", borderRadius: 6, animation: "pulse 1.5s infinite" }} />
-                    </div>
-                  </div>
-                ))}
-              </div>
-            ) : filteredNotifs.length === 0 ? (
-              <div style={{ padding: "60px 20px", textAlign: "center" }}>
-                <div
-                  style={{
-                    width: 64,
-                    height: 64,
-                    borderRadius: 16,
-                    background: "#f0f7ff",
-                    display: "flex",
-                    alignItems: "center",
-                    justifyContent: "center",
-                    margin: "0 auto 16px",
+                {/* Logout Button placed distinctly at the bottom ("niche") */}
+                <button
+                  onClick={() => {
+                    handleLogout();
+                    handleClose();
+                    router.push("/auth/login");
                   }}
+                  className="w-full py-2.5 px-4 rounded-xl bg-red-50 text-red-600 hover:bg-red-100 !border !border-red-200/70 font-family-semibold text-[13.5px] transition-all flex items-center justify-center gap-2 cursor-pointer shadow-2xs"
                 >
-                  <MdNotificationsNone size={30} color="#004a70" opacity={0.35} />
-                </div>
-                <p className="font-family-semibold" style={{ fontSize: 14, color: "#6b7280", margin: 0 }}>
-                  {notifFilter === "all"
-                    ? "No notifications yet"
-                    : notifFilter === "unread"
-                      ? "No unread notifications"
-                      : "No read notifications"}
-                </p>
-                <p className="font-family-regular" style={{ fontSize: 12, color: "#9ca3af", margin: "4px 0 0" }}>
-                  {notifFilter === "all"
-                    ? "When you receive notifications, they'll show up here."
-                    : "Try switching the filter."}
-                </p>
-              </div>
+                  <MdLogout size={16} />
+                  <span>Logout</span>
+                </button>
+              </>
             ) : (
-              filteredNotifs.map((notification, index) => {
-                const colors = getNotifColor(notification.type);
-                return (
-                  <div
-                    key={notification.id || index}
-                    className="notif-item"
-                    style={{
-                      padding: "14px 20px",
-                      borderBottom: "1px solid #f0f0f0",
-                      display: "flex",
-                      gap: 12,
-                      alignItems: "flex-start",
-                      cursor: "default",
-                      transition: "all 0.2s ease",
-                      background: notification.isRead ? "#fff" : "#f8faff",
-                    }}
-                    onMouseEnter={(e) => { e.currentTarget.style.background = "#f0f4ff"; e.currentTarget.style.paddingLeft = "24px"; }}
-                    onMouseLeave={(e) => {
-                      e.currentTarget.style.background = notification.isRead ? "#fff" : "#f8faff";
-                      e.currentTarget.style.paddingLeft = "20px";
-                    }}
-                  >
-                    <div
-                      style={{
-                        width: 38,
-                        height: 38,
-                        borderRadius: 12,
-                        background: colors.bg,
-                        display: "flex",
-                        alignItems: "center",
-                        justifyContent: "center",
-                        flexShrink: 0,
-                        color: colors.icon,
-                        marginTop: 2,
-                      }}
-                    >
-                      {notification.image ? (
-                        <img
-                          src={notification.image}
-                          alt=""
-                          style={{ width: "100%", height: "100%", borderRadius: 12, objectFit: "cover" }}
-                        />
-                      ) : (
-                        getNotifIcon(notification.type)
-                      )}
-                    </div>
-                    <div style={{ flex: 1, minWidth: 0 }}>
-                      <div style={{ display: "flex", alignItems: "center", gap: 6 }}>
-                        {!notification.isRead && (
-                          <span style={{ width: 7, height: 7, borderRadius: "50%", background: colors.icon, flexShrink: 0, display: "inline-block" }} />
-                        )}
-                        <p className={notification.isRead ? "font-family-medium" : "font-family-semibold"} style={{
-                          margin: 0,
-                          fontSize: 13,
-                          color: notification.isRead ? "#4b5563" : "#111827",
-                          lineHeight: 1.4,
-                          overflow: "hidden",
-                          textOverflow: "ellipsis",
-                          whiteSpace: "nowrap",
-                        }}>
-                          {notification.title}
-                        </p>
-                      </div>
-                      {notification.description && (
-                        <p style={{
-                          margin: "4px 0 0",
-                          fontSize: 12,
-                          color: notification.isRead ? "#9ca3af" : "#6b7280",
-                          lineHeight: 1.4,
-                          overflow: "hidden",
-                          textOverflow: "ellipsis",
-                          whiteSpace: "nowrap",
-                        }}>
-                          {notification.description}
-                        </p>
-                      )}
-                      <div style={{ display: "flex", alignItems: "center", gap: 4, marginTop: 5 }}>
-                        <IoMdTime size={11} color={getTimeColor(notification.createdAt)} />
-                        <span className="font-family-medium" style={{ fontSize: 11, color: getTimeColor(notification.createdAt) }}>
-                          {formatTime(notification.createdAt)}
-                        </span>
-                      </div>
-                    </div>
-                  </div>
-                );
-              })
+              <>
+                <button
+                  onClick={() => {
+                    handleClose();
+                    router.push("/auth/stepOne");
+                  }}
+                  className="w-full py-2.5 px-4 rounded-xl bg-[#004a70] text-white font-family-semibold text-[13.5px] hover:bg-[#003855] shadow-sm transition-all flex items-center justify-center gap-2 cursor-pointer !border-none"
+                >
+                  Sign Up
+                </button>
+                <button
+                  onClick={() => {
+                    handleClose();
+                    router.push("/auth/login");
+                  }}
+                  className="w-full py-2.5 px-4 rounded-xl bg-white text-slate-700 !border !border-slate-200 font-family-semibold text-[13.5px] hover:text-[#004a70] hover:!border-[#004a70] hover:bg-slate-50 transition-all flex items-center justify-center gap-2 cursor-pointer"
+                >
+                  Login
+                </button>
+                <button
+                  onClick={() => {
+                    handleClose();
+                    HandleModal();
+                  }}
+                  className="w-full py-2 px-3 rounded-xl bg-slate-100 text-slate-600 !border !border-slate-200/60 font-family-medium text-[12.5px] hover:bg-slate-200 hover:text-slate-800 transition-all flex items-center justify-center gap-1.5 cursor-pointer mt-0.5"
+                >
+                  <svg width={15} height={15} viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth={1.75} className="text-slate-500">
+                    <path strokeLinecap="round" strokeLinejoin="round" d="M8.25 18.75a1.5 1.5 0 0 1-3 0m3 0a1.5 1.5 0 0 0-3 0m3 0h6m-9 0H3.375a1.125 1.125 0 0 1-1.125-1.125V14.25m17.25 4.5a1.5 1.5 0 0 1-3 0m3 0a1.5 1.5 0 0 0-3 0m3 0h1.125c.621 0 1.129-.504 1.09-1.124a17.902 17.902 0 0 0-3.213-9.193 2.056 2.056 0 0 0-1.58-.86H14.25M16.5 18.75h-2.25m0-11.177v-.958c0-.568-.422-1.048-.987-1.106a48.554 48.554 0 0 0-10.026 0 1.106 1.106 0 0 0-.987 1.106v7.635m12-6.677v6.677m0 4.5v-4.5m0 0h-12" />
+                  </svg>
+                  <span>Signup as Driver</span>
+                </button>
+              </>
             )}
           </div>
-        </div>
+        </Offcanvas.Body>
       </Offcanvas>
+
+      <DriverModal show={driverModal} onHide={handleClosedriver} />
     </div>
   );
 };
@@ -1087,10 +846,10 @@ const MobileNavItem = ({ label, onClick, active, danger }) => (
   <div
     onClick={onClick}
     className={`transition-all duration-150 ${active
-        ? "bg-indigo-50 font-family-semibold"
-        : danger
-          ? "hover:bg-red-50 font-family-medium"
-          : "hover:bg-gray-100 font-family-medium"
+      ? "bg-indigo-50 font-family-semibold"
+      : danger
+        ? "hover:bg-red-50 font-family-medium"
+        : "hover:bg-gray-100 font-family-medium"
       }`}
     style={{
       padding: "11px 12px",

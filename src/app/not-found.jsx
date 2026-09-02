@@ -15,10 +15,10 @@ const NotFound = () => {
             <div className="mb-10 flex justify-center">
               <Image
                 src={logoBlue}
-                alt="CabKn Logo"
-                width={120}
-                height={120}
-                className="object-contain animate-fade-in"
+                alt="Welcome to Saint Kitts Logo"
+                width={140}
+                height={78}
+                className="h-16 w-auto object-contain animate-fade-in"
               />
             </div>
 

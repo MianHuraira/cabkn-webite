@@ -20,10 +20,10 @@ import {
   AuthDivider,
   AuthInlineLink,
   AuthPrimaryButton,
+  AuthSecondaryButton,
   AuthShell,
   AuthTextField,
 } from "@/components/auth/AuthShell";
-import CustomButton from "@/components/CustomButton";
 
 const Login = () => {
   const router = useRouter();
@@ -50,7 +50,10 @@ const Login = () => {
   const validationSchema = Yup.object().shape({
     email: Yup.string()
       .trim()
-      .email("Invalid email")
+      .matches(
+        /^[a-zA-Z0-9._%+-]+@[a-zA-Z0-9.-]+\.[a-zA-Z]{2,}$/,
+        "Please enter a valid email address"
+      )
       .required("Email is required"),
     password: Yup.string()
       .required("Password is required")
@@ -81,59 +84,64 @@ const Login = () => {
     }
   }, [userdata]);
 
-  const loginWithGoogle = (user) => {
-    setGoogleLoading(true);
-    const body = {
-      name: user?.given_name + " " + user?.family_name,
-      email: user?.email,
-      type: "customer",
-    };
-
-    postData("auth/social-login", body, header3)
-      .then((res) => {
-        if (res?.success) {
-          dispatch(setUser(res));
-          dispatch(setAuthenticated(true));
-          router.push("/");
-          toast.success("Log in Successfully");
-          setGoogleLoading(false);
-        } else {
-          toast.error(res?.message);
-          setGoogleLoading(false);
-        }
-      })
-      .catch((error) => {
-        const errorMessage =
-          error.response?.data?.message || error.message || "An error occurred";
-        toast.error(errorMessage);
-        setGoogleLoading(false);
-      });
-  };
-
-  const handleSubmit = (values) => {
-    setLoading(true);
-    const apiSendCode = loginApi;
+  const loginWithGoogle = async (googleUser) => {
     const apiData = {
-      email: values?.email,
-      password: values?.password,
+      name: googleUser.name,
+      email: googleUser.email,
+      image: googleUser.picture,
+      googleId: googleUser.id,
       fcmtoken: "",
       type: "customer",
     };
-    postData(apiSendCode, apiData, header3)
+
+    setGoogleLoading(true);
+    postData(loginApi, apiData, header3)
       .then((res) => {
         if (res?.success) {
           dispatch(setUser(res));
           dispatch(setAuthenticated(true));
           localStorage.setItem("isLogin", true);
           localStorage.setItem("Cabkn-token", res?.token);
+          toast.success(res?.message);
           router.push("/");
-          toast.success("Log in Successfully");
         } else {
           toast.error(res?.message);
         }
       })
       .catch((error) => {
-        toast.error(error?.response?.data?.message);
+        toast.error(error?.response?.data?.message || "Google login failed");
+      })
+      .finally(() => {
+        setGoogleLoading(false);
+      });
+  };
+
+  const handleSubmit = async (values) => {
+    const body = {
+      email: values.email.trim(),
+      password: values.password,
+      type: "customer",
+      fcmtoken: "",
+    };
+
+    setLoading(true);
+    postData("auth", body, header3)
+      .then((res) => {
+        if (res?.token) {
+          dispatch(setUser(res));
+          dispatch(setAuthenticated(true));
+          localStorage.setItem("isLogin", true);
+          localStorage.setItem("Cabkn-token", res?.token);
+          toast.success('Login Successfully');
+          router.push("/");
+        } else {
+          toast.error(res?.message);
+        }
+      })
+      .catch((error) => {
+        const errorMessage =
+          error.response?.data?.message || error.message || "An error occurred";
+        toast.error(errorMessage);
       })
       .finally(() => {
         setLoading(false);
@@ -143,13 +151,14 @@ const Login = () => {
   return (
     <AuthShell
       title="Welcome Back"
-      isShow={true}
       subtitle="Enter your email and password to access your account"
       imageSrc={otpImage}
-      imageAlt="Premium Ride Booking"
+      imageAlt="Login cover"
+      imageHeadline="Track your ride in real-time"
+      imageSubheadline="A smooth journey starts with a secure account."
       footer={
         <span className="font-family-regular">
-          Don't have an account?{" "}
+          Don&apos;t have an account?{" "}
           <AuthInlineLink href="/auth/stepOne">Sign Up</AuthInlineLink>
         </span>
       }
@@ -160,7 +169,7 @@ const Login = () => {
         onSubmit={(values) => handleSubmit(values)}
       >
         {({ values, errors, touched, handleChange, handleBlur, handleSubmit }) => (
-          <form onSubmit={handleSubmit} className="space-y-5">
+          <form noValidate onSubmit={handleSubmit} className="space-y-3.5 sm:space-y-4">
             {/* Email Input */}
             <AuthTextField
               id="email"
@@ -203,22 +212,13 @@ const Login = () => {
               }
             />
 
-            {/* Checkbox and Forgot Password Link */}
-            <div className="flex items-center justify-between text-xs lg:text-sm mt-3 pt-1">
-              <label className="flex items-center gap-2 text-slate-500 hover:text-slate-800 cursor-pointer select-none">
-                <input
-                  type="checkbox"
-                  className="rounded border-slate-400 text-brand-600 focus:ring-brand-500 w-4 h-4 cursor-pointer"
-                />
-<span className="font-family-semibold text-slate-500 hover:text-slate-700 transition">
-  Remember me
-</span>
-              </label>
+            {/* Forgot Password Link */}
+            <div className="flex items-center justify-end text-xs">
               <Link
                 href="/auth/forgotpss"
-                className="font-family-semibold text-brand-600 hover:text-brand-800 transition hover:underline"
+                className="font-family-semibold text-sky-300 md:text-[#004a70] hover:text-sky-100 md:hover:text-[#003856] transition hover:underline"
               >
-                Forgot Password
+                Forgot Password?
               </Link>
             </div>
 
@@ -231,17 +231,13 @@ const Login = () => {
             <AuthDivider label="or continue with" />
 
             {/* Google Login Button */}
-            <CustomButton
-              type="button"
+            <AuthSecondaryButton
               onClick={googlLogin}
-              loading={GoogleLoading}
-              variant="secondary"
-              className="w-full flex !bg-white !text-slate-700 text-black border border-slate-200 hover:!bg-slate-50"
-              startContent={<Image src={Google} alt="" className="h-5 w-5 mr-1" />}
+              disabled={GoogleLoading}
             >
-
-              <span className="font-family-regular">Sign In with Google</span>
-            </CustomButton>
+              <Image src={Google} alt="Google" className="h-4 w-4 object-contain" />
+              <span>{GoogleLoading ? "Signing in..." : "Sign In with Google"}</span>
+            </AuthSecondaryButton>
           </form>
         )}
       </Formik>

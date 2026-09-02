@@ -1,32 +1,16 @@
 import React from "react";
 import { Card } from "react-bootstrap";
-import Slider from "react-slick";
-import Image from "next/image";
+import { Swiper, SwiperSlide } from "swiper/react";
+import { Pagination } from "swiper/modules";
+import "swiper/css";
+import "swiper/css/pagination";
 
 function ThingstodoCard({ testimonial, onClick, onClick2, btnTitle, isTour }) {
-  const settings = {
-    dots: true,
-    infinite: false,
-    speed: 500,
-    slidesToShow: 1,
-    arrows: false,
-    slidesToScroll: 1,
-    centerMode: false,
-    responsive: [
-      {
-        breakpoint: 1200,
-        settings: {
-          slidesToShow: 1,
-        },
-      },
-      {
-        breakpoint: 768,
-        settings: {
-          slidesToShow: 1,
-        },
-      },
-    ],
-  };
+  const images = Array.isArray(testimonial?.images)
+    ? testimonial.images
+    : typeof testimonial?.images === "string"
+      ? [testimonial.images]
+      : [];
 
   // Star Icon SVG (green)
   const StarIcon = () => (
@@ -93,25 +77,52 @@ function ThingstodoCard({ testimonial, onClick, onClick2, btnTitle, isTour }) {
   );
 
   return (
-    <Card className="mt-2 cursor-pointer w-full group overflow-hidden border border-slate-200 hover:border-brand-200 transition-all duration-400 hover:-translate-y-2 bg-white flex flex-col rounded-2xl shadow-[0_4px_20px_rgba(0,0,0,0.05)]">
-      <Card.Body className="p-0 flex flex-col h-full" onClick={onClick2}>
+    <Card className="cursor-pointer w-full group !overflow-hidden !border !border-slate-200 hover:!border-brand-200 transition-all duration-300 hover:-translate-y-1.5 bg-white flex flex-col !rounded-2xl shadow-[0_4px_20px_rgba(0,0,0,0.05)] h-full isolate">
+      <Card.Body className="!p-0 flex flex-col h-full flex-1 w-full !overflow-hidden" onClick={onClick2}>
         {/* Image Section */}
-        <div className="relative overflow-hidden flex-shrink-0">
-          <Slider {...settings}>
-            {testimonial?.images?.map((item, index) => (
-              <div key={index} className="text-center overflow-hidden">
-                <img
-                  src={item}
-                  alt={`${testimonial.title}-${index}`}
-                  className="w-full h-44 object-cover transition-transform duration-700 group-hover:scale-110"
-                />
-              </div>
-            ))}
-          </Slider>
+        <div
+          className="relative !overflow-hidden flex-shrink-0 bg-slate-100 w-full h-44 isolate rounded-t-2xl"
+          onClick={(e) => {
+            if (
+              e.target.closest(".swiper-pagination") ||
+              e.target.closest(".swiper-pagination-bullet")
+            ) {
+              e.stopPropagation();
+            }
+          }}
+        >
+          {images.length > 0 ? (
+            <Swiper
+              modules={[Pagination]}
+              nested={true}
+              observer={true}
+              observeParents={true}
+              pagination={{
+                clickable: true,
+                dynamicBullets: images.length > 3,
+              }}
+              loop={images.length > 1}
+              className="w-full h-44 thingstodo-swiper !overflow-hidden"
+            >
+              {images.map((item, index) => (
+                <SwiperSlide key={index} className="!w-full !h-full !overflow-hidden bg-slate-100 relative">
+                  <img
+                    src={typeof item === "string" ? item : item?.url || item?.image}
+                    alt={`${testimonial?.title || "Tour"}-${index}`}
+                    className="w-full h-44 object-cover transition-transform duration-700 group-hover:scale-105 select-none block pointer-events-none"
+                  />
+                </SwiperSlide>
+              ))}
+            </Swiper>
+          ) : (
+            <div className="w-full h-44 bg-slate-100 flex items-center justify-center text-slate-400 text-xs">
+              No Image Available
+            </div>
+          )}
 
-          {/* Rating Badge (Top Right, ON TOP OF IMAGE, like reference!) */}
+          {/* Rating Badge (Top Right, ON TOP OF IMAGE) */}
           {testimonial?.avgRating > 0 && (
-            <div className="absolute top-3 right-3 bg-white px-3 py-1.5 rounded-xl shadow-lg flex items-center gap-1.5 z-20">
+            <div className="absolute top-3 right-3 bg-white/95 backdrop-blur-sm px-3 py-1.5 rounded-xl shadow-lg flex items-center gap-1.5 z-20 pointer-events-none">
               <StarIcon />
               <span className="font-semibold text-sm text-slate-900">
                 {Number(testimonial?.avgRating).toFixed(1)}
@@ -124,41 +135,44 @@ function ThingstodoCard({ testimonial, onClick, onClick2, btnTitle, isTour }) {
         </div>
 
         {/* Content Section */}
-        <div className="p-3 flex flex-col flex-grow gap-3">
-          {/* Title */}
-          <h3 className="text-lg font-bold text-slate-900 m-0 leading-tight line-clamp-2 break-words">
-            {testimonial.title}
+        <div className="p-3.5 flex flex-col flex-1 gap-2.5">
+          {/* Title with consistent min-height for 2-line alignment */}
+          <h3 className="text-base sm:text-lg font-bold text-slate-900 m-0 leading-snug line-clamp-2 min-h-[44px] flex items-start break-words">
+            {testimonial?.title}
           </h3>
 
           {/* Address/Location */}
-          <div className="flex items-center gap-1.5">
+          <div className="flex items-center gap-1.5 min-h-[20px]">
             <LocationIcon />
             <p className="font-normal text-sm m-0 text-slate-500 line-clamp-1 whitespace-nowrap overflow-hidden text-ellipsis">
-              {testimonial.address}
+              {testimonial?.address}
             </p>
           </div>
 
-          {/* Features Row (2x2 grid like reference) */}
-          <div className="grid grid-cols-2 gap-2.5 py-2.5 border-y border-slate-200">
-            <div className="flex items-center gap-2">
+          {/* Features Row */}
+          <div className="grid grid-cols-2 gap-2 py-2 border-y border-slate-200 min-h-[38px] items-center">
+            <div className="flex items-center gap-1.5 min-w-0">
               <CheckIcon />
-              <span className="text-sm font-normal text-slate-700">
-                From ${testimonial.location_price || 0}
+              <span className="text-xs sm:text-sm font-normal text-slate-700 truncate">
+                From ${testimonial?.location_price || 0}
               </span>
             </div>
-            <div className="flex items-center gap-2">
+            <div className="flex items-center gap-1.5 min-w-0 justify-end sm:justify-start">
               <CogIcon />
-              <span className="text-sm font-normal whitespace-nowrap text-slate-700">
+              <span className="text-xs sm:text-sm font-normal whitespace-nowrap text-slate-700 truncate">
                 {testimonial?.category?.name}
               </span>
             </div>
           </div>
 
-          {/* Footer with Price & Button */}
-          <div className="flex items-center justify-between mt-auto">
+          {/* Footer with Price & Button - Pushed to bottom */}
+          <div className="mt-auto pt-2">
             <button
-              onClick={onClick}
-              className="inline-flex items-center w-full justify-center px-6 py-2.5 bg-slate-100 text-slate-900 text-sm font-semibold rounded-xl hover:bg-slate-200 transition-colors duration-300"
+              onClick={(e) => {
+                e.stopPropagation();
+                if (onClick) onClick();
+              }}
+              className="inline-flex items-center w-full justify-center px-4 py-2.5 bg-slate-100 text-slate-900 text-sm font-semibold rounded-xl hover:bg-slate-200 transition-colors duration-300 cursor-pointer"
             >
               {btnTitle || "Book Now"}
             </button>

@@ -16,9 +16,22 @@ import { getDistance } from "geolib";
 import { IoMdCloseCircle } from "react-icons/io";
 import { IoMdAddCircleOutline } from "react-icons/io";
 import { BiCurrentLocation } from "react-icons/bi";
+import { FaCar, FaBox, FaMapMarkedAlt, FaHistory } from "react-icons/fa";
+import { Swiper, SwiperSlide } from "swiper/react";
+import { FreeMode, Mousewheel } from "swiper/modules";
+import "swiper/css";
+import "swiper/css/free-mode";
 import ApiFunction from "@/components/ApiFunction/ApiFunction";
 import { useRouter, useSearchParams } from "next/navigation";
+import Link from "next/link";
 import CustomButton from "./CustomButton";
+
+const rideTabs = [
+  { key: "driver", label: "Book a Driver", icon: <FaCar size={16} /> },
+  { key: "parcel", label: "Send a Parcel", icon: <FaBox size={15} /> },
+  { key: "tour", label: "Make Own Tour", icon: <FaMapMarkedAlt size={16} /> },
+  { key: "myBookings", label: "My Bookings", icon: <FaHistory size={15} /> },
+];
 
 const RidePage = () => {
   const searchParams = useSearchParams();
@@ -814,7 +827,7 @@ const RidePage = () => {
 
         <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 relative z-10">
           <div className="flex items-center gap-2 text-slate-400 text-xs font-family-medium !mb-4">
-            <a href="/" className="text-slate-400 hover:text-white transition-colors">Home</a>
+            <Link href="/" className="text-slate-400 hover:text-white transition-colors">Home</Link>
             <span className="text-slate-500">/</span>
             <span className="text-slate-200">Book a Ride</span>
           </div>
@@ -843,7 +856,50 @@ const RidePage = () => {
       </section>
 
       {/* ===== FORM & MAP CONTAINER ===== */}
-      <div className="!-mt-12 max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 relative z-10 !pb-24">
+      <div className="!-mt-8 max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 relative z-10 !pb-24">
+        {/* Swiper Tabs */}
+        <div className="w-full max-w-full overflow-hidden !mb-8">
+          <Swiper
+            modules={[FreeMode, Mousewheel]}
+            slidesPerView="auto"
+            spaceBetween={10}
+            freeMode={true}
+            mousewheel={{ forceToAxis: true }}
+            className="w-full py-1 category-swiper"
+          >
+            {rideTabs.map((tab) => {
+              const isSelected = (TypeRide === tab.key) || (!TypeRide && tab.key === "driver");
+              return (
+                <SwiperSlide key={tab.key} style={{ width: "auto" }}>
+                  <button
+                    type="button"
+                    onClick={() => {
+                      if (tab.key === "tour") {
+                        router.push("/makeowntours");
+                      } else if (tab.key === "myBookings") {
+                        router.push("/admin");
+                      } else {
+                        setTypeRide(tab.key);
+                        setValue("category", tab.key);
+                      }
+                    }}
+                    className={`cursor-pointer transition-all duration-300 select-none flex items-center gap-2 px-5 py-2.5 rounded-full text-xs sm:text-sm font-family-semibold whitespace-nowrap !border shadow-none ${
+                      isSelected
+                        ? "text-white bg-brand-600 !border-brand-600"
+                        : "text-slate-700 bg-white !border-slate-200/90 hover:!border-brand-600 hover:bg-slate-50 hover:text-brand-600"
+                    }`}
+                  >
+                    <span className={isSelected ? "opacity-100" : "opacity-75"}>
+                      {tab.icon}
+                    </span>
+                    <span>{tab.label}</span>
+                  </button>
+                </SwiperSlide>
+              );
+            })}
+          </Swiper>
+        </div>
+
         <div className="grid grid-cols-1 lg:grid-cols-12 gap-8 items-start">
           
           {/* Form Card (5 Cols) */}

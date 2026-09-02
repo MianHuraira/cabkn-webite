@@ -21,6 +21,7 @@ import { setPaymentCards, setUser } from "@/components/Redux/Slices/AuthSlice";
 import { useSocket } from "@/components/ApiFunction/SoketProvider";
 import CustomButton from "@/components/CustomButton";
 import EmptyState from "@/components/EmptyState";
+import Link from "next/link";
 import PhoneInput from "react-phone-input-2";
 import "react-phone-input-2/lib/style.css";
 
@@ -339,7 +340,7 @@ const page = () => {
 
         <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 relative z-10">
           <div className="flex items-center gap-2 text-slate-400 text-xs font-family-medium !mb-4">
-            <a href="/" className="text-slate-400 hover:text-white transition-colors">Home</a>
+            <Link href="/" className="text-slate-400 hover:text-white transition-colors">Home</Link>
             <span className="text-slate-500">/</span>
             <span className="text-slate-200">Wallet</span>
           </div>

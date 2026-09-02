@@ -1,4 +1,5 @@
 "use client";
+import "@ant-design/v5-patch-for-react-19";
 import Script from "next/script";
 
 import React from "react";
@@ -7,7 +8,7 @@ import { Provider } from "react-redux";
 import MainLayout from "@/components/mainLayout/mainLayout";
 import { StyleProvider, createCache, extractStyle } from "@ant-design/cssinjs";
 import { useServerInsertedHTML, usePathname } from "next/navigation";
-import { ConfigProvider } from "antd";
+import { ConfigProvider, App } from "antd";
 import { useEffect } from "react";
 
 const ClientWrapper = ({ children }) => {
@@ -64,7 +65,9 @@ const ClientWrapper = ({ children }) => {
 
     return (
       <StyleProvider cache={cache}>
-        <ConfigProvider>{children}</ConfigProvider>
+        <ConfigProvider>
+          <App>{children}</App>
+        </ConfigProvider>
       </StyleProvider>
     );
   };

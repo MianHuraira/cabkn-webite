@@ -167,11 +167,15 @@ const Signup = () => {
       setImageUploading(true);
       formData.append("image", file);
       const res = await postData("image/upload", formData, header2);
-      setImage(res?.image);
-      setImageUploading(false);
+      if (res?.image) {
+        setImage(res.image);
+        toast.success("Profile photo uploaded!");
+      }
     } catch (error) {
-      setImageUploading(false);
       console.error("Error uploading image:", error);
+      toast.error(error?.response?.data?.message || "Failed to upload image");
+    } finally {
+      setImageUploading(false);
     }
   };
 
@@ -341,27 +345,9 @@ const Signup = () => {
     >
       {({ values, errors, touched, handleChange, handleBlur, handleSubmit, setFieldValue, setFieldTouched, setFieldError }) => (
         <AuthShell
-          title={
-            <div className="flex items-center gap-2 -ml-2">
-              <button
-                type="button"
-                onClick={() => handleBack(values)}
-                className="inline-flex h-8 w-8 items-center justify-center rounded-lg text-slate-500 hover:bg-slate-100 hover:text-slate-900 transition"
-              >
-                <svg
-                  xmlns="http://www.w3.org/2000/svg"
-                  fill="none"
-                  viewBox="0 0 24 24"
-                  strokeWidth="2.5"
-                  stroke="currentColor"
-                  className="h-5 w-5"
-                >
-                  <path strokeLinecap="round" strokeLinejoin="round" d="M15 19l-7-7 7-7" />
-                </svg>
-              </button>
-              <span className="font-family-semibold">Complete your profile</span>
-            </div>
-          }
+          reverseLayout={true}
+          onBack={() => handleBack(values)}
+          title="Complete your profile"
           subtitle="A few details to personalize your CabKn experience."
           imageSrc={LoginImg}
           imageAlt="Sign up cover"
@@ -375,10 +361,10 @@ const Signup = () => {
         >
           <form onSubmit={handleSubmit} className="space-y-4">
             <div className="flex flex-col items-center justify-center w-full mb-6">
-              <div className="relative group cursor-pointer">
+              <div className="relative group">
                 <label
                   htmlFor="file-upload"
-                  className="block relative cursor-pointer rounded-full overflow-hidden border-2 border-slate-200 shadow-md hover:border-brand-500 transition-colors w-24 h-24"
+                  className="block relative cursor-pointer rounded-full overflow-hidden border-2 border-slate-200 shadow-sm hover:border-[#004a70] transition-colors w-16 h-16"
                 >
                   <Image
                     src={image || Image1}
@@ -393,7 +379,7 @@ const Signup = () => {
                       viewBox="0 0 24 24"
                       strokeWidth="2.5"
                       stroke="currentColor"
-                      className="w-6 h-6 text-white"
+                      className="w-5 h-5 text-white"
                     >
                       <path
                         strokeLinecap="round"
@@ -410,7 +396,7 @@ const Signup = () => {
                 </label>
                 {imageUploading && (
                   <div className="absolute inset-0 rounded-full bg-white/70 flex items-center justify-center z-10">
-                    <div className="h-6 w-6 animate-spin rounded-full border-2 border-slate-200 border-t-brand-600" />
+                    <div className="h-5 w-5 animate-spin rounded-full border-2 border-slate-200 border-t-[#004a70]" />
                   </div>
                 )}
               </div>
@@ -423,17 +409,17 @@ const Signup = () => {
                 className="hidden"
               />
 
-              <div className="text-center mt-2">
-<p className="font-family-semibold text-sm text-slate-800">
-  Profile photo (optional)
-</p>
-<p className="font-family-regular text-xs text-slate-500 mt-0.5">
-  Click on the circle to upload a profile photo
-</p>
+              <div className="text-center mt-1">
+                <p className="font-family-semibold text-xs text-white/95 md:text-slate-700">
+                  Profile photo (optional)
+                </p>
+                <p className="font-family-regular text-[11px] text-white/75 md:text-slate-400 mt-0.5">
+                  Click on the circle to upload
+                </p>
               </div>
             </div>
 
-            <div className="grid grid-cols-1 gap-4 sm:grid-cols-1">
+            <div className="space-y-3">
               <AuthTextField
                 id="fullname"
                 name="fullname"
@@ -450,7 +436,6 @@ const Signup = () => {
                 id="date"
                 name="date"
                 type="date"
-                // not future dates 
                 max={new Date().toISOString().split("T")[0]}
                 label="Date of birth"
                 value={values.date}
@@ -461,10 +446,10 @@ const Signup = () => {
               />
             </div>
 
-            <div className="space-y-2 relative">
-<label htmlFor="address" className="font-family-medium text-sm text-slate-700">
-  Address
-</label>
+            <div className="space-y-1 relative">
+              <label htmlFor="address" className="inline-block w-fit text-[13px] font-family-semibold text-white/95 md:text-slate-700 select-none pl-0.5 cursor-pointer">
+                Address
+              </label>
               <div className="relative">
                 <input
                   id="address"
@@ -480,26 +465,27 @@ const Signup = () => {
                     }, 200);
                     setFieldTouched("address", true);
                   }}
-                  className={`block w-full rounded-xl border bg-white px-4 py-3 text-[15px] text-slate-900 shadow-sm outline-none transition placeholder:text-slate-400 focus:ring-4 ${touched.address && errors.address
-                    ? "border-rose-300 focus:border-rose-400 focus:ring-rose-100"
-                    : "border-slate-200 focus:border-brand-500 focus:ring-brand-100"
-                    }`}
+                  className={`input-field ${
+                    touched.address && errors.address
+                      ? "!border-rose-400 !focus:border-rose-500 !focus:ring-rose-500/20"
+                      : ""
+                  }`}
                   autoComplete="street-address"
                 />
                 {pridicLoading && (
-                  <div className="absolute right-3 top-1/2 -translate-y-1/2">
-                    <div className="h-4 w-4 animate-spin rounded-full border-2 border-slate-200 border-t-brand-600" />
+                  <div className="absolute right-3.5 top-1/2 -translate-y-1/2">
+                    <div className="h-4 w-4 animate-spin rounded-full border-2 border-slate-200 border-t-[#004a70]" />
                   </div>
                 )}
               </div>
 
               {predictions.length > 0 && (
-                <div className="absolute z-50 left-0 right-0 mt-1 max-h-60 overflow-y-auto rounded-xl border border-slate-200 bg-white py-1 shadow-lg">
+                <div className="absolute z-50 left-0 right-0 mt-1 max-h-52 overflow-y-auto rounded-2xl border border-slate-200/90 bg-white/95 backdrop-blur-md py-1.5 shadow-xl">
                   {predictions.map((prediction, idx) => (
                     <div
                       key={idx}
                       onClick={() => handlePredictionPress(prediction, setFieldValue)}
-                      className="font-family-regular w-full text-left px-4 py-2.5 text-[14px] text-slate-700 hover:bg-slate-50 transition cursor-pointer"
+                      className="font-family-regular w-full text-left px-4 py-2.5 text-[13.5px] text-slate-700 hover:bg-slate-50 transition cursor-pointer"
                     >
                       {prediction.description}
                     </div>
@@ -508,20 +494,20 @@ const Signup = () => {
               )}
 
               {noData && (
-<div className="font-family-regular absolute z-50 left-0 right-0 mt-1 rounded-xl border border-slate-200 bg-white py-2.5 px-4 shadow-lg text-[14px] text-slate-500">
-  No results found
-</div>
+                <div className="font-family-regular absolute z-50 left-0 right-0 mt-1 rounded-2xl border border-slate-200/90 bg-white/95 backdrop-blur-md py-2.5 px-4 shadow-xl text-[13.5px] text-slate-500">
+                  No results found
+                </div>
               )}
 
-{touched.address && errors.address ? (
-  <p className="font-family-regular text-sm leading-5 text-rose-600">{errors.address}</p>
-) : null}
+              {touched.address && errors.address ? (
+                <p className="text-[11px] text-rose-500 font-family-medium mt-0.5 pl-1">{errors.address}</p>
+              ) : null}
             </div>
 
-            <div className="space-y-2">
-<label htmlFor="phone" className="font-family-medium text-sm text-slate-700">
-  Phone
-</label>
+            <div className="space-y-1">
+              <label htmlFor="phone" className="inline-block w-fit text-[13px] font-family-semibold text-white/95 md:text-slate-700 select-none pl-0.5 cursor-pointer">
+                Phone
+              </label>
               <div className="relative">
                 <PhoneInput
                   country={"us"}
@@ -536,47 +522,55 @@ const Signup = () => {
                     setFieldTouched("phone", true);
                     handleCheckPhone(values.phone, setFieldError, setFieldTouched);
                   }}
+                  containerClass="!w-full"
+                  inputClass="!w-full !rounded-xl !bg-white !text-gray-900"
+                  buttonClass="!rounded-l-xl !bg-white !border-0"
                   inputStyle={{
                     width: "100%",
-                    padding: "12px 16px 12px 48px",
-                    borderRadius: "0.75rem",
+                    paddingLeft: "48px",
+                    paddingRight: "14px",
+                    paddingTop: "10px",
+                    paddingBottom: "10px",
+                    borderRadius: "12px",
                     border: touched.phone && errors.phone
-                      ? "1px solid #fda4af"
+                      ? "1px solid #f87171"
                       : phoneFocused
-                        ? "1px solid #188fe0"
-                        : "1px solid #e2e8f0",
+                        ? "1px solid #004a70"
+                        : "1px solid #e5e7eb",
                     boxShadow: phoneFocused
-                      ? touched.phone && errors.phone
-                        ? "0 0 0 4px #ffe4e6"
-                        : "0 0 0 4px #d7f0ff"
+                      ? "0 0 0 2px rgba(0, 74, 112, 0.2)"
                       : "0 1px 2px 0 rgba(0, 0, 0, 0.05)",
-                    fontSize: "15px",
-                    color: "#0f172a",
+                    fontSize: "13.5px",
+                    fontFamily: "var(--font-poppins-local), 'Inter', sans-serif",
+                    color: "#111827",
                     outline: "none",
-                    background: "#fff",
-                    height: "46px",
-                    transition: "all 0.15s ease-in-out",
+                    background: "#ffffff",
+                    height: "42px",
+                    transition: "all 0.2s ease-in-out",
                   }}
                   buttonStyle={{
                     border: "none",
-                    background: "transparent",
-                    borderRadius: "0.75rem 0 0 0.75rem",
-                    paddingLeft: "8px",
+                    background: "#ffffff",
+                    borderRadius: "12px 0 0 12px",
+                    paddingLeft: "10px",
                   }}
                   dropdownStyle={{
-                    borderRadius: "0.75rem",
+                    borderRadius: "12px",
+                    boxShadow: "0 10px 30px rgba(0,0,0,0.12)",
+                    fontFamily: "var(--font-poppins-local), 'Inter', sans-serif",
+                    fontSize: "13px",
                   }}
                   placeholder="Enter your phone number"
                 />
                 {phoneChecking && (
-                  <div className="absolute right-3 top-1/2 -translate-y-1/2 z-10 pointer-events-none">
-                    <div className="h-4 w-4 animate-spin rounded-full border-2 border-slate-200 border-t-brand-600" />
+                  <div className="absolute right-3.5 top-1/2 -translate-y-1/2 z-10 pointer-events-none">
+                    <div className="h-4 w-4 animate-spin rounded-full border-2 border-slate-200 border-t-[#004a70]" />
                   </div>
                 )}
               </div>
-{touched.phone && errors.phone ? (
-  <p className="font-family-regular text-sm leading-5 text-rose-600">{errors.phone}</p>
-) : null}
+              {touched.phone && errors.phone ? (
+                <p className="text-[11px] text-rose-500 font-family-medium mt-0.5 pl-1">{errors.phone}</p>
+              ) : null}
             </div>
 
             <AuthTextField
@@ -591,9 +585,15 @@ const Signup = () => {
               autoComplete="off"
             />
 
-            <AuthPrimaryButton type="submit" loading={loading}>
-              Continue
-            </AuthPrimaryButton>
+            <div className="pt-2.5 sm:pt-3.5">
+              <AuthPrimaryButton
+                type="submit"
+                loading={loading || imageUploading}
+                disabled={loading || imageUploading}
+              >
+                {imageUploading ? "Uploading profile image..." : "Continue"}
+              </AuthPrimaryButton>
+            </div>
           </form>
         </AuthShell>
       )}

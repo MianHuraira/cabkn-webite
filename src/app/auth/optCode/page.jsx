@@ -7,6 +7,7 @@ import { otpImage } from "@/components/assets/Images";
 import { setAuthenticated, setUser } from "@/components/Redux/Slices/AuthSlice";
 import { useRouter, useSearchParams } from "next/navigation";
 import toast from "react-hot-toast";
+import { IoChevronBack } from "react-icons/io5";
 import { AuthPrimaryButton, AuthShell } from "@/components/auth/AuthShell";
 
 const Otp = () => {
@@ -20,6 +21,7 @@ const Otp = () => {
   const [SginUpdata, setSginUpdata] = useState([]);
 
   const [Loading, setLoading] = useState(false);
+  const [resendLoading, setResendLoading] = useState(false);
   const dispatch = useDispatch();
   const [rowdata, setRowdata] = useState("");
   const router = useRouter();
@@ -112,9 +114,9 @@ const Otp = () => {
   }, [timer, timerActive]);
 
   const handleResend = async () => {
-    if (timerActive || Loading) return;
+    if (timerActive || Loading || resendLoading) return;
     try {
-      setLoading(true);
+      setResendLoading(true);
       const body = {
         email: rowdata?.email,
         type: "customer",
@@ -132,7 +134,7 @@ const Otp = () => {
     } catch (err) {
       toast.error("Something went wrong.");
     } finally {
-      setLoading(false);
+      setResendLoading(false);
     }
   };
 
@@ -145,7 +147,7 @@ const Otp = () => {
   };
 
   const attemptVerify = () => {
-    if (Loading) return;
+    if (Loading || resendLoading) return;
     if (!otpComplete) {
       toast.error("Please enter the complete 4-digit verification code.");
       focusFirstEmptyOtp();
@@ -171,13 +173,14 @@ const Otp = () => {
 
           const encodedData = encodeURIComponent(JSON.stringify(resData));
           router.push(`/auth/resetPass?data=${encodedData}`);
-          toast.success(res?.message);
+          toast.success(res?.message || "Verification successful!");
         } else {
-          toast.error(res?.message);
+          toast.error(res?.message || res?.response?.data?.message || "Verification failed");
         }
       })
       .catch((error) => {
-        toast.error(error?.response?.data?.message || "Signup failed!");
+        const errorMsg = error?.response?.data?.message || error?.message || "Verification failed!";
+        toast.error(errorMsg);
       })
       .finally(() => {
         setLoading(false);
@@ -207,14 +210,15 @@ const Otp = () => {
           dispatch(setAuthenticated(true));
           localStorage.setItem("isLogin", true);
           localStorage.setItem("Cabkn-token", res?.token);
-          toast.success("Sign up successful! Redirecting...");
+          toast.success(res?.message || "Sign up successful! Redirecting...");
           router.push("/");
         } else {
-          toast.error(res?.message);
+          toast.error(res?.message || res?.response?.data?.message || "Signup failed!");
         }
       })
       .catch((error) => {
-        toast.error(error?.response?.data?.message || "Signup failed!");
+        const errorMsg = error?.response?.data?.message || error?.message || "Signup failed!";
+        toast.error(errorMsg);
       })
       .finally(() => {
         setLoading(false);
@@ -235,40 +239,25 @@ const Otp = () => {
 
   return (
     <AuthShell
-      title={
-        <div className="flex items-center gap-2 -ml-2">
-          <button
-            type="button"
-            onClick={handleBack}
-            className="inline-flex h-8 w-8 items-center justify-center rounded-lg text-slate-500 hover:bg-slate-100 hover:text-slate-900 transition"
-          >
-            <svg
-              xmlns="http://www.w3.org/2000/svg"
-              fill="none"
-              viewBox="0 0 24 24"
-              strokeWidth="2.5"
-              stroke="currentColor"
-              className="h-5 w-5"
-            >
-              <path
-                strokeLinecap="round"
-                strokeLinejoin="round"
-                d="M15 19l-7-7 7-7"
-              />
-            </svg>
-          </button>
-          <span className="font-family-bold">Verification code</span>
-        </div>
+      onBack={handleBack}
+      title="Verification Code"
+      subtitle={
+        rowdata?.email ? (
+          <span>
+            Enter the 4-digit code sent to{" "}
+            <span className="font-family-semibold text-white md:text-slate-700 block mt-0.5 truncate max-w-[280px] mx-auto">
+              {rowdata.email}
+            </span>
+          </span>
+        ) : (
+          "Enter the 4-digit code we sent you to continue."
+        )
       }
-      subtitle="Enter the 4‑digit code we sent you to continue."
-      imageSrc={otpImage}
-      imageAlt="OTP cover"
-      imageHeadline="Track your ride in real-time"
-      imageSubheadline="A smooth journey starts with a secure account."
     >
       <div className="space-y-4">
+        {/* Square OTP Inputs */}
         <div
-          className="grid grid-cols-4 gap-3"
+          className="flex items-center justify-center gap-3 py-1"
           onPaste={handlePaste}
           role="group"
           aria-label="One-time password"
@@ -284,52 +273,58 @@ const Otp = () => {
               value={digit}
               onChange={(e) => handleInputChange(index, e.target.value)}
               onKeyDown={(e) => handleKeyDown(index, e)}
-              className="font-family-semibold h-14 w-full rounded-2xl border border-slate-200 bg-white text-center text-xl text-slate-900 shadow-sm outline-none transition focus:border-brand-500 focus:ring-4 focus:ring-brand-100"
+              className={`h-12 w-12 sm:h-13 sm:w-13 text-center text-xl font-family-bold rounded-xl !border transition-all duration-200 outline-none shadow-sm !text-white md:!text-slate-900 bg-transparent caret-white md:caret-slate-900 ${
+                digit
+                  ? "border-white md:border-[#004a70] md:bg-[#004a70]/5 shadow-md ring-2 ring-white/30 md:ring-[#004a70]/20"
+                  : "border-white/40 md:border-gray-200 md:bg-white hover:border-white/60 md:hover:border-gray-300 focus:border-white md:focus:border-[#004a70] focus:ring-2 focus:ring-white/30 md:focus:ring-[#004a70]/20"
+              }`}
               aria-label={`Digit ${index + 1}`}
               autoFocus={index === 0}
             />
           ))}
         </div>
 
-        <div className="relative">
+        {/* Action Button */}
+        <div className="pt-1">
           <AuthPrimaryButton
             type="button"
             onClick={attemptVerify}
             loading={Loading}
-            disabled={!otpComplete || Loading}
-            className={!otpComplete ? "opacity-70" : ""}
+            disabled={!otpComplete || Loading || resendLoading}
           >
             {rowdata?.isForgot == "true"
-              ? "Verify & reset"
-              : "Verify & sign up"}
+              ? "Verify & Reset Password"
+              : "Verify & Create Account"}
           </AuthPrimaryButton>
-          {!otpComplete && !Loading ? (
-            <button
-              type="button"
-              className="absolute inset-0 rounded-xl"
-              aria-label="Enter verification code to continue"
-              onClick={attemptVerify}
-            />
-          ) : null}
         </div>
 
-        <p className="font-family-regular text-sm mt-2 text-slate-600">
-          Didn't get a code?{" "}
-          {timer === 0 ? (
-            <button
-              type="button"
-              onClick={handleResend}
-              disabled={Loading}
-              className="font-family-semibold text-brand-700 hover:text-brand-900 underline underline-offset-2 cursor-pointer bg-transparent border-none p-0 transition-colors disabled:opacity-50"
-            >
-              Resend code
-            </button>
-          ) : (
-            <span className="font-family-semibold text-brand-700">{`Resend in 0:${timer
-              .toString()
-              .padStart(2, "0")}`}</span>
-          )}
-        </p>
+        {/* Resend Countdown / Link with inline spinner */}
+        <div className="text-center pt-1">
+          <p className="font-family-regular text-xs text-white/80 md:text-slate-500">
+            Didn&apos;t get a code?{" "}
+            {timer === 0 ? (
+              <button
+                type="button"
+                onClick={handleResend}
+                disabled={Loading || resendLoading}
+                className="font-family-semibold text-sky-300 md:text-[#004a70] hover:text-sky-100 md:hover:text-[#003856] hover:underline cursor-pointer bg-transparent border-none p-0 transition-colors disabled:opacity-60 inline-flex items-center gap-1.5 ml-1"
+              >
+                {resendLoading ? (
+                  <>
+                    <span className="h-3 w-3 animate-spin rounded-full border-2 border-current border-t-transparent" />
+                    <span>Resending...</span>
+                  </>
+                ) : (
+                  <span>Resend code</span>
+                )}
+              </button>
+            ) : (
+              <span className="text-white/60 md:text-slate-400 font-family-medium">
+                Resend in <span className="text-sky-300 md:text-[#004a70] font-family-bold">{timer}s</span>
+              </span>
+            )}
+          </p>
+        </div>
       </div>
     </AuthShell>
   );

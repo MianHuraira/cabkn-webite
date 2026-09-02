@@ -3,74 +3,248 @@
 import React, { Suspense, useEffect, useRef, useState } from "react";
 import moment from "moment/moment";
 import { FaLocationDot, FaStar, FaHeart } from "react-icons/fa6";
-import { IoCall } from "react-icons/io5";
-import { RiMessage2Fill } from "react-icons/ri";
+import { IoCall, IoShieldCheckmark, IoCarSport } from "react-icons/io5";
+import { RiMessage2Fill, RiRouteLine, RiFileCopyLine, RiCheckLine } from "react-icons/ri";
 import {
-  MdContentCopy,
   MdOutlineMyLocation,
   MdOutlineCalendarMonth,
-  MdOutlineAttachMoney,
+  MdOutlineReceiptLong,
+  MdOutlineMap,
+  MdOutlineRateReview,
+  MdOutlineAirlineSeatReclineNormal,
+  MdOutlineCreditCard,
+  MdZoomOutMap,
+  MdOutlinePlace,
 } from "react-icons/md";
-
+import { FiArrowLeft, FiMail, FiShield } from "react-icons/fi";
 import mapboxgl from "mapbox-gl";
 import "mapbox-gl/dist/mapbox-gl.css";
-import { Spinner } from "reactstrap";
 import Image from "next/image";
+import Link from "next/link";
 import { carAvatar, NoshowData } from "@/components/assets/Images";
 import ApiFunction from "@/components/ApiFunction/ApiFunction";
-import { useSearchParams } from "next/navigation";
+import { useSearchParams, useRouter } from "next/navigation";
 import { message } from "antd";
 import { useSocket } from "@/components/ApiFunction/SoketProvider";
 
+// Swiper imports
+import { Swiper, SwiperSlide } from "swiper/react";
+import { FreeMode, Mousewheel } from "swiper/modules";
+import "swiper/css";
+import "swiper/css/free-mode";
+
+// =========================================================================
+// SKELETON LOADERS (No Spinners - Pure Shimmer Layouts)
+// =========================================================================
+const RideDetailSkeleton = () => (
+  <div className="min-h-screen bg-[#f8fafc] font-poppins text-slate-800">
+    {/* Hero Banner Skeleton */}
+    <section className="relative overflow-hidden bg-gradient-to-br from-[#001726] via-[#002f4a] to-[#001f33] !pt-20 sm:!pt-28 !pb-12 sm:!pb-14 text-white">
+      <div className="max-w-7xl mx-auto px-3 sm:px-6 lg:px-8 relative z-10">
+        <div className="flex items-center justify-between gap-2 mb-2 sm:mb-2.5">
+          <div className="flex items-center gap-2">
+            <div className="h-4 w-12 rounded bg-white/15 animate-pulse" />
+            <span className="text-slate-500 text-xs">/</span>
+            <div className="h-4 w-20 rounded bg-white/15 animate-pulse" />
+            <span className="text-slate-500 text-xs">/</span>
+            <div className="h-4 w-24 rounded bg-white/20 animate-pulse" />
+          </div>
+          <div className="h-5 w-20 rounded-full bg-white/10 animate-pulse" />
+        </div>
+        <div className="flex flex-wrap items-center justify-between gap-2.5">
+          <div className="space-y-1.5">
+            <div className="flex items-center gap-2 flex-wrap">
+              <div className="h-6 sm:h-7 w-36 sm:w-44 rounded-lg bg-white/20 animate-pulse" />
+              <div className="h-5 w-24 rounded-full bg-white/15 animate-pulse" />
+            </div>
+            <div className="h-3.5 w-48 sm:w-56 rounded bg-white/10 animate-pulse" />
+          </div>
+          <div className="h-8 sm:h-9 w-28 sm:w-32 rounded-xl bg-white/10 animate-pulse" />
+        </div>
+      </div>
+    </section>
+
+    {/* Cockpit Cards Skeleton */}
+    <div className="!-mt-6 max-w-7xl mx-auto px-3 sm:px-6 lg:px-8 relative z-20 !pb-12">
+      <div className="grid grid-cols-1 lg:grid-cols-12 gap-3.5 sm:gap-4 items-start">
+        {/* Left Column Skeleton */}
+        <div className="lg:col-span-5 lg:sticky lg:top-20 z-10">
+          <div className="bg-white rounded-2xl p-3.5 sm:p-4 !border !border-slate-200/90 shadow-sm space-y-3.5">
+            <div className="flex items-center justify-between pb-3 border-b border-slate-100">
+              <div className="flex items-center gap-2.5 flex-1">
+                <div className="w-10 h-10 sm:w-11 sm:h-11 rounded-xl bg-slate-200 animate-pulse shrink-0" />
+                <div className="space-y-1.5 flex-1 min-w-0">
+                  <div className="h-3.5 w-28 bg-slate-200 rounded animate-pulse" />
+                  <div className="h-3 w-36 bg-slate-100 rounded animate-pulse" />
+                </div>
+              </div>
+              <div className="flex gap-1">
+                <div className="w-7 h-7 rounded-lg bg-slate-100 animate-pulse" />
+                <div className="w-7 h-7 rounded-lg bg-slate-100 animate-pulse" />
+              </div>
+            </div>
+
+            <div className="space-y-1.5">
+              <div className="h-3.5 w-32 bg-slate-200 rounded animate-pulse" />
+              <div className="w-full h-36 sm:h-40 rounded-xl bg-slate-200 animate-pulse" />
+            </div>
+
+            <div className="pt-2 border-t border-slate-100 space-y-2">
+              <div className="h-3.5 w-full bg-slate-100 rounded animate-pulse" />
+              <div className="h-3.5 w-full bg-slate-100 rounded animate-pulse" />
+              <div className="h-4 w-full bg-slate-200 rounded animate-pulse" />
+            </div>
+          </div>
+        </div>
+
+        {/* Right Column Skeleton */}
+        <div className="lg:col-span-7">
+          <div className="bg-white rounded-2xl p-3.5 sm:p-4 !border !border-slate-200/90 shadow-sm space-y-3.5">
+            <div className="flex justify-between items-center pb-2.5 border-b border-slate-100">
+              <div className="h-3.5 w-28 bg-slate-200 rounded animate-pulse" />
+              <div className="h-5 w-20 bg-slate-100 rounded animate-pulse" />
+            </div>
+            <div className="space-y-2">
+              <div className="h-3.5 w-3/4 bg-slate-200 rounded animate-pulse" />
+              <div className="h-3.5 w-2/3 bg-slate-100 rounded animate-pulse" />
+            </div>
+            <div className="flex gap-2 pt-2 border-t border-slate-100">
+              <div className="h-7 w-32 rounded-full bg-slate-200 animate-pulse" />
+              <div className="h-7 w-32 rounded-full bg-slate-100 animate-pulse" />
+            </div>
+            <div className="h-[280px] sm:h-[320px] w-full rounded-xl bg-slate-200 animate-pulse" />
+          </div>
+        </div>
+      </div>
+    </div>
+  </div>
+);
+
+const ReviewCardsSkeleton = () => (
+  <div className="grid grid-cols-1 sm:grid-cols-2 gap-2.5">
+    {[1, 2, 3, 4].map((i) => (
+      <div
+        key={i}
+        className="bg-slate-50/80 rounded-xl p-3 !border !border-slate-200/70 space-y-2"
+      >
+        <div className="flex items-center gap-2">
+          <div className="w-7 h-7 rounded-full bg-slate-200 animate-pulse shrink-0" />
+          <div className="space-y-1 flex-1">
+            <div className="h-3 w-20 bg-slate-200 rounded animate-pulse" />
+            <div className="h-2 w-14 bg-slate-100 rounded animate-pulse" />
+          </div>
+        </div>
+        <div className="space-y-1 pt-0.5">
+          <div className="h-2.5 w-full bg-slate-100 rounded animate-pulse" />
+          <div className="h-2.5 w-4/5 bg-slate-100 rounded animate-pulse" />
+        </div>
+      </div>
+    ))}
+  </div>
+);
+
+// =========================================================================
+// MAIN RIDE DETAIL COMPONENT
+// =========================================================================
 const RideDetail = () => {
+  const router = useRouter();
   const { header1, putData, getData } = ApiFunction();
   const [productDetail, setProductDetail] = useState(null);
   const searchParams = useSearchParams();
-  const encodedData = searchParams.get("data");
   const socket = useSocket();
-  const DriveData = encodedData
-    ? JSON.parse(decodeURIComponent(encodedData))
-    : null;
-
-  const [activeTab, setActiveTab] = useState("reviews");
+  const [activeTab, setActiveTab] = useState("map");
   const [Reviews, setReviews] = useState([]);
   const [Loading, setLoading] = useState(false);
   const [FavLoading, setFavLoading] = useState(false);
+  const [detailLoading, setDetailLoading] = useState(true);
+  const [copied, setCopied] = useState(false);
+  const [messageApi, contextHolder] = message.useMessage();
+
+  // Extract initial ride data safely from sessionStorage or search params
+  const [initialData, setInitialData] = useState(() => {
+    if (typeof window !== "undefined" && window.sessionStorage) {
+      try {
+        const stored = sessionStorage.getItem("selected_ride");
+        if (stored) return JSON.parse(stored);
+      } catch (e) {
+        console.error("sessionStorage error:", e);
+      }
+    }
+    const encodedData = searchParams?.get("data");
+    if (encodedData) {
+      try {
+        return JSON.parse(decodeURIComponent(encodedData));
+      } catch (e) {
+        console.error("URL decode error:", e);
+      }
+    }
+    return null;
+  });
+
+  const queryId =
+    searchParams?.get("id") ||
+    searchParams?.get("orderId") ||
+    searchParams?.get("order_id");
+  const orderId = queryId || initialData?._id || initialData?.order_id;
+  const currentOrder = productDetail || initialData;
+  const DriveData = currentOrder;
 
   const mapRef = useRef();
   const mapContainerRef = useRef();
-  useEffect(() => {
-    getDetail();
-    getReviews();
-  }, []);
+  const markersRef = useRef([]);
+  const [activeFocusedLocation, setActiveFocusedLocation] = useState(null);
 
-  const getDetail = async (row) => {
+  const getDetail = async () => {
+    if (!orderId) {
+      setDetailLoading(false);
+      return;
+    }
+    setDetailLoading(true);
     try {
-      const res = await getData(`order/detail/${DriveData?._id}`, header1);
-      setProductDetail(res?.order);
+      const res = await getData(`order/detail/${orderId}`, header1);
+      if (res?.order) {
+        setProductDetail(res.order);
+      }
     } catch (error) {
-      console.log("===========error", error.response.data);
+      console.log("Error loading ride details:", error?.response?.data || error);
+    } finally {
+      setDetailLoading(false);
     }
   };
 
+  const getReviews = async (driverId) => {
+    const idToUse = driverId || currentOrder?.to_id?._id;
+    if (!idToUse) return;
+    setLoading(true);
+    try {
+      const response = await getData("rating/all/" + idToUse, header1);
+      setReviews(response?.ratings || []);
+    } catch (error) {
+      setLoading(false);
+    } finally {
+      setLoading(false);
+    }
+  };
+
+  useEffect(() => {
+    getDetail();
+  }, [orderId]);
+
+  useEffect(() => {
+    if (currentOrder?.to_id?._id) {
+      getReviews(currentOrder.to_id._id);
+    }
+  }, [currentOrder?.to_id?._id]);
+
   const fav = async () => {
+    const driverId = currentOrder?.to_id?._id;
+    if (!driverId) return;
     setFavLoading(true);
     try {
-      const res = await putData(
-        `users/like/${productDetail?.to_id?._id}`,
-        {},
-        header1,
-      );
+      const res = await putData(`users/like/${driverId}`, {}, header1);
       if (res?.message) {
-        try {
-          const res = await getData(
-            `order/detail/${productDetail?._id}`,
-            header1,
-          );
-          setProductDetail(res?.order);
-        } catch (error) {
-          console.log("===========error", error.response.data);
-        }
+        getDetail();
+        messageApi.success("Driver added to favorites!");
       }
     } catch (error) {
       setFavLoading(false);
@@ -80,1179 +254,904 @@ const RideDetail = () => {
   };
 
   const CancelRide = () => {
-    if (socket) {
-      const body = { orderId: DriveData?._id };
+    if (socket && orderId) {
+      const body = { orderId: orderId };
       const endpoint = "cancel-order-customer";
       socket.emit(endpoint, body, (res) => {
-        message.success(res?.message);
+        messageApi.success(res?.message || "Ride cancelled successfully");
+        getDetail();
       });
-    } else {
-      console.log("Socket is null or not properly initialized");
-    }
-  };
-
-  useEffect(() => {
-    if (activeTab == "track" && productDetail) {
-      locationSet();
-    } else {
-      if (mapRef.current) {
-        mapRef.current.remove();
-        mapRef.current = null;
-      }
-      getReviews();
-    }
-  }, [activeTab]);
-
-  const getReviews = async () => {
-    setLoading(true);
-    try {
-      const response = await getData(
-        "rating/all/" + DriveData?.to_id?._id,
-        header1,
-      );
-      setReviews(response.ratings);
-    } catch (error) {
-      setLoading(false);
-    } finally {
-      setLoading(false);
     }
   };
 
   mapboxgl.accessToken =
     "pk.eyJ1IjoibWFybGVncmFudCIsImEiOiJjbTgwdmV0MjkweXB2MnFzNXBjM2x6NThnIn0.3oz3YGaDHiFDh8W5ALk09w";
 
+  const getStartCoords = (order) => {
+    if (order?.start_location?.coordinates && Array.isArray(order.start_location.coordinates) && order.start_location.coordinates.length === 2) {
+      const lng = Number(order.start_location.coordinates[0]);
+      const lat = Number(order.start_location.coordinates[1]);
+      if (!isNaN(lng) && !isNaN(lat)) return [lng, lat];
+    }
+    if (order?.start_lng && order?.start_lat) {
+      const lng = Number(order.start_lng);
+      const lat = Number(order.start_lat);
+      if (!isNaN(lng) && !isNaN(lat)) return [lng, lat];
+    }
+    if (order?.start && Array.isArray(order.start) && order.start.length === 2) {
+      const lng = Number(order.start[0]);
+      const lat = Number(order.start[1]);
+      if (!isNaN(lng) && !isNaN(lat)) return [lng, lat];
+    }
+    return [-62.754593, 17.363747];
+  };
+
+  const getEndCoords = (order) => {
+    if (order?.end_location?.coordinates && Array.isArray(order.end_location.coordinates) && order.end_location.coordinates.length === 2) {
+      const lng = Number(order.end_location.coordinates[0]);
+      const lat = Number(order.end_location.coordinates[1]);
+      if (!isNaN(lng) && !isNaN(lat)) return [lng, lat];
+    }
+    if (order?.end_lng && order?.end_lat) {
+      const lng = Number(order.end_lng);
+      const lat = Number(order.end_lat);
+      if (!isNaN(lng) && !isNaN(lat)) return [lng, lat];
+    }
+    if (order?.end && Array.isArray(order.end) && order.end.length === 2) {
+      const lng = Number(order.end[0]);
+      const lat = Number(order.end[1]);
+      if (!isNaN(lng) && !isNaN(lat)) return [lng, lat];
+    }
+    return [-62.684593, 17.313747];
+  };
+
+  const getStopsList = (order) => {
+    const rawStops = order?.stops || order?.stop || [];
+    if (!Array.isArray(rawStops)) return [];
+    return rawStops
+      .map((s, idx) => {
+        let lng = s.longitude ?? s.lng ?? s.coordinates?.[0];
+        let lat = s.latitude ?? s.lat ?? s.coordinates?.[1];
+        return {
+          lng: Number(lng),
+          lat: Number(lat),
+          title: s.title || s.name || s.address || `Stop ${idx + 1}`,
+        };
+      })
+      .filter((s) => !isNaN(s.lng) && !isNaN(s.lat));
+  };
+
+  const zoomToLocation = (lng, lat, title = "") => {
+    if (!mapRef.current) return;
+    const numLng = Number(lng);
+    const numLat = Number(lat);
+    if (isNaN(numLng) || isNaN(numLat)) return;
+
+    setActiveFocusedLocation(title || `${numLat.toFixed(4)}, ${numLng.toFixed(4)}`);
+
+    mapRef.current.flyTo({
+      center: [numLng, numLat],
+      zoom: 16,
+      pitch: 25,
+      duration: 1500,
+      essential: true,
+    });
+
+    const matching = markersRef.current.find((m) => {
+      const pos = m.marker.getLngLat();
+      return Math.abs(pos.lng - numLng) < 0.0005 && Math.abs(pos.lat - numLat) < 0.0005;
+    });
+
+    if (matching && !matching.marker.getPopup()?.isOpen()) {
+      matching.marker.togglePopup();
+    }
+  };
+
+  const fitFullRoute = () => {
+    if (!mapRef.current || !currentOrder) return;
+    setActiveFocusedLocation(null);
+
+    const start = getStartCoords(currentOrder);
+    const end = getEndCoords(currentOrder);
+    const stops = getStopsList(currentOrder);
+
+    const bounds = new mapboxgl.LngLatBounds();
+    bounds.extend(start);
+    bounds.extend(end);
+    stops.forEach((s) => bounds.extend([s.lng, s.lat]));
+
+    if (!bounds.isEmpty()) {
+      mapRef.current.fitBounds(bounds, {
+        padding: { top: 65, bottom: 65, left: 45, right: 45 },
+        maxZoom: 15,
+        duration: 1200,
+      });
+    }
+  };
+
   const locationSet = () => {
+    if (!mapContainerRef.current) return;
     if (mapRef.current) {
       mapRef.current.remove();
       mapRef.current = null;
     }
-    const start = [
-      productDetail?.start_location?.coordinates[0],
-      productDetail?.start_location?.coordinates[1],
-    ];
 
-    const end = [
-      productDetail?.end_location?.coordinates[0],
-      productDetail?.end_location?.coordinates[1],
-    ];
+    const start = getStartCoords(currentOrder);
+    const end = getEndCoords(currentOrder);
+    const stops = getStopsList(currentOrder);
 
-    mapRef.current = new mapboxgl.Map({
+    const map = new mapboxgl.Map({
       container: mapContainerRef.current,
-      style: "mapbox://styles/mapbox/streets-v11",
-      center: start ? start : [17.363747, -62.754593],
-      zoom: 8,
+      style: "mapbox://styles/mapbox/streets-v12",
+      center: start,
+      zoom: 12,
+      projection: "mercator",
+      attributionControl: false,
     });
 
-    new mapboxgl.Marker({ color: "#059669" })
-      .setLngLat(start)
-      .addTo(mapRef.current);
+    map.addControl(new mapboxgl.NavigationControl({ showCompass: false }), "top-right");
+    mapRef.current = map;
 
-    mapRef.current.on("load", () => {
-      const directionsUrl = `https://api.mapbox.com/directions/v5/mapbox/driving/${start[0]},${start[1]};${end[0]},${end[1]}?geometries=geojson&access_token=pk.eyJ1IjoibWFybGVncmFudCIsImEiOiJjbTgwdmV0MjkweXB2MnFzNXBjM2x6NThnIn0.3oz3YGaDHiFDh8W5ALk09w`;
+    map.on("load", async () => {
+      // Clear old markers
+      markersRef.current.forEach((m) => m.marker.remove());
+      markersRef.current = [];
 
-      fetch(directionsUrl)
-        .then((response) => response.json())
-        .then((data) => {
-          const route = data.routes[0]?.geometry?.coordinates;
+      const bounds = new mapboxgl.LngLatBounds();
+      const validPoints = [];
 
-          if (!route || route.length === 0) {
-            console.error("No route found.");
-            return;
-          }
+      // 1. Start Marker 🔵
+      const startEl = document.createElement("div");
+      startEl.className =
+        "flex items-center justify-center w-8 h-8 rounded-full bg-[#004a70] text-white shadow-lg border-2 border-white ring-2 ring-sky-300 animate-pulse cursor-pointer";
+      startEl.innerHTML = `<svg stroke="currentColor" fill="currentColor" stroke-width="0" viewBox="0 0 384 512" height="14" width="14" xmlns="http://www.w3.org/2000/svg"><path d="M215.7 499.2C267 435 384 279.4 384 192C384 86 298 0 192 0S0 86 0 192c0 87.4 117 243 168.3 307.2c12.3 15.3 35.1 15.3 47.4 0zM192 128a64 64 0 1 1 0 128 64 64 0 1 1 0-128z"></path></svg>`;
 
-          const bounds = new mapboxgl.LngLatBounds();
-          route.forEach((coord) => bounds.extend(coord));
+      const startMarker = new mapboxgl.Marker({ element: startEl })
+        .setLngLat(start)
+        .setPopup(
+          new mapboxgl.Popup({ offset: 25, closeButton: true }).setHTML(`
+            <div style="min-width: 170px; padding: 2px 4px;">
+              <div style="display: flex; align-items: center; gap: 6px; margin-bottom: 4px;">
+                <span style="display: inline-block; width: 8px; height: 8px; border-radius: 50%; background: #004a70;"></span>
+                <span style="font-size: 10.5px; font-weight: 700; text-transform: uppercase; letter-spacing: 0.5px; color: #004a70;">Pickup Location</span>
+              </div>
+              <p style="font-size: 12px; font-weight: 600; color: #1e293b; margin: 0; line-height: 1.35;">${currentOrder?.start_address || "Pickup location"}</p>
+            </div>
+          `)
+        )
+        .addTo(map);
 
-          mapRef.current.fitBounds(bounds, { padding: 50 });
+      markersRef.current.push({ marker: startMarker, type: "start" });
+      bounds.extend(start);
+      validPoints.push(start);
 
-          const animateMarker = (route) => {
-            let index = 0;
-            const marker = new mapboxgl.Marker({ color: "#004a70" })
-              .setLngLat(route[index])
-              .addTo(mapRef.current);
+      // 2. Stops Markers 🟡
+      stops.forEach((stop, idx) => {
+        const stopEl = document.createElement("div");
+        stopEl.className =
+          "flex items-center justify-center w-7 h-7 rounded-full bg-amber-500 hover:bg-amber-600 text-white font-bold text-xs shadow-md border-2 border-white cursor-pointer transition-transform hover:scale-110";
+        stopEl.innerText = `${idx + 1}`;
 
-            const moveMarker = () => {
-              if (index < route.length - 1) {
-                index++;
-                marker.setLngLat(route[index]);
-                requestAnimationFrame(moveMarker);
-              }
-            };
+        const stopMarker = new mapboxgl.Marker({ element: stopEl })
+          .setLngLat([stop.lng, stop.lat])
+          .setPopup(
+            new mapboxgl.Popup({ offset: 20, closeButton: true }).setHTML(`
+              <div style="min-width: 170px; padding: 2px 4px;">
+                <div style="display: flex; align-items: center; gap: 6px; margin-bottom: 4px;">
+                  <span style="display: inline-block; width: 8px; height: 8px; border-radius: 50%; background: #f59e0b;"></span>
+                  <span style="font-size: 10.5px; font-weight: 700; text-transform: uppercase; letter-spacing: 0.5px; color: #d97706;">Stop ${idx + 1}</span>
+                </div>
+                <p style="font-size: 12px; font-weight: 600; color: #1e293b; margin: 0; line-height: 1.35;">${stop.title || "Attraction"}</p>
+              </div>
+            `)
+          )
+          .addTo(map);
 
-            moveMarker();
-          };
+        markersRef.current.push({ marker: stopMarker, type: "stop", index: idx });
+        bounds.extend([stop.lng, stop.lat]);
+        validPoints.push([stop.lng, stop.lat]);
+      });
 
-          mapRef.current.addSource("route", {
+      // 3. End Marker 🔴
+      const endEl = document.createElement("div");
+      endEl.className =
+        "flex items-center justify-center w-8 h-8 rounded-full bg-rose-600 text-white shadow-lg border-2 border-white ring-2 ring-rose-300 cursor-pointer";
+      endEl.innerHTML = `<svg stroke="currentColor" fill="currentColor" stroke-width="0" viewBox="0 0 384 512" height="14" width="14" xmlns="http://www.w3.org/2000/svg"><path d="M215.7 499.2C267 435 384 279.4 384 192C384 86 298 0 192 0S0 86 0 192c0 87.4 117 243 168.3 307.2c12.3 15.3 35.1 15.3 47.4 0zM192 128a64 64 0 1 1 0 128 64 64 0 1 1 0-128z"></path></svg>`;
+
+      const endMarker = new mapboxgl.Marker({ element: endEl })
+        .setLngLat(end)
+        .setPopup(
+          new mapboxgl.Popup({ offset: 25, closeButton: true }).setHTML(`
+            <div style="min-width: 170px; padding: 2px 4px;">
+              <div style="display: flex; align-items: center; gap: 6px; margin-bottom: 4px;">
+                <span style="display: inline-block; width: 8px; height: 8px; border-radius: 50%; background: #e11d48;"></span>
+                <span style="font-size: 10.5px; font-weight: 700; text-transform: uppercase; letter-spacing: 0.5px; color: #e11d48;">Destination</span>
+              </div>
+              <p style="font-size: 12px; font-weight: 600; color: #1e293b; margin: 0; line-height: 1.35;">${currentOrder?.end_address || "Drop-off Location"}</p>
+            </div>
+          `)
+        )
+        .addTo(map);
+
+      markersRef.current.push({ marker: endMarker, type: "end" });
+      bounds.extend(end);
+      validPoints.push(end);
+
+      // 4. Fetch Driving Route Polyline with Fallback
+      let routeGeo = null;
+      try {
+        const routePoints = validPoints
+          .map((p) => `${p[0].toFixed(6)},${p[1].toFixed(6)}`)
+          .join(";");
+
+        const directionsUrl = `https://api.mapbox.com/directions/v5/mapbox/driving/${routePoints}?geometries=geojson&overview=full&access_token=${mapboxgl.accessToken}`;
+        const res = await fetch(directionsUrl);
+        const data = await res.json();
+
+        if (data.routes && data.routes.length > 0 && data.routes[0].geometry) {
+          routeGeo = data.routes[0].geometry;
+        }
+      } catch (e) {
+        console.warn("Mapbox driving directions error, fallback to direct line:", e);
+      }
+
+      if (!routeGeo || !routeGeo.coordinates || routeGeo.coordinates.length === 0) {
+        routeGeo = {
+          type: "LineString",
+          coordinates: validPoints,
+        };
+      }
+
+      if (routeGeo) {
+        if (map.getSource("route")) {
+          map.getSource("route").setData({
+            type: "Feature",
+            properties: {},
+            geometry: routeGeo,
+          });
+        } else {
+          map.addSource("route", {
             type: "geojson",
             data: {
               type: "Feature",
-              geometry: {
-                type: "LineString",
-                coordinates: route,
-              },
+              properties: {},
+              geometry: routeGeo,
             },
           });
 
-          mapRef.current.addLayer({
+          // Background Casing for Route Glow
+          map.addLayer({
+            id: "route-casing",
+            type: "line",
+            source: "route",
+            layout: { "line-join": "round", "line-cap": "round" },
+            paint: {
+              "line-color": "#002842",
+              "line-width": 7.5,
+              "line-opacity": 0.45,
+            },
+          });
+
+          // Core Route Line
+          map.addLayer({
             id: "route",
             type: "line",
             source: "route",
-            layout: {
-              "line-join": "round",
-              "line-cap": "round",
-            },
+            layout: { "line-join": "round", "line-cap": "round" },
             paint: {
               "line-color": "#004a70",
-              "line-width": 6,
+              "line-width": 4.5,
+              "line-opacity": 0.95,
             },
           });
+        }
+      }
 
-          animateMarker(route);
-        })
-        .catch((error) => console.error("Failed to fetch directions:", error));
+      if (!bounds.isEmpty()) {
+        map.fitBounds(bounds, {
+          padding: { top: 65, bottom: 65, left: 45, right: 45 },
+          maxZoom: 15,
+          duration: 1000,
+        });
+      }
+
+      map.resize();
     });
   };
 
+  useEffect(() => {
+    if (activeTab === "map" && (productDetail || currentOrder)) {
+      locationSet();
+    } else {
+      if (mapRef.current) {
+        mapRef.current.remove();
+        mapRef.current = null;
+      }
+      if (currentOrder?.to_id?._id) {
+        getReviews(currentOrder.to_id._id);
+      }
+    }
+  }, [activeTab, productDetail, currentOrder]);
+
   const copytoClipBoard = () => {
-    navigator.clipboard.writeText(productDetail?.pincode);
-    message.success("Copied To Clipboard");
+    const code = currentOrder?.pincode;
+    if (!code) {
+      messageApi.info("No pincode available");
+      return;
+    }
+    const textToCopy = String(code);
+    if (typeof navigator !== "undefined" && navigator.clipboard?.writeText) {
+      navigator.clipboard
+        .writeText(textToCopy)
+        .then(() => {
+          setCopied(true);
+          messageApi.success("Pincode copied to clipboard!");
+          setTimeout(() => setCopied(false), 2000);
+        })
+        .catch(() => fallbackCopy(textToCopy));
+    } else {
+      fallbackCopy(textToCopy);
+    }
   };
 
-  const StatusBadge = ({ status }) => {
-    const statusColorMap = {
-      completed: { bg: "#e8f5e9", text: "#059669", border: "#a5d6a7" },
-      cancelled: { bg: "#fee2e2", text: "#dc2626", border: "#fca5a5" },
-      accepted: { bg: "#dbeafe", text: "#1d4ed8", border: "#93c5fd" },
-      pending: { bg: "#fef3c7", text: "#d97706", border: "#fcd34d" },
-      upcoming: { bg: "#f3e8ff", text: "#7e22ce", border: "#d8b4fe" },
-      active: { bg: "#ccfbf1", text: "#0f766e", border: "#5eead4" },
-    };
-
-    const st = statusColorMap[(status || "").toLowerCase()] || {
-      bg: "#f3f4f6",
-      text: "#64748b",
-      border: "#e5e7eb",
-    };
-
-    return (
-      <span
-        style={{
-          display: "inline-flex",
-          alignItems: "center",
-          gap: "6px",
-          padding: "8px 16px",
-          borderRadius: "12px",
-          fontSize: "14px",
-          fontWeight: "700",
-          backgroundColor: st.bg,
-          color: st.text,
-          border: `1px solid ${st.border}`,
-          textTransform: "capitalize",
-        }}
-      >
-        <span
-          style={{
-            width: "8px",
-            height: "8px",
-            borderRadius: "50%",
-            backgroundColor: st.text,
-          }}
-        />
-        {status}
-      </span>
-    );
+  const fallbackCopy = (text) => {
+    try {
+      const textarea = document.createElement("textarea");
+      textarea.value = text;
+      textarea.style.position = "fixed";
+      textarea.style.opacity = "0";
+      document.body.appendChild(textarea);
+      textarea.focus();
+      textarea.select();
+      document.execCommand("copy");
+      document.body.removeChild(textarea);
+      setCopied(true);
+      messageApi.success("Pincode copied to clipboard!");
+      setTimeout(() => setCopied(false), 2000);
+    } catch (e) {
+      messageApi.error("Failed to copy");
+    }
   };
+
+  const statusConfig = {
+    completed: {
+      label: "Completed",
+      badge: "bg-emerald-500/15 text-emerald-300 border-emerald-500/30",
+      dot: "bg-emerald-400",
+    },
+    accepted: {
+      label: "Driver Assigned",
+      badge: "bg-sky-500/15 text-sky-300 border-sky-500/30",
+      dot: "bg-sky-400",
+    },
+    pending: {
+      label: "Searching Driver",
+      badge: "bg-amber-500/15 text-amber-300 border-amber-500/30",
+      dot: "bg-amber-400",
+    },
+    cancelled: {
+      label: "Cancelled",
+      badge: "bg-rose-500/15 text-rose-300 border-rose-500/30",
+      dot: "bg-rose-400",
+    },
+    active: {
+      label: "Trip in Progress",
+      badge: "bg-teal-500/15 text-teal-300 border-teal-500/30",
+      dot: "bg-teal-400",
+    },
+  };
+
+  const currentStatus = (currentOrder?.status || "pending").toLowerCase();
+  const statusMeta = statusConfig[currentStatus] || {
+    label: currentOrder?.status || "Confirmed",
+    badge: "bg-white/10 text-slate-200 border-white/20",
+    dot: "bg-slate-300",
+  };
+
+  // If initial load without any data, show skeleton
+  if (detailLoading && !currentOrder) {
+    return <RideDetailSkeleton />;
+  }
 
   return (
-    <div
-      style={{
-        minHeight: "100vh",
-        backgroundColor: "#f8fafc",
-        padding: "24px",
-      }}
-    >
-      <div
-        style={{
-          maxWidth: "1320px",
-          margin: "0 auto",
-        }}
-      >
+    <div className="min-h-screen bg-[#f8fafc] font-poppins text-slate-800">
+      {contextHolder}
+
+      {/* ========================================================================= */}
+      {/* 1. HERO TOP BANNER (Compact & Clean on Mobile/Desktop)                     */}
+      {/* ========================================================================= */}
+      <section className="relative overflow-hidden bg-gradient-to-br from-[#001726] via-[#002f4a] to-[#001f33] !pt-20 sm:!pt-28 !pb-12 sm:!pb-14 text-white">
         <div
+          className="absolute inset-0 opacity-[0.04] pointer-events-none"
           style={{
-            display: "grid",
-            gridTemplateColumns: "1fr",
-            gap: "24px",
+            backgroundImage: `radial-gradient(circle at 1px 1px, white 1px, transparent 0)`,
+            backgroundSize: "24px 24px",
           }}
-        >
-          {/* Main Header */}
-          <div
-            style={{
-              background: "linear-gradient(135deg, #004a70 0%, #003353 100%)",
-              borderRadius: "24px",
-              padding: "32px",
-              color: "#fff",
-            }}
-          >
-            <div
-              style={{
-                display: "flex",
-                alignItems: "flex-start",
-                justifyContent: "space-between",
-                gap: "16px",
-                flexWrap: "wrap",
-              }}
-            >
-              <div style={{ maxWidth: "700px" }}>
-                <h1
-                  style={{
-                    fontSize: "32px",
-                    fontWeight: "800",
-                    margin: "0 0 8px",
-                    fontFamily: "Inter, sans-serif",
-                  }}
-                >
+        />
+        <div className="absolute inset-0 bg-gradient-to-t from-[#001726]/90 via-transparent to-transparent pointer-events-none" />
+
+        <div className="max-w-7xl mx-auto px-3 sm:px-6 lg:px-8 relative z-10">
+          {/* Row 1: Breadcrumb row & Order ID Badge */}
+          <div className="flex items-center justify-between gap-2 mb-2 sm:mb-2.5">
+            <div className="flex items-center gap-2 text-slate-300 text-xs font-family-medium">
+              <Link href="/" className="text-slate-300 hover:text-white transition-colors no-underline">
+                Home
+              </Link>
+              <span className="text-slate-400">/</span>
+              <Link href="/admin" className="text-slate-300 hover:text-white transition-colors no-underline">
+                My Bookings
+              </Link>
+              <span className="text-slate-400">/</span>
+              <span className="text-white">Booking Details</span>
+            </div>
+
+            {currentOrder?.order_id && (
+              <span className="px-2.5 py-0.5 rounded-full bg-white/10 !border !border-white/15 text-xs font-family-medium text-slate-200">
+                #{currentOrder.order_id}
+              </span>
+            )}
+          </div>
+
+          {/* Row 2: Title, Status Badge & Price Tag */}
+          <div className="flex flex-wrap items-center justify-between gap-2.5">
+            <div>
+              <div className="flex items-center gap-2 flex-wrap">
+                <h1 className="text-lg sm:text-2xl font-family-semibold text-white tracking-tight !m-0 leading-tight">
                   Booking Details
                 </h1>
-                <p
-                  style={{
-                    fontSize: "16px",
-                    opacity: "0.85",
-                    margin: 0,
-                    fontFamily: "Inter, sans-serif",
-                  }}
+                <span
+                  className={`inline-flex items-center gap-1.5 px-2.5 py-0.5 rounded-full text-xs font-family-medium !border backdrop-blur-md ${statusMeta.badge}`}
                 >
-                  {moment(DriveData?.createdAt).format("dddd, DD MMMM YYYY")} •{" "}
-                  {moment(DriveData?.createdAt).format("hh:mm A")}
-                </p>
+                  <span className={`w-1.5 h-1.5 rounded-full animate-pulse ${statusMeta.dot}`} />
+                  {statusMeta.label}
+                </span>
               </div>
-              <StatusBadge status={DriveData?.status} />
+
+              <p className="text-slate-300 text-xs font-family-regular !mt-1 !m-0 flex items-center gap-1.5">
+                <MdOutlineCalendarMonth size={13} className="text-sky-300" />
+                {moment(currentOrder?.createdAt).format("dddd, DD MMMM YYYY")} • {moment(currentOrder?.createdAt).format("hh:mm A")}
+              </p>
+            </div>
+
+            {/* Quick Price Badge */}
+            <div className="bg-white/10 backdrop-blur-md !border !border-white/15 rounded-xl px-3 py-1.5 sm:px-3.5 sm:py-2 flex items-center gap-1.5">
+              <span className="text-[10px] uppercase tracking-wider text-slate-300 font-family-medium">
+                Total:
+              </span>
+              <span className="text-base sm:text-xl font-family-semibold text-white">
+                ${Number(currentOrder?.price || 0).toFixed(2)}
+              </span>
+            </div>
+          </div>
+        </div>
+      </section>
+
+
+      <div className="!-mt-6 max-w-7xl mx-auto px-3 sm:px-6 lg:px-8 relative z-20 !pb-12">
+        <div className="grid grid-cols-1 lg:grid-cols-12 gap-3.5 sm:gap-4 items-start">
+
+
+          <div className="lg:col-span-5 lg:sticky lg:top-20 z-10">
+            <div className="bg-white rounded-2xl p-3.5 sm:p-4 !border !border-slate-200/90 shadow-sm space-y-3.5">
+
+              {/* 1. DRIVER ROW */}
+              <div className="flex items-center justify-between pb-3 border-b border-slate-100">
+                <div className="flex items-center gap-2.5 min-w-0 flex-1">
+                  <div className="relative shrink-0">
+                    <div className="w-10 h-10 sm:w-11 sm:h-11 rounded-xl overflow-hidden !border !border-slate-200 bg-slate-100 shadow-xs">
+                      <Image
+                        width={44}
+                        height={44}
+                        src={currentOrder?.to_id?.image || NoshowData}
+                        className="w-full h-full object-cover"
+                        alt=""
+                      />
+                    </div>
+                    <span className="absolute -bottom-0.5 -right-0.5 w-3 h-3 rounded-full bg-emerald-500 !border-2 !border-white" />
+                  </div>
+
+                  <div className="min-w-0 flex-1">
+                    <div className="flex items-center gap-1.5">
+                      <h3 className="text-xs sm:text-sm font-family-semibold text-slate-900 !m-0 truncate">
+                        {currentOrder?.to_id?.name || "Assigned Driver"}
+                      </h3>
+                      {currentOrder?.to_id?.rating && (
+                        <span className="inline-flex items-center gap-0.5 text-[10.5px] font-family-semibold text-amber-600 bg-amber-50 px-1 py-0.2 rounded !border !border-amber-200/50">
+                          <FaStar size={9} className="text-amber-500" />
+                          {currentOrder?.to_id?.rating}.0
+                        </span>
+                      )}
+                    </div>
+                    <p className="text-[11px] sm:text-xs text-slate-400 font-family-regular !m-0 mt-0.5 truncate flex items-center gap-1">
+                      <FiMail size={10} /> {currentOrder?.to_id?.email || "driver@cabkn.com"}
+                    </p>
+                  </div>
+                </div>
+
+                {/* Driver Action Buttons */}
+                <div className="flex items-center gap-1 shrink-0 ml-2">
+                  <a
+                    href={`tel:${currentOrder?.to_id?.phone || ""}`}
+                    className="w-7 h-7 sm:w-8 sm:h-8 rounded-lg bg-emerald-50 hover:bg-emerald-100 text-emerald-700 !border !border-emerald-200/80 flex items-center justify-center transition-colors no-underline"
+                    title="Call Driver"
+                  >
+                    <IoCall size={13} />
+                  </a>
+                  <button
+                    onClick={() => router.push("/chat")}
+                    className="w-7 h-7 sm:w-8 sm:h-8 rounded-lg bg-slate-50 hover:bg-slate-100 text-slate-700 !border !border-slate-200 flex items-center justify-center transition-colors cursor-pointer"
+                    title="Message Driver"
+                  >
+                    <RiMessage2Fill size={13} />
+                  </button>
+                </div>
+              </div>
+
+              {/* 2. VEHICLE BIG PICTURE SHOWCASE */}
+              <div>
+                <div className="flex items-center justify-between mb-1.5">
+                  <span className="text-xs font-family-semibold text-slate-700 flex items-center gap-1">
+                    <IoCarSport size={14} className="text-[#004a70]" />
+                    {currentOrder?.to_id?.vehicle?.brand || currentOrder?.to_id?.vehicle?.name || "Standard Fleet Vehicle"}
+                  </span>
+                  {currentOrder?.to_id?.vehicle?.license && (
+                    <span className="px-1.5 py-0.2 rounded bg-slate-100 !border !border-slate-200 text-slate-700 text-[10.5px] font-family-semibold">
+                      {currentOrder?.to_id?.vehicle?.license}
+                    </span>
+                  )}
+                </div>
+
+                {/* Big Vehicle Photo */}
+                <div className="w-full h-36 sm:h-40 rounded-xl overflow-hidden !border !border-slate-200/80 bg-slate-50 relative group">
+                  <Image
+                    src={currentOrder?.to_id?.vehicle?.images?.[0] || carAvatar}
+                    alt="Vehicle"
+                    fill
+                    className="object-cover object-center group-hover:scale-105 transition-transform duration-300"
+                  />
+                  <div className="absolute bottom-1.5 left-1.5 right-1.5 flex items-center justify-between bg-black/60 backdrop-blur-md rounded-lg px-2 py-0.5 text-white text-[10.5px]">
+                    <span className="font-family-medium">
+                      Color: {currentOrder?.to_id?.vehicle?.colour || "Black"}
+                    </span>
+                    <span className="font-family-medium flex items-center gap-1">
+                      <MdOutlineAirlineSeatReclineNormal size={12} />
+                      {currentOrder?.to_id?.vehicle?.num_passengers || 4} Passengers
+                    </span>
+                  </div>
+                </div>
+              </div>
+
+              {/* 3. INTEGRATED PAYMENT RECEIPT SECTION */}
+              <div className="pt-3 border-t border-slate-100">
+                <div className="flex items-center justify-between mb-2">
+                  <span className="text-xs font-family-semibold text-slate-800 flex items-center gap-1.5">
+                    <MdOutlineReceiptLong size={14} className="text-emerald-600" />
+                    Fare Breakdown
+                  </span>
+                  <span className="px-1.5 py-0.2 rounded bg-emerald-50 text-emerald-700 text-[10.5px] font-family-medium !border !border-emerald-200/60 capitalize flex items-center gap-1">
+                    <MdOutlineCreditCard size={11} />
+                    {currentOrder?.paymentType || "Cash"}
+                  </span>
+                </div>
+
+                <div className="space-y-1.5 text-xs bg-slate-50/70 p-2.5 rounded-xl !border !border-slate-100">
+                  {currentOrder?.distance > 0 && (
+                    <div className="flex justify-between text-slate-500 font-family-regular">
+                      <span>Base Distance ({currentOrder.distance} km)</span>
+                      <span className="text-slate-800 font-family-medium">
+                        ${Number(currentOrder?.price || 0).toFixed(2)}
+                      </span>
+                    </div>
+                  )}
+                  {currentOrder?.convenienceFee > 0 && (
+                    <div className="flex justify-between text-slate-500 font-family-regular">
+                      <span>Platform Fee</span>
+                      <span className="text-slate-800 font-family-medium">
+                        ${Number(currentOrder?.convenienceFee).toFixed(2)}
+                      </span>
+                    </div>
+                  )}
+                  {currentOrder?.tip > 0 && (
+                    <div className="flex justify-between text-slate-500 font-family-regular">
+                      <span>Driver Tip</span>
+                      <span className="text-slate-800 font-family-medium">
+                        ${Number(currentOrder?.tip).toFixed(2)}
+                      </span>
+                    </div>
+                  )}
+                  {currentOrder?.specialDiscountAmount > 0 && (
+                    <div className="flex justify-between text-emerald-600 font-family-medium">
+                      <span>Discount</span>
+                      <span>-${Number(currentOrder?.specialDiscountAmount).toFixed(2)}</span>
+                    </div>
+                  )}
+
+                  <div className="pt-1.5 border-t border-slate-200/60 flex justify-between items-center text-xs">
+                    <span className="font-family-semibold text-slate-900">Total Paid</span>
+                    <span className="font-family-semibold text-emerald-600 text-sm">
+                      ${Number(currentOrder?.price || 0).toFixed(2)}
+                    </span>
+                  </div>
+                </div>
+              </div>
+
+              {/* Driver Actions */}
+              {currentOrder?.status === "completed" && !currentOrder?.likes && (
+                <button
+                  onClick={fav}
+                  className="w-full h-8 rounded-xl !border !border-rose-200 bg-rose-50/50 hover:bg-rose-50 text-rose-600 text-xs font-family-medium flex items-center justify-center gap-1.5 transition-colors cursor-pointer"
+                >
+                  <FaHeart size={11} /> Add Driver to Favorites
+                </button>
+              )}
+
+              {currentOrder?.status === "accepted" && (
+                <button
+                  onClick={CancelRide}
+                  className="w-full h-8 rounded-xl !border !border-slate-200 bg-white hover:bg-rose-50 text-slate-600 hover:text-rose-600 text-xs font-family-medium flex items-center justify-center gap-1.5 transition-colors cursor-pointer"
+                >
+                  Cancel Ride
+                </button>
+              )}
             </div>
           </div>
 
-          <div
-            style={{
-              display: "grid",
-              gridTemplateColumns: "1fr 2fr",
-              gap: "24px",
-            }}
-          >
-            {/* Left Column */}
-            <div
-              style={{
-                display: "flex",
-                flexDirection: "column",
-                gap: "20px",
-              }}
-            >
-              {/* Driver Card */}
-              <div
-                style={{
-                  background: "#fff",
-                  borderRadius: "20px",
-                  padding: "24px",
-                  boxShadow: "0 4px 20px -6px rgba(0,0,0,0.08)",
-                  border: "1px solid #e5e7eb",
-                }}
-              >
-                <h3
-                  style={{
-                    fontSize: "18px",
-                    fontWeight: "800",
-                    color: "#0f172a",
-                    margin: "0 0 16px",
-                    fontFamily: "Inter, sans-serif",
-                  }}
-                >
-                  Driver
-                </h3>
-                <div
-                  style={{
-                    display: "flex",
-                    alignItems: "center",
-                    gap: "16px",
-                    marginBottom: "16px",
-                  }}
-                >
-                  <div
-                    style={{
-                      width: "80px",
-                      height: "80px",
-                      borderRadius: "50%",
-                      overflow: "hidden",
-                      border: "4px solid #eef2ff",
-                      boxShadow: "0 8px 16px rgba(0,0,0,0.06)",
-                    }}
-                  >
-                    <Image
-                      width={80}
-                      height={80}
-                      src={productDetail?.to_id?.image || NoshowData}
-                      style={{ width: 80, height: 80, objectFit: "cover" }}
-                      alt=""
-                    />
+          {/* ======================================================================= */}
+          {/* RIGHT PANEL (7 cols): SINGLE UNIFIED ROUTE + TABBED MAP/REVIEWS CARD   */}
+          {/* ======================================================================= */}
+          <div className="lg:col-span-7">
+            <div className="bg-white rounded-2xl p-3.5 sm:p-4 !border !border-slate-200/90 shadow-sm space-y-3.5">
+
+              {/* 1. ROUTE & VERIFICATION STRIP */}
+              <div className="pb-3 border-b border-slate-100">
+                <div className="flex items-center justify-between mb-2">
+                  <div className="flex items-center gap-1.5">
+                    <RiRouteLine size={14} className="text-[#004a70]" />
+                    <span className="text-xs font-family-semibold text-slate-900">
+                      Route & Verification
+                    </span>
                   </div>
-                  <div style={{ flex: 1, minWidth: 0 }}>
-                    <h4
-                      style={{
-                        fontSize: "20px",
-                        fontWeight: "800",
-                        color: "#0f172a",
-                        margin: "0 0 4px",
-                        fontFamily: "Inter, sans-serif",
-                      }}
-                    >
-                      {productDetail?.to_id?.name}
-                    </h4>
-                    <div
-                      style={{
-                        display: "flex",
-                        alignItems: "center",
-                        gap: "6px",
-                        marginBottom: "4px",
-                      }}
-                    >
-                      {[1, 2, 3, 4, 5].map((star) => (
-                        <FaStar
-                          key={star}
-                          size={16}
-                          color={
-                            star <= (productDetail?.to_id?.rating || 0)
-                              ? "#f59e0b"
-                              : "#e5e7eb"
-                          }
-                        />
-                      ))}
-                      <span
-                        style={{
-                          fontSize: "14px",
-                          color: "#4b5563",
-                          fontWeight: "600",
-                          fontFamily: "Inter, sans-serif",
-                          marginLeft: "4px",
-                        }}
-                      >
-                        {productDetail?.to_id?.rating || "0"}.0
+
+                  {currentOrder?.pincode && (
+                    <div className="flex items-center gap-1.5 bg-slate-50 !border !border-slate-200/80 rounded-lg px-2 py-0.5">
+                      <FiShield size={11} className="text-[#004a70]" />
+                      <span className="text-[10.5px] text-slate-500 font-family-regular">PIN:</span>
+                      <span className="text-xs font-family-semibold text-[#004a70] tracking-wider">
+                        {currentOrder.pincode}
                       </span>
-                    </div>
-                    <p
-                      style={{
-                        fontSize: "13px",
-                        color: "#64748b",
-                        margin: 0,
-                        fontFamily: "Inter, sans-serif",
-                      }}
-                    >
-                      {productDetail?.to_id?.email}
-                    </p>
-                  </div>
-                </div>
-
-                <div
-                  style={{
-                    display: "flex",
-                    gap: "12px",
-                  }}
-                >
-                  <button
-                    style={{
-                      flex: 1,
-                      height: "48px",
-                      borderRadius: "12px",
-                      border: "none",
-                      background:
-                        "linear-gradient(135deg, #059669 0%, #047857 100%)",
-                      color: "#fff",
-                      fontSize: "14px",
-                      fontWeight: "700",
-                      cursor: "pointer",
-                      display: "flex",
-                      alignItems: "center",
-                      justifyContent: "center",
-                      gap: "8px",
-                      fontFamily: "Inter, sans-serif",
-                      transition: "all 0.2s",
-                      boxShadow: "0 6px 16px rgba(5, 150, 105, 0.25)",
-                    }}
-                    onMouseEnter={(e) =>
-                      (e.currentTarget.style.transform = "translateY(-1px)")
-                    }
-                    onMouseLeave={(e) =>
-                      (e.currentTarget.style.transform = "translateY(0)")
-                    }
-                  >
-                    <IoCall size={18} />
-                    Call
-                  </button>
-                  <button
-                    style={{
-                      flex: 1,
-                      height: "48px",
-                      borderRadius: "12px",
-                      border: "2px solid #e5e7eb",
-                      background: "#fff",
-                      color: "#374151",
-                      fontSize: "14px",
-                      fontWeight: "700",
-                      cursor: "pointer",
-                      display: "flex",
-                      alignItems: "center",
-                      justifyContent: "center",
-                      gap: "8px",
-                      fontFamily: "Inter, sans-serif",
-                      transition: "all 0.2s",
-                    }}
-                    onMouseEnter={(e) => {
-                      e.currentTarget.style.borderColor = "#004a70";
-                      e.currentTarget.style.color = "#004a70";
-                      e.currentTarget.style.background = "#f0f7ff";
-                    }}
-                    onMouseLeave={(e) => {
-                      e.currentTarget.style.borderColor = "#e5e7eb";
-                      e.currentTarget.style.color = "#374151";
-                      e.currentTarget.style.background = "#fff";
-                    }}
-                  >
-                    <RiMessage2Fill size={18} />
-                    Message
-                  </button>
-                </div>
-              </div>
-
-              {/* Vehicle Info */}
-              <div
-                style={{
-                  background: "#fff",
-                  borderRadius: "20px",
-                  padding: "24px",
-                  boxShadow: "0 4px 20px -6px rgba(0,0,0,0.08)",
-                  border: "1px solid #e5e7eb",
-                }}
-              >
-                <h3
-                  style={{
-                    fontSize: "18px",
-                    fontWeight: "800",
-                    color: "#0f172a",
-                    margin: "0 0 16px",
-                    fontFamily: "Inter, sans-serif",
-                  }}
-                >
-                  Vehicle
-                </h3>
-                <div
-                  style={{
-                    display: "flex",
-                    alignItems: "center",
-                    gap: "16px",
-                  }}
-                >
-                  <div
-                    style={{
-                      width: "100px",
-                      height: "64px",
-                      borderRadius: "12px",
-                      overflow: "hidden",
-                      border: "1px solid #e5e7eb",
-                      background: "#f8fafc",
-                      display: "flex",
-                      alignItems: "center",
-                      justifyContent: "center",
-                    }}
-                  >
-                    <Image
-                      src={
-                        productDetail?.to_id?.vehicle?.images?.[0] || carAvatar
-                      }
-                      alt=""
-                      width={100}
-                      height={64}
-                      style={{
-                        width: "100%",
-                        height: "100%",
-                        objectFit: "cover",
-                      }}
-                    />
-                  </div>
-                  <div style={{ flex: 1 }}>
-                    <h4
-                      style={{
-                        fontSize: "16px",
-                        fontWeight: "800",
-                        color: "#0f172a",
-                        margin: "0 0 4px",
-                        fontFamily: "Inter, sans-serif",
-                      }}
-                    >
-                      {productDetail?.to_id?.vehicle?.brand || "Vehicle"}
-                    </h4>
-                    <p
-                      style={{
-                        fontSize: "13px",
-                        color: "#64748b",
-                        margin: 0,
-                        fontFamily: "Inter, sans-serif",
-                      }}
-                    >
-                      License: {productDetail?.to_id?.vehicle?.license || "N/A"}
-                    </p>
-                  </div>
-                </div>
-              </div>
-
-              {/* Price & Action Buttons */}
-              <div
-                style={{
-                  background: "#fff",
-                  borderRadius: "20px",
-                  padding: "24px",
-                  boxShadow: "0 4px 20px -6px rgba(0,0,0,0.08)",
-                  border: "1px solid #e5e7eb",
-                }}
-              >
-                <h3
-                  style={{
-                    fontSize: "18px",
-                    fontWeight: "800",
-                    color: "#0f172a",
-                    margin: "0 0 12px",
-                    fontFamily: "Inter, sans-serif",
-                  }}
-                >
-                  Price
-                </h3>
-                <p
-                  style={{
-                    fontSize: "36px",
-                    fontWeight: "800",
-                    color: "#059669",
-                    margin: "0 0 16px",
-                    fontFamily: "Inter, sans-serif",
-                  }}
-                >
-                  <MdOutlineAttachMoney
-                    size={32}
-                    style={{ marginBottom: "4px" }}
-                  />
-                  {productDetail?.price}
-                </p>
-
-                <div
-                  style={{
-                    display: "flex",
-                    flexDirection: "column",
-                    gap: "12px",
-                  }}
-                >
-                  {productDetail?.status === "completed" &&
-                    !productDetail?.likes && (
                       <button
-                        onClick={fav}
-                        style={{
-                          width: "100%",
-                          height: "48px",
-                          borderRadius: "12px",
-                          border: "2px solid #dc2626",
-                          background: "#fff",
-                          color: "#dc2626",
-                          fontFamily: "Inter, sans-serif",
-                          fontWeight: "700",
-                          fontSize: "14px",
-                          cursor: "pointer",
-                          display: "flex",
-                          alignItems: "center",
-                          justifyContent: "center",
-                          gap: "8px",
-                          transition: "all 0.2s",
-                        }}
-                        onMouseEnter={(e) => {
-                          e.currentTarget.style.background = "#dc2626";
-                          e.currentTarget.style.color = "#fff";
-                        }}
-                        onMouseLeave={(e) => {
-                          e.currentTarget.style.background = "#fff";
-                          e.currentTarget.style.color = "#dc2626";
-                        }}
+                        onClick={copytoClipBoard}
+                        className="ml-1 text-slate-400 hover:text-[#004a70] transition-colors cursor-pointer !border-0 bg-transparent p-0 flex items-center"
+                        title="Copy Pincode"
                       >
-                        {FavLoading ? (
-                          <Spinner size="sm" />
-                        ) : (
-                          <>
-                            <FaHeart size={16} />
-                            Add to Favorites
-                          </>
-                        )}
+                        {copied ? <RiCheckLine size={12} className="text-emerald-600" /> : <RiFileCopyLine size={11} />}
                       </button>
-                    )}
-                  {DriveData?.status === "accepted" ? (
-                    <button
-                      onClick={CancelRide}
-                      style={{
-                        width: "100%",
-                        height: "48px",
-                        borderRadius: "12px",
-                        border: "none",
-                        background:
-                          "linear-gradient(135deg, #004a70 0%, #003353 100%)",
-                        color: "#fff",
-                        fontFamily: "Inter, sans-serif",
-                        fontWeight: "700",
-                        fontSize: "14px",
-                        cursor: "pointer",
-                        transition: "all 0.2s",
-                        boxShadow: "0 6px 16px rgba(0,74,112,0.25)",
-                      }}
-                      onMouseEnter={(e) =>
-                        (e.currentTarget.style.transform = "translateY(-1px)")
-                      }
-                      onMouseLeave={(e) =>
-                        (e.currentTarget.style.transform = "translateY(0)")
-                      }
-                    >
-                      Cancel Ride
-                    </button>
-                  ) : null}
-                </div>
-              </div>
-            </div>
-
-            {/* Right Column */}
-            <div
-              style={{
-                display: "flex",
-                flexDirection: "column",
-                gap: "24px",
-              }}
-            >
-              {/* Route Info */}
-              <div
-                style={{
-                  background: "#fff",
-                  borderRadius: "20px",
-                  padding: "28px",
-                  boxShadow: "0 4px 20px -6px rgba(0,0,0,0.08)",
-                  border: "1px solid #e5e7eb",
-                }}
-              >
-                <h3
-                  style={{
-                    fontSize: "20px",
-                    fontWeight: "800",
-                    color: "#0f172a",
-                    margin: "0 0 20px",
-                    fontFamily: "Inter, sans-serif",
-                  }}
-                >
-                  Route Information
-                </h3>
-
-                <div
-                  style={{
-                    display: "flex",
-                    gap: "16px",
-                  }}
-                >
-                  <div
-                    style={{
-                      display: "flex",
-                      flexDirection: "column",
-                      alignItems: "center",
-                      paddingTop: "8px",
-                    }}
-                  >
-                    <div
-                      style={{
-                        width: "24px",
-                        height: "24px",
-                        borderRadius: "50%",
-                        background:
-                          "linear-gradient(135deg, #059669 0%, #047857 100%)",
-                        display: "flex",
-                        alignItems: "center",
-                        justifyContent: "center",
-                        boxShadow: "0 4px 12px rgba(5,150,105,0.3)",
-                      }}
-                    >
-                      <FaLocationDot color="#fff" size={12} />
-                    </div>
-                    <div
-                      style={{
-                        width: "3px",
-                        height: "60px",
-                        background:
-                          "linear-gradient(180deg, #059669 0%, #004a70 100%)",
-                        margin: "8px 0",
-                      }}
-                    />
-                    <div
-                      style={{
-                        width: "24px",
-                        height: "24px",
-                        borderRadius: "6px",
-                        background:
-                          "linear-gradient(135deg, #004a70 0%, #003353 100%)",
-                        display: "flex",
-                        alignItems: "center",
-                        justifyContent: "center",
-                        boxShadow: "0 4px 12px rgba(0,74,112,0.3)",
-                      }}
-                    >
-                      <MdOutlineMyLocation color="#fff" size={12} />
-                    </div>
-                  </div>
-
-                  <div
-                    style={{
-                      flex: 1,
-                      display: "flex",
-                      flexDirection: "column",
-                      gap: "16px",
-                    }}
-                  >
-                    <div>
-                      <p
-                        style={{
-                          fontSize: "13px",
-                          color: "#64748b",
-                          fontWeight: "600",
-                          fontFamily: "Inter, sans-serif",
-                          margin: "0 0 6px",
-                        }}
-                      >
-                        PICKUP
-                      </p>
-                      <p
-                        style={{
-                          fontSize: "16px",
-                          color: "#0f172a",
-                          fontWeight: "600",
-                          fontFamily: "Inter, sans-serif",
-                          margin: 0,
-                          lineHeight: "1.4",
-                        }}
-                      >
-                        {productDetail?.start_address}
-                      </p>
-                    </div>
-
-                    <div>
-                      <p
-                        style={{
-                          fontSize: "13px",
-                          color: "#64748b",
-                          fontWeight: "600",
-                          fontFamily: "Inter, sans-serif",
-                          margin: "0 0 6px",
-                        }}
-                      >
-                        DROP-OFF
-                      </p>
-                      <p
-                        style={{
-                          fontSize: "16px",
-                          color: "#0f172a",
-                          fontWeight: "600",
-                          fontFamily: "Inter, sans-serif",
-                          margin: 0,
-                          lineHeight: "1.4",
-                        }}
-                      >
-                        {productDetail?.end_address}
-                      </p>
-                    </div>
-                  </div>
-                </div>
-
-                <div
-                  style={{
-                    marginTop: "20px",
-                    paddingTop: "20px",
-                    borderTop: "1px solid #e5e7eb",
-                    display: "flex",
-                    alignItems: "center",
-                    gap: "12px",
-                  }}
-                >
-                  <span
-                    style={{
-                      fontSize: "14px",
-                      color: "#374151",
-                      fontWeight: "600",
-                      fontFamily: "Inter, sans-serif",
-                    }}
-                  >
-                    Pincode:
-                  </span>
-                  <span
-                    style={{
-                      fontSize: "15px",
-                      color: "#004a70",
-                      fontWeight: "800",
-                      fontFamily: "Inter, sans-serif",
-                    }}
-                  >
-                    {productDetail?.pincode}
-                  </span>
-                  <button
-                    onClick={copytoClipBoard}
-                    style={{
-                      width: "36px",
-                      height: "36px",
-                      borderRadius: "10px",
-                      border: "1px solid #e5e7eb",
-                      background: "#f8fafc",
-                      cursor: "pointer",
-                      display: "flex",
-                      alignItems: "center",
-                      justifyContent: "center",
-                      transition: "all 0.2s",
-                      color: "#64748b",
-                    }}
-                    onMouseEnter={(e) => {
-                      e.currentTarget.style.borderColor = "#004a70";
-                      e.currentTarget.style.color = "#004a70";
-                      e.currentTarget.style.background = "#f0f7ff";
-                    }}
-                    onMouseLeave={(e) => {
-                      e.currentTarget.style.borderColor = "#e5e7eb";
-                      e.currentTarget.style.color = "#64748b";
-                      e.currentTarget.style.background = "#f8fafc";
-                    }}
-                  >
-                    <MdContentCopy size={18} />
-                  </button>
-                </div>
-              </div>
-
-              {/* Tabs */}
-              <div
-                style={{
-                  background: "#fff",
-                  borderRadius: "20px",
-                  overflow: "hidden",
-                  boxShadow: "0 4px 20px -6px rgba(0,0,0,0.08)",
-                  border: "1px solid #e5e7eb",
-                }}
-              >
-                <div
-                  style={{
-                    display: "flex",
-                    gap: "8px",
-                    padding: "20px 24px 0",
-                    borderBottom: "1px solid #e5e7eb",
-                    background: "#f8fafc",
-                  }}
-                >
-                  <button
-                    onClick={() => setActiveTab("reviews")}
-                    style={{
-                      padding: "12px 20px",
-                      borderTopLeftRadius: "12px",
-                      borderTopRightRadius: "12px",
-                      border:
-                        activeTab === "reviews"
-                          ? "1px solid #e5e7eb"
-                          : "1px solid transparent",
-                      borderBottom:
-                        activeTab === "reviews" ? "2px solid #004a70" : "none",
-                      background:
-                        activeTab === "reviews" ? "#fff" : "transparent",
-                      color: activeTab === "reviews" ? "#004a70" : "#64748b",
-                      fontFamily: "Inter, sans-serif",
-                      fontSize: "14px",
-                      fontWeight: activeTab === "reviews" ? "800" : "700",
-                      cursor: "pointer",
-                      transition: "all 0.2s",
-                      display: "flex",
-                      alignItems: "center",
-                      gap: "8px",
-                    }}
-                    onMouseEnter={(e) => {
-                      if (activeTab !== "reviews") {
-                        e.currentTarget.style.color = "#0f172a";
-                      }
-                    }}
-                    onMouseLeave={(e) => {
-                      if (activeTab !== "reviews") {
-                        e.currentTarget.style.color = "#64748b";
-                      }
-                    }}
-                  >
-                    <FaStar
-                      size={16}
-                      color={activeTab === "reviews" ? "#f59e0b" : "#64748b"}
-                    />
-                    Reviews
-                  </button>
-                  <button
-                    onClick={() => setActiveTab("track")}
-                    style={{
-                      padding: "12px 20px",
-                      borderTopLeftRadius: "12px",
-                      borderTopRightRadius: "12px",
-                      border:
-                        activeTab === "track"
-                          ? "1px solid #e5e7eb"
-                          : "1px solid transparent",
-                      borderBottom:
-                        activeTab === "track" ? "2px solid #004a70" : "none",
-                      background:
-                        activeTab === "track" ? "#fff" : "transparent",
-                      color: activeTab === "track" ? "#004a70" : "#64748b",
-                      fontFamily: "Inter, sans-serif",
-                      fontSize: "14px",
-                      fontWeight: activeTab === "track" ? "800" : "700",
-                      cursor: "pointer",
-                      transition: "all 0.2s",
-                      display: "flex",
-                      alignItems: "center",
-                      gap: "8px",
-                    }}
-                    onMouseEnter={(e) => {
-                      if (activeTab !== "track") {
-                        e.currentTarget.style.color = "#0f172a";
-                      }
-                    }}
-                    onMouseLeave={(e) => {
-                      if (activeTab !== "track") {
-                        e.currentTarget.style.color = "#64748b";
-                      }
-                    }}
-                  >
-                    <svg
-                      width={16}
-                      height={16}
-                      viewBox="0 0 24 24"
-                      fill="none"
-                      stroke="currentColor"
-                      strokeWidth={2}
-                      strokeLinecap="round"
-                      strokeLinejoin="round"
-                    >
-                      <path d="M21 10c0 7-9 13-9 13s-9-6-9-13a9 9 0 0 1 18 0z" />
-                      <circle cx="12" cy="10" r="3" />
-                    </svg>
-                    Track on Map
-                  </button>
-                </div>
-
-                <div
-                  style={{
-                    padding: "24px",
-                  }}
-                >
-                  {activeTab === "reviews" ? (
-                    <div>
-                      {Loading ? (
-                        <div
-                          style={{
-                            display: "flex",
-                            justifyContent: "center",
-                            alignItems: "center",
-                            height: "200px",
-                          }}
-                        >
-                          <Spinner style={{ width: 24, height: 24 }}>
-                            Loading...
-                          </Spinner>
-                        </div>
-                      ) : Reviews?.length > 0 ? (
-                        <div
-                          style={{
-                            display: "grid",
-                            gridTemplateColumns:
-                              "repeat(auto-fill, minmax(280px, 1fr))",
-                            gap: "16px",
-                          }}
-                        >
-                          {Reviews.map((review, index) => (
-                            <div
-                              key={index}
-                              style={{
-                                background: "#f8fafc",
-                                borderRadius: "16px",
-                                border: "1px solid #e5e7eb",
-                                padding: "20px",
-                                transition: "all 0.2s",
-                              }}
-                              onMouseEnter={(e) => {
-                                e.currentTarget.style.boxShadow =
-                                  "0 8px 24px rgba(0,0,0,0.06)";
-                                e.currentTarget.style.transform =
-                                  "translateY(-2px)";
-                              }}
-                              onMouseLeave={(e) => {
-                                e.currentTarget.style.boxShadow = "none";
-                                e.currentTarget.style.transform =
-                                  "translateY(0)";
-                              }}
-                            >
-                              <div
-                                style={{
-                                  display: "flex",
-                                  alignItems: "center",
-                                  gap: "12px",
-                                  marginBottom: "14px",
-                                }}
-                              >
-                                <Image
-                                  src={review.user?.image || NoshowData}
-                                  width={48}
-                                  height={48}
-                                  alt=""
-                                  style={{
-                                    width: 48,
-                                    height: 48,
-                                    borderRadius: "50%",
-                                    objectFit: "cover",
-                                    border: "2px solid #fff",
-                                    boxShadow: "0 4px 8px rgba(0,0,0,0.06)",
-                                  }}
-                                />
-                                <div style={{ flex: 1, minWidth: 0 }}>
-                                  <h4
-                                    style={{
-                                      fontSize: "15px",
-                                      fontFamily: "Inter, sans-serif",
-                                      fontWeight: "800",
-                                      color: "#0f172a",
-                                      margin: "0 0 4px",
-                                    }}
-                                  >
-                                    {review.user?.name || "Anonymous"}
-                                  </h4>
-                                  <div
-                                    style={{
-                                      display: "flex",
-                                      alignItems: "center",
-                                      gap: "4px",
-                                    }}
-                                  >
-                                    {[1, 2, 3, 4, 5].map((star) => (
-                                      <FaStar
-                                        key={star}
-                                        size={14}
-                                        color={
-                                          star <= review.rating
-                                            ? "#f59e0b"
-                                            : "#e5e7eb"
-                                        }
-                                      />
-                                    ))}
-                                    <span
-                                      style={{
-                                        fontSize: "12px",
-                                        color: "#94a3b8",
-                                        fontFamily: "Inter, sans-serif",
-                                        fontWeight: "600",
-                                        marginLeft: "6px",
-                                      }}
-                                    >
-                                      {review.rating}.0
-                                    </span>
-                                  </div>
-                                </div>
-                                <span
-                                  style={{
-                                    fontSize: "12px",
-                                    color: "#94a3b8",
-                                    fontFamily: "Inter, sans-serif",
-                                    fontWeight: "600",
-                                  }}
-                                >
-                                  {review.createdAt
-                                    ? moment
-                                        .utc(review.createdAt)
-                                        .format("DD MMM")
-                                    : ""}
-                                </span>
-                              </div>
-                              <p
-                                style={{
-                                  fontSize: "14px",
-                                  fontFamily: "Inter, sans-serif",
-                                  color: "#475569",
-                                  margin: 0,
-                                  lineHeight: "1.6",
-                                }}
-                              >
-                                {review.review}
-                              </p>
-                            </div>
-                          ))}
-                        </div>
-                      ) : (
-                        <div
-                          style={{
-                            display: "flex",
-                            flexDirection: "column",
-                            alignItems: "center",
-                            justifyContent: "center",
-                            height: "240px",
-                            gap: "12px",
-                          }}
-                        >
-                          <div
-                            style={{
-                              width: "80px",
-                              height: "80px",
-                              borderRadius: "50%",
-                              background: "#f1f5f9",
-                              display: "flex",
-                              alignItems: "center",
-                              justifyContent: "center",
-                            }}
-                          >
-                            <FaStar size={36} color="#cbd5e1" />
-                          </div>
-                          <div style={{ textAlign: "center" }}>
-                            <h4
-                              style={{
-                                fontSize: "18px",
-                                fontWeight: "700",
-                                color: "#374151",
-                                margin: "0 0 6px",
-                                fontFamily: "Inter, sans-serif",
-                              }}
-                            >
-                              No Reviews Yet
-                            </h4>
-                            <p
-                              style={{
-                                fontSize: "14px",
-                                color: "#94a3b8",
-                                margin: 0,
-                                fontFamily: "Inter, sans-serif",
-                              }}
-                            >
-                              Be the first to leave a review!
-                            </p>
-                          </div>
-                        </div>
-                      )}
-                    </div>
-                  ) : (
-                    <div
-                      style={{
-                        overflow: "hidden",
-                        borderRadius: "16px",
-                        border: "1px solid #e5e7eb",
-                      }}
-                    >
-                      <div
-                        id="map-container"
-                        style={{
-                          width: "100%",
-                          height: "500px",
-                          borderRadius: "16px",
-                        }}
-                        ref={mapContainerRef}
-                      />
                     </div>
                   )}
                 </div>
+
+                {/* Stepper with compact responsive spacing */}
+                <div className="grid grid-cols-1 md:grid-cols-2 gap-2 text-xs bg-slate-50/70 p-2.5 rounded-xl !border !border-slate-100">
+                  <div className="flex items-start gap-2">
+                    <div className="w-4 h-4 rounded-full bg-emerald-500 text-white flex items-center justify-center shrink-0 mt-0.5">
+                      <FaLocationDot size={8} />
+                    </div>
+                    <div className="min-w-0 flex-1">
+                      <span className="text-[9.5px] font-family-semibold uppercase tracking-wider text-emerald-600 block leading-tight">
+                        Pickup Location
+                      </span>
+                      <p className="text-[11.5px] font-family-medium text-slate-800 !m-0 leading-snug break-words">
+                        {currentOrder?.start_address || "Nevis Island"}
+                      </p>
+                    </div>
+                  </div>
+
+                  <div className="flex items-start gap-2">
+                    <div className="w-4 h-4 rounded-md bg-[#004a70] text-white flex items-center justify-center shrink-0 mt-0.5">
+                      <MdOutlineMyLocation size={9} />
+                    </div>
+                    <div className="min-w-0 flex-1">
+                      <span className="text-[9.5px] font-family-semibold uppercase tracking-wider text-[#004a70] block leading-tight">
+                        Destination
+                      </span>
+                      <p className="text-[11.5px] font-family-medium text-slate-800 !m-0 leading-snug break-words">
+                        {currentOrder?.end_address || "Saint Kitts"}
+                      </p>
+                    </div>
+                  </div>
+                </div>
+              </div>
+
+              {/* 2. SWIPER TAB BUTTONS (Smooth FreeMode Swiper with Primary Color Pills) */}
+              <div className="w-full max-w-full overflow-hidden">
+                <Swiper
+                  modules={[FreeMode, Mousewheel]}
+                  slidesPerView="auto"
+                  spaceBetween={8}
+                  freeMode={true}
+                  mousewheel={{ forceToAxis: true }}
+                  className="w-full category-swiper py-0.5"
+                >
+                  <SwiperSlide style={{ width: "auto" }}>
+                    <button
+                      onClick={() => setActiveTab("map")}
+                      className={`cursor-pointer transition-all duration-200 select-none flex items-center gap-1.5 px-3.5 py-1.5 rounded-full text-xs font-family-semibold whitespace-nowrap !border shadow-none ${activeTab === "map"
+                          ? "text-white bg-[#004a70] !border-[#004a70] shadow-sm"
+                          : "text-slate-700 bg-white !border-slate-200/90 hover:!border-[#004a70] hover:bg-slate-50 hover:text-[#004a70]"
+                        }`}
+                    >
+                      <MdOutlineMap size={14} />
+                      <span>Live Route Map</span>
+                    </button>
+                  </SwiperSlide>
+
+                  <SwiperSlide style={{ width: "auto" }}>
+                    <button
+                      onClick={() => setActiveTab("reviews")}
+                      className={`cursor-pointer transition-all duration-200 select-none flex items-center gap-1.5 px-3.5 py-1.5 rounded-full text-xs font-family-semibold whitespace-nowrap !border shadow-none ${activeTab === "reviews"
+                          ? "text-white bg-[#004a70] !border-[#004a70] shadow-sm"
+                          : "text-slate-700 bg-white !border-slate-200/90 hover:!border-[#004a70] hover:bg-slate-50 hover:text-[#004a70]"
+                        }`}
+                    >
+                      <MdOutlineRateReview size={14} />
+                      <span>Driver Reviews ({Reviews?.length || 0})</span>
+                    </button>
+                  </SwiperSlide>
+                </Swiper>
+              </div>
+
+              {/* 3. TAB VIEW WINDOW */}
+              <div className="min-h-[280px]">
+                {activeTab === "map" ? (
+                  <div className="!relative !h-[380px] sm:!h-[440px] lg:!h-[480px] !w-full !rounded-2xl !overflow-hidden !shadow-md !bg-[#002842] !border !border-slate-200/90">
+                    {/* Map Canvas */}
+                    <div
+                      id="map-container"
+                      className="!w-full !h-full"
+                      style={{ width: "100%", height: "100%", position: "absolute", top: 0, left: 0, right: 0, bottom: 0 }}
+                      ref={mapContainerRef}
+                    />
+
+                    {/* 1. Floating Glassmorphism Header Pill (Overlaid on top of map) */}
+                    <div className="!absolute !top-3.5 !inset-x-3.5 !z-10 !bg-white/90 !backdrop-blur-md !rounded-xl !py-2 !px-3.5 !shadow-md !border !border-white/60 !flex !flex-wrap !items-center !justify-between !gap-2 animate-fade-in">
+                      <div className="!flex !items-center !gap-2 !min-w-0">
+                        <div className="!w-5 !h-5 !rounded-lg !bg-[#004a70] !text-white !flex !items-center !justify-center !shrink-0">
+                          <FaLocationDot size={10} />
+                        </div>
+                        <span className="!text-[11.5px] !font-family-bold !text-slate-800 !truncate">
+                          Interactive Route Map
+                        </span>
+                        {activeFocusedLocation && (
+                          <span className="!text-[10px] !font-family-semibold !text-[#004a70] !bg-sky-50 !px-2 !py-0.5 !rounded-full !border !border-sky-200/80 !truncate !max-w-[130px] sm:!max-w-[180px]">
+                            📍 {activeFocusedLocation}
+                          </span>
+                        )}
+                      </div>
+
+                      <div className="!flex !items-center !gap-2 !text-[10px] !font-family-semibold !text-slate-600 !shrink-0">
+                        <span className="!flex !items-center !gap-1">
+                          <span className="!w-2 !h-2 !rounded-full !bg-[#004a70]" /> Start
+                        </span>
+                        {getStopsList(currentOrder).length > 0 && (
+                          <span className="!flex !items-center !gap-1">
+                            <span className="!w-2 !h-2 !rounded-full !bg-amber-500" /> Stops ({getStopsList(currentOrder).length})
+                          </span>
+                        )}
+                        <span className="!flex !items-center !gap-1">
+                          <span className="!w-2 !h-2 !rounded-full !bg-rose-600" /> End
+                        </span>
+                        <button
+                          type="button"
+                          onClick={fitFullRoute}
+                          className="!ml-1 !p-1 !rounded-md !bg-slate-100 hover:!bg-slate-200 !text-slate-700 !border-none !cursor-pointer !transition-colors"
+                          title="Fit Full Route"
+                        >
+                          <MdZoomOutMap size={13} />
+                        </button>
+                      </div>
+                    </div>
+
+                    {/* 2. Floating Glassmorphism Footer Pill (Overlaid on bottom of map) */}
+                    <div className="!absolute !bottom-3.5 !inset-x-3.5 !z-10 !bg-white/90 !backdrop-blur-md !rounded-xl !py-2 !px-3.5 !shadow-md !border !border-white/60 !flex !flex-wrap !items-center !justify-between !gap-2 animate-fade-in">
+                      <div className="!flex !items-center !gap-3 !text-xs !text-slate-700 !min-w-0 !flex-1">
+                        <div
+                          onClick={() => {
+                            const start = getStartCoords(currentOrder);
+                            zoomToLocation(start[0], start[1], currentOrder?.start_address || "Pickup Location");
+                          }}
+                          className="!flex !items-center !gap-1.5 !truncate !cursor-pointer hover:!text-[#004a70] !transition-colors"
+                          title="Click to zoom on start location"
+                        >
+                          <span className="!w-2 !h-2 !rounded-full !bg-[#004a70] !shrink-0" />
+                          <span className="!font-family-bold !text-[#004a70] !text-[11px]">Start:</span>
+                          <span className="!truncate !text-[11px]">{currentOrder?.start_address || "Pickup location"}</span>
+                        </div>
+
+                        <div className="!h-3 !w-px !bg-slate-300 !shrink-0" />
+
+                        <div
+                          onClick={() => {
+                            const end = getEndCoords(currentOrder);
+                            zoomToLocation(end[0], end[1], currentOrder?.end_address || "Destination");
+                          }}
+                          className="!flex !items-center !gap-1.5 !truncate !cursor-pointer hover:!text-rose-600 !transition-colors"
+                          title="Click to zoom on end destination"
+                        >
+                          <span className="!w-2 !h-2 !rounded-full !bg-rose-600 !shrink-0" />
+                          <span className="!font-family-bold !text-rose-600 !text-[11px]">End:</span>
+                          <span className="!truncate !text-[11px]">{currentOrder?.end_address || "Destination"}</span>
+                        </div>
+                      </div>
+                    </div>
+                  </div>
+                ) : (
+                  <div>
+                    {Loading ? (
+                      <ReviewCardsSkeleton />
+                    ) : Reviews?.length > 0 ? (
+                      <div className="grid grid-cols-1 sm:grid-cols-2 gap-2.5">
+                        {Reviews.map((review, index) => (
+                          <div
+                            key={index}
+                            className="bg-slate-50/80 hover:bg-slate-50 rounded-xl p-3 !border !border-slate-200/70 transition-all"
+                          >
+                            <div className="flex items-center gap-2 mb-1.5">
+                              <Image
+                                src={review.user?.image || NoshowData}
+                                width={28}
+                                height={28}
+                                alt=""
+                                className="w-7 h-7 rounded-full object-cover !border !border-slate-200"
+                              />
+                              <div className="flex-1 min-w-0">
+                                <h5 className="text-[11.5px] font-family-semibold text-slate-900 !m-0 truncate">
+                                  {review.user?.name || "Customer"}
+                                </h5>
+                                <div className="flex items-center gap-0.5 mt-0.5">
+                                  {[1, 2, 3, 4, 5].map((star) => (
+                                    <FaStar
+                                      key={star}
+                                      size={8}
+                                      color={star <= review.rating ? "#f59e0b" : "#e2e8f0"}
+                                    />
+                                  ))}
+                                  <span className="text-[9.5px] text-slate-400 font-family-regular ml-1">
+                                    {review.rating}.0
+                                  </span>
+                                </div>
+                              </div>
+                              <span className="text-[9.5px] text-slate-400 font-family-regular">
+                                {review.createdAt ? moment.utc(review.createdAt).format("DD MMM") : ""}
+                              </span>
+                            </div>
+
+                            {review.review && (
+                              <p className="text-[11px] text-slate-600 font-family-regular !m-0 line-clamp-2 leading-relaxed">
+                                {review.review}
+                              </p>
+                            )}
+                          </div>
+                        ))}
+                      </div>
+                    ) : (
+                      <div className="flex flex-col items-center justify-center py-10 text-center">
+                        <div className="w-9 h-9 rounded-xl bg-slate-100 flex items-center justify-center mb-1.5 text-slate-400">
+                          <FaStar size={16} />
+                        </div>
+                        <h4 className="text-xs font-family-semibold text-slate-800 !m-0">
+                          No Reviews Yet
+                        </h4>
+                        <p className="text-[10.5px] text-slate-400 font-family-regular !m-0 mt-0.5">
+                          Reviews for this driver will appear here.
+                        </p>
+                      </div>
+                    )}
+                  </div>
+                )}
               </div>
             </div>
           </div>
+
         </div>
       </div>
     </div>
@@ -1261,20 +1160,7 @@ const RideDetail = () => {
 
 const page = () => {
   return (
-    <Suspense
-      fallback={
-        <div
-          style={{
-            display: "flex",
-            alignItems: "center",
-            justifyContent: "center",
-            height: "100vh",
-          }}
-        >
-          <Spinner animation="border" style={{ width: 32, height: 32 }} />
-        </div>
-      }
-    >
+    <Suspense fallback={<RideDetailSkeleton />}>
       <RideDetail />
     </Suspense>
   );

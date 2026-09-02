@@ -65,7 +65,25 @@ const MainLayout = ({ children }) => {
           </Provider>
         </SocketProvider>
       </GoogleOAuthProvider>
-      <Toaster position="top-right" />
+      <Toaster
+        position="top-right"
+        toastOptions={{
+          className: "!bg-white !text-slate-900 !rounded-2xl !border !border-slate-200/95 !shadow-[0_18px_38px_-4px_rgba(0,74,112,0.15),0_6px_12px_-2px_rgba(0,0,0,0.06)] !font-family-semibold !text-[13.5px] !py-3 !px-4",
+          duration: 3500,
+          success: {
+            iconTheme: {
+              primary: "#059669",
+              secondary: "#ecfdf5",
+            },
+          },
+          error: {
+            iconTheme: {
+              primary: "#e11d48",
+              secondary: "#fff1f2",
+            },
+          },
+        }}
+      />
     </>
   );
 };

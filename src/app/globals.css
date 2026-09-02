@@ -2,6 +2,12 @@
 @tailwind components;
 @tailwind utilities;
 
+@layer components {
+  .input-field {
+    @apply !w-full !px-3.5 !py-2.5 !rounded-xl !bg-white !border !border-gray-200 !text-[13.5px] !text-gray-900 !placeholder-gray-400 focus:!outline-none focus:!ring-1 focus:!ring-primary-500 focus:!ring-offset-1 focus:!border-none !transition-all !duration-200 !shadow-sm hover:!shadow-md;
+  }
+}
+
 @layer utilities {
   .animation-delay-100 {
     animation-delay: 100ms;
@@ -64,6 +70,55 @@
 
 .mapboxgl-ctrl {
   display: none !important;
+}
+
+/* Glassmorphic Mapbox Popups */
+.mapboxgl-popup {
+  z-index: 30 !important;
+}
+
+.mapboxgl-popup-content {
+  background: rgba(255, 255, 255, 0.88) !important;
+  backdrop-filter: blur(14px) !important;
+  -webkit-backdrop-filter: blur(14px) !important;
+  border: 1px solid rgba(255, 255, 255, 0.7) !important;
+  border-radius: 18px !important;
+  box-shadow: 0 12px 30px -4px rgba(0, 0, 0, 0.12), 0 4px 12px -2px rgba(0, 0, 0, 0.08) !important;
+  padding: 10px 14px !important;
+  font-family: inherit !important;
+}
+
+.mapboxgl-popup-anchor-top .mapboxgl-popup-tip {
+  border-bottom-color: rgba(255, 255, 255, 0.88) !important;
+}
+
+.mapboxgl-popup-anchor-bottom .mapboxgl-popup-tip {
+  border-top-color: rgba(255, 255, 255, 0.88) !important;
+}
+
+.mapboxgl-popup-anchor-left .mapboxgl-popup-tip {
+  border-right-color: rgba(255, 255, 255, 0.88) !important;
+}
+
+.mapboxgl-popup-anchor-right .mapboxgl-popup-tip {
+  border-left-color: rgba(255, 255, 255, 0.88) !important;
+}
+
+.mapboxgl-popup-close-button {
+  color: #64748b !important;
+  font-size: 16px !important;
+  font-weight: bold !important;
+  padding: 4px 8px !important;
+  border-radius: 0 18px 0 8px !important;
+  top: 4px !important;
+  right: 6px !important;
+  outline: none !important;
+  transition: color 0.15s ease !important;
+}
+
+.mapboxgl-popup-close-button:hover {
+  background: transparent !important;
+  color: #0f172a !important;
 }
 
 @keyframes float-car {
@@ -129,9 +184,36 @@
   }
 }
 
+@keyframes slide-in-right {
+  from {
+    transform: translateX(100%);
+  }
+  to {
+    transform: translateX(0);
+  }
+}
+
+.animate-slide-in-right {
+  animation: slide-in-right 0.3s cubic-bezier(0.16, 1, 0.3, 1) forwards;
+}
+
+@keyframes slide-in-left {
+  from {
+    transform: translateX(-100%);
+  }
+  to {
+    transform: translateX(0);
+  }
+}
+
+.animate-slide-in-left {
+  animation: slide-in-left 0.3s cubic-bezier(0.16, 1, 0.3, 1) forwards;
+}
+
 .driver-modal-sm .modal-dialog {
   max-width: 360px;
 }
+
 .font-poppins {
   font-family: var(--font-poppins-local), sans-serif !important;
 }
@@ -281,4 +363,159 @@
 .font-poppins.font-black {
   font-family: var(--font-poppins-local), sans-serif !important;
   font-weight: 900 !important;
+}
+
+/* =========================================================
+   Ultra-Modern Ant Design & Global Toast Notifications
+   ========================================================= */
+.ant-message {
+  z-index: 999999 !important;
+  top: 24px !important;
+}
+
+.ant-message .ant-message-notice {
+  padding: 6px 0 !important;
+  text-align: center !important;
+}
+
+.ant-message .ant-message-notice-content {
+  display: inline-flex !important;
+  align-items: center !important;
+  padding: 10px 20px !important;
+  border-radius: 16px !important;
+  background: #ffffff !important;
+  border: 1px solid rgba(226, 232, 240, 0.95) !important;
+  box-shadow:
+    0 20px 40px -6px rgba(0, 74, 112, 0.16),
+    0 8px 16px -3px rgba(0, 0, 0, 0.06),
+    0 0 0 1px rgba(0, 74, 112, 0.04) !important;
+  transition: all 0.3s cubic-bezier(0.16, 1, 0.3, 1) !important;
+}
+
+.ant-message .ant-message-custom-content {
+  display: inline-flex !important;
+  align-items: center !important;
+  gap: 11px !important;
+  color: #0f172a !important;
+  font-family: var(--font-poppins-local), 'Inter', -apple-system, sans-serif !important;
+  font-size: 13.5px !important;
+  font-weight: 600 !important;
+  letter-spacing: -0.01em !important;
+}
+
+.ant-message .anticon {
+  width: 24px !important;
+  height: 24px !important;
+  border-radius: 9999px !important;
+  display: inline-flex !important;
+  align-items: center !important;
+  justify-content: center !important;
+  font-size: 12.5px !important;
+  flex-shrink: 0 !important;
+}
+
+/* Success Toast */
+.ant-message .ant-message-success .anticon {
+  color: #059669 !important;
+  background: #ecfdf5 !important;
+  border: 1px solid #a7f3d0 !important;
+}
+
+/* Error Toast */
+.ant-message .ant-message-error .anticon {
+  color: #e11d48 !important;
+  background: #fff1f2 !important;
+  border: 1px solid #fecdd3 !important;
+}
+
+/* Info Toast */
+.ant-message .ant-message-info .anticon {
+  color: #004a70 !important;
+  background: #e0f2fe !important;
+  border: 1px solid #bae6fd !important;
+}
+
+/* Warning Toast */
+.ant-message .ant-message-warning .anticon {
+  color: #d97706 !important;
+  background: #fffbeb !important;
+  border: 1px solid #fde68a !important;
+}
+
+/* Loading Toast */
+.ant-message .ant-message-loading .anticon {
+  color: #004a70 !important;
+  background: #f0f9ff !important;
+  border: 1px solid #bae6fd !important;
+}
+
+/* Tidio Chat Widget - Compact scaling on mobile screens */
+@media (max-width: 768px) {
+  #tidio-chat,
+  #tidio-chat-iframe,
+  iframe#tidio-chat-iframe,
+  #tidio-chat > iframe {
+    transform: scale(0.8) !important;
+    transform-origin: bottom right !important;
+    bottom: 4px !important;
+    right: 4px !important;
+  }
+}
+
+@media (max-width: 480px) {
+  #tidio-chat,
+  #tidio-chat-iframe,
+  iframe#tidio-chat-iframe,
+  #tidio-chat > iframe {
+    transform: scale(0.72) !important;
+    transform-origin: bottom right !important;
+    bottom: 2px !important;
+    right: 2px !important;
+  }
+}
+
+/* =========================================================
+   React Phone Input - Exact Match with .input-field (12px / rounded-xl / 42px height)
+   ========================================================= */
+.react-tel-input,
+.react-tel-input * {
+  box-sizing: border-box !important;
+}
+
+.react-tel-input .form-control,
+.react-tel-input input[type="tel"] {
+  height: 42px !important;
+  min-height: 42px !important;
+  border-radius: 12px !important;
+  width: 100% !important;
+  font-family: var(--font-poppins-local), 'Inter', sans-serif !important;
+  font-size: 13.5px !important;
+  background-color: #ffffff !important;
+}
+
+.react-tel-input .flag-dropdown {
+  height: 42px !important;
+  border-radius: 12px 0 0 12px !important;
+  background: transparent !important;
+  border: none !important;
+}
+
+.react-tel-input .flag-dropdown .selected-flag {
+  height: 42px !important;
+  border-radius: 12px 0 0 12px !important;
+  background: transparent !important;
+}
+
+.react-tel-input .flag-dropdown .selected-flag:hover,
+.react-tel-input .flag-dropdown .selected-flag:focus,
+.react-tel-input .flag-dropdown.open .selected-flag {
+  border-radius: 12px 0 0 12px !important;
+  background: rgba(0, 0, 0, 0.04) !important;
+}
+
+.react-tel-input .country-list {
+  border-radius: 12px !important;
+  box-shadow: 0 12px 30px -4px rgba(0, 74, 112, 0.16), 0 4px 12px rgba(0, 0, 0, 0.08) !important;
+  border: 1px solid rgba(226, 232, 240, 0.95) !important;
+  font-family: var(--font-poppins-local), 'Inter', sans-serif !important;
 }

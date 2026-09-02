@@ -62,12 +62,12 @@ export default function Testimonials() {
   useEffect(() => { setMounted(true); }, []);
 
   const testimonials = [
-    { name: "Sarah Johnson", role: "Regular Commuter", category: "Commuter", rating: 5, text: "Cabkn has completely changed how I travel between Nevis and Saint Kitts. The drivers are always on time, professional, and the cars are spotless. I use it every day for work and have never been let down." },
-    { name: "Michael Thompson", role: "Business Traveler", category: "Business", rating: 5, text: "As a frequent business traveler, reliability is everything. Cabkn delivers every single time. The real-time tracking and transparent pricing give me peace of mind. Highly recommended." },
-    { name: "Emily Davis", role: "Tourist", category: "Tourist", rating: 4.5, text: "Discovered Cabkn during my vacation in St. Kitts and it made my trip so much easier. The drivers were friendly and gave great local tips. Will definitely use again on my next visit!" },
+    { name: "Sarah Johnson", role: "Regular Commuter", category: "Commuter", rating: 5, text: "Welcome to Saint Kitts has completely changed how I travel between Nevis and Saint Kitts. The drivers are always on time, professional, and the cars are spotless. I use it every day for work and have never been let down." },
+    { name: "Michael Thompson", role: "Business Traveler", category: "Business", rating: 5, text: "As a frequent business traveler, reliability is everything. Welcome to Saint Kitts delivers every single time. The real-time tracking and transparent pricing give me peace of mind. Highly recommended." },
+    { name: "Emily Davis", role: "Tourist", category: "Tourist", rating: 4.5, text: "Discovered Welcome to Saint Kitts during my vacation in St. Kitts and it made my trip so much easier. The drivers were friendly and gave great local tips. Will definitely use again on my next visit!" },
     { name: "James Williams", role: "University Student", category: "Commuter", rating: 5, text: "Affordable rides that actually show up on time! As a student, the fair pricing is a lifesaver. The app is super easy to use and I love being able to track my ride." },
-    { name: "Maria Garcia", role: "Healthcare Professional", category: "Business", rating: 5, text: "I work late shifts and Cabkn has been a godsend. The safety features like ride sharing and 24/7 support mean I always feel secure, no matter what time I need to travel." },
-    { name: "David Brown", role: "Tour Guide", category: "Tourist", rating: 4.5, text: "I recommend Cabkn to all my clients looking for reliable transportation. The service is consistent, the drivers know the islands well, and the booking process couldn't be simpler." },
+    { name: "Maria Garcia", role: "Healthcare Professional", category: "Business", rating: 5, text: "I work late shifts and Welcome to Saint Kitts has been a godsend. The safety features like ride sharing and 24/7 support mean I always feel secure, no matter what time I need to travel." },
+    { name: "David Brown", role: "Tour Guide", category: "Tourist", rating: 4.5, text: "I recommend Welcome to Saint Kitts to all my clients looking for reliable transportation. The service is consistent, the drivers know the islands well, and the booking process couldn't be simpler." },
   ];
 
   const filteredTestimonials = activeTab === "All"
@@ -111,7 +111,7 @@ export default function Testimonials() {
             Say
           </h1>
           <p className={`text-slate-400 text-base sm:text-lg max-w-2xl mx-auto leading-relaxed font-family-regular ${mounted ? "animate-fade-in-up" : "opacity-0"}`} style={{ animationDelay: "400ms" }}>
-            Real feedback from our community. Discover why travelers trust Cabkn for their transfers between Saint Kitts and Nevis.
+            Real feedback from our community. Discover why travelers trust Welcome to Saint Kitts for their transfers between Saint Kitts and Nevis.
           </p>
         </div>
       </section>

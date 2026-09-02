@@ -274,11 +274,11 @@ export default function ServiceComponent() {
             </div>
           ) : SubCategory.length > 0 ? (
             <>
-              <div className="grid grid-cols-1 sm:grid-cols-2 md:grid-cols-3 lg:grid-cols-4 gap-3">
+              <div className="grid grid-cols-1 sm:grid-cols-2 md:grid-cols-3 lg:grid-cols-4 gap-4 items-stretch">
                 {SubCategory?.map((testimonial, index) => (
                   <div
                     key={index}
-                    className={`${mounted ? "animate-fade-in-up" : "opacity-0"}`}
+                    className={`flex h-full ${mounted ? "animate-fade-in-up" : "opacity-0"}`}
                     style={{ animationDelay: `${60 + index * 40}ms` }}
                   >
                     <ThingstodoCard

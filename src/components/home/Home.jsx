@@ -2,6 +2,8 @@
 import React, { useEffect, useState, useRef } from "react";
 
 import Tingstodo from "./Tingstodo";
+import TopTours from "./TopTours";
+import TopServices from "./TopServices";
 import IntroVideo from "./IntroVideo";
 import DownloadApp from "./DownloadApp";
 import { CarBanner, Heroimg } from "../assets/Images";
@@ -236,8 +238,20 @@ const HomeComponent = () => {
       </SectionReveal>
 
       <SectionReveal>
+        <div id="top-tours">
+          <TopTours />
+        </div>
+      </SectionReveal>
+
+      <SectionReveal>
         <div id="why-us">
           <Tingstodo />
+        </div>
+      </SectionReveal>
+
+      <SectionReveal>
+        <div id="top-services">
+          <TopServices />
         </div>
       </SectionReveal>
 

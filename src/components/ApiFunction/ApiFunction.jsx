@@ -63,6 +63,7 @@ export const useApi = () => {
       return response.data;
     } catch (error) {
       handleApiError(error, 'GET', endpoint);
+      throw error;
     }
   };
 
@@ -76,6 +77,7 @@ export const useApi = () => {
       return response.data;
     } catch (error) {
       handleApiError(error, 'POST', endpoint);
+      throw error;
     }
   };
 
@@ -89,6 +91,7 @@ export const useApi = () => {
       return response.data;
     } catch (error) {
       handleApiError(error, 'DELETE', endpoint);
+      throw error;
     }
   };
 
@@ -102,6 +105,7 @@ export const useApi = () => {
       return response.data;
     } catch (error) {
       handleApiError(error, 'PUT', endpoint);
+      throw error;
     }
   };
 

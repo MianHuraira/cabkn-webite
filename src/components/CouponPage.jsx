@@ -1,6 +1,7 @@
 "use client"
 
 import React, { useEffect, useState } from "react";
+import Link from "next/link";
 import Modal from "react-bootstrap/Modal";
 import moment from "moment";
 import { MdContentCopy, MdLocalOffer } from "react-icons/md";
@@ -97,7 +98,7 @@ export default function CouponPage() {
 
         <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 relative z-10">
           <div className="flex items-center gap-2 text-slate-400 text-xs font-family-medium !mb-4">
-            <a href="/" className="text-slate-400 hover:text-white transition-colors">Home</a>
+            <Link href="/" className="text-slate-400 hover:text-white transition-colors">Home</Link>
             <span className="text-slate-500">/</span>
             <span className="text-slate-200">Offers</span>
           </div>

@@ -23,6 +23,11 @@ import Referrals from "./Referrals";
 import ApiFunction from "@/components/ApiFunction/ApiFunction";
 import { setUser } from "@/components/Redux/Slices/AuthSlice";
 import CustomButton from "@/components/CustomButton";
+import Link from "next/link";
+import { Swiper, SwiperSlide } from "swiper/react";
+import { FreeMode, Mousewheel } from "swiper/modules";
+import "swiper/css";
+import "swiper/css/free-mode";
 
 const schema = yup.object().shape({
   name: yup.string().required("Name is required"),
@@ -676,7 +681,7 @@ export default function EditProfile() {
 
         <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 relative z-10">
           <div className="flex items-center gap-2 text-slate-400 text-xs font-family-medium !mb-4">
-            <a href="/" className="text-slate-400 hover:text-white transition-colors">Home</a>
+            <Link href="/" className="text-slate-400 hover:text-white transition-colors">Home</Link>
             <span className="text-slate-500">/</span>
             <span className="text-slate-200">Profile</span>
           </div>
@@ -702,101 +707,41 @@ export default function EditProfile() {
 
       {/* Content */}
       <div className={mounted ? 'animate-fade-in-up' : 'opacity-0'} style={{ maxWidth: 1200, margin: "-24px auto 0", padding: "0 16px 48px", animationDelay: "150ms" }}>
-        <div
-          style={{
-            display: "flex",
-            gap: 24,
-            flexDirection: isMobile ? "column" : "row",
-          }}
-        >
-          {/* Sidebar / Mobile Tabs */}
-          {isMobile ? (
-            <div
-              style={{
-                display: "flex",
-                gap: 8,
-                overflowX: "auto",
-                whiteSpace: "nowrap",
-                padding: "4px 0",
-                scrollbarWidth: "none",
-                msOverflowStyle: "none",
-              }}
-            >
-              {tabs.map((tab, idx) => (
-                <div
-                  key={tab.key}
-                  onClick={() => setActiveTab(tab.key)}
-                  className={`${mounted ? 'animate-fade-in-up' : 'opacity-0'} ${activeTab === tab.key ? "font-family-semibold" : "font-family-medium"}`}
-                  style={{
-                    display: "flex",
-                    alignItems: "center",
-                    gap: 6,
-                    padding: "10px 16px",
-                    borderRadius: 10,
-                    cursor: "pointer",
-                    background: activeTab === tab.key ? "#004a70" : "#fff",
-                    color: activeTab === tab.key ? "#fff" : "#4b5563",
-                    fontSize: 13,
-                    border: activeTab === tab.key ? "none" : "1px solid #e5e7eb",
-                    flexShrink: 0,
-                    transition: "all 0.15s",
-                    boxShadow: activeTab === tab.key ? "0 2px 8px rgba(0,74,112,0.25)" : "none",
-                    animationDelay: `${200 + idx * 50}ms`,
-                  }}
-                >
-                  <span style={{ display: "flex", color: "inherit" }}>
-                    {tab.icon}
-                  </span>
-                  {tab.label}
-                </div>
-              ))}
-            </div>
-          ) : (
-            <div
-              style={{
-                width: 260,
-                flexShrink: 0,
-                background: "#fff",
-                borderRadius: 14,
-                border: "1px solid #f0f0f0",
-                padding: 8,
-                alignSelf: "flex-start",
-                position: "sticky",
-                top: 88,
-              }}
-            >
-              {tabs.map((tab, idx) => (
-                <div
-                  key={tab.key}
-                  onClick={() => setActiveTab(tab.key)}
-                  className={`${mounted ? 'animate-fade-in-up' : 'opacity-0'} ${activeTab !== tab.key ? 'hover:bg-gray-100' : ''} ${activeTab === tab.key ? "font-family-semibold" : "font-family-medium"}`}
-                  style={{
-                    display: "flex",
-                    alignItems: "center",
-                    gap: 10,
-                    padding: "12px 14px",
-                    borderRadius: 10,
-                    cursor: "pointer",
-                    background: activeTab === tab.key ? "#f0f7ff" : "transparent",
-                    color: activeTab === tab.key ? "#004a70" : "#4b5563",
-                    fontSize: 14,
-                    transition: "all 0.15s",
-                    marginBottom: 2,
-                    animationDelay: `${200 + idx * 50}ms`,
-                  }}
-                >
-                  <span style={{ color: activeTab === tab.key ? "#004a70" : "#9ca3af", display: "flex" }}>
-                    {tab.icon}
-                  </span>
-                  {tab.label}
-                </div>
-              ))}
-            </div>
-          )}
-
-          {/* Main Content */}
-          <div style={{ flex: 1, minWidth: 0 }}>{renderContent()}</div>
+        {/* Swiper Tabs */}
+        <div className="w-full max-w-full overflow-hidden !mb-8">
+          <Swiper
+            modules={[FreeMode, Mousewheel]}
+            slidesPerView="auto"
+            spaceBetween={10}
+            freeMode={true}
+            mousewheel={{ forceToAxis: true }}
+            className="w-full py-1 category-swiper"
+          >
+            {tabs.map((tab) => {
+              const isSelected = activeTab === tab.key;
+              return (
+                <SwiperSlide key={tab.key} style={{ width: "auto" }}>
+                  <button
+                    onClick={() => setActiveTab(tab.key)}
+                    className={`cursor-pointer transition-all duration-300 select-none flex items-center gap-2 px-5 py-2.5 rounded-full text-xs sm:text-sm font-family-semibold whitespace-nowrap !border shadow-none ${
+                      isSelected
+                        ? "text-white bg-brand-600 !border-brand-600"
+                        : "text-slate-700 bg-white !border-slate-200/90 hover:!border-brand-600 hover:bg-slate-50 hover:text-brand-600"
+                    }`}
+                  >
+                    <span className={isSelected ? "opacity-100" : "opacity-75"}>
+                      {tab.icon}
+                    </span>
+                    <span>{tab.label}</span>
+                  </button>
+                </SwiperSlide>
+              );
+            })}
+          </Swiper>
         </div>
+
+        {/* Main Content */}
+        <div style={{ width: "100%", minWidth: 0 }}>{renderContent()}</div>
       </div>
     </div>
   );

@@ -34,7 +34,10 @@ const page = () => {
   const validationSchema = Yup.object().shape({
     email: Yup.string()
       .trim()
-      .email("Invalid email")
+      .matches(
+        /^[a-zA-Z0-9._%+-]+@[a-zA-Z0-9.-]+\.[a-zA-Z]{2,}$/,
+        "Please enter a valid email address"
+      )
       .required("Email is required"),
   });
 
@@ -50,7 +53,7 @@ const page = () => {
         token: res?.token,
         isForgot: "true",
         email: values?.email,
-      }
+      };
 
       const encodedData = encodeURIComponent(JSON.stringify(resData));
       router.push(`/auth/optCode?data=${encodedData}`);
@@ -65,6 +68,7 @@ const page = () => {
   };
   return (
     <AuthShell
+      backHref="/auth/login"
       title="Forgot password?"
       subtitle="Enter your email and we’ll send a verification code to reset your password."
       imageSrc={forgotpass}
@@ -83,7 +87,7 @@ const page = () => {
         onSubmit={(values) => handleSubmit(values)}
       >
         {({ values, errors, touched, handleChange, handleBlur, handleSubmit }) => (
-          <form onSubmit={handleSubmit} className="space-y-4">
+          <form noValidate onSubmit={handleSubmit} className="space-y-4">
             <AuthTextField
               id="email"
               name="email"

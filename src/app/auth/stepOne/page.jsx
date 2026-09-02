@@ -36,7 +36,7 @@ const page = () => {
 
   const handleCheckEmail = async (email, setFieldError, setFieldTouched) => {
     if (!email) return;
-    const isValidEmail = /^[^\s@]+@[^\s@]+\.[^\s@]+$/.test(email);
+    const isValidEmail = /^[a-zA-Z0-9._%+-]+@[a-zA-Z0-9.-]+\.[a-zA-Z]{2,}$/.test(email.trim());
     if (!isValidEmail) return;
 
     try {
@@ -100,7 +100,10 @@ const page = () => {
   const validationSchema = Yup.object().shape({
     email: Yup.string()
       .trim()
-      .email("Invalid email")
+      .matches(
+        /^[a-zA-Z0-9._%+-]+@[a-zA-Z0-9.-]+\.[a-zA-Z]{2,}$/,
+        "Please enter a valid email address"
+      )
       .required("Email is required"),
     password: Yup.string()
       .required("Password is required")
@@ -125,38 +128,40 @@ const page = () => {
           }
         )
         .then((res) => {
-          loginWithGoogle(res.data); // Define this function to handle user data
+          loginWithGoogle(res.data);
         })
         .catch((err) => console.log("Error fetching user info:", err));
     }
   }, [userdata]);
 
-  const loginWithGoogle = (user) => {
-    setGoogleLoading(true);
-    const body = {
-      name: user?.given_name + " " + user?.family_name,
-      email: user?.email,
+  const loginWithGoogle = async (googleUser) => {
+    const apiData = {
+      name: googleUser.name,
+      email: googleUser.email,
+      image: googleUser.picture,
+      googleId: googleUser.id,
+      fcmtoken: "",
       type: "customer",
     };
 
-    postData("auth/social-login", body, header3)
+    setGoogleLoading(true);
+    postData(loginApi, apiData, header3)
       .then((res) => {
         if (res?.success) {
           dispatch(setUser(res));
           dispatch(setAuthenticated(true));
           localStorage.setItem("isLogin", true);
           localStorage.setItem("Cabkn-token", res?.token);
-          toast.success("Log in Sucessfully");
-          setGoogleLoading(false);
+          toast.success(res?.message);
+          router.push("/");
         } else {
           toast.error(res?.message);
-          setGoogleLoading(false);
         }
       })
       .catch((error) => {
-        const errorMessage =
-          error.response?.data?.message || error.message || "An error occurred";
-        toast.error(errorMessage);
+        toast.error(error?.response?.data?.message || "Google login failed");
+      })
+      .finally(() => {
         setGoogleLoading(false);
       });
   };
@@ -207,6 +212,7 @@ const page = () => {
 
   return (
     <AuthShell
+      reverseLayout={true}
       title="Create your account"
       subtitle="Start with your email and a secure password."
       imageSrc={LoginImg}
@@ -227,7 +233,7 @@ const page = () => {
         onSubmit={(values, helpers) => handleSubmit(values, helpers)}
       >
         {({ values, errors, touched, handleChange, handleBlur, handleSubmit, setFieldError, setFieldTouched }) => (
-          <form onSubmit={handleSubmit} className="space-y-4">
+          <form noValidate onSubmit={handleSubmit} className="space-y-3.5 sm:space-y-4">
             <AuthTextField
               id="email"
               name="email"
@@ -267,13 +273,13 @@ const page = () => {
                 <button
                   type="button"
                   onClick={togglePasswordVisibility}
-                  className="rounded-lg p-2 text-slate-500 transition hover:text-slate-800 focus:outline-none focus-visible:ring-4 focus-visible:ring-brand-200"
+                  className="rounded-lg p-2 text-slate-400 hover:text-slate-600 transition focus:outline-none"
                   aria-label={passwordVisible ? "Hide password" : "Show password"}
                 >
                   <Image
                     src={passwordVisible ? Eye : EyeOff}
                     alt=""
-                    className="h-5 w-5"
+                    className="h-5 w-5 opacity-70"
                   />
                 </button>
               }
@@ -282,7 +288,7 @@ const page = () => {
             <div className="flex items-center justify-end">
               <AuthInlineLink
                 href="/auth/forgotpss"
-                className="font-family-semibold text-sm text-slate-700 hover:text-brand-700"
+                className="text-xs font-family-semibold text-[#004a70] hover:text-[#003856]"
               >
                 Forgot password?
               </AuthInlineLink>
@@ -299,8 +305,8 @@ const page = () => {
               onClick={googlLogin}
               disabled={GoogleLoading}
             >
-              <Image src={Google} alt="" className="h-6 w-6" />
-              {GoogleLoading ? "Signing in..." : "Google"}
+              <Image src={Google} alt="Google" className="h-4 w-4 object-contain" />
+              <span>{GoogleLoading ? "Signing in..." : "Sign In with Google"}</span>
             </AuthSecondaryButton>
           </form>
         )}

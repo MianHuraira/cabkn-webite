@@ -71,7 +71,7 @@ export default function DownloadApp() {
               <div className="flex items-start gap-2.5">
                 <BsCheck2Square className="text-brand-600 w-5 h-5 flex-shrink-0 mt-0.5" />
                 <p className="text-xs sm:text-sm text-slate-600 font-family-regular leading-relaxed">
-                  Download the Cabkn app for seamless, reliable transportation between Nevis and Saint Kitts.
+                  Download the Welcome to Saint Kitts app for seamless, reliable transportation between Nevis and Saint Kitts.
                 </p>
               </div>
               <div className="flex items-start gap-2.5">

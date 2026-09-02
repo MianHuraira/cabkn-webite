@@ -43,16 +43,16 @@
 }
 
 .slick-list {
-  overflow: visible !important;
+  overflow: hidden !important;
 }
 
 /* Ensure slider can be dragged and swiped */
 .slick-slider {
-  overflow: visible !important;
+  overflow: hidden !important;
 }
 
 .slider-container {
-  overflow: visible !important;
+  overflow: hidden !important;
   pointer-events: auto;
-  touch-action: pan-x;
+  max-width: 100%;
 }

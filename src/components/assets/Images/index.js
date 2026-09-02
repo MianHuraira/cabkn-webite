@@ -35,7 +35,16 @@ import loginGlowingWave from "./login_glowing_wave.png";
 import loginGlowingRide from "./login_glowing_ride.png";
 import loginFullBg from "./login_full_bg.png";
 import Heroimg from "./hero1.png";
-import whiteLogo from "./logowhite.png";
+import whiteLogo from "./welcomeLogo.png";
+// import whiteLogo from "./logowhite.png";
+import welcomeLogo from "./welcomeLogo.png";
+import welcomeLogoWhite from "./welcomeLogo.png";
+// import welcomeLogoWhite from "./welcomeLogoWhite.png";
+import onboardingRides from "./onboarding/rides.png";
+import onboardingTours from "./onboarding/tours.png";
+import onboardingPlaces from "./onboarding/places.png";
+import onboardingShop from "./onboarding/shop.png";
+import onboardingWelcome from "./onboarding/welcome.png";
 
 export {
   LoginImg,
@@ -76,4 +85,11 @@ export {
   loginFullBg,
   Heroimg,
   whiteLogo,
+  welcomeLogo,
+  welcomeLogoWhite,
+  onboardingRides,
+  onboardingTours,
+  onboardingPlaces,
+  onboardingShop,
+  onboardingWelcome,
 };

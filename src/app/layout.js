@@ -1,3 +1,4 @@
+import "@ant-design/v5-patch-for-react-19";
 import Script from "next/script";
 
 import React from "react";
@@ -10,16 +11,15 @@ import { ConfigProvider } from "antd";
 import "slick-carousel/slick/slick.css";
 import "slick-carousel/slick/slick-theme.css";
 import "antd/dist/reset.css"; // For latest Ant Design (v5)
-import "@ant-design/v5-patch-for-react-19";
 import Head from "next/head";
 import { poppins } from "@/fonts";
 
 export const metadata = {
   title: {
-    default: "CabKn",
-    template: `%s | CabKn`,
+    default: "Welcome to Saint Kitts",
+    template: `%s | Welcome to Saint Kitts`,
   },
-  description: "Book your rides in St.kItts and Nevis today",
+  description: "Book your rides and explore tours in Saint Kitts and Nevis today",
 };
 
 export default function RootLayout({ children }) {
