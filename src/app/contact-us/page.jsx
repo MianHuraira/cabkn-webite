@@ -4,12 +4,12 @@ import { Controller, useForm } from "react-hook-form";
 import { yupResolver } from "@hookform/resolvers/yup";
 import * as yup from "yup";
 import { message } from "antd";
-import { mainBanner } from "@/components/assets/Images";
+import { Heroimg } from "@/components/assets/Images";
 import ApiFunction from "@/components/ApiFunction/ApiFunction";
 import PhoneInput from "react-phone-input-2";
 import "react-phone-input-2/lib/style.css";
 import { LuPhoneCall, LuMail, LuMapPin } from "react-icons/lu";
-import { FiArrowRight, FiSend, FiMessageCircle, FiClock, FiShield, FiExternalLink } from "react-icons/fi";
+import { FiArrowRight, FiSend, FiMessageCircle, FiClock, FiShield, FiExternalLink, FiCheckCircle } from "react-icons/fi";
 import CustomButton from "../../components/CustomButton";
 
 const schema = yup.object().shape({
@@ -74,6 +74,7 @@ function SectionReveal({ children, delay = 0 }) {
 
 function ContactForm() {
   const [loading, setLoading] = useState(false);
+  const [phoneFocused, setPhoneFocused] = useState(false);
   const { postData, header3 } = ApiFunction();
 
   const {
@@ -115,94 +116,52 @@ function ContactForm() {
             <FiSend size={18} />
           </div>
           <div>
-            <h2 className="text-xl md:text-2xl font-family-bold text-slate-900 m-0">Send Us a Message</h2>
+            <h2 className="text-lg sm:text-xl font-family-bold text-slate-900 m-0">Send Us a Message</h2>
             <p className="text-xs text-slate-400 font-family-regular mt-0.5">We typically respond within 24 hours</p>
           </div>
         </div>
 
         <div className="flex flex-col gap-4 md:gap-5">
           <div className="grid grid-cols-1 md:grid-cols-2 gap-4 md:gap-5">
-            <div>
-              <div className={`rounded-xl border p-3.5 transition-all duration-300 ${
-                errors.name 
-                  ? 'border-red-400 bg-red-50/10 focus-within:border-red-500 focus-within:ring-4 focus-within:ring-red-100' 
-                  : 'border-slate-200 bg-slate-50/50 focus-within:bg-white focus-within:border-brand-500 focus-within:ring-4 focus-within:ring-brand-500/10'
-              }`}>
-                <label className="block text-[10px] font-family-semibold uppercase tracking-wider text-slate-400 mb-1">Name *</label>
-                <Controller
-                  name="name"
-                  control={control}
-                  render={({ field }) => (
-                    <input
-                      {...field}
-                      placeholder="Your name"
-                      className="w-full bg-transparent text-sm text-slate-800 outline-none border-none p-0 focus:ring-0 placeholder-slate-400"
-                    />
-                  )}
-                />
-              </div>
-              {errors.name && <p className="text-red-500 text-xs mt-1.5 ml-1 font-family-regular">{errors.name.message}</p>}
+            <div className="space-y-1.5">
+              <label htmlFor="name" className="inline-block w-fit text-[13px] font-family-semibold text-slate-700 select-none pl-0.5 cursor-pointer">Name *</label>
+              <Controller
+                name="name"
+                control={control}
+                render={({ field }) => (
+                  <input
+                    id="name"
+                    {...field}
+                    placeholder="Your name"
+                    aria-invalid={Boolean(errors.name)}
+                    className={`input-field ${errors.name ? "!border-rose-400 !focus:border-rose-500 !focus:ring-rose-500/20" : ""}`}
+                  />
+                )}
+              />
+              {errors.name && <p className="text-[11px] text-rose-500 font-family-medium mt-0.5 pl-1">{errors.name.message}</p>}
             </div>
 
-            <div>
-              <div className={`rounded-xl border p-3.5 transition-all duration-300 ${
-                errors.email 
-                  ? 'border-red-400 bg-red-50/10 focus-within:border-red-500 focus-within:ring-4 focus-within:ring-red-100' 
-                  : 'border-slate-200 bg-slate-50/50 focus-within:bg-white focus-within:border-brand-500 focus-within:ring-4 focus-within:ring-brand-500/10'
-              }`}>
-                <label className="block text-[10px] font-family-semibold uppercase tracking-wider text-slate-400 mb-1">Email *</label>
-                <Controller
-                  name="email"
-                  control={control}
-                  render={({ field }) => (
-                    <input
-                      {...field}
-                      placeholder="Your email"
-                      className="w-full bg-transparent text-sm text-slate-800 outline-none border-none p-0 focus:ring-0 placeholder-slate-400"
-                    />
-                  )}
-                />
-              </div>
-              {errors.email && <p className="text-red-500 text-xs mt-1.5 ml-1 font-family-regular">{errors.email.message}</p>}
+            <div className="space-y-1.5">
+              <label htmlFor="email" className="inline-block w-fit text-[13px] font-family-semibold text-slate-700 select-none pl-0.5 cursor-pointer">Email *</label>
+              <Controller
+                name="email"
+                control={control}
+                render={({ field }) => (
+                  <input
+                    id="email"
+                    {...field}
+                    placeholder="Your email"
+                    aria-invalid={Boolean(errors.email)}
+                    className={`input-field ${errors.email ? "!border-rose-400 !focus:border-rose-500 !focus:ring-rose-500/20" : ""}`}
+                  />
+                )}
+              />
+              {errors.email && <p className="text-[11px] text-rose-500 font-family-medium mt-0.5 pl-1">{errors.email.message}</p>}
             </div>
           </div>
 
-          <div>
-            <div className={`rounded-xl border p-3.5 transition-all duration-300 ${
-              errors.phone 
-                ? 'border-red-400 bg-red-50/10 focus-within:border-red-500 focus-within:ring-4 focus-within:ring-red-100' 
-                : 'border-slate-200 bg-slate-50/50 focus-within:bg-white focus-within:border-brand-500 focus-within:ring-4 focus-within:ring-brand-500/10'
-            }`}>
-              <label className="block text-[10px] font-family-semibold uppercase tracking-wider text-slate-400 mb-1">Phone Number *</label>
-              
-              <style>{`
-                .react-tel-input {
-                  display: flex !important;
-                  align-items: center !important;
-                  height: 24px !important;
-                }
-                .react-tel-input .form-control {
-                  height: 24px !important;
-                  line-height: 24px !important;
-                  padding-top: 0 !important;
-                  padding-bottom: 0 !important;
-                  margin-top: 0 !important;
-                  margin-bottom: 0 !important;
-                }
-                .react-tel-input .flag-dropdown {
-                  height: 24px !important;
-                  top: 50% !important;
-                  transform: translateY(-50%) !important;
-                  border: none !important;
-                  background: transparent !important;
-                }
-                .react-tel-input .selected-flag {
-                  height: 24px !important;
-                  padding: 0 !important;
-                  background: transparent !important;
-                }
-              `}</style>
-
+          <div className="space-y-1.5">
+              <label htmlFor="phone" className="inline-block w-fit text-[13px] font-family-semibold text-slate-700 select-none pl-0.5 cursor-pointer">Phone Number *</label>
               <Controller
                 name="phone"
                 control={control}
@@ -212,57 +171,69 @@ function ContactForm() {
                     value={field.value}
                     onChange={(value) => field.onChange(value)}
                     onBlur={field.onBlur}
+                    onFocus={() => setPhoneFocused(true)}
+                    inputClass="!w-full !rounded-xl !bg-white !text-gray-900"
+                    buttonClass="!rounded-l-xl !bg-white !border-0"
                     inputStyle={{
                       width: "100%",
-                      padding: "0px 0px 0px 42px",
-                      borderRadius: "0",
-                      border: "none",
-                      fontSize: "0.875rem",
+                      paddingLeft: "48px",
+                      paddingRight: "14px",
+                      borderRadius: "12px",
+                      border: errors.phone
+                        ? "1px solid #fb7185"
+                        : phoneFocused
+                          ? "1px solid #004a70"
+                          : "1px solid #e5e7eb",
+                      boxShadow: errors.phone
+                        ? "0 0 0 2px rgba(244, 63, 94, 0.2)"
+                        : phoneFocused
+                          ? "0 0 0 2px rgba(0, 74, 112, 0.2)"
+                          : "0 1px 2px 0 rgba(0, 0, 0, 0.05)",
+                      fontSize: "13.5px",
+                      fontFamily: "var(--font-poppins-local), 'Inter', sans-serif",
+                      color: "#111827",
                       outline: "none",
-                      background: "transparent",
-                      height: "24px",
-                      lineHeight: "24px",
-                      color: "#1e293b",
-                      fontFamily: "inherit",
+                      background: "#ffffff",
+                      height: "42px",
+                      transition: "all 0.2s ease-in-out",
                     }}
                     buttonStyle={{
                       border: "none",
-                      background: "transparent",
-                      borderRadius: "0",
-                      paddingLeft: "0",
-                      height: "24px",
-                      minWidth: "auto",
+                      background: "#ffffff",
+                      borderRadius: "12px 0 0 12px",
+                      paddingLeft: "10px",
                     }}
-                    dropdownStyle={{ borderRadius: "0.75rem", color: "#333" }}
+                    dropdownStyle={{
+                      borderRadius: "12px",
+                      boxShadow: "0 10px 30px rgba(0,0,0,0.12)",
+                      fontFamily: "var(--font-poppins-local), 'Inter', sans-serif",
+                      fontSize: "13px",
+                    }}
+                    placeholder="Enter your phone number"
                   />
                 )}
               />
+              {errors.phone && <p className="text-[11px] text-rose-500 font-family-medium mt-0.5 pl-1">{errors.phone.message}</p>}
             </div>
-            {errors.phone && <p className="text-red-500 text-xs mt-1.5 ml-1 font-family-regular">{errors.phone.message}</p>}
-          </div>
 
-          <div>
-            <div className={`rounded-xl border p-3.5 transition-all duration-300 ${
-              errors.message 
-                ? 'border-red-400 bg-red-50/10 focus-within:border-red-500 focus-within:ring-4 focus-within:ring-red-100' 
-                : 'border-slate-200 bg-slate-50/50 focus-within:bg-white focus-within:border-brand-500 focus-within:ring-4 focus-within:ring-brand-500/10'
-            }`}>
-              <label className="block text-[10px] font-family-semibold uppercase tracking-wider text-slate-400 mb-1">Message *</label>
+          <div className="space-y-1.5">
+              <label htmlFor="message" className="inline-block w-fit text-[13px] font-family-semibold text-slate-700 select-none pl-0.5 cursor-pointer">Message *</label>
               <Controller
                 name="message"
                 control={control}
                 render={({ field }) => (
                   <textarea
+                    id="message"
                     {...field}
                     rows={4}
                     placeholder="Write your message..."
-                    className="w-full bg-transparent text-sm text-slate-850 outline-none border-none p-0 focus:ring-0 placeholder-slate-400 resize-none h-[110px]"
+                    aria-invalid={Boolean(errors.message)}
+                    className={`input-field !min-h-[110px] ${errors.message ? "!border-rose-400 !focus:border-rose-500 !focus:ring-rose-500/20" : ""}`}
                   />
                 )}
               />
+              {errors.message && <p className="text-[11px] text-rose-500 font-family-medium mt-0.5 pl-1">{errors.message.message}</p>}
             </div>
-            {errors.message && <p className="text-red-500 text-xs mt-1.5 ml-1 font-family-regular">{errors.message.message}</p>}
-          </div>
         </div>
       </div>
 
@@ -329,73 +300,138 @@ export default function ContactUs() {
   return (
     <div className={`min-h-screen bg-slate-50/50 ${mounted ? "animate-fade-in" : "opacity-0"}`}>
       {/* ===== HERO ===== */}
-      <section className="relative overflow-hidden bg-gradient-to-br from-slate-900 via-brand-900 to-brand-950 pt-28 pb-32 md:pt-36 md:pb-40">
-        {/* Banner Overlay */}
-        <div className="absolute inset-0 opacity-[0.05] bg-cover bg-center mix-blend-overlay" style={{ backgroundImage: `url(${mainBanner.src})` }} />
-        
-        {/* High-tech Grid overlay */}
-        <div className="absolute inset-0 opacity-[0.04]" style={{
-          backgroundImage: `radial-gradient(circle at 1px 1px, white 1px, transparent 0)`,
-          backgroundSize: "24px 24px"
-        }} />
-        
-        {/* Neon blurred blobs */}
-        <div className="absolute top-1/4 -left-20 w-80 h-80 bg-brand-500/10 rounded-full blur-[100px] animate-pulse" style={{ animationDuration: "8s" }} />
-        <div className="absolute bottom-1/4 -right-20 w-96 h-96 bg-indigo-500/10 rounded-full blur-[120px] animate-pulse" style={{ animationDuration: "12s" }} />
-        
-        <div className="absolute inset-0 bg-gradient-to-t from-brand-950/60 via-transparent to-transparent" />
-        
-        <div className={`relative z-10 max-w-4xl mx-auto px-4 sm:px-6 lg:px-8 text-center ${mounted ? "animate-fade-in-up" : "opacity-0"}`} style={{ animationDelay: "100ms" }}>
-          <div className={`inline-flex items-center gap-2 bg-white/5 backdrop-blur-md border border-white/10 text-white/80 text-xs sm:text-sm font-family-semibold tracking-wider uppercase px-4 py-2 rounded-full mb-6 ${mounted ? "animate-fade-in-down" : "opacity-0"}`} style={{ animationDelay: "200ms" }}>
-            <span className="relative flex h-2 w-2">
-              <span className="animate-ping absolute inline-flex h-full w-full rounded-full bg-emerald-400 opacity-75"></span>
-              <span className="relative inline-flex rounded-full h-2 w-2 bg-emerald-500"></span>
-            </span>
-            <span>24/7 Active Support</span>
+      <section
+        className={`relative min-h-screen select-none flex items-center overflow-hidden pt-20 pb-20 md:pt-24 md:pb-28 ${mounted ? "animate-fade-in" : "opacity-0"}`}
+      >
+        {/* Background Image */}
+        <div
+          className="absolute inset-0 pointer-events-none bg-cover bg-no-repeat bg-[85%_center] md:bg-center"
+          style={{
+            backgroundImage: `url(${Heroimg.src})`,
+          }}
+        />
+
+        {/* Dark Overlay */}
+        <div className="absolute inset-0 bg-gradient-to-r from-black/70 via-black/50 to-black/40"></div>
+
+        <div className="relative z-10 w-full max-w-7xl mx-auto px-4 lg:px-8">
+          <div className="flex flex-col gap-3">
+            <div
+              className={`inline-flex items-center gap-2 text-brand-300 text-[11px] sm:text-xs uppercase tracking-[0.15em] font-family-semibold w-fit ${mounted ? "animate-fade-in-down" : "opacity-0"}`}
+              style={{ animationDelay: "100ms" }}
+            >
+              24/7 Active Support
+            </div>
+
+            <h1
+              className={`text-white font-family-medium leading-[1.2] tracking-tight m-0 text-[clamp(2rem,5vw,3.5rem)] sm:text-[clamp(2.25rem,6vw,3rem)] ${mounted ? "animate-fade-in-down" : "opacity-0"}`}
+              style={{ animationDelay: "200ms" }}
+            >
+              Get in touch with{" "}
+              <span className="font-family-bold text-transparent bg-clip-text bg-gradient-to-r from-brand-300 via-sky-300 to-indigo-200">
+                Us
+              </span>
+            </h1>
+
+            <div
+              className={`flex gap-6 mt-4 flex-wrap ${mounted ? "animate-fade-in-down" : "opacity-0"}`}
+              style={{ animationDelay: "300ms" }}
+            >
+              <div className="flex items-center gap-2">
+                <div className="w-5 h-5 rounded-full bg-[#004a70] flex items-center justify-center">
+                  <FiCheckCircle size={12} color="#fff" />
+                </div>
+                <span className="text-white/80 font-family-regular text-sm">
+                  24/7 support team
+                </span>
+              </div>
+              <div className="flex items-center gap-2">
+                <div className="w-5 h-5 rounded-full bg-[#004a70] flex items-center justify-center">
+                  <FiCheckCircle size={12} color="#fff" />
+                </div>
+                <span className="text-white/80 font-family-regular text-sm">
+                  Live response under 24h
+                </span>
+              </div>
+              <div className="flex items-center gap-2">
+                <div className="w-5 h-5 rounded-full bg-[#004a70] flex items-center justify-center">
+                  <FiCheckCircle size={12} color="#fff" />
+                </div>
+                <span className="text-white/80 font-family-regular text-sm">
+                  Secure contact form
+                </span>
+              </div>
+            </div>
+
+            <div
+              className={`flex flex-wrap gap-4 mt-4 ${mounted ? "animate-fade-in-down" : "opacity-0"}`}
+              style={{ animationDelay: "400ms" }}
+            >
+              <CustomButton
+                onClick={() => router.push('/auth/stepOne')}
+                variant="primary"
+                size="lg"
+                endContent={
+                  <FiArrowRight className="group-hover:translate-x-1 transition-transform duration-300" />
+                }
+                className="group !bg-green-500 !border-0 !shadow-lg !shadow-black/20 font-family-semibold text-base"
+              >
+                Get Started
+              </CustomButton>
+            </div>
           </div>
-          <h1 className={`text-white text-4xl sm:text-5xl md:text-6xl lg:text-7xl font-family-bold mt-4 mb-6 leading-[1.1] tracking-tight ${mounted ? "animate-fade-in-up" : "opacity-0"}`} style={{ animationDelay: "300ms" }}>
-            Contact{" "}
-            <span className="text-transparent bg-clip-text bg-gradient-to-r from-brand-300 via-sky-300 to-indigo-200">
-              Us
-            </span>
-          </h1>
-          <p className={`text-slate-400 text-base sm:text-lg max-w-2xl mx-auto leading-relaxed font-family-regular ${mounted ? "animate-fade-in-up" : "opacity-0"}`} style={{ animationDelay: "400ms" }}>
-            Have a question, feedback, or need assistance? Connect with our dedicated support agents or send us a message below.
-          </p>
         </div>
       </section>
 
       {/* ===== CONTACT INFO CARDS ===== */}
-      <section className="relative z-20 px-4 sm:px-6 lg:px-8 -mt-16">
-        <div className="max-w-6xl mx-auto grid grid-cols-1 sm:grid-cols-3 gap-6">
-          {contactInfo.map((info, i) => (
-            <div
-              key={i}
-              className={`group relative bg-white/80 backdrop-blur-xl rounded-2xl p-6 md:p-8 text-center shadow-[0_8px_30px_rgba(0,0,0,0.03)] border border-slate-100 hover:shadow-[0_20px_40px_rgba(0,74,112,0.08)] hover:-translate-y-1.5 transition-all duration-500 overflow-hidden ${mounted ? "animate-fade-in-up" : "opacity-0"}`}
-              style={{ animationDelay: `${250 + i * 100}ms` }}
-            >
-              {/* Radial glow background on hover */}
-              <div className="absolute -right-8 -top-8 w-24 h-24 bg-gradient-to-br from-brand-500/10 to-indigo-500/10 rounded-full blur-xl group-hover:scale-150 transition-transform duration-500" />
-              
-              <div className={`relative inline-flex w-14 h-14 rounded-2xl bg-slate-50 text-slate-800 items-center justify-center mb-5 border border-slate-100 shadow-inner group-hover:scale-110 group-hover:bg-brand-600 group-hover:text-white transition-all duration-300`} style={{ width: 56, height: 56 }}>
-                {info.icon}
-              </div>
-              <h3 className="text-lg font-family-semibold text-slate-900 mb-2">{info.title}</h3>
-              {info.details.map((d, j) => (
-                <p key={j} className="text-sm text-slate-500 leading-relaxed m-0 font-family-regular">{d}</p>
-              ))}
-              
-              <div className="mt-5">
-                <a
-                  href={info.link}
-                  className="inline-flex items-center gap-1.5 text-xs text-brand-600 font-family-semibold hover:text-brand-700 transition-colors"
-                >
-                  {info.linkText}
-                  <FiArrowRight size={12} className="group-hover:translate-x-0.5 transition-transform" />
-                </a>
-              </div>
+      <section className="max-w-7xl mx-auto pt-14 md:pt-20 px-4 sm:px-6 lg:px-8">
+        <div className="relative">
+          <SectionReveal>
+            <div className="text-center max-w-3xl mx-auto mb-8 md:mb-10">
+              <span className="inline-flex items-center gap-2 px-4 py-1.5 rounded-full bg-brand-50 !border !border-brand-100 text-brand-700 text-[11px] sm:text-xs font-family-semibold uppercase tracking-widest">
+                <span className="w-1.5 h-1.5 rounded-full bg-brand-600" />
+                Reach Us
+              </span>
+              <h2 className="text-2xl sm:text-3xl lg:text-[34px] font-family-bold text-slate-800 mt-4 tracking-tight leading-tight">
+                We're Here to{" "}
+                <span className="text-brand-600">Help You</span>
+              </h2>
+              <p className="text-slate-500 text-sm sm:text-[15px] mt-3 font-family-regular leading-relaxed">
+                Reach out through any of the channels below — our team is always ready to assist.
+              </p>
             </div>
-          ))}
+          </SectionReveal>
+
+          <div className="max-w-6xl mx-auto grid grid-cols-1 sm:grid-cols-3 gap-4 md:gap-5">
+            {contactInfo.map((info, i) => (
+              <div
+                key={i}
+                className={`group relative bg-white rounded-3xl p-6 sm:p-7 !border !border-slate-100 shadow-[0_10px_36px_rgba(0,0,0,0.03)] hover:shadow-[0_24px_60px_rgba(0,74,112,0.12)] hover:-translate-y-2 hover:!border-brand-200 transition-all duration-500 h-full flex flex-col justify-between relative overflow-hidden ${mounted ? "animate-fade-in-up" : "opacity-0"}`}
+                style={{ animationDelay: `${250 + i * 100}ms` }}
+              >
+                <div className={`absolute -right-8 -top-8 w-24 h-24 bg-gradient-to-br ${info.gradient} opacity-[0.08] rounded-full blur-xl group-hover:scale-150 transition-transform duration-500 pointer-events-none`} />
+
+                <div className="flex-grow">
+                  <div className={`w-12 h-12 rounded-2xl ${info.bg} ${info.color} flex items-center justify-center mb-3 !border !border-slate-100/55 shadow-inner group-hover:bg-brand-600 group-hover:text-white group-hover:!border-brand-600 group-hover:scale-110 group-hover:shadow-lg transition-all duration-300`}>
+                    {info.icon}
+                  </div>
+                  <h3 className="text-[15px] sm:text-[17px] font-family-bold text-slate-800 mb-2">{info.title}</h3>
+                  {info.details.map((d, j) => (
+                    <p key={j} className="text-xs sm:text-sm text-slate-500 leading-relaxed font-family-regular m-2">{d}</p>
+                  ))}
+                </div>
+
+                <div className="mt-auto pt-2 !border-t !border-slate-100 flex items-center justify-between text-xs text-brand-650 font-family-semibold group-hover:text-brand-700 transition-colors">
+                  <a href={info.link} className="flex items-center gap-1.5">
+                    {info.linkText}
+                  </a>
+                  <span className="w-6 h-6 rounded-full bg-slate-50 group-hover:bg-brand-600 text-slate-400 group-hover:text-white flex items-center justify-center transition-all duration-300">
+                    <FiArrowRight size={12} />
+                  </span>
+                </div>
+              </div>
+            ))}
+          </div>
         </div>
       </section>
 
