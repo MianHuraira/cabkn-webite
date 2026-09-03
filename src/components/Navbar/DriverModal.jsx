@@ -35,7 +35,7 @@ const DriverModal = ({ show, onHide }) => {
         </div>
 
         {/* Title */}
-        <h3 className="text-xl sm:text-[22px] font-family-bold text-slate-900 !m-0 tracking-tight">
+        <h3 className="text-xl sm:text-[22px] font-family-semibold text-slate-900 !m-0 tracking-tight">
           Download Driver App
         </h3>
 
@@ -53,7 +53,7 @@ const DriverModal = ({ show, onHide }) => {
             <FaGooglePlay size={17} className="text-white shrink-0 group-hover:scale-105 transition-transform" />
             <div className="flex flex-col text-left leading-tight">
               <span className="text-[9px] uppercase tracking-wider text-white/75 font-family-medium">GET IT ON</span>
-              <span className="text-[12.5px] sm:text-[13px] font-family-bold text-white mt-0.5 whitespace-nowrap">Google Play</span>
+              <span className="text-[12.5px] sm:text-[13px] font-family-semibold text-white mt-0.5 whitespace-nowrap">Google Play</span>
             </div>
           </button>
 
@@ -64,7 +64,7 @@ const DriverModal = ({ show, onHide }) => {
             <FaApple size={20} className="text-white shrink-0 group-hover:scale-105 transition-transform -mt-0.5" />
             <div className="flex flex-col text-left leading-tight">
               <span className="text-[9px] uppercase tracking-wider text-white/75 font-family-medium">DOWNLOAD ON</span>
-              <span className="text-[12.5px] sm:text-[13px] font-family-bold text-white mt-0.5 whitespace-nowrap">App Store</span>
+              <span className="text-[12.5px] sm:text-[13px] font-family-semibold text-white mt-0.5 whitespace-nowrap">App Store</span>
             </div>
           </button>
         </div>

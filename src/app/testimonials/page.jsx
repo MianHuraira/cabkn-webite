@@ -107,7 +107,7 @@ export default function Testimonials() {
               style={{ animationDelay: "200ms" }}
             >
               What Our{" "}
-              <span className="font-family-bold text-transparent bg-clip-text bg-gradient-to-r from-brand-300 via-sky-300 to-indigo-200">
+              <span className="font-family-semibold text-transparent bg-clip-text bg-gradient-to-r from-brand-300 via-sky-300 to-indigo-200">
                 Riders
               </span>{" "}
               Say
@@ -172,7 +172,7 @@ export default function Testimonials() {
                 <span className="w-1.5 h-1.5 rounded-full bg-brand-600" />
                 Rider Ratings
               </span>
-              <h2 className="text-2xl sm:text-3xl lg:text-[34px] font-family-bold text-slate-800 mt-4 tracking-tight leading-tight">
+              <h2 className="text-2xl sm:text-3xl lg:text-[34px] font-family-semibold text-slate-800 mt-4 tracking-tight leading-tight">
                 Loved by Riders Across{" "}
                 <span className="text-brand-600">the Islands</span>
               </h2>
@@ -187,8 +187,8 @@ export default function Testimonials() {
             <div className="grid grid-cols-1 lg:grid-cols-12 gap-8 items-center">
               {/* Avg rating score */}
               <div className="lg:col-span-4 flex flex-col items-center lg:items-start text-center lg:text-left gap-2 lg:border-r lg:border-slate-100 lg:pr-8">
-                <span className="text-sm font-family-bold text-brand-600 uppercase tracking-widest">Average Rating</span>
-                <h2 className="text-4xl sm:text-5xl font-family-bold text-slate-900 m-0">4.9</h2>
+                <span className="text-sm font-family-semibold text-brand-600 uppercase tracking-widest">Average Rating</span>
+                <h2 className="text-4xl sm:text-5xl font-family-semibold text-slate-900 m-0">4.9</h2>
                 <div className="flex gap-1 mt-1 justify-center lg:justify-start">{renderStars(4.9, 18)}</div>
                 <p className="text-xs text-slate-400 font-family-regular mt-2 m-0">
                   Based on <strong className="text-slate-800 font-family-semibold">2,500+</strong> reviews from verified riders.
@@ -237,7 +237,7 @@ export default function Testimonials() {
             <span className="w-1.5 h-1.5 rounded-full bg-brand-600" />
             Rider Stories
           </span>
-          <h2 className="text-2xl sm:text-3xl lg:text-[34px] font-family-bold text-slate-800 mt-2 tracking-tight">
+          <h2 className="text-2xl sm:text-3xl lg:text-[34px] font-family-semibold text-slate-800 mt-2 tracking-tight">
             What Our Community Says
           </h2>
           <p className="text-slate-500 text-sm sm:text-[15px] mt-3 max-w-xl mx-auto font-family-regular">
@@ -287,7 +287,7 @@ export default function Testimonials() {
 
                   {/* User bio element */}
                   <div className="flex items-center gap-3.5 mt-8 pt-5 border-t border-slate-100">
-                    <div className={`w-10 h-10 rounded-full bg-gradient-to-br ${gradients[i % gradients.length]} flex items-center justify-center text-white text-xs font-family-bold shrink-0 shadow-sm border border-white`}>
+                    <div className={`w-10 h-10 rounded-full bg-gradient-to-br ${gradients[i % gradients.length]} flex items-center justify-center text-white text-xs font-family-semibold shrink-0 shadow-sm border border-white`}>
                       {t.name.charAt(0)}
                     </div>
                     <div>
@@ -317,7 +317,7 @@ export default function Testimonials() {
             <div className="absolute top-0 left-1/2 -translate-x-1/2 w-[600px] h-[600px] bg-brand-500/10 rounded-full blur-[120px] pointer-events-none" />
 
             <div className="relative z-10 max-w-3xl mx-auto">
-              <h2 className="text-white text-2xl sm:text-3xl lg:text-4xl font-family-bold mb-3 leading-tight tracking-tight">
+              <h2 className="text-white text-2xl sm:text-3xl lg:text-4xl font-family-semibold mb-3 leading-tight tracking-tight">
                 Ready to Become Our{" "}
                 <span className="text-transparent bg-clip-text bg-gradient-to-r from-brand-300 via-sky-300 to-indigo-200">
                   Next Happy Rider

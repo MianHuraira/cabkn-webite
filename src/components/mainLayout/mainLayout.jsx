@@ -16,6 +16,8 @@ import { usePathname } from "next/navigation";
 import ApiFunction from "../ApiFunction/ApiFunction";
 import { Toaster } from "react-hot-toast";
 
+import NotificationHandler from "../Firebase/NotificationHandler";
+
 const MainLayout = ({ children }) => {
   const [toggled, setToggled] = useState(false);
   const [broken, setBroken] = useState(false);
@@ -59,6 +61,7 @@ const MainLayout = ({ children }) => {
       >
         <SocketProvider>
           <Provider store={store}>
+            <NotificationHandler />
             {mounted ? renderHeader() : null}
             {children}
             {isPublicRoute && !isRiderRequest ? <Footer /> : ""}

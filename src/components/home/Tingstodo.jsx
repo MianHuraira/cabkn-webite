@@ -391,7 +391,7 @@ export default function Tingstodo() {
     <div ref={sectionRef} className="w-full max-w-full overflow-hidden">
       <div className={`mx-auto flex flex-col select-none lg:flex-row justify-between items-start lg:items-center !mb-2 mt-5 gap-3 reveal ${inView ? "visible" : ""}`} style={{ maxWidth: 1200, padding: "0 16px", transitionDelay: "50ms", position: "relative", zIndex: 100 }}>
         <div className="flex flex-col text-left w-full lg:w-auto">
-          <h2 className="text-2xl sm:text-3xl lg:text-[34px] font-family-bold text-slate-800 tracking-tight m-0 leading-tight">
+          <h2 className="text-2xl sm:text-3xl lg:text-[34px] font-family-semibold text-slate-800 tracking-tight m-0 leading-tight">
             Top Locations
           </h2>
           <p className="text-slate-500 font-family-regular text-sm sm:text-[15px] !m-0 mt-0.5">
@@ -535,7 +535,7 @@ export default function Tingstodo() {
                       </svg>
                     </div>
 
-                    <h3 className="text-base sm:text-lg font-family-bold !font-bold text-white !m-0 mb-1 tracking-tight">
+                    <h3 className="text-base sm:text-lg font-family-semibold !font-bold text-white !m-0 mb-1 tracking-tight">
                       Explore All
                     </h3>
                     <p className="text-white/80 text-[11.5px] sm:text-xs font-family-regular !font-normal !m-0 mb-3 sm:mb-3.5 max-w-[200px] leading-relaxed">

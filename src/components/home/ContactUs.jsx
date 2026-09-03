@@ -7,9 +7,9 @@ export default function ContactUs() {
   return (
     <div className="bg-white p-8 mx-auto" style={{ maxWidth: 1200, marginTop: 100 }}>
       <div className="text-start">
-        <h1 className="font-family-bold" style={{ fontSize: 50 }}>
+        <h1 className="font-family-semibold" style={{ fontSize: 50 }}>
           Get in{" "}
-          <span className="font-family-bold" style={{ color: "#004a70" }}>
+          <span className="font-family-semibold" style={{ color: "#004a70" }}>
             Touch
           </span>
         </h1>

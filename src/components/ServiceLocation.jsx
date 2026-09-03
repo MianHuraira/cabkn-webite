@@ -254,7 +254,7 @@ export default function ServiceLocation() {
                 </svg>
               </div>
               <div>
-                <h1 className="text-white text-3xl font-family-bold tracking-tight !m-0 leading-tight">
+                <h1 className="text-white text-3xl font-family-semibold tracking-tight !m-0 leading-tight">
                   {SubcatData?.name || "Product Detail"}
                 </h1>
                 <p className="text-slate-400 text-sm !mt-1 !m-0 font-family-regular">
@@ -309,7 +309,7 @@ export default function ServiceLocation() {
               {/* Header Info */}
               <div className="flex justify-between items-start gap-4 !mb-6">
                 <div>
-                  <h2 className="text-xl font-family-bold text-slate-900 capitalize !m-0 leading-tight">
+                  <h2 className="text-xl font-family-semibold text-slate-900 capitalize !m-0 leading-tight">
                     {SubcatData?.name}
                   </h2>
                   <div className="flex items-center gap-1.5 !mt-2">
@@ -332,7 +332,7 @@ export default function ServiceLocation() {
 
               {/* Description */}
               <div className="!mb-5">
-                <h3 className="text-xs font-family-bold text-slate-700 uppercase tracking-wider !mb-1.5">
+                <h3 className="text-xs font-family-semibold text-slate-700 uppercase tracking-wider !mb-1.5">
                   About Location
                 </h3>
                 <p className="text-xs text-slate-500 font-family-regular leading-relaxed !m-0">
@@ -346,7 +346,7 @@ export default function ServiceLocation() {
                 {/* Colors */}
                 {SubcatData?.color?.length > 0 && (
                   <div>
-                    <h4 className="text-[11px] font-family-bold text-slate-500 uppercase tracking-wider !mb-2">Colors</h4>
+                    <h4 className="text-[11px] font-family-semibold text-slate-500 uppercase tracking-wider !mb-2">Colors</h4>
                     <div className="flex gap-2.5">
                       {SubcatData?.color?.map((item, index) => (
                         <div
@@ -364,7 +364,7 @@ export default function ServiceLocation() {
 
                 {/* Quantity counter */}
                 <div>
-                  <h4 className="text-[11px] font-family-bold text-slate-500 uppercase tracking-wider !mb-2">Quantity</h4>
+                  <h4 className="text-[11px] font-family-semibold text-slate-500 uppercase tracking-wider !mb-2">Quantity</h4>
                   <div className="flex items-center gap-3">
                     <button
                       onClick={decrement}
@@ -385,7 +385,7 @@ export default function ServiceLocation() {
                 {/* Sizes pills */}
                 {SubcatData?.size?.length > 0 && (
                   <div>
-                    <h4 className="text-[11px] font-family-bold text-slate-500 uppercase tracking-wider !mb-2">Available Size</h4>
+                    <h4 className="text-[11px] font-family-semibold text-slate-500 uppercase tracking-wider !mb-2">Available Size</h4>
                     <div className="flex gap-2 flex-wrap">
                       {SubcatData?.size?.map((item, index) => (
                         <button
@@ -408,7 +408,7 @@ export default function ServiceLocation() {
 
               {/* Total Price Widget */}
               <div className="p-4 bg-brand-50/30 !border !border-brand-100/60 rounded-2xl !mt-auto">
-                <span className="text-[10px] text-slate-400 font-family-bold uppercase tracking-wider block !mb-1">Estimated Cost</span>
+                <span className="text-[10px] text-slate-400 font-family-semibold uppercase tracking-wider block !mb-1">Estimated Cost</span>
                 <div className="flex items-baseline gap-2">
                   <span className="text-lg font-family-extrabold text-brand-950">
                     {`${(SubcatData?.location_price * incDec)?.toFixed(2)} XCD`}
@@ -445,7 +445,7 @@ export default function ServiceLocation() {
         {/* Reviews Section */}
         <div className="bg-white rounded-3xl !border !border-slate-100 !mt-6 p-6 md:p-8 shadow-[0_8px_30px_rgba(0,0,0,0.02)]">
           <div className="flex justify-between items-center !mb-6">
-            <h2 className="text-base font-family-bold text-slate-900 !m-0">Rider Reviews</h2>
+            <h2 className="text-base font-family-semibold text-slate-900 !m-0">Rider Reviews</h2>
             <CustomButton
               onClick={handleShow}
               variant="primary"
@@ -559,7 +559,7 @@ export default function ServiceLocation() {
       {/* Review Modal */}
       <Modal centered backdrop="static" show={show} onHide={handleClose} style={{ borderRadius: 20, overflow: "hidden" }}>
         <Modal.Header closeButton className="!border-b !border-slate-100 !px-6 !py-4">
-          <Modal.Title className="font-family-bold text-base text-slate-800">Leave a Review</Modal.Title>
+          <Modal.Title className="font-family-semibold text-base text-slate-800">Leave a Review</Modal.Title>
         </Modal.Header>
         <Modal.Body className="!px-6 !py-5">
           <Formik

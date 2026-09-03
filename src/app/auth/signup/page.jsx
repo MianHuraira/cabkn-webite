@@ -46,12 +46,16 @@ const Signup = () => {
 
   const handleCheckPhone = async (phone, setFieldError, setFieldTouched) => {
     if (!phone) return;
-    if (phone.trim().length < 8) return;
+    const cleanPhone = phone.trim();
+    if (cleanPhone.length < 8) return;
+
+    const formattedPhone = cleanPhone.startsWith("+") ? cleanPhone : `+${cleanPhone}`;
 
     try {
       setPhoneChecking(true);
       const body = {
-        phone: phone.trim()
+        phone: formattedPhone,
+        type: "customer",
       };
       const res = await postData("users/check-phone", body, header1);
       if (!res || res.success === false) {
@@ -275,10 +279,14 @@ const Signup = () => {
   const handleSubmit = async (values, { setFieldError, setFieldTouched }) => {
     if (phoneChecking) return;
 
+    const cleanPhone = values.phone.trim();
+    const formattedPhone = cleanPhone.startsWith("+") ? cleanPhone : `+${cleanPhone}`;
+
     try {
       setLoading(true);
       const body = {
-        phone: values.phone.trim(),
+        phone: formattedPhone,
+        type: "customer",
       };
       const res = await postData("users/check-phone", body, header1);
       if (!res || res.success === false) {
@@ -303,7 +311,7 @@ const Signup = () => {
       fullname: values.fullname,
       date: values.date,
       address: values.address,
-      phone: values.phone,
+      phone: formattedPhone,
       code: values.code,
       image: image,
     };
@@ -320,7 +328,10 @@ const Signup = () => {
         ...Rowdata,
         image,
         code: res?.verificationCode,
-        signupData: JSON.stringify(values),
+        signupData: JSON.stringify({
+          ...values,
+          phone: formattedPhone,
+        }),
       };
 
       const encodedData = encodeURIComponent(JSON.stringify(apiData));

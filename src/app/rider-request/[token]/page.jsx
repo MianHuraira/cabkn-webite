@@ -505,7 +505,7 @@ const BookingManagement = () => {
                 className="border-2 border-gray-100 shadow-sm"
               />
               <div>
-                <h3 className="text-lg font-family-bold text-gray-800 mb-0 leading-tight">
+                <h3 className="text-lg font-family-semibold text-gray-800 mb-0 leading-tight">
                   {orderDetails?.user?.name || "Customer User"}
                 </h3>
                 <p className="text-sm text-gray-500 font-family-regular m-0">
@@ -713,7 +713,7 @@ const BookingManagement = () => {
         {/* Accept Modal (Car Details Form) */}
         <Modal
           title={
-            <h3 className="text-base font-family-bold text-[#004a70] text-center w-full mb-0 uppercase tracking-tight">
+            <h3 className="text-base font-family-semibold text-[#004a70] text-center w-full mb-0 uppercase tracking-tight">
               Fill Information
             </h3>
           }
@@ -845,7 +845,7 @@ const BookingManagement = () => {
         {/* PIN Verification Modal */}
         <Modal
           title={
-            <h3 className="text-xl font-family-bold text-gray-800 text-center w-full mb-0">
+            <h3 className="text-xl font-family-semibold text-gray-800 text-center w-full mb-0">
               Verify Pin
             </h3>
           }
@@ -885,7 +885,7 @@ const BookingManagement = () => {
         {/* Acceptance PIN Verification Modal */}
         <Modal
           title={
-            <h3 className="text-xl font-family-bold text-gray-800 text-center w-full mb-0">
+            <h3 className="text-xl font-family-semibold text-gray-800 text-center w-full mb-0">
               Verify
             </h3>
           }
@@ -945,7 +945,7 @@ const BookingManagement = () => {
                 <IoCloseCircle className="text-7xl text-red-500" />
               )}
             </div>
-              <h3 className="text-xl font-family-bold text-gray-800 mb-2">
+              <h3 className="text-xl font-family-semibold text-gray-800 mb-2">
                 {resultModal.title}
               </h3>
               <p className="text-gray-500 text-center text-lg font-family-regular leading-snug">
@@ -984,13 +984,13 @@ const BookingManagement = () => {
             <div className="mb-4">
               <IoCloseCircle className="text-7xl text-red-500" />
             </div>
-            <h3 className="text-2xl font-family-bold text-red-600 mb-4">
+            <h3 className="text-2xl font-family-semibold text-red-600 mb-4">
               Location Access Required
             </h3>
             <div className="bg-red-50 p-4 rounded-2xl mb-8 border border-red-100">
               <p className="text-gray-700 text-base font-family-regular leading-snug m-0">
-                Location access is <b className="font-family-bold">Compulsory</b>. Since you previously
-                declined, you <b className="font-family-bold">MUST manually enable</b> it in your browser
+                Location access is <b className="font-family-semibold">Compulsory</b>. Since you previously
+                declined, you <b className="font-family-semibold">MUST manually enable</b> it in your browser
                 settings to proceed.
               </p>
             </div>

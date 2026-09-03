@@ -2,7 +2,8 @@
 
 const ApiFile = {
   loginApi: "auth",
-  signUpApi: "api/users/signup",
+  socialLoginApi: "auth/social-login",
+  signUpApi: "users/signup/customer",
   getAllConversation: "/msg/conversations",
   getUserMessages: "/msg/messages",
   seenMessage: "/seen-msg",

@@ -2,10 +2,10 @@
 
 "use client";
 
-import React, { useEffect, useState, useRef, useMemo } from "react";
+import React, { useEffect, useState, useRef, useMemo, Suspense } from "react";
 import { createPortal } from "react-dom";
 import moment from "moment/moment";
-import { FaEye, FaStar, FaPlus, FaUsers } from "react-icons/fa";
+import { FaEye, FaStar, FaPlus, FaUsers, FaBox, FaCar } from "react-icons/fa";
 import { FaLocationDot } from "react-icons/fa6";
 import {
   MdOutlineMyLocation,
@@ -24,7 +24,7 @@ import Image from "next/image";
 import Link from "next/link";
 import ApiFunction from "@/components/ApiFunction/ApiFunction";
 import EmptyState from "@/components/EmptyState";
-import { useRouter } from "next/navigation";
+import { useRouter, useSearchParams } from "next/navigation";
 import { message, Rate } from "antd";
 import { X } from "react-feather";
 import Modal from "react-bootstrap/Modal";
@@ -39,10 +39,11 @@ import { FreeMode, Mousewheel } from "swiper/modules";
 import "swiper/css";
 import "swiper/css/free-mode";
 
-const apiKey = "0FGR7.1720815360";
-const apiSecret = "6EF4CAFCD82E689DECA28EDFDE15ADB35D12BF5982B182E468758A9F8DD072DF";
-const tokenUrl = "https://jad.cash/HAPI/token";
-const paymentUrl = "https://jad.cash/HAPI/cardpayment";
+const apiKey = process.env.NEXT_PUBLIC_JAD_API_KEY;
+const apiSecret = process.env.NEXT_PUBLIC_JAD_API_SECRET;
+const tokenUrl = process.env.NEXT_PUBLIC_JAD_TOKEN_URL;
+const paymentUrl = process.env.NEXT_PUBLIC_JAD_PAYMENT_URL;
+const jadNumber = process.env.NEXT_PUBLIC_JAD_NUMBER;
 
 // Status Badge with pulsing dot
 const StatusBadge = ({ status }) => {
@@ -113,8 +114,10 @@ function Page() {
   const router = useRouter();
   const socket = useSocket();
 
+  const searchParams = useSearchParams();
+
   const [lastId, setLastId] = useState(1);
-  const [activeTab, setActiveTab] = useState("all");
+  const [activeTab, setActiveTab] = useState(searchParams.get("tab") || "all");
   const [isLoading, setIsLoading] = useState(false);
   const [seeMoreLoading, setSeeMoreLoading] = useState(false);
   const { putData, postData, getData, header1, userData } = ApiFunction();
@@ -279,7 +282,7 @@ function Page() {
         live: "1",
         timestamp: moment(new Date()).format("YYYYMMDDHHmmss"),
         refnum: "101",
-        jadnumber: "101310573865",
+        jadnumber: jadNumber,
         amount: finalPrice?.toFixed(2),
         cardnumber: cleanNumber,
         cardexpmonth: month?.trim() || "",
@@ -699,7 +702,7 @@ function Page() {
               <MdOutlineBookOnline size={24} className="text-white" />
             </div>
             <div>
-              <h1 className="text-white text-2xl sm:text-3xl font-family-bold tracking-tight !m-0 leading-tight">
+              <h1 className="text-white text-2xl sm:text-3xl font-family-semibold tracking-tight !m-0 leading-tight">
                 My{" "}
                 <span className="text-transparent bg-clip-text bg-gradient-to-r from-brand-300 via-sky-300 to-indigo-200">
                   Bookings
@@ -739,7 +742,7 @@ function Page() {
                     onClick={() => handleCategoryChange(cat.key)}
                     className={`cursor-pointer transition-all duration-300 select-none flex items-center gap-2 px-5 sm:px-6 py-2.5 rounded-full text-xs sm:text-sm font-family-semibold whitespace-nowrap !border shadow-sm ${
                       isCatActive
-                        ? "text-white bg-[#004a70] !border-[#004a70] font-family-bold shadow-md"
+                        ? "text-white bg-[#004a70] !border-[#004a70] font-family-semibold shadow-md"
                         : "text-slate-700 bg-white !border-slate-200/90 hover:!border-[#004a70] hover:bg-slate-50 hover:text-[#004a70]"
                     }`}
                   >
@@ -765,7 +768,7 @@ function Page() {
                 onClick={() => setFilterTab(filter.key)}
                 className={`px-5 py-2 rounded-full text-xs font-family-semibold transition-all duration-300 cursor-pointer select-none border whitespace-nowrap shadow-xs ${
                   isFilterActive
-                    ? "bg-[#004a70] text-white border-[#004a70] shadow-sm font-family-bold"
+                    ? "bg-[#004a70] text-white border-[#004a70] shadow-sm font-family-semibold"
                     : "bg-white text-slate-700 border-slate-200/90 hover:border-[#004a70] hover:bg-slate-50 hover:text-[#004a70]"
                 }`}
               >
@@ -835,7 +838,7 @@ function Page() {
                               <StatusBadge status={order?.status || "confirmed"} />
                             </div>
                             <div className="absolute bottom-2.5 right-2.5 bg-slate-900/85 backdrop-blur-md px-2.5 py-1 rounded-lg text-white text-right">
-                              <span className="text-xs font-family-bold block leading-tight">
+                              <span className="text-xs font-family-semibold block leading-tight">
                                 ${totalPriceXCD.toFixed(2)} XCD
                               </span>
                               <span className="text-[10px] text-slate-300 font-family-medium block">
@@ -844,7 +847,7 @@ function Page() {
                             </div>
                           </div>
 
-                          <h4 className="text-sm sm:text-base font-family-bold text-slate-900 !m-0 line-clamp-2 leading-snug mb-2">
+                          <h4 className="text-sm sm:text-base font-family-semibold text-slate-900 !m-0 line-clamp-2 leading-snug mb-2">
                             {title}
                           </h4>
 
@@ -910,13 +913,13 @@ function Page() {
                           <div className="flex justify-between items-start mb-3">
                             <div className="flex flex-col gap-1">
                               <StatusBadge status={order?.status || "pending"} />
-                              <span className="text-[11px] font-family-bold text-slate-700">
+                              <span className="text-[11px] font-family-semibold text-slate-700">
                                 Order #{orderNum}
                               </span>
                             </div>
 
                             <div className="text-right">
-                              <span className="text-base sm:text-lg font-family-bold text-emerald-600 block leading-tight">
+                              <span className="text-base sm:text-lg font-family-semibold text-emerald-600 block leading-tight">
                                 ${priceXCD.toFixed(2)} XCD
                               </span>
                               <span className="text-[10.5px] text-slate-400 font-family-medium block">
@@ -927,7 +930,7 @@ function Page() {
 
                           {/* Cart Items List */}
                           <div className="bg-slate-50/70 p-2.5 rounded-xl border border-slate-100 mb-3 space-y-1.5">
-                            <span className="text-[10px] font-family-bold text-slate-400 uppercase tracking-wider block">
+                            <span className="text-[10px] font-family-semibold text-slate-400 uppercase tracking-wider block">
                               Items Ordered ({cartItems.length})
                             </span>
                             {cartItems.length > 0 ? (
@@ -937,7 +940,7 @@ function Page() {
                                     <span className="font-family-medium text-slate-800 truncate max-w-[70%]">
                                       {cItem?.name || cItem?.title || "Product"}
                                     </span>
-                                    <span className="text-[11px] font-family-bold text-[#004a70] shrink-0">
+                                    <span className="text-[11px] font-family-semibold text-[#004a70] shrink-0">
                                       Qty: {cItem?.cartQuantity || cItem?.quantity || 1}
                                     </span>
                                   </div>
@@ -967,7 +970,7 @@ function Page() {
                         <div className="pt-2 border-t border-slate-100 mt-auto space-y-2">
                           <div className="flex items-center justify-between text-xs text-slate-500">
                             <span className="font-family-medium">Total Paid</span>
-                            <span className="font-family-bold text-slate-900">${priceXCD.toFixed(2)} XCD</span>
+                            <span className="font-family-semibold text-slate-900">${priceXCD.toFixed(2)} XCD</span>
                           </div>
                           <button
                             type="button"
@@ -983,121 +986,242 @@ function Page() {
                   }
 
                   // Default: Rides
+                  const isParcel = order?.rideType === "parcel" || order?.type === "parcel" || Boolean(order?.title);
+                  const isCompleted = (order?.status || "").toLowerCase() === "completed";
+                  const rideTypeLabel = isParcel
+                    ? "Ride For Parcel"
+                    : order?.rideType === "group"
+                    ? "Group Ride"
+                    : order?.rideType === "tour"
+                    ? "Tour Ride"
+                    : "Standard Ride";
+
+                  const accentColor = isParcel ? "#c2410c" : "#004a70";
+                  const accentBg   = isParcel ? "from-orange-500/10 to-orange-400/5" : "from-[#004a70]/10 to-sky-400/5";
+
                   return (
                     <div
                       key={`${order?._id}-${index}`}
-                      className="group bg-white rounded-2xl !border !border-slate-200/90 shadow-sm hover:shadow-md hover:-translate-y-0.5 transition-all duration-300 p-4 sm:p-5 flex flex-col justify-between relative overflow-hidden"
+                      className="group bg-white rounded-2xl shadow-sm hover:shadow-lg transition-all duration-300 flex flex-col relative overflow-hidden"
+                      style={{ border: "1px solid #e8edf2" }}
                     >
-                      {/* Top Row: Status + Price */}
-                      <div className="flex justify-between items-start mb-3">
-                        <div className="flex flex-col gap-1">
-                          <StatusBadge status={order?.status} />
-                          {order?.order_id && (
-                            <span className="text-[10.5px] font-family-medium text-slate-400 pl-0.5">
-                              #{order.order_id}
+                      {/* Accent top bar */}
+                      <div className={`h-1 w-full bg-gradient-to-r ${isParcel ? "from-orange-500 via-amber-400 to-orange-300" : "from-[#004a70] via-sky-500 to-cyan-400"}`} />
+
+                      <div className="p-4 sm:p-5 flex flex-col flex-1 gap-3">
+
+                        {/* ── Row 1: Status / ID / Type + Price ── */}
+                        <div className="flex items-start justify-between gap-2">
+                          <div className="flex flex-col gap-1 min-w-0">
+                            <StatusBadge status={order?.status} />
+                            {order?.order_id && (
+                              <span className="text-[10px] font-family-medium text-slate-400 tabular-nums">
+                                #{order.order_id}
+                              </span>
+                            )}
+                            {/* Ride Type Pill */}
+                            <span
+                              className="inline-flex items-center gap-1 px-2 py-[3px] rounded-full text-[9px] font-family-bold uppercase tracking-widest w-fit"
+                              style={{
+                                background: isParcel ? "#fff7ed" : "#eff6ff",
+                                color: isParcel ? "#c2410c" : "#0369a1",
+                                border: `1px solid ${isParcel ? "#fed7aa" : "#bae6fd"}`,
+                              }}
+                            >
+                              {isParcel ? <FaBox size={7} /> : <FaCar size={7} />}
+                              {rideTypeLabel}
                             </span>
-                          )}
-                        </div>
-
-                        <div className="text-right">
-                          <span className="text-lg sm:text-xl font-family-semibold text-emerald-600 block leading-tight">
-                            ${Number(order?.price || 0).toFixed(2)}
-                          </span>
-                          <span className="text-[11px] text-slate-400 font-family-regular block mt-0.5">
-                            {moment(order?.createdAt).format("DD MMM YYYY • hh:mm A")}
-                          </span>
-                        </div>
-                      </div>
-
-                      {/* Route Itinerary Strip */}
-                      <div className="bg-slate-50/70 p-2.5 rounded-xl !border !border-slate-100 space-y-2 mb-3 flex-grow">
-                        <div className="flex items-start gap-2">
-                          <div className="w-4 h-4 rounded-full bg-emerald-500 text-white flex items-center justify-center shrink-0 mt-0.5">
-                            <FaLocationDot size={8} />
                           </div>
-                          <div className="min-w-0 flex-1">
-                            <span className="text-[9.5px] font-family-semibold uppercase tracking-wider text-emerald-600 block leading-tight">
-                              Pickup
+
+                          <div className="text-right shrink-0">
+                            <span className="text-xl font-family-bold text-emerald-600 block leading-tight tabular-nums">
+                              ${Number(order?.price || 0).toFixed(2)}
                             </span>
-                            <p className="text-xs font-family-medium text-slate-800 !m-0 leading-snug truncate">
-                              {order?.start_address || "Nevis Island"}
-                            </p>
-                          </div>
-                        </div>
-
-                        <div className="flex items-start gap-2">
-                          <div className="w-4 h-4 rounded-md bg-[#004a70] text-white flex items-center justify-center shrink-0 mt-0.5">
-                            <MdOutlineMyLocation size={9} />
-                          </div>
-                          <div className="min-w-0 flex-1">
-                            <span className="text-[9.5px] font-family-semibold uppercase tracking-wider text-[#004a70] block leading-tight">
-                              Destination
+                            <span className="text-[10px] text-slate-400 font-family-regular block mt-0.5">
+                              {moment(order?.createdAt).format("DD MMM YYYY")}
                             </span>
-                            <p className="text-xs font-family-medium text-slate-800 !m-0 leading-snug truncate">
-                              {order?.end_address || "Saint Kitts"}
-                            </p>
+                            <span className="text-[10px] text-slate-300 font-family-regular block">
+                              {moment(order?.createdAt).format("hh:mm A")}
+                            </span>
                           </div>
                         </div>
-                      </div>
 
-                      {/* Driver Section */}
-                      {order?.to_id ? (
-                        <div className="flex items-center justify-between gap-2.5 p-2 bg-slate-50/80 !border !border-slate-100 rounded-xl mb-3">
-                          <div className="flex items-center gap-2 min-w-0 flex-1">
-                            <div className="w-8 h-8 rounded-lg overflow-hidden shrink-0 !border !border-slate-200 bg-slate-100">
-                              <img
-                                alt=""
-                                width={32}
-                                height={32}
-                                src={order?.to_id?.image || "/placeholder.jpg"}
-                                className="w-full h-full object-cover"
-                              />
-                            </div>
+                        {/* ── Parcel Details (parcel only) ── */}
+                        {isParcel && (order?.image || order?.title) && (
+                          <div
+                            className="flex items-center gap-2.5 rounded-xl p-2.5"
+                            style={{ background: "#fff7ed", border: "1px solid #fed7aa" }}
+                          >
+                            {order?.image && (
+                              <div className="w-11 h-11 rounded-lg overflow-hidden shrink-0 bg-white" style={{ border: "1px solid #fdba74" }}>
+                                <img
+                                  src={order.image}
+                                  alt="parcel"
+                                  className="w-full h-full object-cover"
+                                  onError={(e) => { e.target.style.display = "none"; }}
+                                />
+                              </div>
+                            )}
                             <div className="min-w-0 flex-1">
-                              <h4 className="text-xs font-family-semibold text-slate-900 !m-0 truncate">
-                                {order?.to_id?.name || "Assigned Driver"}
-                              </h4>
-                              <p className="text-[10.5px] text-slate-400 font-family-regular !m-0 truncate">
-                                {order?.to_id?.email || "driver@cabkn.com"}
+                              <span className="text-[9px] font-family-bold uppercase tracking-widest text-orange-500 block">Parcel Item</span>
+                              <p className="text-xs font-family-semibold text-slate-800 !m-0 truncate mt-0.5">
+                                {order?.title || "Parcel Delivery"}
                               </p>
                             </div>
                           </div>
-                          {order?.to_id?.rating && (
-                            <span className="inline-flex items-center gap-0.5 text-[10px] font-family-semibold text-amber-600 bg-amber-50 px-1.5 py-0.5 rounded !border !border-amber-200/50 shrink-0">
-                              <FaStar size={8} className="text-amber-500" />
-                              {order?.to_id?.rating}.0
+                        )}
+
+                        {/* ── Route Strip ── */}
+                        <div
+                          className="rounded-xl p-3 flex flex-col gap-2.5"
+                          style={{ background: "#f8fafc", border: "1px solid #e8edf2" }}
+                        >
+                          {/* Pickup */}
+                          <div className="flex items-start gap-2">
+                            <div className="w-5 h-5 rounded-full bg-emerald-500 text-white flex items-center justify-center shrink-0 mt-0.5 shadow-sm">
+                              <FaLocationDot size={9} />
+                            </div>
+                            <div className="min-w-0 flex-1">
+                              <span className="text-[8.5px] font-family-bold uppercase tracking-widest text-emerald-600 block">Pickup</span>
+                              <p className="text-[11.5px] font-family-medium text-slate-800 !m-0 leading-snug truncate">
+                                {order?.start_address || "—"}
+                              </p>
+                            </div>
+                          </div>
+
+                          {/* Connector dot */}
+                          <div className="flex items-center gap-2 pl-[9px]">
+                            <div className="w-1.5 h-1.5 rounded-full bg-slate-300" />
+                            <div className="flex-1 h-px bg-slate-200" />
+                          </div>
+
+                          {/* Destination */}
+                          <div className="flex items-start gap-2">
+                            <div className="w-5 h-5 rounded-full bg-[#004a70] text-white flex items-center justify-center shrink-0 mt-0.5 shadow-sm">
+                              <MdOutlineMyLocation size={10} />
+                            </div>
+                            <div className="min-w-0 flex-1">
+                              <span className="text-[8.5px] font-family-bold uppercase tracking-widest text-[#004a70] block">Destination</span>
+                              <p className="text-[11.5px] font-family-medium text-slate-800 !m-0 leading-snug truncate">
+                                {order?.end_address || "—"}
+                              </p>
+                            </div>
+                          </div>
+                        </div>
+
+                        {/* ── Driver Row ── */}
+                        {order?.to_id ? (
+                          <div
+                            className="flex items-center justify-between gap-2"
+                            style={{ background: "#f8fafc", border: "1px solid #e8edf2", borderRadius: "12px", padding: "8px 10px" }}
+                          >
+                            <div className="flex items-center gap-2 min-w-0 flex-1">
+                              <div className="w-8 h-8 rounded-full overflow-hidden shrink-0" style={{ border: "2px solid #e8edf2" }}>
+                                <img
+                                  alt=""
+                                  width={32}
+                                  height={32}
+                                  src={order?.to_id?.image || "/placeholder.jpg"}
+                                  className="w-full h-full object-cover"
+                                />
+                              </div>
+                              <div className="min-w-0 flex-1">
+                                <h4 className="text-[11.5px] font-family-semibold text-slate-900 !m-0 truncate leading-tight">
+                                  {order?.to_id?.name || "Driver"}
+                                </h4>
+                                <p className="text-[10px] text-slate-400 font-family-regular !m-0 truncate">
+                                  {order?.to_id?.email || ""}
+                                </p>
+                              </div>
+                            </div>
+                            {order?.to_id?.rating && (
+                              <span className="inline-flex items-center gap-0.5 text-[10px] font-family-bold text-amber-600 bg-amber-50 px-2 py-1 rounded-full shrink-0" style={{ border: "1px solid #fde68a" }}>
+                                <FaStar size={9} className="text-amber-400" />
+                                {order?.to_id?.rating}.0
+                              </span>
+                            )}
+                          </div>
+                        ) : (
+                          <div className="flex items-center justify-center gap-1.5 py-2 rounded-xl" style={{ background: "#f8fafc", border: "1px dashed #cbd5e1" }}>
+                            <FaCar size={11} className="text-slate-300" />
+                            <p className="text-[11px] text-slate-400 font-family-regular !m-0">Driver not assigned yet</p>
+                          </div>
+                        )}
+
+                        {/* ── PIN Code ── */}
+                        {order?.pincode && (
+                          <div
+                            className="flex items-center justify-between px-3.5 py-2.5 rounded-xl"
+                            style={{ background: "linear-gradient(135deg, #0f172a 0%, #1e293b 100%)", border: "1px solid #334155" }}
+                          >
+                            <span className="text-[9px] font-family-bold uppercase tracking-[0.2em] text-slate-500">Ride PIN</span>
+                            <span className="text-base font-mono font-black text-white tracking-[0.3em]">
+                              {order.pincode}
                             </span>
+                          </div>
+                        )}
+
+                        {/* ── Action Buttons ── */}
+                        <div className="flex items-center gap-2 pt-2" style={{ borderTop: "1px solid #f1f5f9" }}>
+                          <button
+                            onClick={() => gotoDetails(order)}
+                            className="flex-1 h-10 rounded-xl text-white text-xs font-family-semibold flex items-center justify-center gap-1.5 transition-all duration-200 cursor-pointer !border-none active:scale-[0.98]"
+                            style={{ background: "linear-gradient(135deg, #004a70 0%, #006a9e 100%)" }}
+                          >
+                            <FaEye size={12} />
+                            <span>View Details</span>
+                          </button>
+
+                          {/* Review button — completed rides only */}
+                          {isCompleted && (
+                            <button
+                              onClick={() => openReviewModal(order)}
+                              className="h-10 px-3 rounded-xl text-xs font-family-semibold flex items-center justify-center gap-1.5 transition-all duration-200 cursor-pointer active:scale-[0.98]"
+                              style={{
+                                background: "#fffbeb",
+                                color: "#b45309",
+                                border: "1px solid #fde68a",
+                              }}
+                            >
+                              <FaStar size={11} className="text-amber-400" />
+                              <span>Review</span>
+                            </button>
+                          )}
+
+                          {/* Tip button — non-completed or completed without tip */}
+                          {!isCompleted && (
+                            <button
+                              disabled={order?.tip === 1}
+                              onClick={() => { openModal(true); setTipOrderId(order?._id); }}
+                              className={`h-10 px-3 rounded-xl text-xs font-family-semibold flex items-center justify-center gap-1.5 transition-all duration-200 active:scale-[0.98] ${
+                                order?.tip === 1
+                                  ? "bg-slate-100 text-slate-400 cursor-not-allowed"
+                                  : "bg-white text-slate-700 hover:bg-slate-50 cursor-pointer"
+                              }`}
+                              style={{ border: order?.tip === 1 ? "1px solid #e2e8f0" : "1px solid #cbd5e1" }}
+                            >
+                              <FaPlus size={10} className={order?.tip === 1 ? "text-slate-300" : "text-[#004a70]"} />
+                              <span>{order?.tip === 1 ? "Tipped ✓" : "Tip"}</span>
+                            </button>
+                          )}
+
+                          {/* Completed: show both tip + review */}
+                          {isCompleted && (
+                            <button
+                              disabled={order?.tip === 1}
+                              onClick={() => { openModal(true); setTipOrderId(order?._id); }}
+                              className={`h-10 px-3 rounded-xl text-xs font-family-semibold flex items-center justify-center gap-1.5 transition-all duration-200 active:scale-[0.98] ${
+                                order?.tip === 1
+                                  ? "bg-slate-100 text-slate-400 cursor-not-allowed"
+                                  : "bg-white text-slate-700 hover:bg-slate-50 cursor-pointer"
+                              }`}
+                              style={{ border: order?.tip === 1 ? "1px solid #e2e8f0" : "1px solid #cbd5e1" }}
+                            >
+                              <FaPlus size={10} className={order?.tip === 1 ? "text-slate-300" : "text-[#004a70]"} />
+                              <span>{order?.tip === 1 ? "✓" : "Tip"}</span>
+                            </button>
                           )}
                         </div>
-                      ) : (
-                        <div className="p-2 bg-slate-50/50 !border !border-slate-100 rounded-xl mb-3 text-center">
-                          <p className="text-[11px] text-slate-400 font-family-regular !m-0">
-                            Driver not assigned yet
-                          </p>
-                        </div>
-                      )}
-
-                      {/* Card Action Buttons */}
-                      <div className="flex items-center gap-2 pt-2.5 border-t border-slate-100 !mt-auto">
-                        <button
-                          onClick={() => gotoDetails(order)}
-                          className="flex-1 h-9 sm:h-10 rounded-xl bg-[#004a70] hover:bg-[#003957] text-white text-xs font-family-semibold flex items-center justify-center gap-1.5 transition-all duration-200 cursor-pointer !border-none shadow-xs active:scale-[0.99]"
-                        >
-                          <FaEye size={13} />
-                          <span>View Details</span>
-                        </button>
-
-                        <button
-                          disabled={order?.tip === 1}
-                          onClick={() => { openModal(true); setTipOrderId(order?._id); }}
-                          className={`h-9 sm:h-10 px-3.5 rounded-xl text-xs font-family-medium transition-all duration-200 flex items-center justify-center gap-1.5 cursor-pointer active:scale-[0.99] ${order?.tip === 1
-                              ? "bg-slate-100 text-slate-400 !border !border-slate-200 cursor-not-allowed"
-                              : "bg-white hover:bg-slate-50 text-slate-700 !border !border-slate-200 hover:!border-[#004a70] shadow-xs"
-                            }`}
-                        >
-                          <FaPlus size={11} className={order?.tip === 1 ? "text-slate-400" : "text-[#004a70]"} />
-                          <span>{order?.tip === 1 ? "Tipped" : "Tip"}</span>
-                        </button>
                       </div>
                     </div>
                   );
@@ -1143,7 +1267,7 @@ function Page() {
               <div className="flex items-center gap-3">
                 
                 <div>
-                  <h3 className="text-base font-family-bold text-slate-900 !m-0 leading-tight">
+                  <h3 className="text-base font-family-semibold text-slate-900 !m-0 leading-tight">
                     Add a Tip
                   </h3>
                   <p className="text-xs text-slate-400 !m-0 font-family-regular mt-0.5">
@@ -1179,7 +1303,7 @@ function Page() {
                     </button>
                   </div>
                   <div className="relative">
-                    <span className="absolute left-3.5 top-1/2 -translate-y-1/2 text-sm font-family-bold text-slate-400">
+                    <span className="absolute left-3.5 top-1/2 -translate-y-1/2 text-sm font-family-semibold text-slate-400">
                       $
                     </span>
                     <input
@@ -1197,7 +1321,7 @@ function Page() {
               ) : (
                 <div className="space-y-2.5">
                   <div className="flex items-center justify-between">
-                    <span className="text-[11px] font-family-bold text-slate-400 uppercase tracking-wider">
+                    <span className="text-[11px] font-family-semibold text-slate-400 uppercase tracking-wider">
                       Select Amount
                     </span>
                     <button
@@ -1217,7 +1341,7 @@ function Page() {
                           key={amount}
                           type="button"
                           onClick={() => handleTipSelection(amount)}
-                          className={`py-2.5 rounded-xl border text-xs sm:text-sm font-family-bold cursor-pointer transition-all text-center select-none ${
+                          className={`py-2.5 rounded-xl border text-xs sm:text-sm font-family-semibold cursor-pointer transition-all text-center select-none ${
                             isSelected
                               ? "bg-[#004a70] text-white border-[#004a70] shadow-sm shadow-[#004a70]/30 scale-[1.03]"
                               : "bg-slate-50 hover:bg-slate-100 text-slate-700 border-slate-200/90"
@@ -1235,7 +1359,7 @@ function Page() {
               <div className="mt-3.5 p-2 rounded-xl bg-sky-500/[0.06] border border-sky-400/20 flex items-center justify-between text-xs">
                 <span className="text-slate-500 font-family-medium">Total Tip</span>
                 <div className="flex items-baseline gap-1.5">
-                  <span className="font-family-bold text-[#004a70] text-sm">
+                  <span className="font-family-semibold text-[#004a70] text-sm">
                     ${Number(tipAmount || 0).toFixed(2)} USD
                   </span>
                   <span className="text-[10.5px] text-slate-400 font-family-medium">
@@ -1252,7 +1376,7 @@ function Page() {
                     setShow(true);
                     setIsModalOpen(false);
                   }}
-                  className="w-full h-11 rounded-xl bg-[#004a70] hover:bg-[#003855] text-white font-family-bold text-xs sm:text-sm flex items-center justify-center gap-2 transition-all cursor-pointer border-none shadow-sm shadow-[#004a70]/20 active:scale-[0.99]"
+                  className="w-full h-11 rounded-xl bg-[#004a70] hover:bg-[#003855] text-white font-family-semibold text-xs sm:text-sm flex items-center justify-center gap-2 transition-all cursor-pointer border-none shadow-sm shadow-[#004a70]/20 active:scale-[0.99]"
                 >
                   <MdPayment size={16} />
                   <span>Pay with Card</span>
@@ -1457,45 +1581,88 @@ function Page() {
           centered
         >
           <div className="bg-white rounded-2xl overflow-hidden shadow-2xl">
-            <div className="bg-slate-50 p-4 !border-b !border-slate-100 flex justify-between items-center">
-              <h3 className="text-sm font-family-semibold text-slate-900 !m-0">
-                Leave a Review
-              </h3>
+            {/* Header */}
+            <div className="flex items-center justify-between px-5 pt-5 pb-4">
+              <div className="flex items-center gap-2">
+                <span className="w-8 h-8 rounded-full bg-amber-50 flex items-center justify-center">
+                  <FaStar size={16} className="text-amber-400" />
+                </span>
+                <h3 className="text-[15px] font-family-bold text-slate-900 !m-0">Leave a Review</h3>
+              </div>
               <button
                 onClick={() => setReviewModal(false)}
-                className="w-7 h-7 rounded-lg !border !border-slate-200 bg-white hover:bg-slate-50 flex items-center justify-center text-slate-400 cursor-pointer"
+                className="w-7 h-7 rounded-full !border !border-slate-200 bg-white hover:bg-slate-50 flex items-center justify-center text-slate-400 cursor-pointer transition-colors"
               >
-                <X size={15} />
+                <X size={14} />
               </button>
             </div>
-            <div className="p-5">
-              <div className="text-center !mb-4">
-                <Rate
-                  value={reviewRating}
-                  onChange={setReviewRating}
-                  style={{ fontSize: 26 }}
+
+            <div className="px-5 pb-5 space-y-4">
+              {/* Rating Block */}
+              <div>
+                <p className="text-xs font-family-bold text-slate-800 !mb-2">Your Rating</p>
+                <div className="flex items-center justify-between">
+                  {/* Green Stars */}
+                  <div className="flex items-center gap-0.5">
+                    {[1, 2, 3, 4, 5].map((star) => (
+                      <button
+                        key={star}
+                        type="button"
+                        onClick={() => setReviewRating(star)}
+                        className="cursor-pointer !border-none bg-transparent p-0.5 transition-transform hover:scale-110 active:scale-95"
+                      >
+                        <FaStar
+                          size={28}
+                          style={{ color: star <= reviewRating ? "#22c55e" : "#e2e8f0" }}
+                        />
+                      </button>
+                    ))}
+                  </div>
+                  {/* Score Badge */}
+                  <span
+                    className="inline-flex items-center gap-1 px-2.5 py-1 rounded-full text-xs font-family-bold"
+                    style={{ background: "#f0fdf4", color: "#16a34a", border: "1px solid #bbf7d0" }}
+                  >
+                    <FaStar size={10} className="text-green-500" />
+                    {reviewRating}.0 / 5.0
+                  </span>
+                </div>
+
+                {/* Label Row */}
+                <div className="flex items-center justify-between !mt-1.5">
+                  <span className="text-[11.5px] font-family-semibold" style={{ color: "#16a34a" }}>
+                    {reviewRating === 5 ? "Exceptional! 🤩"
+                      : reviewRating === 4 ? "Great! 😊"
+                      : reviewRating === 3 ? "Good 🙂"
+                      : reviewRating === 2 ? "Fair 😐"
+                      : "Poor 😞"}
+                  </span>
+                  <span className="text-[10.5px] text-slate-400 font-family-regular">Tap to adjust</span>
+                </div>
+              </div>
+
+              {/* Feedback Textarea */}
+              <div>
+                <p className="text-xs font-family-bold text-slate-800 !mb-2">Your Feedback</p>
+                <textarea
+                  className="w-full min-h-[96px] px-3 py-2.5 rounded-xl text-xs font-family-regular text-slate-700 outline-none resize-none transition-colors placeholder-slate-400"
+                  style={{ border: "1.5px solid #e2e8f0", background: "#f8fafc" }}
+                  placeholder="Share your experience with this driver..."
+                  value={reviewText}
+                  onChange={(e) => setReviewText(e.target.value)}
+                  onFocus={(e) => { e.target.style.borderColor = "#004a70"; e.target.style.background = "#fff"; }}
+                  onBlur={(e) => { e.target.style.borderColor = "#e2e8f0"; e.target.style.background = "#f8fafc"; }}
                 />
               </div>
-              <textarea
-                className="w-full min-h-[100px] p-3 !border !border-slate-200 rounded-xl text-xs outline-none resize-none focus:!border-[#004a70] transition-colors bg-slate-50/50"
-                placeholder="Write your review here..."
-                value={reviewText}
-                onChange={(e) => setReviewText(e.target.value)}
-              />
-              <div className="!mt-4 flex gap-2.5">
-                <button
-                  onClick={() => setReviewModal(false)}
-                  className="flex-grow h-9 rounded-xl !border !border-slate-200 bg-white text-slate-600 font-family-medium text-xs hover:bg-slate-50 transition-colors cursor-pointer"
-                >
-                  Cancel
-                </button>
-                <button
-                  onClick={submitReview}
-                  className="flex-grow h-9 rounded-xl bg-[#004a70] hover:bg-[#003957] text-white font-family-semibold text-xs transition-colors !border-none cursor-pointer"
-                >
-                  Submit Review
-                </button>
-              </div>
+
+              {/* Submit Button */}
+              <button
+                onClick={submitReview}
+                className="w-full h-11 rounded-xl text-white text-sm font-family-bold flex items-center justify-center gap-2 cursor-pointer !border-none transition-all duration-200 active:scale-[0.98]"
+                style={{ background: "linear-gradient(135deg, #003855 0%, #004a70 50%, #006090 100%)" }}
+              >
+                Submit Review
+              </button>
             </div>
           </div>
         </Modal>
@@ -1540,7 +1707,7 @@ function Page() {
                 {/* Header with Title and Close */}
                 <div className="flex items-center justify-between pb-3 border-b border-slate-100 mb-4">
                   <div>
-                    <h3 className="text-base sm:text-lg font-family-bold text-slate-900 !m-0">
+                    <h3 className="text-base sm:text-lg font-family-semibold text-slate-900 !m-0">
                       Tour Booking Details
                     </h3>
                   </div>
@@ -1567,10 +1734,10 @@ function Page() {
 
                 {/* Title & Status Notice */}
                 <div className="mb-4">
-                  <span className="text-[10px] font-family-bold uppercase tracking-wider text-[#004a70] block mb-1">
+                  <span className="text-[10px] font-family-semibold uppercase tracking-wider text-[#004a70] block mb-1">
                     {booking?.bookingType === "group" ? "Group Tour" : "Tour Booking"}
                   </span>
-                  <h4 className="text-base sm:text-lg font-family-bold text-slate-900 !m-0 leading-snug">
+                  <h4 className="text-base sm:text-lg font-family-semibold text-slate-900 !m-0 leading-snug">
                     {title}
                   </h4>
 
@@ -1583,7 +1750,7 @@ function Page() {
 
                 {/* Summary Breakdown Card (Matching Mobile TourBookingDetail.js) */}
                 <div className="bg-slate-50/80 rounded-2xl p-4 border border-slate-200/80 space-y-2.5 text-xs text-slate-600 mb-4">
-                  <h5 className="text-xs font-family-bold uppercase tracking-wider text-slate-800 !m-0 pb-1 border-b border-slate-200/80">
+                  <h5 className="text-xs font-family-semibold uppercase tracking-wider text-slate-800 !m-0 pb-1 border-b border-slate-200/80">
                     Booking Summary
                   </h5>
                   <div className="flex items-center justify-between">
@@ -1636,10 +1803,10 @@ function Page() {
                         <span className="font-family-semibold text-slate-800">${convenienceFeeXCD.toFixed(2)} XCD</span>
                       </div>
                     )}
-                    <div className="pt-2 border-t border-slate-200 flex items-center justify-between text-sm font-family-bold text-slate-900">
+                    <div className="pt-2 border-t border-slate-200 flex items-center justify-between text-sm font-family-semibold text-slate-900">
                       <span>Total Amount</span>
                       <div className="text-right">
-                        <span className="text-[#004a70] text-base font-family-bold block">
+                        <span className="text-[#004a70] text-base font-family-semibold block">
                           ${totalXCD.toFixed(2)} XCD
                         </span>
                         <span className="text-[10.5px] text-slate-400 font-family-regular block">
@@ -1653,7 +1820,7 @@ function Page() {
                 {/* Pickup & Drop-off or Meeting Point Card */}
                 {hasPickupDropoff ? (
                   <div className="bg-slate-50/80 rounded-2xl p-4 border border-slate-200/80 space-y-2 text-xs text-slate-600 mb-4">
-                    <div className="flex items-center gap-1.5 text-slate-800 font-family-bold">
+                    <div className="flex items-center gap-1.5 text-slate-800 font-family-semibold">
                       <FaLocationDot size={13} className="text-[#004a70]" />
                       <span>Pickup & Drop-off</span>
                     </div>
@@ -1672,7 +1839,7 @@ function Page() {
                   </div>
                 ) : (snap?.meetingPoint?.address || booking?.tour?.meetingPoint?.address) ? (
                   <div className="bg-slate-50/80 rounded-2xl p-4 border border-slate-200/80 space-y-1.5 text-xs text-slate-600 mb-4">
-                    <div className="flex items-center gap-1.5 text-slate-800 font-family-bold">
+                    <div className="flex items-center gap-1.5 text-slate-800 font-family-semibold">
                       <FaLocationDot size={13} className="text-[#004a70]" />
                       <span>Meeting Point</span>
                     </div>
@@ -1685,7 +1852,7 @@ function Page() {
                 {/* Special Note if any */}
                 {booking?.note && (
                   <div className="bg-slate-50/80 rounded-2xl p-4 border border-slate-200/80 space-y-1 text-xs text-slate-600 mb-4">
-                    <span className="text-slate-800 font-family-bold block">Special Instructions / Notes</span>
+                    <span className="text-slate-800 font-family-semibold block">Special Instructions / Notes</span>
                     <p className="text-slate-600 font-family-medium leading-relaxed !m-0 italic">
                       "{booking.note}"
                     </p>
@@ -1755,7 +1922,7 @@ function Page() {
                 {/* Header with Title and Close */}
                 <div className="flex items-center justify-between pb-3 border-b border-slate-100 mb-4">
                   <div>
-                    <h3 className="text-base sm:text-lg font-family-bold text-slate-900 !m-0">
+                    <h3 className="text-base sm:text-lg font-family-semibold text-slate-900 !m-0">
                       Service Booking Details
                     </h3>
                   
@@ -1783,10 +1950,10 @@ function Page() {
 
                 {/* Title & Status Message */}
                 <div className="mb-4">
-                  <span className="text-[10px] font-family-bold uppercase tracking-wider text-[#004a70] block mb-1">
+                  <span className="text-[10px] font-family-semibold uppercase tracking-wider text-[#004a70] block mb-1">
                     {booking?.category?.name || (booking?.bookingType === "group" ? "Group Service" : "Service")}
                   </span>
-                  <h4 className="text-base sm:text-lg font-family-bold text-slate-900 !m-0 leading-snug">
+                  <h4 className="text-base sm:text-lg font-family-semibold text-slate-900 !m-0 leading-snug">
                     {title}
                   </h4>
 
@@ -1799,7 +1966,7 @@ function Page() {
 
                 {/* Summary Breakdown Card (Matching Mobile Row list) */}
                 <div className="bg-slate-50/80 rounded-2xl p-4 border border-slate-200/80 space-y-2.5 text-xs text-slate-600 mb-4">
-                  <h5 className="text-xs font-family-bold uppercase tracking-wider text-slate-800 !m-0 pb-1 border-b border-slate-200/80">
+                  <h5 className="text-xs font-family-semibold uppercase tracking-wider text-slate-800 !m-0 pb-1 border-b border-slate-200/80">
                     Booking Summary
                   </h5>
                   <div className="flex items-center justify-between">
@@ -1846,10 +2013,10 @@ function Page() {
                         <span className="font-family-semibold text-slate-800">${convenienceFeeXCD.toFixed(2)} XCD</span>
                       </div>
                     )}
-                    <div className="pt-2 border-t border-slate-200 flex items-center justify-between text-sm font-family-bold text-slate-900">
+                    <div className="pt-2 border-t border-slate-200 flex items-center justify-between text-sm font-family-semibold text-slate-900">
                       <span>Total Amount</span>
                       <div className="text-right">
-                        <span className="text-[#004a70] text-base font-family-bold block">
+                        <span className="text-[#004a70] text-base font-family-semibold block">
                           ${totalXCD.toFixed(2)} XCD
                         </span>
                         <span className="text-[10.5px] text-slate-400 font-family-regular block">
@@ -1862,7 +2029,7 @@ function Page() {
 
                 {/* Location Card */}
                 <div className="bg-slate-50/80 rounded-2xl p-4 border border-slate-200/80 space-y-1.5 text-xs text-slate-600 mb-4">
-                  <div className="flex items-center gap-1.5 text-slate-800 font-family-bold">
+                  <div className="flex items-center gap-1.5 text-slate-800 font-family-semibold">
                     <FaLocationDot size={13} className="text-[#004a70]" />
                     <span>{atLocation ? "Service Location (At Your Location)" : "Meeting Point"}</span>
                   </div>
@@ -1874,7 +2041,7 @@ function Page() {
                 {/* Special Note if any */}
                 {booking?.note && (
                   <div className="bg-slate-50/80 rounded-2xl p-4 border border-slate-200/80 space-y-1 text-xs text-slate-600 mb-4">
-                    <span className="text-slate-800 font-family-bold block">Special Instructions / Notes</span>
+                    <span className="text-slate-800 font-family-semibold block">Special Instructions / Notes</span>
                     <p className="text-slate-600 font-family-medium leading-relaxed !m-0 italic">
                       "{booking.note}"
                     </p>
@@ -1935,10 +2102,10 @@ function Page() {
                 {/* Header with Title and Close */}
                 <div className="flex items-center justify-between pb-3 border-b border-slate-100 mb-4">
                   <div>
-                    <span className="text-[10px] font-family-bold tracking-widest text-[#004a70] uppercase block">
+                    <span className="text-[10px] font-family-semibold tracking-widest text-[#004a70] uppercase block">
                       INVOICE
                     </span>
-                    <h3 className="text-base sm:text-lg font-family-bold text-slate-900 !m-0">
+                    <h3 className="text-base sm:text-lg font-family-semibold text-slate-900 !m-0">
                       Order #{orderNum}
                     </h3>
                   </div>
@@ -1962,7 +2129,7 @@ function Page() {
 
                 {/* Ordered Items List */}
                 <div className="space-y-2 mb-4">
-                  <h4 className="text-xs font-family-bold uppercase tracking-wider text-slate-800 !m-0">
+                  <h4 className="text-xs font-family-semibold uppercase tracking-wider text-slate-800 !m-0">
                     Order Items ({cartItems.length})
                   </h4>
                   <div className="divide-y divide-slate-100 bg-slate-50/60 rounded-2xl p-3 border border-slate-100 max-h-48 overflow-y-auto">
@@ -1989,10 +2156,10 @@ function Page() {
                               </span>
                             </div>
                             <div className="text-right shrink-0">
-                              <span className="text-xs font-family-bold text-[#004a70] block">
+                              <span className="text-xs font-family-semibold text-[#004a70] block">
                                 Qty: {itemQty}
                               </span>
-                              <span className="text-xs font-family-bold text-slate-800 block">
+                              <span className="text-xs font-family-semibold text-slate-800 block">
                                 ${itemTotal.toFixed(2)} XCD
                               </span>
                             </div>
@@ -2010,7 +2177,7 @@ function Page() {
                 {/* Delivery Location */}
                 {order?.drop_location && (
                   <div className="bg-slate-50/80 rounded-2xl p-3.5 border border-slate-100 space-y-1 text-xs text-slate-600 mb-4">
-                    <div className="flex items-center gap-1.5 text-slate-800 font-family-bold">
+                    <div className="flex items-center gap-1.5 text-slate-800 font-family-semibold">
                       <FaLocationDot size={12} className="text-[#004a70]" />
                       <span>Delivery Location</span>
                     </div>
@@ -2022,7 +2189,7 @@ function Page() {
 
                 {/* Price Breakdown / Summary */}
                 <div className="bg-slate-50/80 rounded-2xl p-4 border border-slate-200/80 space-y-2 text-xs text-slate-600 mb-4">
-                  <h5 className="text-xs font-family-bold uppercase tracking-wider text-slate-800 !m-0 pb-1 border-b border-slate-200/80">
+                  <h5 className="text-xs font-family-semibold uppercase tracking-wider text-slate-800 !m-0 pb-1 border-b border-slate-200/80">
                     Payment Summary
                   </h5>
                   <div className="flex items-center justify-between">
@@ -2055,10 +2222,10 @@ function Page() {
                       <span className="font-family-semibold text-slate-800">${convenienceFee.toFixed(2)} XCD</span>
                     </div>
                   )}
-                  <div className="pt-2 border-t border-slate-200 flex items-center justify-between text-sm font-family-bold text-slate-900">
+                  <div className="pt-2 border-t border-slate-200 flex items-center justify-between text-sm font-family-semibold text-slate-900">
                     <span>Total Amount Paid</span>
                     <div className="text-right">
-                      <span className="text-[#004a70] text-base font-family-bold block">
+                      <span className="text-[#004a70] text-base font-family-semibold block">
                         ${priceXCD.toFixed(2)} XCD
                       </span>
                       <span className="text-[10.5px] text-slate-400 font-family-regular block">
@@ -2088,4 +2255,12 @@ function Page() {
   );
 }
 
-export default Page;
+function AdminPage() {
+  return (
+    <Suspense fallback={<div className="min-h-screen bg-[#f8fafc]" />}>
+      <Page />
+    </Suspense>
+  );
+}
+
+export default AdminPage;

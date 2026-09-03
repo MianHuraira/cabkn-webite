@@ -3,7 +3,7 @@
 import React, { useEffect, useState } from "react";
 import { useRouter } from "next/navigation";
 import Link from "next/link";
-import { FaStar, FaClock, FaArrowRight, FaXmark } from "react-icons/fa6";
+import { FaStar, FaClock, FaArrowRight, FaXmark, FaChevronLeft, FaChevronRight } from "react-icons/fa6";
 import { FaSearch } from "react-icons/fa";
 import { MdOutlineLocationOn } from "react-icons/md";
 import ApiFunction from "@/components/ApiFunction/ApiFunction";
@@ -19,7 +19,8 @@ export default function AllServicesPage() {
 
   // Pagination states for `top-services/public/${page}`
   const [page, setPage] = useState(1);
-  const [hasMore, setHasMore] = useState(true);
+  const [totalPages, setTotalPages] = useState(1);
+  const [totalCount, setTotalCount] = useState(0);
   const [loadingMore, setLoadingMore] = useState(false);
 
   // Fetch services from `top-services/public/${pageNum}` with backend search query
@@ -35,7 +36,8 @@ export default function AllServicesPage() {
       const searchParam = trimmed ? `?search=${encodeURIComponent(trimmed)}` : "";
       const res = await getData(`top-services/public/${pageNum}${searchParam}`, header1);
       const fetchedList = res?.services || res?.data?.services || [];
-      const totalPage = res?.count?.totalPage || res?.data?.count?.totalPage || 1;
+      const totalPageCount = res?.count?.totalPage || res?.data?.count?.totalPage || 1;
+      const totalItems = res?.count?.total ?? res?.data?.count?.total ?? fetchedList.length;
 
       if (isLoadMore) {
         setServices((prev) => [...prev, ...fetchedList]);
@@ -43,11 +45,14 @@ export default function AllServicesPage() {
         setServices(fetchedList);
       }
 
-      setHasMore(pageNum < totalPage);
+      setTotalPages(totalPageCount);
+      setTotalCount(totalItems);
+      setPage(pageNum);
     } catch (error) {
       console.error("Failed to load top services:", error);
       if (!isLoadMore) setServices([]);
-      setHasMore(false);
+      setTotalPages(1);
+      setTotalCount(0);
     } finally {
       setLoading(false);
       setLoadingMore(false);
@@ -62,9 +67,9 @@ export default function AllServicesPage() {
     return () => clearTimeout(timer);
   }, [searchQuery]);
 
-  const handleLoadMore = () => {
+  const handleSeeMore = () => {
+    if (loadingMore || page >= totalPages) return;
     const nextPage = page + 1;
-    setPage(nextPage);
     fetchServicesData(nextPage, true, searchQuery);
   };
 
@@ -111,7 +116,7 @@ export default function AllServicesPage() {
           </div>
 
           <div>
-            <h1 className="text-2xl sm:text-3xl md:text-4xl font-family-bold text-white tracking-tight !m-0 leading-tight">
+            <h1 className="text-2xl sm:text-3xl md:text-4xl font-family-semibold text-white tracking-tight !m-0 leading-tight">
               Top <span className="bg-gradient-to-r from-sky-400 via-teal-300 to-emerald-400 bg-clip-text text-transparent">Services</span>
             </h1>
             <p className="text-xs sm:text-sm text-slate-300 font-family-regular !m-0 mt-1.5 max-w-2xl">
@@ -121,8 +126,8 @@ export default function AllServicesPage() {
         </div>
       </section>
 
-      {/* Main Content Container matching standard layout */}
-      <div className="max-w-7xl mx-auto px-3 sm:px-6 lg:px-8 pt-8 pb-16 relative z-30 space-y-6">
+      {/* Main Content Container matching /admin max-w-7xl standard layout */}
+      <div id="services-content" className="max-w-7xl mx-auto px-3 sm:px-6 lg:px-8 pt-8 pb-16 relative z-30 space-y-6">
         {/* Search Header Bar - Right Aligned with X clear icon & end spinner */}
         <div className="flex justify-end w-full">
           <div className="relative w-full max-w-md">
@@ -181,7 +186,7 @@ export default function AllServicesPage() {
             </div>
 
             <div className="space-y-1.5 max-w-md mx-auto">
-              <h3 className="text-lg sm:text-xl font-family-bold text-slate-900 !m-0">No Services Found</h3>
+              <h3 className="text-lg sm:text-xl font-family-semibold text-slate-900 !m-0">No Services Found</h3>
               <p className="text-xs sm:text-sm text-slate-500 font-family-regular !m-0">
                 {searchQuery ? (
                   <>
@@ -199,7 +204,7 @@ export default function AllServicesPage() {
               <button
                 type="button"
                 onClick={() => setSearchQuery("")}
-                className="px-6 py-2.5 rounded-xl bg-[#004a70] hover:bg-[#003855] text-white text-xs font-family-bold transition-all shadow-xs inline-flex items-center gap-2 cursor-pointer !border-none"
+                className="px-6 py-2.5 rounded-xl bg-[#004a70] hover:bg-[#003855] text-white text-xs font-family-semibold transition-all shadow-xs inline-flex items-center gap-2 cursor-pointer !border-none"
               >
                 Clear Search
               </button>
@@ -263,7 +268,7 @@ export default function AllServicesPage() {
 
                       {/* Discount Badge */}
                       {hasDiscount && (
-                        <div className="absolute bottom-3 left-3 px-2 py-0.5 rounded-md bg-emerald-600 text-white text-[10px] font-family-bold uppercase tracking-wider shadow-sm">
+                        <div className="absolute bottom-3 left-3 px-2 py-0.5 rounded-md bg-emerald-600 text-white text-[10px] font-family-semibold uppercase tracking-wider shadow-sm">
                           {discountPct}% OFF
                         </div>
                       )}
@@ -272,7 +277,7 @@ export default function AllServicesPage() {
                     {/* Content Body */}
                     <div className="p-4 flex-1 flex flex-col justify-between">
                       <div>
-                        <h3 className="text-[15px] font-family-bold text-slate-800 line-clamp-2 !m-0 !mb-2 leading-snug group-hover:text-[#004a70] transition-colors">
+                        <h3 className="text-[15px] font-family-semibold text-slate-800 line-clamp-2 !m-0 !mb-2 leading-snug group-hover:text-[#004a70] transition-colors">
                           {service?.title}
                         </h3>
 
@@ -297,7 +302,7 @@ export default function AllServicesPage() {
                           <span className="text-[11px] text-slate-400 block font-family-medium leading-none mb-0.5">
                             {isGroup ? "Per Group" : "Starting from"}
                           </span>
-                          <span className="text-[16px] font-family-bold text-[#004a70]">
+                          <span className="text-[16px] font-family-semibold text-[#004a70]">
                             ${price} <span className="text-xs font-family-regular text-slate-400">USD</span>
                           </span>
                         </div>
@@ -316,24 +321,38 @@ export default function AllServicesPage() {
               })}
             </div>
 
-            {/* Load More Pagination Button */}
-            {hasMore && (
-              <div className="text-center pt-6">
-                <button
-                  type="button"
-                  disabled={loadingMore}
-                  onClick={handleLoadMore}
-                  className="px-8 py-3 rounded-xl bg-[#004a70] hover:bg-[#003855] text-white text-xs font-family-bold transition-all shadow-md inline-flex items-center gap-2 cursor-pointer disabled:opacity-50"
-                >
-                  {loadingMore ? (
-                    <>
-                      <div className="h-4 w-4 animate-spin rounded-full border-2 border-white border-t-transparent" />
-                      <span>Loading More Services...</span>
-                    </>
-                  ) : (
-                    <span>Load More Services</span>
-                  )}
-                </button>
+            {/* See More Pagination Controls */}
+            {totalCount > 0 && (
+              <div className="flex flex-col items-center justify-center gap-3 pt-8 pb-4 !border-t !border-slate-200/80 mt-6">
+                <p className="text-xs sm:text-sm text-slate-500 font-family-medium !m-0">
+                  Showing <span className="font-family-semibold text-slate-800">{services.length}</span> of{" "}
+                  <span className="font-family-semibold text-slate-800">{totalCount}</span> {totalCount === 1 ? "service" : "services"}
+                </p>
+
+                {page < totalPages ? (
+                  <button
+                    type="button"
+                    disabled={loadingMore}
+                    onClick={handleSeeMore}
+                    className="px-8 py-3 rounded-xl bg-[#004a70] hover:bg-[#003855] text-white text-xs sm:text-sm font-family-semibold transition-all shadow-md inline-flex items-center gap-2 cursor-pointer disabled:opacity-50"
+                  >
+                    {loadingMore ? (
+                      <>
+                        <div className="h-4 w-4 animate-spin rounded-full border-2 border-white border-t-transparent" />
+                        <span>Loading More Services...</span>
+                      </>
+                    ) : (
+                      <>
+                        <span>See More Services</span>
+                        <FaArrowRight size={11} />
+                      </>
+                    )}
+                  </button>
+                ) : (
+                  <span className="text-xs text-slate-400 font-family-medium">
+                    All {totalCount} services loaded
+                  </span>
+                )}
               </div>
             )}
           </>

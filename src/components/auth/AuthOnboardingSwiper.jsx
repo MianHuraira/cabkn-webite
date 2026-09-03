@@ -129,7 +129,7 @@ export default function AuthOnboardingSwiper({ className = "" }) {
             />
           </Link>
           <div className="h-5 w-px bg-white/20 hidden sm:block" />
-          <span className="hidden sm:inline-block text-white text-xs md:text-sm font-family-bold tracking-[0.5px] drop-shadow-sm">
+          <span className="hidden sm:inline-block text-white text-xs md:text-sm font-family-semibold tracking-[0.5px] drop-shadow-sm">
             Welcome to St.Kitts
           </span>
         </div>
@@ -145,7 +145,7 @@ export default function AuthOnboardingSwiper({ className = "" }) {
           </span>
         </div>
 
-        <h2 className="text-xl sm:text-2xl lg:text-[25px] font-family-bold text-white leading-tight tracking-tight mb-1.5 drop-shadow-md">
+        <h2 className="text-xl sm:text-2xl lg:text-[25px] font-family-semibold text-white leading-tight tracking-tight mb-1.5 drop-shadow-md">
           {currentSlide.title}
         </h2>
         <p className="text-xs sm:text-[13px] leading-[19px] lg:leading-[20px] text-white/85 font-family-regular max-w-md mb-3.5">

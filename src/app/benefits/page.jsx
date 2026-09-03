@@ -168,7 +168,7 @@ export default function Benefits() {
               style={{ animationDelay: "200ms" }}
             >
               Benefits of Using{" "}
-              <span className="font-family-bold text-transparent bg-clip-text bg-gradient-to-r from-brand-300 via-sky-300 to-indigo-200">
+              <span className="font-family-semibold text-transparent bg-clip-text bg-gradient-to-r from-brand-300 via-sky-300 to-indigo-200">
                 Cabkn
               </span>
             </h1>
@@ -232,7 +232,7 @@ export default function Benefits() {
                 <span className="w-1.5 h-1.5 rounded-full bg-brand-600" />
                 Proven Performance
               </span>
-              <h2 className="text-2xl sm:text-3xl lg:text-[34px] font-family-bold text-slate-800 mt-4 tracking-tight leading-tight">
+              <h2 className="text-2xl sm:text-3xl lg:text-[34px] font-family-semibold text-slate-800 mt-4 tracking-tight leading-tight">
                 Numbers That{" "}
                 <span className="text-brand-600">Speak for Themselves</span>
               </h2>
@@ -259,7 +259,7 @@ export default function Benefits() {
                   {h.icon}
                 </div>
                 <h3
-                  className={`text-2xl md:text-[28px] font-family-bold m-0 tracking-tight ${h.color}`}
+                  className={`text-2xl md:text-[28px] font-family-semibold m-0 tracking-tight ${h.color}`}
                 >
                   {h.value}
                 </h3>
@@ -282,7 +282,7 @@ export default function Benefits() {
                 <span className="w-1.5 h-1.5 rounded-full bg-brand-600" />
                 Everything You Need
               </span>
-              <h2 className="text-2xl sm:text-3xl lg:text-[34px] font-family-bold text-slate-800 mt-4 tracking-tight">
+              <h2 className="text-2xl sm:text-3xl lg:text-[34px] font-family-semibold text-slate-800 mt-4 tracking-tight">
                 The <span className="text-brand-600">Cabkn Advantage</span>
               </h2>
               <p className="text-slate-500 text-sm sm:text-[15px] mt-3 max-w-xl mx-auto font-family-regular">
@@ -306,7 +306,7 @@ export default function Benefits() {
                     >
                       {b.icon}
                     </div>
-                    <h3 className="text-[15px] sm:text-[17px] font-family-bold text-slate-800 mb-2">
+                    <h3 className="text-[15px] sm:text-[17px] font-family-semibold text-slate-800 mb-2">
                       {b.title}
                     </h3>
                     <p className="text-xs sm:text-sm text-slate-500 leading-relaxed font-family-regular mb-1">
@@ -335,7 +335,7 @@ export default function Benefits() {
               <span className="w-1.5 h-1.5 rounded-full bg-brand-600" />
               Why Cabkn
             </span>
-            <h2 className="text-2xl sm:text-3xl lg:text-[34px] font-family-bold text-slate-800 mt-6 mb-8 leading-tight tracking-tight mb-2">
+            <h2 className="text-2xl sm:text-3xl lg:text-[34px] font-family-semibold text-slate-800 mt-6 mb-8 leading-tight tracking-tight mb-2">
               Designed to Make Your{" "}
               <span className="relative text-brand-600">
                 Journey Better
@@ -399,7 +399,7 @@ export default function Benefits() {
                 <div className="w-12 h-12 rounded-2xl bg-white/10 !border !border-white/20 text-brand-300 flex items-center justify-center mb-5 backdrop-blur-md shadow-inner">
                   <FiAward size={22} />
                 </div>
-                <h3 className="text-lg sm:text-xl font-family-bold mb-3">
+                <h3 className="text-lg sm:text-xl font-family-semibold mb-3">
                   Rider Satisfaction Guaranteed
                 </h3>
                 <p className="text-slate-400 text-xs sm:text-sm leading-relaxed font-family-regular mb-8">
@@ -419,7 +419,7 @@ export default function Benefits() {
                     key={i}
                     className="bg-white/5 !border !border-white/10 rounded-2xl p-4 text-center backdrop-blur-sm hover:bg-white/10 transition-colors"
                   >
-                    <div className="text-lg font-family-bold text-white leading-none">
+                    <div className="text-lg font-family-semibold text-white leading-none">
                       {item.value}
                     </div>
                     <div className="text-[9px] text-slate-300 font-family-semibold uppercase tracking-wider mt-1.5 leading-none">
@@ -451,7 +451,7 @@ export default function Benefits() {
               <span className="inline-flex items-center gap-2 px-4 py-1.5 rounded-full bg-white/10 !border !border-white/15 text-brand-200 text-[11px] sm:text-xs font-family-semibold uppercase tracking-widest backdrop-blur-md mb-2">
                 Join Us Today
               </span>
-              <h2 className="text-white text-2xl sm:text-3xl lg:text-4xl font-family-bold mb-3 leading-tight tracking-tight">
+              <h2 className="text-white text-2xl sm:text-3xl lg:text-4xl font-family-semibold mb-3 leading-tight tracking-tight">
                 Start Enjoying{" "}
                 <span className="text-transparent bg-clip-text bg-gradient-to-r from-brand-300 via-sky-300 to-indigo-200">
                   These Benefits

@@ -95,7 +95,7 @@ const Page = () => {
                 <FaHeart size={22} color="#f87171" />
               </div>
               <div>
-                <h1 className="text-white text-3xl font-family-bold tracking-tight !m-0 leading-tight">
+                <h1 className="text-white text-3xl font-family-semibold tracking-tight !m-0 leading-tight">
                   My{" "}
                   <span className="text-transparent bg-clip-text bg-gradient-to-r from-red-300 via-rose-300 to-pink-200">
                     Favorites

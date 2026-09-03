@@ -85,27 +85,28 @@ const Login = () => {
   }, [userdata]);
 
   const loginWithGoogle = async (googleUser) => {
+    const storedFcm = typeof window !== "undefined" ? localStorage.getItem("fcmToken") || "" : "";
     const apiData = {
       name: googleUser.name,
       email: googleUser.email,
-      image: googleUser.picture,
-      googleId: googleUser.id,
-      fcmtoken: "",
+      // image: googleUser.picture,
+      // googleId: googleUser.id,
+      fcmtoken: storedFcm,
       type: "customer",
     };
 
     setGoogleLoading(true);
-    postData(loginApi, apiData, header3)
+    postData("auth/social-login", apiData, header3)
       .then((res) => {
-        if (res?.success) {
+        if (res?.token || res?.success) {
           dispatch(setUser(res));
           dispatch(setAuthenticated(true));
           localStorage.setItem("isLogin", true);
           localStorage.setItem("Cabkn-token", res?.token);
-          toast.success(res?.message);
+          toast.success(res?.message || "Login Successfully");
           router.push("/");
         } else {
-          toast.error(res?.message);
+          toast.error(res?.message || "Google login failed");
         }
       })
       .catch((error) => {
@@ -117,11 +118,12 @@ const Login = () => {
   };
 
   const handleSubmit = async (values) => {
+    const storedFcm = typeof window !== "undefined" ? localStorage.getItem("fcmToken") || "" : "";
     const body = {
       email: values.email.trim(),
       password: values.password,
       type: "customer",
-      fcmtoken: "",
+      fcmtoken: storedFcm,
     };
 
     setLoading(true);

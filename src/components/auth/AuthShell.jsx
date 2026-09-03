@@ -88,7 +88,7 @@ export function AuthShell({
 
             {isShow && (
               <div className="relative z-10 max-w-sm">
-                <h2 className="text-xl lg:text-2xl font-family-bold leading-tight tracking-tight text-white mb-1.5">
+                <h2 className="text-xl lg:text-2xl font-family-semibold leading-tight tracking-tight text-white mb-1.5">
                   {imageHeadline || (
                     <>
                       Easily book your ride <br />
@@ -147,7 +147,7 @@ export function AuthShell({
             ) : null}
 
             <div className="text-center mb-3.5 sm:mb-4">
-              <h1 className="text-2xl sm:text-2xl font-family-bold tracking-tight !text-white md:!text-slate-900 mb-1 md:mb-0.5">
+              <h1 className="text-2xl sm:text-2xl font-family-semibold tracking-tight !text-white md:!text-slate-900 mb-1 md:mb-0.5">
                 {title}
               </h1>
               {subtitle ? (
@@ -263,7 +263,7 @@ export function AuthDivider({ label = "or" }) {
   return (
     <div className="my-2.5 flex items-center gap-3">
       <div className="h-px flex-1 bg-white/20 md:bg-slate-200/80" />
-      <span className="text-[10px] font-family-bold uppercase tracking-wider text-white/60 md:text-slate-400">
+      <span className="text-[10px] font-family-semibold uppercase tracking-wider text-white/60 md:text-slate-400">
         {label}
       </span>
       <div className="h-px flex-1 bg-white/20 md:bg-slate-200/80" />

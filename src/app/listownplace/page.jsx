@@ -20,10 +20,11 @@ import ApiFunction from "@/components/ApiFunction/ApiFunction";
 import { Loader } from "@googlemaps/js-api-loader";
 import { message } from "antd";
 
-const apiKey = "0FGR7.1720815360";
-const apiSecret = "6EF4CAFCD82E689DECA28EDFDE15ADB35D12BF5982B182E468758A9F8DD072DF";
-const tokenUrl = "https://jad.cash/HAPI/token";
-const paymentUrl = "https://jad.cash/HAPI/cardpayment";
+const apiKey = process.env.NEXT_PUBLIC_JAD_API_KEY;
+const apiSecret = process.env.NEXT_PUBLIC_JAD_API_SECRET;
+const tokenUrl = process.env.NEXT_PUBLIC_JAD_TOKEN_URL;
+const paymentUrl = process.env.NEXT_PUBLIC_JAD_PAYMENT_URL;
+const jadNumber = process.env.NEXT_PUBLIC_JAD_NUMBER;
 
 import { FaTimesCircle, FaWallet } from "react-icons/fa";
 import { BsCashCoin } from "react-icons/bs";
@@ -314,7 +315,7 @@ const page = () => {
       live: "1",
       timestamp: moment(new Date()).format("YYYYMMDDHHmmss"),
       refnum: "101",
-      jadnumber: "101310573865",
+      jadnumber: jadNumber,
       amount: finalPrice?.toFixed(2),
       cardnumber: cardDetails.number,
       cardexpmonth: month,
@@ -599,7 +600,7 @@ const page = () => {
                 </svg>
               </div>
               <div>
-                <h1 className="text-white text-3xl font-family-bold tracking-tight !m-0 leading-tight">
+                <h1 className="text-white text-3xl font-family-semibold tracking-tight !m-0 leading-tight">
                   List Your{" "}
                   <span className="text-transparent bg-clip-text bg-gradient-to-r from-brand-300 via-sky-300 to-indigo-200">
                     Place
@@ -1003,7 +1004,7 @@ const page = () => {
                   <line x1="12" y1="1" x2="12" y2="23" />
                   <path d="M17 5H9.5a3.5 3.5 0 0 0 0 7h5a3.5 3.5 0 0 1 0 7H6" />
                 </svg>
-                Listing Registration Fee: <strong className="font-family-bold text-brand-650">$40.00</strong>
+                Listing Registration Fee: <strong className="font-family-semibold text-brand-650">$40.00</strong>
               </p>
 
               <div className="flex gap-4 flex-wrap max-w-2xl">
@@ -1078,7 +1079,7 @@ const page = () => {
               <path strokeLinecap="round" strokeLinejoin="round" d="M2.25 8.25h19.5M2.25 9h19.5m-16.5 5.25h6m-6 2.25h3m-3.75 3h15a2.25 2.25 0 0 0 2.25-2.25V6.75A2.25 2.25 0 0 0 19.5 4.5h-15a2.25 2.25 0 0 0-2.25 2.25v10.5A2.25 2.25 0 0 0 4.5 19.5Z" />
             </svg>
           </div>
-          <h2 className="font-family-bold text-lg text-white !m-0">Pay with Card</h2>
+          <h2 className="font-family-semibold text-lg text-white !m-0">Pay with Card</h2>
           <p className="text-xs text-slate-400 !m-0 !mt-1">Amount: $40.00</p>
         </div>
         <div className="p-6 md:p-8">
@@ -1158,7 +1159,7 @@ const page = () => {
               <path strokeLinecap="round" strokeLinejoin="round" d="M4.5 12.75l6 6 9-13.5" />
             </svg>
           </div>
-          <h2 className="font-family-bold text-lg text-slate-900 !mb-1">Payment Successful!</h2>
+          <h2 className="font-family-semibold text-lg text-slate-900 !mb-1">Payment Successful!</h2>
           <p className="text-xs text-slate-400 font-family-regular !mb-6">Your listing has been submitted</p>
           <CustomButton
             onClick={() => { setShow1(false); router.push("/") }}

@@ -100,7 +100,7 @@ function ThingstodoCard({ testimonial, onClick, onClick2, btnTitle, isTour }) {
       <div className="!p-3.5 !flex-1 !flex !flex-col !justify-between !gap-2">
         <div className="!space-y-1">
           {/* Title */}
-          <h3 className="!text-[15px] sm:!text-[16px] font-family-bold !font-bold !text-slate-900 group-hover:!text-[#004a70] !transition-colors !line-clamp-1 !m-0 !leading-snug">
+          <h3 className="!text-[15px] sm:!text-[16px] font-family-semibold !font-bold !text-slate-900 group-hover:!text-[#004a70] !transition-colors !line-clamp-1 !m-0 !leading-snug">
             {testimonial?.title}
           </h3>
 
@@ -119,7 +119,7 @@ function ThingstodoCard({ testimonial, onClick, onClick2, btnTitle, isTour }) {
             <span className="!text-[10.5px] !text-slate-400 !block font-family-medium !font-medium !leading-none !mb-0.5">
               From
             </span>
-            <span className="!text-[16px] font-family-bold !font-bold !text-[#004a70]">
+            <span className="!text-[16px] font-family-semibold !font-bold !text-[#004a70]">
               ${price > 0 ? price.toFixed(0) : "135"}{" "}
               <span className="!text-xs font-family-regular !font-normal !text-slate-400">
                 XCD

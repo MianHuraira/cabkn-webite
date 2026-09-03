@@ -32,7 +32,7 @@ export default function PrivacyPage() {
             <FaChevronRight size={8} />
             <span>Privacy Policy</span>
           </div>
-          <h1 className="font-family-bold" style={{ color: "#fff", fontSize: "clamp(24px, 4vw, 32px)", margin: 0, display: "flex", alignItems: "center", gap: 12 }}>
+          <h1 className="font-family-semibold" style={{ color: "#fff", fontSize: "clamp(24px, 4vw, 32px)", margin: 0, display: "flex", alignItems: "center", gap: 12 }}>
             <FaShieldAlt size={26} />
             Privacy Policy
           </h1>

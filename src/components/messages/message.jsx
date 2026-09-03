@@ -111,7 +111,7 @@ const ChatMessage = () => {
                 <BiSolidMessageRounded size={22} className="text-blue-300" />
               </div>
               <div>
-                <h1 className="text-white text-3xl font-family-bold tracking-tight !m-0 leading-tight">
+                <h1 className="text-white text-3xl font-family-semibold tracking-tight !m-0 leading-tight">
                   <span className="text-transparent bg-clip-text bg-gradient-to-r from-blue-200 via-indigo-300 to-purple-200">
                     Messages
                   </span>

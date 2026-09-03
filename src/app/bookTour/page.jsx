@@ -36,10 +36,11 @@ import { setPaymentCards } from "@/components/Redux/Slices/AuthSlice";
 import { AuthTextField, AuthSpinner, AuthPrimaryButton } from "@/components/auth/AuthShell";
 import { Loader } from "@googlemaps/js-api-loader";
 
-const apiKey = "0FGR7.1720815360";
-const apiSecret = "6EF4CAFCD82E689DECA28EDFDE15ADB35D12BF5982B182E468758A9F8DD072DF";
-const tokenUrl = "https://jad.cash/HAPI/token";
-const paymentUrl = "https://jad.cash/HAPI/cardpayment";
+const apiKey = process.env.NEXT_PUBLIC_JAD_API_KEY;
+const apiSecret = process.env.NEXT_PUBLIC_JAD_API_SECRET;
+const tokenUrl = process.env.NEXT_PUBLIC_JAD_TOKEN_URL;
+const paymentUrl = process.env.NEXT_PUBLIC_JAD_PAYMENT_URL;
+const jadNumber = process.env.NEXT_PUBLIC_JAD_NUMBER;
 
 const XCD_PER_USD = 2.7;
 
@@ -50,7 +51,7 @@ function BookTourComponent() {
   const encodedData = searchParams.get("data");
 
   const { getData, postData, header1, header3,userData } = ApiFunction();
-  console.log("userData", userData);
+  // console.log("userData", userData);
   const dispatch = useDispatch();
   const paymentCards = useSelector((state) => state.auth?.paymentCards);
 
@@ -631,7 +632,7 @@ function BookTourComponent() {
         live: "1",
         timestamp: moment().format("YYYYMMDDHHmmss"),
         refnum: "101",
-        jadnumber: "101310573865",
+        jadnumber: jadNumber,
         amount: totalPayableUSD.toFixed(2),
         cardnumber: cleanNumber,
         cardexpmonth: month?.trim() || "",
@@ -675,7 +676,7 @@ function BookTourComponent() {
       <div className="min-h-screen flex flex-col items-center justify-center bg-slate-50 p-4">
         <h2 className="text-lg font-family-semibold text-slate-800">Tour Not Found</h2>
         <p className="text-xs text-slate-500 mb-4">The selected tour could not be loaded.</p>
-        <Link href="/" className="px-5 py-2.5 rounded-xl bg-[#004a70] text-white text-xs font-family-bold">
+        <Link href="/" className="px-5 py-2.5 rounded-xl bg-[#004a70] text-white text-xs font-family-semibold">
           Go Back Home
         </Link>
       </div>
@@ -725,7 +726,7 @@ function BookTourComponent() {
           {/* Tour Category Badge & Title matching Popular Places */}
           <div className="space-y-2 pt-1">
             <div className="flex items-center gap-2">
-              <span className="px-3 py-1 rounded-md text-[11px] font-family-bold uppercase tracking-wider bg-amber-500 text-slate-950 font-bold shadow-xs">
+              <span className="px-3 py-1 rounded-md text-[11px] font-family-semibold uppercase tracking-wider bg-amber-500 text-slate-950 font-bold shadow-xs">
                 {isGroupTour ? "GROUP TOUR" : "INDIVIDUAL TOUR"}
               </span>
               {tour.category?.name && (
@@ -735,7 +736,7 @@ function BookTourComponent() {
               )}
             </div>
 
-            <h1 className="text-2xl sm:text-3xl md:text-4xl font-family-bold text-white tracking-tight !m-0 leading-tight">
+            <h1 className="text-2xl sm:text-3xl md:text-4xl font-family-semibold text-white tracking-tight !m-0 leading-tight">
               {tour.title}
             </h1>
             <p className="text-xs sm:text-sm text-slate-300 font-family-regular !m-0 max-w-2xl">
@@ -761,7 +762,7 @@ function BookTourComponent() {
                       <FaCalendarAlt size={13} />
                     </div>
                     <div>
-                      <h3 className="text-sm font-family-bold text-slate-900 !m-0">Select Date & Time</h3>
+                      <h3 className="text-sm font-family-semibold text-slate-900 !m-0">Select Date & Time</h3>
                       <p className="text-[11px] text-slate-400 font-family-regular !m-0">Choose your preferred tour schedule</p>
                     </div>
                   </div>
@@ -835,7 +836,7 @@ function BookTourComponent() {
                       <FaUsers size={13} />
                     </div>
                     <div>
-                      <h3 className="text-sm font-family-bold text-slate-900 !m-0">Guest Details</h3>
+                      <h3 className="text-sm font-family-semibold text-slate-900 !m-0">Guest Details</h3>
                       <p className="text-[11px] text-slate-400 font-family-regular !m-0">
                         {isGroupTour ? "Flat rate per group" : "Select number of participants"}
                       </p>
@@ -858,7 +859,7 @@ function BookTourComponent() {
                           >
                             <FaMinus size={10} />
                           </button>
-                          <span className="text-xs font-family-bold w-4 text-center">{adults}</span>
+                          <span className="text-xs font-family-semibold w-4 text-center">{adults}</span>
                           <button
                             type="button"
                             onClick={() => setAdults(adults + 1)}
@@ -883,7 +884,7 @@ function BookTourComponent() {
                           >
                             <FaMinus size={10} />
                           </button>
-                          <span className="text-xs font-family-bold w-4 text-center">{kids}</span>
+                          <span className="text-xs font-family-semibold w-4 text-center">{kids}</span>
                           <button
                             type="button"
                             onClick={() => setKids(kids + 1)}
@@ -908,7 +909,7 @@ function BookTourComponent() {
                           >
                             <FaMinus size={10} />
                           </button>
-                          <span className="text-xs font-family-bold w-4 text-center">{infants}</span>
+                          <span className="text-xs font-family-semibold w-4 text-center">{infants}</span>
                           <button
                             type="button"
                             onClick={() => setInfants(infants + 1)}
@@ -937,7 +938,7 @@ function BookTourComponent() {
                         <FaLocationDot size={13} />
                       </div>
                       <div>
-                        <h3 className="text-sm font-family-bold text-slate-900 !m-0">Pickup & Dropoff</h3>
+                        <h3 className="text-sm font-family-semibold text-slate-900 !m-0">Pickup & Dropoff</h3>
                         <p className="text-[11px] text-slate-400 font-family-regular !m-0">Enter your hotel or villa address</p>
                       </div>
                     </div>
@@ -1127,7 +1128,7 @@ function BookTourComponent() {
                         <MdPayment size={15} />
                       </div>
                       <div>
-                        <h3 className="text-sm font-family-bold text-slate-900 !m-0">Select Payment Method</h3>
+                        <h3 className="text-sm font-family-semibold text-slate-900 !m-0">Select Payment Method</h3>
                         <p className="text-[11px] text-slate-400 font-family-regular !m-0">Choose how you wish to pay for this tour</p>
                       </div>
                     </div>
@@ -1155,7 +1156,7 @@ function BookTourComponent() {
                         {paymentMethod === "wallet" && <FaCheck className="text-[#004a70] text-xs" />}
                       </div>
                       <div>
-                        <span className="text-xs font-family-bold text-slate-900 block">CabKN Wallet</span>
+                        <span className="text-xs font-family-semibold text-slate-900 block">CabKN Wallet</span>
                         <span className="text-[10.5px] text-slate-400 font-family-medium">
                           Balance: ${(Number(userData?.user?.amount || 0)).toFixed(2)} XCD
                         </span>
@@ -1175,7 +1176,7 @@ function BookTourComponent() {
                         {paymentMethod === "jad" && <FaCheck className="text-[#004a70] text-xs" />}
                       </div>
                       <div>
-                        <span className="text-xs font-family-bold text-slate-900 block">Credit / Debit Card</span>
+                        <span className="text-xs font-family-semibold text-slate-900 block">Credit / Debit Card</span>
                         <span className="text-[10.5px] text-slate-400 font-family-medium">Secure JAD Payment</span>
                       </div>
                     </div>
@@ -1202,7 +1203,7 @@ function BookTourComponent() {
                           className="p-2.5 bg-slate-50 border border-slate-200 rounded-xl cursor-pointer hover:bg-slate-100 flex items-center justify-between text-xs"
                         >
                           <span className="font-family-semibold text-slate-700">Use Saved Card (...{paymentCards.cardnumber?.slice(-4)})</span>
-                          <span className="text-[#004a70] font-family-bold">Autofill</span>
+                          <span className="text-[#004a70] font-family-semibold">Autofill</span>
                         </div>
                       )}
 
@@ -1294,7 +1295,7 @@ function BookTourComponent() {
                 </div>
 
                 <div>
-                  <h2 className="text-base font-family-bold text-slate-900 !m-0">Tour Booked Successfully!</h2>
+                  <h2 className="text-base font-family-semibold text-slate-900 !m-0">Tour Booked Successfully!</h2>
                   <p className="text-xs text-slate-500 font-family-regular !m-0 mt-0.5">
                     Your reservation for <strong>{tour.title}</strong> has been confirmed.
                   </p>
@@ -1307,14 +1308,14 @@ function BookTourComponent() {
                   </div>
                   <div className="flex justify-between">
                     <span className="text-slate-400 font-family-medium">Total Paid:</span>
-                    <span className="font-family-bold text-emerald-600">${totalPayableUSD.toFixed(2)} USD</span>
+                    <span className="font-family-semibold text-emerald-600">${totalPayableUSD.toFixed(2)} USD</span>
                   </div>
                 </div>
 
                 <div className="flex items-center gap-2.5 pt-1">
                   <Link
                     href="/admin"
-                    className="flex-1 py-2.5 rounded-xl bg-[#004a70] text-white text-xs font-family-bold no-underline text-center"
+                    className="flex-1 py-2.5 rounded-xl bg-[#004a70] text-white text-xs font-family-semibold no-underline text-center"
                   >
                     View in My Bookings
                   </Link>
@@ -1339,10 +1340,10 @@ function BookTourComponent() {
                   className="w-16 h-16 rounded-xl object-cover shrink-0 border border-slate-100"
                 />
                 <div className="min-w-0 flex-1">
-                  <span className="text-[10px] font-family-bold uppercase tracking-wider text-[#004a70] block">
+                  <span className="text-[10px] font-family-semibold uppercase tracking-wider text-[#004a70] block">
                     {tour.category?.name || "Tour"}
                   </span>
-                  <h4 className="text-xs sm:text-sm font-family-bold text-slate-900 truncate leading-snug !m-0">
+                  <h4 className="text-xs sm:text-sm font-family-semibold text-slate-900 truncate leading-snug !m-0">
                     {tour.title}
                   </h4>
                   <p className="text-[11px] text-slate-400 font-family-medium truncate !m-0 mt-0.5">
@@ -1389,9 +1390,9 @@ function BookTourComponent() {
                 </div>
 
                 <div className="pt-2 border-t border-slate-200 flex justify-between items-center">
-                  <span className="text-xs sm:text-sm font-family-bold text-slate-900">Total Payable:</span>
+                  <span className="text-xs sm:text-sm font-family-semibold text-slate-900">Total Payable:</span>
                   <div className="text-right">
-                    <span className="text-base sm:text-lg font-family-bold text-[#004a70] block leading-none">
+                    <span className="text-base sm:text-lg font-family-semibold text-[#004a70] block leading-none">
                       ${totalPayableUSD.toFixed(2)} USD
                     </span>
                     <span className="text-[10.5px] text-slate-400 font-family-medium block mt-0.5">

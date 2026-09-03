@@ -96,7 +96,7 @@ export default function TopTours() {
         style={{ maxWidth: 1200, padding: "0 16px", transitionDelay: "50ms" }}
       >
         <div className="text-left">
-          <h2 className="text-2xl sm:text-3xl lg:text-[34px] font-family-bold text-slate-800 tracking-tight m-0 leading-tight">
+          <h2 className="text-2xl sm:text-3xl lg:text-[34px] font-family-semibold text-slate-800 tracking-tight m-0 leading-tight">
             Top Tours
           </h2>
           <p className="text-slate-500 font-family-regular text-sm sm:text-[15px] !m-0 mt-1">
@@ -198,7 +198,7 @@ export default function TopTours() {
 
                         {/* Discount Badge */}
                         {hasDiscount && (
-                          <div className="absolute bottom-3 left-3 px-2 py-0.5 rounded-md bg-emerald-600 text-white text-[10px] font-family-bold uppercase tracking-wider shadow-sm">
+                          <div className="absolute bottom-3 left-3 px-2 py-0.5 rounded-md bg-emerald-600 text-white text-[10px] font-family-semibold uppercase tracking-wider shadow-sm">
                             {tour.discountPercent}% OFF
                           </div>
                         )}
@@ -207,7 +207,7 @@ export default function TopTours() {
                       {/* Content Body */}
                       <div className="p-4 flex-1 flex flex-col justify-between">
                         <div>
-                          <h3 className="text-[15px] font-family-bold text-slate-800 line-clamp-2 !m-0 !mb-2 leading-snug group-hover:text-[#004a70] transition-colors">
+                          <h3 className="text-[15px] font-family-semibold text-slate-800 line-clamp-2 !m-0 !mb-2 leading-snug group-hover:text-[#004a70] transition-colors">
                             {tour?.title}
                           </h3>
 
@@ -234,7 +234,7 @@ export default function TopTours() {
                             <span className="text-[11px] text-slate-400 block font-family-medium leading-none mb-0.5">
                               {isGroup ? "Per Group" : "Per Person"}
                             </span>
-                            <span className="text-[16px] font-family-bold text-[#004a70]">
+                            <span className="text-[16px] font-family-semibold text-[#004a70]">
                               ${price} <span className="text-xs font-family-regular text-slate-400">USD</span>
                             </span>
                           </div>
@@ -268,7 +268,7 @@ export default function TopTours() {
                     </svg>
                   </div>
 
-                  <h3 className="text-lg sm:text-xl font-family-bold text-white !m-0 mb-1.5 sm:mb-2 tracking-tight">
+                  <h3 className="text-lg sm:text-xl font-family-semibold text-white !m-0 mb-1.5 sm:mb-2 tracking-tight">
                     Explore All Tours
                   </h3>
                   <p className="text-white/80 text-[12.5px] sm:text-[13px] font-family-regular !m-0 mb-5 sm:mb-6 max-w-[210px] leading-relaxed">

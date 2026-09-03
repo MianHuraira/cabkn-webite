@@ -264,7 +264,7 @@
   font-weight: 900 !important;
 }
 
-/* Custom font-weight classes (hyphenated, e.g., font-family-bold) */
+/* Custom font-weight classes (hyphenated, e.g., font-family-semibold) */
 .font-family-thin {
   font-family: var(--font-poppins-local), sans-serif !important;
   font-weight: 100 !important;
@@ -298,8 +298,8 @@
   font-weight: 600 !important;
 }
 
-.font-family-bold,
-.\!font-family-bold {
+.font-family-semibold,
+.\!font-family-semibold {
   font-family: var(--font-poppins-local), sans-serif !important;
   font-weight: 700 !important;
 }

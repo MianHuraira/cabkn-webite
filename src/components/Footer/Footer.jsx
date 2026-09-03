@@ -112,7 +112,7 @@ export default function Footer() {
             className={`flex flex-col items-start gap-4 reveal ${inView ? "visible" : ""}`}
             style={{ transitionDelay: "150ms" }}
           >
-            <h4 className="text-white text-sm font-family-bold uppercase tracking-wider m-0">
+            <h4 className="text-white text-sm font-family-semibold uppercase tracking-wider m-0">
               Contact Us
             </h4>
 
@@ -168,7 +168,7 @@ export default function Footer() {
           >
             {/* Social Links */}
             <div className="flex flex-col items-start gap-2.5 w-full">
-              <h4 className="text-white text-sm font-family-bold uppercase tracking-wider m-0">
+              <h4 className="text-white text-sm font-family-semibold uppercase tracking-wider m-0">
                 Follow Us
               </h4>
               <div className="flex items-center gap-2.5 flex-wrap">
@@ -186,7 +186,7 @@ export default function Footer() {
 
             {/* App Downloads */}
             <div className="flex flex-col items-start gap-2.5 w-full">
-              <h4 className="text-white text-sm font-family-bold uppercase tracking-wider m-0">
+              <h4 className="text-white text-sm font-family-semibold uppercase tracking-wider m-0">
                 Download Our App
               </h4>
               <p className="text-white/65 text-xs leading-relaxed max-w-sm m-0 font-family-regular">
@@ -204,7 +204,7 @@ export default function Footer() {
                   <FaGooglePlay size={17} className="text-white/90 shrink-0 group-hover:scale-105 transition-transform" />
                   <div className="flex flex-col text-left leading-none">
                     <span className="text-[9px] uppercase tracking-wider text-white/60 font-family-medium">GET IT ON</span>
-                    <span className="text-xs font-family-bold text-white mt-1">Google Play</span>
+                    <span className="text-xs font-family-semibold text-white mt-1">Google Play</span>
                   </div>
                 </Link>
 
@@ -217,7 +217,7 @@ export default function Footer() {
                   <FaApple size={20} className="text-white/90 shrink-0 group-hover:scale-105 transition-transform -mt-0.5" />
                   <div className="flex flex-col text-left leading-none">
                     <span className="text-[9px] uppercase tracking-wider text-white/60 font-family-medium">Download on</span>
-                    <span className="text-xs font-family-bold text-white mt-1">App Store</span>
+                    <span className="text-xs font-family-semibold text-white mt-1">App Store</span>
                   </div>
                 </Link>
               </div>

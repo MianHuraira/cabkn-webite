@@ -175,7 +175,7 @@ const PrecisionRatingInput = ({ value, onChange }) => {
           <svg width={13} height={13} viewBox="0 0 24 24" fill={accentColor}>
             <path d={starPath} />
           </svg>
-          <span className="!text-sm font-family-bold !font-bold">
+          <span className="!text-sm font-family-semibold !font-bold">
             {score > 0 ? score.toFixed(1) : "0.0"}
           </span>
           <span className="!text-[11px] font-family-regular !opacity-60">/ 5.0</span>
@@ -826,7 +826,7 @@ const PopularAA = () => {
               {/* Top Meta Tags Row */}
               <div className="!flex !items-center !gap-2 !flex-wrap !mb-3">
                 {SubcatData?.category?.name && (
-                  <span className="!px-2.5 !py-1 !rounded-md !text-[11px] !font-family-bold !font-bold !uppercase !tracking-wider !bg-amber-500 !text-black !shadow-sm">
+                  <span className="!px-2.5 !py-1 !rounded-md !text-[11px] !font-family-semibold !font-bold !uppercase !tracking-wider !bg-amber-500 !text-black !shadow-sm">
                     {SubcatData.category.name}
                   </span>
                 )}
@@ -846,7 +846,7 @@ const PopularAA = () => {
               </div>
 
               {/* Title */}
-              <h1 className="!text-white !text-3xl sm:!text-4xl md:!text-5xl !font-family-bold !font-bold !tracking-tight !m-0 !mb-3 !leading-[1.1]">
+              <h1 className="!text-white !text-3xl sm:!text-4xl md:!text-5xl !font-family-semibold !font-bold !tracking-tight !m-0 !mb-3 !leading-[1.1]">
                 {cleanTitle}
               </h1>
 
@@ -855,7 +855,7 @@ const PopularAA = () => {
                 {SubcatData?.avgRating > 0 && (
                   <div className="!flex !items-center !gap-1 !bg-amber-500/20 !border !border-amber-400/40 !px-2.5 !py-1 !rounded-md">
                     <FaStar size={11} className="!text-amber-400" />
-                    <span className="!text-amber-400 !text-xs !font-family-bold !font-bold">{SubcatData.avgRating.toFixed(1)}</span>
+                    <span className="!text-amber-400 !text-xs !font-family-semibold !font-bold">{SubcatData.avgRating.toFixed(1)}</span>
                     <span className="!text-white/60 !text-[11px] !font-family-medium">IMDb</span>
                   </div>
                 )}
@@ -900,7 +900,7 @@ const PopularAA = () => {
                 <button
                   type="button"
                   onClick={HandleClick}
-                  className="!flex !items-center !gap-2 !px-6 !py-3 !rounded-xl !text-white !text-sm !font-family-bold !font-bold !cursor-pointer !transition-all hover:!scale-105 !shadow-xl !border-none !select-none"
+                  className="!flex !items-center !gap-2 !px-6 !py-3 !rounded-xl !text-white !text-sm !font-family-semibold !font-bold !cursor-pointer !transition-all hover:!scale-105 !shadow-xl !border-none !select-none"
                   style={{ background: "#004a70", boxShadow: "0 8px 30px rgba(0,74,112,0.45)" }}
                   onMouseEnter={e => e.currentTarget.style.background = "#005f8e"}
                   onMouseLeave={e => e.currentTarget.style.background = "#004a70"}
@@ -963,7 +963,7 @@ const PopularAA = () => {
               <span className="!text-[11px] !text-slate-400 !font-family-semibold !uppercase !tracking-wider !block">
                 Tour Fare
               </span>
-              <span className="!text-xs sm:!text-sm !font-family-bold !text-slate-900 !truncate !block">
+              <span className="!text-xs sm:!text-sm !font-family-semibold !text-slate-900 !truncate !block">
                 {priceXcd > 0 ? `$${priceXcd.toFixed(2)} XCD` : "Standard Rate"}
               </span>
             </div>
@@ -977,7 +977,7 @@ const PopularAA = () => {
               <span className="!text-[11px] !text-slate-400 !font-family-semibold !uppercase !tracking-wider !block">
                 Ride Type
               </span>
-              <span className="!text-xs sm:!text-sm !font-family-bold !text-slate-900 !truncate !block">
+              <span className="!text-xs sm:!text-sm !font-family-semibold !text-slate-900 !truncate !block">
                 {SubcatData?.category?.name || "Direct Cab / Tour"}
               </span>
             </div>
@@ -991,7 +991,7 @@ const PopularAA = () => {
               <span className="!text-[11px] !text-slate-400 !font-family-semibold !uppercase !tracking-wider !block">
                 Availability
               </span>
-              <span className="!text-xs sm:!text-sm !font-family-bold !text-slate-900 !truncate !block">
+              <span className="!text-xs sm:!text-sm !font-family-semibold !text-slate-900 !truncate !block">
                 {Schedule.length > 0
                   ? `${Schedule.length} Days Schedule`
                   : "Daily Instant Booking"}
@@ -1007,7 +1007,7 @@ const PopularAA = () => {
               <span className="!text-[11px] !text-slate-400 !font-family-semibold !uppercase !tracking-wider !block">
                 Quality Guarantee
               </span>
-              <span className="!text-xs sm:!text-sm !font-family-bold !text-slate-900 !truncate !block">
+              <span className="!text-xs sm:!text-sm !font-family-semibold !text-slate-900 !truncate !block">
                 Verified Local Drivers
               </span>
             </div>
@@ -1042,7 +1042,7 @@ const PopularAA = () => {
                         onClick={() => setActiveTab(tab.id)}
                         className={`!cursor-pointer !transition-all !duration-200 !select-none !flex !items-center !gap-2 !px-5 !py-2.5 !rounded-full !text-xs sm:!text-sm !whitespace-nowrap !border !shadow-sm ${
                           isSelected
-                            ? "!text-white !bg-[#004a70] !border-[#004a70] !font-family-bold !shadow-md"
+                            ? "!text-white !bg-[#004a70] !border-[#004a70] !font-family-semibold !shadow-md"
                             : "!text-slate-700 !bg-white !border-slate-200/90 hover:!border-[#004a70] hover:!bg-slate-50 hover:!text-[#004a70] !font-family-semibold"
                         }`}
                       >
@@ -1050,7 +1050,7 @@ const PopularAA = () => {
                         <span>{tab.label}</span>
                         {tab.badge !== undefined && (
                           <span
-                            className={`!text-[10.5px] !px-2 !py-0.5 !rounded-full !font-family-bold ${
+                            className={`!text-[10.5px] !px-2 !py-0.5 !rounded-full !font-family-semibold ${
                               isSelected
                                 ? "!bg-white/20 !text-white"
                                 : "!bg-slate-100 !text-slate-700"
@@ -1082,7 +1082,7 @@ const PopularAA = () => {
                           <p className="!text-[10.5px] !text-slate-300 !font-family-medium !uppercase !tracking-wider !m-0">
                             Event Date
                           </p>
-                          <p className="!text-xs sm:!text-sm !font-family-bold !text-white !m-0">
+                          <p className="!text-xs sm:!text-sm !font-family-semibold !text-white !m-0">
                             {moment(SubcatData.start_date).format("dddd, MMMM Do, YYYY")}
                           </p>
                         </div>
@@ -1096,7 +1096,7 @@ const PopularAA = () => {
                           <p className="!text-[10.5px] !text-slate-300 !font-family-medium !uppercase !tracking-wider !m-0">
                             Start Time
                           </p>
-                          <p className="!text-xs sm:!text-sm !font-family-bold !text-white !m-0">
+                          <p className="!text-xs sm:!text-sm !font-family-semibold !text-white !m-0">
                             {moment(SubcatData.start_time, "HH:mm").format("hh:mm A")}
                           </p>
                         </div>
@@ -1111,7 +1111,7 @@ const PopularAA = () => {
                     <div className="!w-8 !h-8 !rounded-lg !bg-sky-50 !text-[#004a70] !flex !items-center !justify-center">
                       <HiOutlineSparkles size={16} />
                     </div>
-                    <h3 className="!text-base !font-family-bold !text-slate-900 !m-0">
+                    <h3 className="!text-base !font-family-semibold !text-slate-900 !m-0">
                       About This Experience
                     </h3>
                   </div>
@@ -1127,7 +1127,7 @@ const PopularAA = () => {
                       <div className="!w-8 !h-8 !rounded-lg !bg-emerald-50 !text-emerald-600 !flex !items-center !justify-center">
                         <HiOutlineCheckCircle size={16} />
                       </div>
-                      <h3 className="!text-base !font-family-bold !text-slate-900 !m-0">
+                      <h3 className="!text-base !font-family-semibold !text-slate-900 !m-0">
                         Highlights & Inclusions
                       </h3>
                     </div>
@@ -1157,7 +1157,7 @@ const PopularAA = () => {
                     <div className="!w-8 !h-8 !rounded-lg !bg-indigo-50 !text-indigo-600 !flex !items-center !justify-center">
                       <HiOutlineCalendarDays size={16} />
                     </div>
-                    <h3 className="!text-base !font-family-bold !text-slate-900 !m-0">
+                    <h3 className="!text-base !font-family-semibold !text-slate-900 !m-0">
                       Weekly Opening Hours & Schedule
                     </h3>
                   </div>
@@ -1175,11 +1175,11 @@ const PopularAA = () => {
                       >
                         <div className="!flex !items-center !gap-2.5">
                           <span className="!w-2 !h-2 !rounded-full !bg-[#004a70]" />
-                          <span className="!font-family-bold !text-slate-800">
+                          <span className="!font-family-semibold !text-slate-800">
                             {formatScheduleDay(item, index)}
                           </span>
                         </div>
-                        <span className="!font-family-bold !text-[#004a70] !bg-sky-50 !px-3.5 !py-1 !rounded-full !border !border-sky-200/70 !shadow-xs">
+                        <span className="!font-family-semibold !text-[#004a70] !bg-sky-50 !px-3.5 !py-1 !rounded-full !border !border-sky-200/70 !shadow-xs">
                           {formatScheduleSlots(item)}
                         </span>
                       </div>
@@ -1205,14 +1205,14 @@ const PopularAA = () => {
                     <div className="!w-8 !h-8 !rounded-lg !bg-sky-50 !text-[#004a70] !flex !items-center !justify-center">
                       <HiOutlineMapPin size={16} />
                     </div>
-                    <h3 className="!text-base !font-family-bold !text-slate-900 !m-0">
+                    <h3 className="!text-base !font-family-semibold !text-slate-900 !m-0">
                       Destination Location Map
                     </h3>
                   </div>
                   <button
                     type="button"
                     onClick={recenterMap}
-                    className="!h-9 !px-3.5 !rounded-xl !text-xs !text-[#004a70] hover:!text-[#002f4a] !font-family-bold !flex !items-center !gap-1.5 !bg-sky-50 hover:!bg-sky-100 !border !border-sky-200/60 !cursor-pointer !transition-colors"
+                    className="!h-9 !px-3.5 !rounded-xl !text-xs !text-[#004a70] hover:!text-[#002f4a] !font-family-semibold !flex !items-center !gap-1.5 !bg-sky-50 hover:!bg-sky-100 !border !border-sky-200/60 !cursor-pointer !transition-colors"
                   >
                     <MdOutlineMyLocation size={14} />
                     <span>Center Pin</span>
@@ -1241,7 +1241,7 @@ const PopularAA = () => {
                       <button
                         type="button"
                         onClick={recenterMap}
-                        className="!h-8 !px-3 !rounded-lg !bg-white/15 hover:!bg-white/25 !text-white !text-xs !font-family-bold !border !border-white/20 !cursor-pointer !transition-all !shrink-0"
+                        className="!h-8 !px-3 !rounded-lg !bg-white/15 hover:!bg-white/25 !text-white !text-xs !font-family-semibold !border !border-white/20 !cursor-pointer !transition-all !shrink-0"
                       >
                         Focus
                       </button>
@@ -1259,7 +1259,7 @@ const PopularAA = () => {
                     <div className="!w-8 !h-8 !rounded-lg !bg-amber-50 !text-amber-600 !flex !items-center !justify-center">
                       <HiOutlineChatBubbleLeftRight size={16} />
                     </div>
-                    <h3 className="!text-base !font-family-bold !text-slate-900 !m-0">
+                    <h3 className="!text-base !font-family-semibold !text-slate-900 !m-0">
                       Customer Reviews
                       {ratingLength > 0 && (
                         <span className="!text-xs !text-slate-400 !font-family-medium !ml-1.5">
@@ -1271,7 +1271,7 @@ const PopularAA = () => {
                   <button
                     type="button"
                     onClick={handleShow}
-                    className="!h-9 !px-4 !rounded-xl !bg-[#004a70] hover:!bg-[#003855] !text-white !text-xs !font-family-bold !flex !items-center !justify-center !gap-1.5 !transition-colors !cursor-pointer !border-none !shadow-sm"
+                    className="!h-9 !px-4 !rounded-xl !bg-[#004a70] hover:!bg-[#003855] !text-white !text-xs !font-family-semibold !flex !items-center !justify-center !gap-1.5 !transition-colors !cursor-pointer !border-none !shadow-sm"
                   >
                     <MdOutlineRateReview size={14} />
                     <span>Leave a Review</span>
@@ -1296,7 +1296,7 @@ const PopularAA = () => {
                     <div className="!bg-gradient-to-br !from-sky-50 !to-slate-50 !rounded-2xl !border !border-sky-100 !p-5 !flex !flex-col sm:!flex-row !items-center !gap-5">
                       <div className="!text-center sm:!text-left">
                         <div className="!flex !items-baseline !gap-1 !justify-center sm:!justify-start">
-                          <span className="!text-3xl !font-family-bold !text-slate-900">
+                          <span className="!text-3xl !font-family-semibold !text-slate-900">
                             {SubcatData?.avgRating > 0
                               ? SubcatData.avgRating.toFixed(1)
                               : "5.0"}
@@ -1311,13 +1311,13 @@ const PopularAA = () => {
                           value={SubcatData?.avgRating || 5}
                           className="!text-amber-400 !text-base !my-0.5"
                         />
-                        <p className="!text-[10.5px] !text-slate-500 !uppercase !tracking-wider !font-family-bold !m-0">
+                        <p className="!text-[10.5px] !text-slate-500 !uppercase !tracking-wider !font-family-semibold !m-0">
                           {ratingLength || ratingData.length} Verified Ratings
                         </p>
                       </div>
                       <div className="!w-px !h-12 !bg-slate-200 !hidden sm:!block" />
                       <div className="!flex-1 !text-center sm:!text-left">
-                        <h4 className="!text-sm !font-family-bold !text-slate-900 !m-0 !mb-0.5">
+                        <h4 className="!text-sm !font-family-semibold !text-slate-900 !m-0 !mb-0.5">
                           Traveler Experiences
                         </h4>
                         <p className="!text-xs !text-slate-500 !font-family-regular !m-0">
@@ -1343,13 +1343,13 @@ const PopularAA = () => {
                                     className="!w-full !h-full !object-cover"
                                   />
                                 ) : (
-                                  <span className="!text-[#004a70] !font-family-bold !text-xs">
+                                  <span className="!text-[#004a70] !font-family-semibold !text-xs">
                                     {review?.user?.name?.charAt(0)?.toUpperCase() || "U"}
                                   </span>
                                 )}
                               </div>
                               <div>
-                                <h4 className="!font-family-bold !text-slate-900 !text-xs sm:!text-sm !m-0">
+                                <h4 className="!font-family-semibold !text-slate-900 !text-xs sm:!text-sm !m-0">
                                   {review?.user?.name || "Verified Traveler"}
                                 </h4>
                                 <p className="!text-[10px] !text-slate-400 !font-family-regular !m-0 !mt-0.5">
@@ -1381,7 +1381,7 @@ const PopularAA = () => {
                           type="button"
                           onClick={getRatingData}
                           disabled={pagiLoading}
-                          className="!h-10 !px-5 !rounded-xl !bg-white !border !border-[#004a70] !text-[#004a70] hover:!bg-sky-50 !text-xs !font-family-bold !transition-colors !cursor-pointer"
+                          className="!h-10 !px-5 !rounded-xl !bg-white !border !border-[#004a70] !text-[#004a70] hover:!bg-sky-50 !text-xs !font-family-semibold !transition-colors !cursor-pointer"
                         >
                           {pagiLoading ? "Loading..." : "See More Reviews"}
                         </button>
@@ -1407,18 +1407,18 @@ const PopularAA = () => {
               {/* Header Pricing */}
               <div>
                 <div className="!flex !items-center !justify-between !mb-1">
-                  <span className="!text-[11px] !font-family-bold !text-slate-400 !uppercase !tracking-wider">
+                  <span className="!text-[11px] !font-family-semibold !text-slate-400 !uppercase !tracking-wider">
                     Total Fare
                   </span>
-                  <span className="!px-2.5 !py-0.5 !rounded-md !bg-emerald-50 !text-emerald-700 !text-[10.5px] !font-family-bold !border !border-emerald-200/60">
+                  <span className="!px-2.5 !py-0.5 !rounded-md !bg-emerald-50 !text-emerald-700 !text-[10.5px] !font-family-semibold !border !border-emerald-200/60">
                     Instant Quote
                   </span>
                 </div>
                 <div className="!flex !items-baseline !gap-2 !mt-1">
-                  <span className="!text-3xl sm:!text-4xl !font-family-bold !tracking-tight !text-[#004a70]">
+                  <span className="!text-3xl sm:!text-4xl !font-family-semibold !tracking-tight !text-[#004a70]">
                     ${priceXcd > 0 ? priceXcd.toFixed(2) : "0.00"}
                   </span>
-                  <span className="!text-sm !font-family-bold !text-slate-600">
+                  <span className="!text-sm !font-family-semibold !text-slate-600">
                     XCD
                   </span>
                   <span className="!text-xs !font-family-medium !text-slate-400">
@@ -1438,7 +1438,7 @@ const PopularAA = () => {
               {/* Excursion Date/Time Picker (If excursion) */}
               {SubcatData?.category?.name === "Excursion" && (
                 <div className="!p-3.5 !bg-amber-50/70 !rounded-xl !border !border-amber-200/80 !space-y-2">
-                  <span className="!text-xs !font-family-bold !text-amber-800 !block">
+                  <span className="!text-xs !font-family-semibold !text-amber-800 !block">
                     Choose Date & Departure
                   </span>
                   <div className="!grid !grid-cols-2 !gap-2">
@@ -1476,7 +1476,7 @@ const PopularAA = () => {
                 <button
                   type="button"
                   onClick={HandleClick}
-                  className="!h-12 !w-full !rounded-2xl !bg-[#004a70] hover:!bg-[#003855] !text-white !text-sm !font-family-bold !shadow-md hover:!shadow-lg !transition-all !flex !items-center !justify-center !gap-2 !cursor-pointer !border-none !group"
+                  className="!h-12 !w-full !rounded-2xl !bg-[#004a70] hover:!bg-[#003855] !text-white !text-sm !font-family-semibold !shadow-md hover:!shadow-lg !transition-all !flex !items-center !justify-center !gap-2 !cursor-pointer !border-none !group"
                 >
                   <span>Book a Ride</span>
                   <FiArrowRight className="group-hover:!translate-x-1 !transition-transform" />
@@ -1486,7 +1486,7 @@ const PopularAA = () => {
                 <button
                   type="button"
                   onClick={handleShow}
-                  className="!h-12 !w-full !rounded-2xl !bg-slate-50 hover:!bg-slate-100 !text-slate-700 !text-xs sm:!text-sm !font-family-bold !border !border-slate-200 !transition-colors !flex !items-center !justify-center !gap-2 !cursor-pointer"
+                  className="!h-12 !w-full !rounded-2xl !bg-slate-50 hover:!bg-slate-100 !text-slate-700 !text-xs sm:!text-sm !font-family-semibold !border !border-slate-200 !transition-colors !flex !items-center !justify-center !gap-2 !cursor-pointer"
                 >
                   <MdOutlineRateReview size={15} className="!text-[#004a70]" />
                   <span>Write a Review</span>
@@ -1526,10 +1526,10 @@ const PopularAA = () => {
             Tour Price
           </span>
           <div className="!flex !items-baseline !gap-1">
-            <span className="!text-base !font-family-bold !text-[#004a70]">
+            <span className="!text-base !font-family-semibold !text-[#004a70]">
               ${priceXcd > 0 ? priceXcd.toFixed(2) : "0.00"}
             </span>
-            <span className="!text-[10px] !font-family-bold !text-slate-500">
+            <span className="!text-[10px] !font-family-semibold !text-slate-500">
               XCD
             </span>
           </div>
@@ -1537,7 +1537,7 @@ const PopularAA = () => {
         <button
           type="button"
           onClick={HandleClick}
-          className="!h-11 !flex-1 !rounded-xl !bg-[#004a70] !text-white !text-xs sm:!text-sm !font-family-bold !flex !items-center !justify-center !gap-1.5 !shadow-md !border-none !cursor-pointer"
+          className="!h-11 !flex-1 !rounded-xl !bg-[#004a70] !text-white !text-xs sm:!text-sm !font-family-semibold !flex !items-center !justify-center !gap-1.5 !shadow-md !border-none !cursor-pointer"
         >
           <span>Book a Ride</span>
           <FiArrowRight size={13} />
@@ -1616,7 +1616,7 @@ const PopularAA = () => {
                     ))}
                   </div>
                 )}
-                <span className="!bg-white/20 !px-3 !py-1 !rounded-full !text-[11px] !font-family-bold !shrink-0">
+                <span className="!bg-white/20 !px-3 !py-1 !rounded-full !text-[11px] !font-family-semibold !shrink-0">
                   {lightboxIdx + 1} / {displayImages.length}
                 </span>
               </div>
@@ -1639,7 +1639,7 @@ const PopularAA = () => {
                   <div className="!w-7 !h-7 !rounded-lg !bg-amber-50 !text-amber-500 !flex !items-center !justify-center">
                     <FaStar size={13} />
                   </div>
-                  <h3 className="!text-sm sm:!text-base !font-family-bold !text-slate-900 !m-0">
+                  <h3 className="!text-sm sm:!text-base !font-family-semibold !text-slate-900 !m-0">
                     Leave a Review
                   </h3>
                 </div>
@@ -1663,7 +1663,7 @@ const PopularAA = () => {
                 {({ setFieldValue, handleChange, handleBlur, values }) => (
                   <Form className="!space-y-3.5">
                     <div>
-                      <label className="!block !text-xs !font-family-bold !text-slate-700 !mb-1.5">
+                      <label className="!block !text-xs !font-family-semibold !text-slate-700 !mb-1.5">
                         Your Rating
                       </label>
                       <PrecisionRatingInput
@@ -1683,7 +1683,7 @@ const PopularAA = () => {
                     <div>
                       <label
                         htmlFor="comment"
-                        className="!block !text-xs !font-family-bold !text-slate-700 !mb-1"
+                        className="!block !text-xs !font-family-semibold !text-slate-700 !mb-1"
                       >
                         Your Feedback
                       </label>
@@ -1708,7 +1708,7 @@ const PopularAA = () => {
                       <button
                         type="submit"
                         disabled={ratingLoading}
-                        className="!h-11 !w-full !rounded-xl !bg-[#004a70] hover:!bg-[#003855] !text-white !text-xs !font-family-bold !shadow-md !transition-colors !cursor-pointer !border-none !flex !items-center !justify-center !gap-2"
+                        className="!h-11 !w-full !rounded-xl !bg-[#004a70] hover:!bg-[#003855] !text-white !text-xs !font-family-semibold !shadow-md !transition-colors !cursor-pointer !border-none !flex !items-center !justify-center !gap-2"
                       >
                         {ratingLoading ? "Submitting..." : "Submit Review"}
                       </button>

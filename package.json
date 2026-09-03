@@ -21,6 +21,7 @@
     "bootstrap": "^5.3.3",
     "browser-image-compression": "^2.0.2",
     "crypto-js": "^4.2.0",
+    "firebase": "^12.18.0",
     "formik": "^2.4.6",
     "geolib": "^3.3.4",
     "mapbox-gl": "^3.8.0",

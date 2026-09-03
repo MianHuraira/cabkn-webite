@@ -2,7 +2,7 @@
 
 import React, { Suspense, useEffect, useRef, useState } from "react";
 import moment from "moment/moment";
-import { FaLocationDot, FaStar, FaHeart } from "react-icons/fa6";
+import { FaLocationDot, FaStar, FaHeart, FaBox } from "react-icons/fa6";
 import { IoCall, IoShieldCheckmark, IoCarSport } from "react-icons/io5";
 import { RiMessage2Fill, RiRouteLine, RiFileCopyLine, RiCheckLine } from "react-icons/ri";
 import {
@@ -148,7 +148,7 @@ const ReviewCardsSkeleton = () => (
 // =========================================================================
 const RideDetail = () => {
   const router = useRouter();
-  const { header1, putData, getData } = ApiFunction();
+  const { header1, putData, getData, postData } = ApiFunction();
   const [productDetail, setProductDetail] = useState(null);
   const searchParams = useSearchParams();
   const socket = useSocket();
@@ -161,6 +161,13 @@ const RideDetail = () => {
   const [showCancelModal, setShowCancelModal] = useState(false);
   const [cancelLoading, setCancelLoading] = useState(false);
   const [messageApi, contextHolder] = message.useMessage();
+
+  // Review state
+  const [showReviewForm, setShowReviewForm] = useState(false);
+  const [reviewRating, setReviewRating] = useState(5);
+  const [reviewText, setReviewText] = useState("");
+  const [reviewLoading, setReviewLoading] = useState(false);
+  const [reviewSubmitted, setReviewSubmitted] = useState(false);
 
   // Extract initial ride data safely from sessionStorage or search params
   const [initialData, setInitialData] = useState(() => {
@@ -252,6 +259,37 @@ const RideDetail = () => {
       setFavLoading(false);
     } finally {
       setFavLoading(false);
+    }
+  };
+
+  const submitReview = async () => {
+    if (!reviewText.trim()) {
+      messageApi.warning("Please write a review before submitting");
+      return;
+    }
+    setReviewLoading(true);
+    try {
+      const body = {
+        to_id: currentOrder?.to_id?._id,
+        orderId: currentOrder?._id,
+        rating: reviewRating,
+        review: reviewText,
+      };
+      const res = await postData("rating/create", body, header1);
+      if (res?.success) {
+        messageApi.success("Review submitted successfully!");
+        setReviewSubmitted(true);
+        setShowReviewForm(false);
+        setReviewText("");
+        // Refresh reviews list on right panel
+        if (currentOrder?.to_id?._id) getReviews(currentOrder.to_id._id);
+      } else {
+        messageApi.error(res?.message || "Failed to submit review");
+      }
+    } catch (err) {
+      messageApi.error("Something went wrong");
+    } finally {
+      setReviewLoading(false);
     }
   };
 
@@ -717,6 +755,18 @@ const RideDetail = () => {
                   <span className={`w-1.5 h-1.5 rounded-full animate-pulse ${statusMeta.dot}`} />
                   {statusMeta.label}
                 </span>
+
+                {currentOrder?.isAirportPickup && (
+                  <span className="inline-flex items-center gap-1 px-2.5 py-0.5 rounded-full text-xs !font-family-semibold bg-sky-500/20 text-sky-200 !border !border-sky-400/30">
+                    ✈️ Airport Pickup {currentOrder?.flightNumber ? `• Flight ${currentOrder.flightNumber}` : ""}
+                  </span>
+                )}
+
+                {(currentOrder?.type === "parcel" || currentOrder?.rideType === "parcel" || currentOrder?.parcelTitle) && (
+                  <span className="inline-flex items-center gap-1 px-2.5 py-0.5 rounded-full text-xs !font-family-semibold bg-amber-500/20 text-amber-200 !border !border-amber-400/30">
+                    📦 Parcel Delivery {currentOrder?.title || currentOrder?.parcelTitle ? `• ${currentOrder.title || currentOrder.parcelTitle}` : ""}
+                  </span>
+                )}
               </div>
 
               <p className="text-slate-300 text-xs font-family-regular !mt-1 !m-0 flex items-center gap-1.5">
@@ -833,6 +883,43 @@ const RideDetail = () => {
                 </div>
               </div>
 
+              {/* 2.5 PARCEL ITEM DETAILS CARD */}
+              {(currentOrder?.type === "parcel" || currentOrder?.rideType === "parcel" || currentOrder?.parcelTitle) && (
+                <div className="!p-3 !bg-amber-50/70 !rounded-xl !border !border-amber-200/80 !space-y-2">
+                  <div className="!flex !items-center !justify-between">
+                    <span className="!text-xs !font-family-semibold !text-amber-900 !flex !items-center !gap-1.5">
+                      <FaBox size={13} className="!text-amber-700" />
+                      Parcel Item Details
+                    </span>
+                    <span className="!text-[10.5px] !font-family-semibold !text-amber-700 !bg-white !px-2 !py-0.5 !rounded-md !border !border-amber-200 !shadow-2xs">
+                      Courier Package
+                    </span>
+                  </div>
+
+                  <div className="!flex !items-center !gap-3">
+                    {currentOrder?.image || currentOrder?.parcelImage ? (
+                      <img
+                        src={currentOrder.image || currentOrder.parcelImage}
+                        alt={currentOrder?.title || currentOrder?.parcelTitle || "Parcel"}
+                        className="!w-14 !h-14 !rounded-lg !object-cover !border !border-amber-200 !shadow-xs !shrink-0"
+                      />
+                    ) : (
+                      <div className="!w-14 !h-14 !rounded-lg !bg-amber-100/90 !text-amber-700 !flex !items-center !justify-center !shrink-0 !border !border-amber-200">
+                        <FaBox size={22} />
+                      </div>
+                    )}
+                    <div className="!min-w-0 !flex-1">
+                      <h4 className="!text-xs sm:!text-sm !font-family-semibold !text-slate-900 !m-0 !truncate">
+                        {currentOrder?.title || currentOrder?.parcelTitle || "Package / Parcel"}
+                      </h4>
+                      <p className="!text-[11px] !text-slate-500 !font-family-regular !m-0 !mt-0.5">
+                        Direct delivery from pickup to destination
+                      </p>
+                    </div>
+                  </div>
+                </div>
+              )}
+
               {/* 3. INTEGRATED PAYMENT RECEIPT SECTION */}
               <div className="pt-3 border-t border-slate-100">
                 <div className="flex items-center justify-between mb-2">
@@ -863,6 +950,14 @@ const RideDetail = () => {
                       </span>
                     </div>
                   )}
+                  {currentOrder?.isAirportPickup && Number(currentOrder?.luggageFee || 0) > 0 && (
+                    <div className="flex justify-between text-slate-500 font-family-regular">
+                      <span>Luggage ({currentOrder?.luggageCount || 0} pieces)</span>
+                      <span className="text-slate-800 font-family-medium">
+                        ${Number(currentOrder?.luggageFee).toFixed(2)}
+                      </span>
+                    </div>
+                  )}
                   {currentOrder?.tip > 0 && (
                     <div className="flex justify-between text-slate-500 font-family-regular">
                       <span>Driver Tip</span>
@@ -888,6 +983,7 @@ const RideDetail = () => {
               </div>
 
               {/* Driver Actions */}
+              {/* Add to Favorites */}
               {currentOrder?.status === "completed" && !currentOrder?.likes && (
                 <button
                   onClick={fav}
@@ -895,6 +991,126 @@ const RideDetail = () => {
                 >
                   <FaHeart size={11} /> Add Driver to Favorites
                 </button>
+              )}
+
+              {/* ── Review Section (completed rides only) ── */}
+              {currentOrder?.status === "completed" && (
+                <div className="space-y-2">
+                  {reviewSubmitted ? (
+                    <div
+                      className="w-full h-9 rounded-xl flex items-center justify-center gap-1.5 text-xs font-family-semibold text-emerald-700"
+                      style={{ background: "#f0fdf4", border: "1px solid #bbf7d0" }}
+                    >
+                      <FaStar size={11} className="text-emerald-500" />
+                      Review Submitted — Thank you!
+                    </div>
+                  ) : (
+                    <>
+                      {/* Toggle Button */}
+                      <button
+                        onClick={() => setShowReviewForm((p) => !p)}
+                        className="w-full h-9 rounded-xl text-xs font-family-semibold flex items-center justify-center gap-1.5 transition-all duration-200 cursor-pointer"
+                        style={{
+                          background: showReviewForm ? "#fffbeb" : "#fff",
+                          border: `1px solid ${showReviewForm ? "#fde68a" : "#e2e8f0"}`,
+                          color: showReviewForm ? "#b45309" : "#475569",
+                        }}
+                      >
+                        <FaStar size={11} className={showReviewForm ? "text-amber-400" : "text-slate-400"} />
+                        {showReviewForm ? "Close Review" : "Write a Review"}
+                      </button>
+
+                      {/* Inline Review Form — Premium Design */}
+                      {showReviewForm && (
+                        <div
+                          className="rounded-2xl overflow-hidden shadow-sm"
+                          style={{ border: "1px solid #e8edf2", background: "#fff" }}
+                        >
+                          {/* Form Header */}
+                          <div className="flex items-center gap-2 px-4 pt-4 pb-3" style={{ borderBottom: "1px solid #f1f5f9" }}>
+                            <span className="w-7 h-7 rounded-full bg-amber-50 flex items-center justify-center shrink-0">
+                              <FaStar size={13} className="text-amber-400" />
+                            </span>
+                            <span className="text-[13px] font-family-bold text-slate-900">Leave a Review</span>
+                          </div>
+
+                          <div className="px-4 pb-4 pt-3 space-y-3">
+                            {/* Rating */}
+                            <div>
+                              <p className="text-[11px] font-family-bold text-slate-700 !mb-2">Your Rating</p>
+                              <div className="flex items-center justify-between">
+                                {/* Green Stars */}
+                                <div className="flex items-center gap-0.5">
+                                  {[1, 2, 3, 4, 5].map((star) => (
+                                    <button
+                                      key={star}
+                                      type="button"
+                                      onClick={() => setReviewRating(star)}
+                                      className="cursor-pointer !border-none bg-transparent p-0.5 transition-transform hover:scale-110 active:scale-95"
+                                    >
+                                      <FaStar
+                                        size={24}
+                                        style={{ color: star <= reviewRating ? "#22c55e" : "#e2e8f0" }}
+                                      />
+                                    </button>
+                                  ))}
+                                </div>
+                                {/* Score Badge */}
+                                <span
+                                  className="inline-flex items-center gap-1 px-2 py-0.5 rounded-full text-[10.5px] font-family-bold"
+                                  style={{ background: "#f0fdf4", color: "#16a34a", border: "1px solid #bbf7d0" }}
+                                >
+                                  <FaStar size={8} className="text-green-500" />
+                                  {reviewRating}.0 / 5.0
+                                </span>
+                              </div>
+                              {/* Label Row */}
+                              <div className="flex items-center justify-between mt-1">
+                                <span className="text-[11px] font-family-semibold" style={{ color: "#16a34a" }}>
+                                  {reviewRating === 5 ? "Exceptional! 🤩"
+                                    : reviewRating === 4 ? "Great! 😊"
+                                    : reviewRating === 3 ? "Good 🙂"
+                                    : reviewRating === 2 ? "Fair 😐"
+                                    : "Poor 😞"}
+                                </span>
+                                <span className="text-[10px] text-slate-400 font-family-regular">Tap to adjust</span>
+                              </div>
+                            </div>
+
+                            {/* Feedback */}
+                            <div>
+                              <p className="text-[11px] font-family-bold text-slate-700 !mb-2">Your Feedback</p>
+                              <textarea
+                                value={reviewText}
+                                onChange={(e) => setReviewText(e.target.value)}
+                                placeholder="Share your experience with this driver..."
+                                rows={3}
+                                className="w-full text-xs font-family-regular text-slate-700 placeholder-slate-400 rounded-xl px-3 py-2.5 resize-none outline-none transition-colors"
+                                style={{ background: "#f8fafc", border: "1.5px solid #e2e8f0" }}
+                                onFocus={(e) => { e.target.style.borderColor = "#004a70"; e.target.style.background = "#fff"; }}
+                                onBlur={(e) => { e.target.style.borderColor = "#e2e8f0"; e.target.style.background = "#f8fafc"; }}
+                              />
+                            </div>
+
+                            {/* Submit */}
+                            <button
+                              onClick={submitReview}
+                              disabled={reviewLoading}
+                              className="w-full h-10 rounded-xl text-white text-xs font-family-bold flex items-center justify-center gap-1.5 cursor-pointer !border-none transition-all duration-200 active:scale-[0.98] disabled:opacity-60"
+                              style={{ background: "linear-gradient(135deg, #003855 0%, #004a70 50%, #006090 100%)" }}
+                            >
+                              {reviewLoading ? (
+                                <span className="inline-block w-3.5 h-3.5 border-2 border-white border-t-transparent rounded-full animate-spin" />
+                              ) : (
+                                "Submit Review"
+                              )}
+                            </button>
+                          </div>
+                        </div>
+                      )}
+                    </>
+                  )}
+                </div>
               )}
 
               {(currentOrder?.status === "accepted" || currentOrder?.status === "pending" || currentOrder?.status === "driver_assigned") && (
@@ -1030,7 +1246,7 @@ const RideDetail = () => {
                         <div className="!w-5 !h-5 !rounded-lg !bg-[#004a70] !text-white !flex !items-center !justify-center !shrink-0">
                           <FaLocationDot size={10} />
                         </div>
-                        <span className="!text-[11.5px] !font-family-bold !text-slate-800 !truncate">
+                        <span className="!text-[11.5px] !font-family-semibold !text-slate-800 !truncate">
                           Interactive Route Map
                         </span>
                         {activeFocusedLocation && (
@@ -1075,7 +1291,7 @@ const RideDetail = () => {
                           title="Click to zoom on start location"
                         >
                           <span className="!w-2 !h-2 !rounded-full !bg-[#004a70] !shrink-0" />
-                          <span className="!font-family-bold !text-[#004a70] !text-[11px]">Start:</span>
+                          <span className="!font-family-semibold !text-[#004a70] !text-[11px]">Start:</span>
                           <span className="!truncate !text-[11px]">{currentOrder?.start_address || "Pickup location"}</span>
                         </div>
 
@@ -1090,7 +1306,7 @@ const RideDetail = () => {
                           title="Click to zoom on end destination"
                         >
                           <span className="!w-2 !h-2 !rounded-full !bg-rose-600 !shrink-0" />
-                          <span className="!font-family-bold !text-rose-600 !text-[11px]">End:</span>
+                          <span className="!font-family-semibold !text-rose-600 !text-[11px]">End:</span>
                           <span className="!truncate !text-[11px]">{currentOrder?.end_address || "Destination"}</span>
                         </div>
                       </div>
@@ -1176,7 +1392,7 @@ const RideDetail = () => {
             </div>
 
             <div className="text-center space-y-1">
-              <h3 className="text-base font-family-bold text-slate-900 !m-0">
+              <h3 className="text-base font-family-semibold text-slate-900 !m-0">
                 Cancel Your Ride?
               </h3>
               <p className="text-xs text-slate-500 font-family-regular !m-0">
@@ -1198,7 +1414,7 @@ const RideDetail = () => {
                 type="button"
                 disabled={cancelLoading}
                 onClick={handleConfirmCancel}
-                className="flex-1 h-10 rounded-xl bg-rose-600 hover:bg-rose-700 text-white text-xs font-family-bold flex items-center justify-center gap-2 transition-colors cursor-pointer shadow-md shadow-rose-600/20 disabled:opacity-50"
+                className="flex-1 h-10 rounded-xl bg-rose-600 hover:bg-rose-700 text-white text-xs font-family-semibold flex items-center justify-center gap-2 transition-colors cursor-pointer shadow-md shadow-rose-600/20 disabled:opacity-50"
               >
                 {cancelLoading ? (
                   <>

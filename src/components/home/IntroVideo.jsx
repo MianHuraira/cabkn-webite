@@ -338,10 +338,10 @@ function IntroVideo() {
 
           {/* Right: Content */}
           <div className="flex flex-col gap-6 sm:gap-8">
-            <span className="inline-block px-4 py-1.5 bg-white text-brand-700 rounded-full text-xs font-family-bold w-fit shadow-sm border border-slate-200/60 uppercase tracking-wider">
+            <span className="inline-block px-4 py-1.5 bg-white text-brand-700 rounded-full text-xs font-family-semibold w-fit shadow-sm border border-slate-200/60 uppercase tracking-wider">
               Watch Our Story
             </span>
-            <h2 className="text-3xl md:text-4xl font-family-bold text-slate-900 leading-tight m-0">
+            <h2 className="text-3xl md:text-4xl font-family-semibold text-slate-900 leading-tight m-0">
               See How We're Transforming Travel
             </h2>
             <p className="text-slate-600 text-base md:text-lg font-family-regular leading-relaxed m-0">

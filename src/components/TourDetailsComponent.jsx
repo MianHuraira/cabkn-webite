@@ -417,13 +417,13 @@ export default function TourDetailsComponent() {
           <div className="w-12 h-12 rounded-xl bg-sky-50 text-[#004a70] mx-auto flex items-center justify-center">
             <FiMapPin size={22} />
           </div>
-          <h2 className="text-base font-family-bold text-slate-900 !m-0">Tour Not Found</h2>
+          <h2 className="text-base font-family-semibold text-slate-900 !m-0">Tour Not Found</h2>
           <p className="text-xs text-slate-500 leading-relaxed">
             The tour experience you are looking for is currently unavailable.
           </p>
           <Link
             href="/tours"
-            className="inline-flex items-center gap-1.5 px-4 py-2 rounded-xl bg-[#004a70] hover:bg-[#003855] text-white text-xs font-family-bold shadow-md no-underline transition-all"
+            className="inline-flex items-center gap-1.5 px-4 py-2 rounded-xl bg-[#004a70] hover:bg-[#003855] text-white text-xs font-family-semibold shadow-md no-underline transition-all"
           >
             <FiArrowLeft size={13} />
             <span>Explore All Tours</span>
@@ -634,7 +634,7 @@ export default function TourDetailsComponent() {
               {/* Top Meta Tags Row */}
               <div className="!flex !items-center !gap-2 !flex-wrap !mb-3">
                 {tour?.category?.name && (
-                  <span className="!px-2.5 !py-1 !rounded-md !text-[11px] !font-family-bold !font-bold !uppercase !tracking-wider !bg-amber-500 !text-black !shadow-sm">
+                  <span className="!px-2.5 !py-1 !rounded-md !text-[11px] !font-family-semibold !font-bold !uppercase !tracking-wider !bg-amber-500 !text-black !shadow-sm">
                     {tour.category.name}
                   </span>
                 )}
@@ -654,7 +654,7 @@ export default function TourDetailsComponent() {
               </div>
 
               {/* Title */}
-              <h1 className="!text-white !text-3xl sm:!text-4xl md:!text-5xl !font-family-bold !font-bold !tracking-tight !m-0 !mb-3 !leading-[1.1]">
+              <h1 className="!text-white !text-3xl sm:!text-4xl md:!text-5xl !font-family-semibold !font-bold !tracking-tight !m-0 !mb-3 !leading-[1.1]">
                 {cleanTitle}
               </h1>
 
@@ -663,7 +663,7 @@ export default function TourDetailsComponent() {
                 {tour?.ratingsAverage > 0 && (
                   <div className="!flex !items-center !gap-1 !bg-amber-500/20 !border !border-amber-400/40 !px-2.5 !py-1 !rounded-md">
                     <FaStar size={11} className="!text-amber-400" />
-                    <span className="!text-amber-400 !text-xs !font-family-bold !font-bold">
+                    <span className="!text-amber-400 !text-xs !font-family-semibold !font-bold">
                       {tour.ratingsAverage.toFixed(1)}
                     </span>
                     <span className="!text-white/60 !text-[11px] !font-family-medium">
@@ -717,7 +717,7 @@ export default function TourDetailsComponent() {
                 <button
                   type="button"
                   onClick={handleBookNow}
-                  className="!flex !items-center !gap-2 !px-6 !py-3 !rounded-xl !text-white !text-sm !font-family-bold !font-bold !cursor-pointer !transition-all hover:!scale-105 !shadow-xl !border-none !select-none"
+                  className="!flex !items-center !gap-2 !px-6 !py-3 !rounded-xl !text-white !text-sm !font-family-semibold !font-bold !cursor-pointer !transition-all hover:!scale-105 !shadow-xl !border-none !select-none"
                   style={{
                     background: "#004a70",
                     boxShadow: "0 8px 30px rgba(0,74,112,0.45)",
@@ -780,7 +780,7 @@ export default function TourDetailsComponent() {
                   <span className="text-[10px] text-slate-400 font-family-semibold uppercase tracking-wider block leading-none">
                     Duration
                   </span>
-                  <span className="text-xs font-family-bold text-slate-900 block mt-0.5 truncate">
+                  <span className="text-xs font-family-semibold text-slate-900 block mt-0.5 truncate">
                     {tour.durationHours ? `${tour.durationHours} Hours` : "Flexible"}
                   </span>
                 </div>
@@ -794,7 +794,7 @@ export default function TourDetailsComponent() {
                   <span className="text-[10px] text-slate-400 font-family-semibold uppercase tracking-wider block leading-none">
                     {isGroup ? "Party Size" : "Price by Age"}
                   </span>
-                  <span className="text-xs font-family-bold text-slate-900 block mt-0.5 truncate">
+                  <span className="text-xs font-family-semibold text-slate-900 block mt-0.5 truncate">
                     {isGroup
                       ? `${minPeople}–${maxPeople} Guests`
                       : `$${adultUnitDiscountedUSD.toFixed(2)} adult`}
@@ -810,7 +810,7 @@ export default function TourDetailsComponent() {
                   <span className="text-[10px] text-slate-400 font-family-semibold uppercase tracking-wider block leading-none">
                     Schedule
                   </span>
-                  <span className="text-xs font-family-bold text-slate-900 block mt-0.5 truncate">
+                  <span className="text-xs font-family-semibold text-slate-900 block mt-0.5 truncate">
                     {Array.isArray(tour.schedule) && tour.schedule.length > 0
                       ? `${tour.schedule.length} Days`
                       : "Daily"}
@@ -826,7 +826,7 @@ export default function TourDetailsComponent() {
                   <span className="text-[10px] text-slate-400 font-family-semibold uppercase tracking-wider block leading-none">
                     Verified
                   </span>
-                  <span className="text-xs font-family-bold text-slate-900 block mt-0.5 truncate">
+                  <span className="text-xs font-family-semibold text-slate-900 block mt-0.5 truncate">
                     Certified Guide
                   </span>
                 </div>
@@ -840,10 +840,10 @@ export default function TourDetailsComponent() {
                   <FiMapPin size={15} />
                 </div>
                 <div className="flex-1 min-w-0">
-                  <span className="text-[10px] font-family-bold text-[#004a70] uppercase tracking-wider block leading-none">
+                  <span className="text-[10px] font-family-semibold text-[#004a70] uppercase tracking-wider block leading-none">
                     Meeting Location
                   </span>
-                  <p className="text-xs font-family-bold text-slate-900 !m-0 mt-0.5 leading-tight truncate">
+                  <p className="text-xs font-family-semibold text-slate-900 !m-0 mt-0.5 leading-tight truncate">
                     {tour.meetingPoint.address}
                   </p>
                 </div>
@@ -873,7 +873,7 @@ export default function TourDetailsComponent() {
                           onClick={() => handleTabClick(tab.key, tab.ref)}
                           className={`!cursor-pointer !transition-all !duration-200 !select-none !flex !items-center !gap-2 !px-5 !py-2.5 !rounded-full !text-xs sm:!text-sm !whitespace-nowrap !border !shadow-sm ${
                             isSelected
-                              ? "!text-white !bg-[#004a70] !border-[#004a70] !font-family-bold !shadow-md"
+                              ? "!text-white !bg-[#004a70] !border-[#004a70] !font-family-semibold !shadow-md"
                               : "!text-slate-700 !bg-white !border-slate-200/90 hover:!border-[#004a70] hover:!bg-slate-50 hover:!text-[#004a70] !font-family-semibold"
                           }`}
                         >
@@ -883,7 +883,7 @@ export default function TourDetailsComponent() {
                           <span>{tab.label}</span>
                           {tab.badge !== undefined && (
                             <span
-                              className={`!text-[10.5px] !px-2 !py-0.5 !rounded-full !font-family-bold ${
+                              className={`!text-[10.5px] !px-2 !py-0.5 !rounded-full !font-family-semibold ${
                                 isSelected
                                   ? "!bg-white/20 !text-white"
                                   : "!bg-slate-100 !text-slate-700"
@@ -912,7 +912,7 @@ export default function TourDetailsComponent() {
                   <div className="w-6 h-6 rounded-md bg-sky-500/10 text-[#004a70] flex items-center justify-center">
                     <HiOutlineSparkles size={13} />
                   </div>
-                  <h3 className="text-sm sm:text-base font-family-bold text-slate-900 !m-0">
+                  <h3 className="text-sm sm:text-base font-family-semibold text-slate-900 !m-0">
                     Tour Overview
                   </h3>
                 </div>
@@ -937,7 +937,7 @@ export default function TourDetailsComponent() {
                       <div className="w-5 h-5 rounded-md bg-emerald-500/10 text-emerald-600 flex items-center justify-center">
                         <FaCheck size={10} />
                       </div>
-                      <h3 className="text-xs sm:text-sm font-family-bold text-slate-900 !m-0">
+                      <h3 className="text-xs sm:text-sm font-family-semibold text-slate-900 !m-0">
                         What&apos;s Included
                       </h3>
                     </div>
@@ -963,7 +963,7 @@ export default function TourDetailsComponent() {
                       <div className="w-5 h-5 rounded-md bg-rose-500/10 text-rose-600 flex items-center justify-center">
                         <FaXmark size={10} />
                       </div>
-                      <h4 className="text-xs font-family-bold uppercase tracking-wider text-slate-700 !m-0">
+                      <h4 className="text-xs font-family-semibold uppercase tracking-wider text-slate-700 !m-0">
                         Not Included
                       </h4>
                     </div>
@@ -998,11 +998,11 @@ export default function TourDetailsComponent() {
                     <div className="w-6 h-6 rounded-md bg-sky-500/10 text-[#004a70] flex items-center justify-center">
                       <HiOutlineMapPin size={13} />
                     </div>
-                    <h3 className="text-sm sm:text-base font-family-bold text-slate-900 !m-0">
+                    <h3 className="text-sm sm:text-base font-family-semibold text-slate-900 !m-0">
                       Itinerary & Route Map
                     </h3>
                   </div>
-                  <span className="px-2.5 py-0.5 rounded-full bg-sky-500/10 border border-sky-400/20 text-[11px] text-[#004a70] font-family-bold">
+                  <span className="px-2.5 py-0.5 rounded-full bg-sky-500/10 border border-sky-400/20 text-[11px] text-[#004a70] font-family-semibold">
                     {tour.stops.length} Stops
                   </span>
                 </div>
@@ -1010,7 +1010,7 @@ export default function TourDetailsComponent() {
                 {/* Mapbox Canvas */}
                 <div className="relative w-full h-[220px] sm:h-[260px] rounded-xl overflow-hidden border border-slate-200/90 shadow-2xs bg-slate-950">
                   <div ref={mapContainerRef} className="w-full h-full" />
-                  <div className="absolute top-2.5 left-2.5 bg-black/60 backdrop-blur-md text-white px-2.5 py-1 rounded-lg text-[11px] font-family-bold shadow-md flex items-center gap-1.5 pointer-events-none z-10 border border-white/20">
+                  <div className="absolute top-2.5 left-2.5 bg-black/60 backdrop-blur-md text-white px-2.5 py-1 rounded-lg text-[11px] font-family-semibold shadow-md flex items-center gap-1.5 pointer-events-none z-10 border border-white/20">
                     <FiMapPin size={11} className="text-sky-300" />
                     <span>{tour.stops.length} Waypoints</span>
                   </div>
@@ -1024,7 +1024,7 @@ export default function TourDetailsComponent() {
 
                     return (
                       <div key={i} className="flex items-start gap-2.5 relative z-10">
-                        <div className="w-6 h-6 rounded-full bg-[#004a70] text-white font-family-bold text-[10.5px] flex items-center justify-center shrink-0 shadow-xs mt-0.5 ring-2 ring-white">
+                        <div className="w-6 h-6 rounded-full bg-[#004a70] text-white font-family-semibold text-[10.5px] flex items-center justify-center shrink-0 shadow-xs mt-0.5 ring-2 ring-white">
                           {i + 1}
                         </div>
 
@@ -1037,7 +1037,7 @@ export default function TourDetailsComponent() {
                             className="w-full p-2.5 sm:p-3 text-left flex items-start justify-between gap-2 hover:bg-slate-50/70 transition-colors cursor-pointer border-none bg-transparent"
                           >
                             <div className="space-y-0.5 min-w-0">
-                              <span className="text-xs sm:text-[13px] font-family-bold text-slate-900 block leading-snug truncate">
+                              <span className="text-xs sm:text-[13px] font-family-semibold text-slate-900 block leading-snug truncate">
                                 {stop.name || stop.title || `Stop ${i + 1}`}
                               </span>
                               {stop.address && (
@@ -1099,7 +1099,7 @@ export default function TourDetailsComponent() {
                     <div className="w-6 h-6 rounded-md bg-sky-500/10 text-[#004a70] flex items-center justify-center">
                       <HiOutlineCalendarDays size={13} />
                     </div>
-                    <h3 className="text-sm sm:text-base font-family-bold text-slate-900 !m-0">
+                    <h3 className="text-sm sm:text-base font-family-semibold text-slate-900 !m-0">
                       Available Days & Slots
                     </h3>
                   </div>
@@ -1132,7 +1132,7 @@ export default function TourDetailsComponent() {
                             : "bg-slate-100/60 text-slate-400 border-slate-200/50 opacity-50 cursor-not-allowed"
                         }`}
                       >
-                        <div className="text-xs font-family-bold">{day}</div>
+                        <div className="text-xs font-family-semibold">{day}</div>
                         <div className="text-[9.5px] font-family-medium mt-0.5 opacity-80">
                           {isAvail ? `${matchedDay.slots.length} slots` : "Off"}
                         </div>
@@ -1143,7 +1143,7 @@ export default function TourDetailsComponent() {
 
                 {selectedScheduleDay && (
                   <div className="pt-2 border-t border-slate-100 space-y-1.5">
-                    <span className="text-[11px] font-family-bold text-slate-700 block">
+                    <span className="text-[11px] font-family-semibold text-slate-700 block">
                       Departure time slots for {selectedScheduleDay}:
                     </span>
                     <div className="flex items-center gap-1.5 flex-wrap">
@@ -1155,7 +1155,7 @@ export default function TourDetailsComponent() {
                         ?.slots?.map((slot, idx) => (
                           <span
                             key={idx}
-                            className="px-2.5 py-1.5 rounded-lg bg-sky-500/[0.09] text-[#004a70] border border-sky-400/25 text-[11px] font-family-bold flex items-center gap-1 shadow-2xs"
+                            className="px-2.5 py-1.5 rounded-lg bg-sky-500/[0.09] text-[#004a70] border border-sky-400/25 text-[11px] font-family-semibold flex items-center gap-1 shadow-2xs"
                           >
                             <FaClock size={10} className="text-[#004a70]" />
                             <span>{formatTime12h(slot)}</span>
@@ -1184,7 +1184,7 @@ export default function TourDetailsComponent() {
                     <div className="w-6 h-6 rounded-md bg-sky-500/10 text-[#004a70] flex items-center justify-center">
                       <FaUsers size={12} />
                     </div>
-                    <h3 className="text-sm sm:text-base font-family-bold text-slate-900 !m-0">
+                    <h3 className="text-sm sm:text-base font-family-semibold text-slate-900 !m-0">
                       Booking Information
                     </h3>
                   </div>
@@ -1197,7 +1197,7 @@ export default function TourDetailsComponent() {
                 <div className="p-3.5 bg-white/70 backdrop-blur-md rounded-xl border border-slate-200/80 shadow-2xs space-y-2">
                   <div className="flex items-baseline justify-between flex-wrap gap-2">
                     <div>
-                      <span className="text-xs font-family-bold text-slate-900 block">
+                      <span className="text-xs font-family-semibold text-slate-900 block">
                         Group Flat Rate
                       </span>
                       <span className="text-[11px] text-slate-500 font-family-medium">
@@ -1210,12 +1210,12 @@ export default function TourDetailsComponent() {
                           <span className="text-xs text-slate-400 line-through">
                             ${originalPriceUSD.toFixed(2)} USD
                           </span>
-                          <span className="px-1.5 py-0.2 rounded-md bg-emerald-50 text-emerald-700 font-family-bold text-[9.5px] border border-emerald-200">
+                          <span className="px-1.5 py-0.2 rounded-md bg-emerald-50 text-emerald-700 font-family-semibold text-[9.5px] border border-emerald-200">
                             {itemDiscountPct}% OFF
                           </span>
                         </div>
                       )}
-                      <span className="text-base sm:text-lg font-family-bold text-[#004a70] block">
+                      <span className="text-base sm:text-lg font-family-semibold text-[#004a70] block">
                         ${finalPriceUSD.toFixed(2)} USD
                       </span>
                       <span className="text-[10.5px] text-slate-400 font-family-medium">
@@ -1240,7 +1240,7 @@ export default function TourDetailsComponent() {
                     <div className="w-6 h-6 rounded-md bg-sky-500/10 text-[#004a70] flex items-center justify-center">
                       <FaUsers size={12} />
                     </div>
-                    <h3 className="text-sm sm:text-base font-family-bold text-slate-900 !m-0">
+                    <h3 className="text-sm sm:text-base font-family-semibold text-slate-900 !m-0">
                       Pricing Breakdown by Age
                     </h3>
                   </div>
@@ -1251,11 +1251,11 @@ export default function TourDetailsComponent() {
 
                 <div className="grid grid-cols-1 sm:grid-cols-2 gap-2.5">
                   <div className="p-3 bg-white/70 backdrop-blur-md rounded-xl border border-slate-200/80 shadow-2xs">
-                    <span className="text-xs font-family-bold text-slate-800 block">
+                    <span className="text-xs font-family-semibold text-slate-800 block">
                       Adults (Age 16+)
                     </span>
                     <div className="flex items-baseline gap-1.5 mt-0.5">
-                      <span className="text-sm font-family-bold text-[#004a70]">
+                      <span className="text-sm font-family-semibold text-[#004a70]">
                         ${adultUnitDiscountedUSD.toFixed(2)} USD
                       </span>
                       {hasDiscount && (
@@ -1270,11 +1270,11 @@ export default function TourDetailsComponent() {
                   </div>
 
                   <div className="p-3 bg-white/70 backdrop-blur-md rounded-xl border border-slate-200/80 shadow-2xs">
-                    <span className="text-xs font-family-bold text-slate-800 block">
+                    <span className="text-xs font-family-semibold text-slate-800 block">
                       Children (Age 1–15)
                     </span>
                     <div className="flex items-baseline gap-1.5 mt-0.5">
-                      <span className="text-sm font-family-bold text-[#004a70]">
+                      <span className="text-sm font-family-semibold text-[#004a70]">
                         ${kidUnitDiscountedUSD.toFixed(2)} USD
                       </span>
                       {hasDiscount && (
@@ -1298,7 +1298,7 @@ export default function TourDetailsComponent() {
                   <div className="w-6 h-6 rounded-md bg-sky-500/10 text-[#004a70] flex items-center justify-center">
                     <FiInfo size={13} />
                   </div>
-                  <h3 className="text-sm sm:text-base font-family-bold text-slate-900 !m-0">
+                  <h3 className="text-sm sm:text-base font-family-semibold text-slate-900 !m-0">
                     Accessibility & Facilities
                   </h3>
                 </div>
@@ -1328,7 +1328,7 @@ export default function TourDetailsComponent() {
                       <FiFileText size={14} />
                     </div>
                     <div>
-                      <span className="text-xs sm:text-sm font-family-bold text-slate-900 block">
+                      <span className="text-xs sm:text-sm font-family-semibold text-slate-900 block">
                         Cancellation Policy
                       </span>
                       <span className="text-[10.5px] text-slate-400 font-family-medium">
@@ -1360,11 +1360,11 @@ export default function TourDetailsComponent() {
                 <div className="flex items-center justify-between pb-2 border-b border-slate-100">
                   <div className="flex items-center gap-1.5">
                     <FaStar className="text-amber-400 text-sm" />
-                    <h3 className="text-sm sm:text-base font-family-bold text-slate-900 !m-0">
+                    <h3 className="text-sm sm:text-base font-family-semibold text-slate-900 !m-0">
                       Guest Reviews
                     </h3>
                   </div>
-                  <span className="px-2 py-0.5 rounded-full bg-amber-500/10 border border-amber-400/30 text-amber-600 text-[11px] font-family-bold">
+                  <span className="px-2 py-0.5 rounded-full bg-amber-500/10 border border-amber-400/30 text-amber-600 text-[11px] font-family-semibold">
                     {tour.avgRating?.toFixed(1) || "5.0"} ★ ({reviews.length})
                   </span>
                 </div>
@@ -1377,14 +1377,14 @@ export default function TourDetailsComponent() {
                     >
                       <div className="flex items-center justify-between">
                         <div className="flex items-center gap-2">
-                          <div className="w-6 h-6 rounded-full bg-[#004a70] text-white text-[10px] font-family-bold flex items-center justify-center">
+                          <div className="w-6 h-6 rounded-full bg-[#004a70] text-white text-[10px] font-family-semibold flex items-center justify-center">
                             {(rev.name || rev.user?.name || "G").charAt(0).toUpperCase()}
                           </div>
-                          <span className="text-xs font-family-bold text-slate-900 leading-tight">
+                          <span className="text-xs font-family-semibold text-slate-900 leading-tight">
                             {rev.name || rev.user?.name || "Guest"}
                           </span>
                         </div>
-                        <div className="flex items-center gap-1 text-amber-400 text-[11px] font-family-bold">
+                        <div className="flex items-center gap-1 text-amber-400 text-[11px] font-family-semibold">
                           <FaStar size={9} />
                           <span>{rev.rating || 5}</span>
                         </div>
@@ -1409,10 +1409,10 @@ export default function TourDetailsComponent() {
             >
               {/* Header */}
               <div className="space-y-0.5 pb-2.5 border-b border-slate-100">
-                <span className="text-[10px] font-family-bold uppercase tracking-wider text-[#004a70] block leading-none">
+                <span className="text-[10px] font-family-semibold uppercase tracking-wider text-[#004a70] block leading-none">
                   {tour.category?.name || "Official Excursion"}
                 </span>
-                <h2 className="text-sm sm:text-base font-family-bold text-slate-900 leading-snug !m-0">
+                <h2 className="text-sm sm:text-base font-family-semibold text-slate-900 leading-snug !m-0">
                   {tour.title}
                 </h2>
               </div>
@@ -1421,8 +1421,8 @@ export default function TourDetailsComponent() {
               {isGroup ? (
                 <div className="p-3 bg-slate-50/90 rounded-xl border border-slate-200/70 space-y-1">
                   <div className="flex items-center justify-between">
-                    <span className="text-xs font-family-bold text-slate-800">Booking Type</span>
-                    <span className="px-2 py-0.5 rounded-md bg-[#004a70]/10 text-[#004a70] text-[10.5px] font-family-bold">
+                    <span className="text-xs font-family-semibold text-slate-800">Booking Type</span>
+                    <span className="px-2 py-0.5 rounded-md bg-[#004a70]/10 text-[#004a70] text-[10.5px] font-family-semibold">
                       Group Tour
                     </span>
                   </div>
@@ -1433,7 +1433,7 @@ export default function TourDetailsComponent() {
               ) : (
                 <div className="space-y-2">
                   <div className="flex items-center justify-between">
-                    <h4 className="text-xs font-family-bold text-slate-900 !m-0">Select Guests</h4>
+                    <h4 className="text-xs font-family-semibold text-slate-900 !m-0">Select Guests</h4>
                     <span className="text-[10px] text-slate-400 font-family-medium">
                       {totalGuests} total
                     </span>
@@ -1442,11 +1442,11 @@ export default function TourDetailsComponent() {
                   {/* Adults */}
                   <div className="flex items-center justify-between p-2.5 bg-slate-50/90 rounded-xl border border-slate-200/70">
                     <div>
-                      <span className="text-xs font-family-bold text-slate-800 block leading-tight">
+                      <span className="text-xs font-family-semibold text-slate-800 block leading-tight">
                         Adults (16+)
                       </span>
                       <div className="flex items-center gap-1.5">
-                        <span className="text-[11.5px] text-[#004a70] font-family-bold">
+                        <span className="text-[11.5px] text-[#004a70] font-family-semibold">
                           ${adultUnitDiscountedUSD.toFixed(2)} USD
                         </span>
                         {hasDiscount && (
@@ -1466,7 +1466,7 @@ export default function TourDetailsComponent() {
                       >
                         <FaMinus size={8} />
                       </button>
-                      <span className="text-xs font-family-bold text-slate-900 w-4 text-center">
+                      <span className="text-xs font-family-semibold text-slate-900 w-4 text-center">
                         {adults}
                       </span>
                       <button
@@ -1483,11 +1483,11 @@ export default function TourDetailsComponent() {
                   {/* Children */}
                   <div className="flex items-center justify-between p-2.5 bg-slate-50/90 rounded-xl border border-slate-200/70">
                     <div>
-                      <span className="text-xs font-family-bold text-slate-800 block leading-tight">
+                      <span className="text-xs font-family-semibold text-slate-800 block leading-tight">
                         Children (1–15)
                       </span>
                       <div className="flex items-center gap-1.5">
-                        <span className="text-[11.5px] text-[#004a70] font-family-bold">
+                        <span className="text-[11.5px] text-[#004a70] font-family-semibold">
                           ${kidUnitDiscountedUSD.toFixed(2)} USD
                         </span>
                         {hasDiscount && (
@@ -1507,7 +1507,7 @@ export default function TourDetailsComponent() {
                       >
                         <FaMinus size={8} />
                       </button>
-                      <span className="text-xs font-family-bold text-slate-900 w-4 text-center">
+                      <span className="text-xs font-family-semibold text-slate-900 w-4 text-center">
                         {kids}
                       </span>
                       <button
@@ -1529,7 +1529,7 @@ export default function TourDetailsComponent() {
                   <span className="text-[10px] text-slate-500 font-family-semibold uppercase tracking-wider block">
                     Total
                   </span>
-                  <span className="text-[9.5px] text-sky-700 bg-sky-100/80 px-1.5 py-0.2 rounded-md font-family-bold">
+                  <span className="text-[9.5px] text-sky-700 bg-sky-100/80 px-1.5 py-0.2 rounded-md font-family-semibold">
                     1 USD = 2.70 XCD
                   </span>
                 </div>
@@ -1539,7 +1539,7 @@ export default function TourDetailsComponent() {
                     <span className="text-xs text-slate-400 line-through font-family-medium">
                       was ${originalPriceUSD.toFixed(2)} USD
                     </span>
-                    <span className="px-1.5 py-0.2 rounded-md bg-emerald-100/80 text-emerald-800 text-[10px] font-family-bold">
+                    <span className="px-1.5 py-0.2 rounded-md bg-emerald-100/80 text-emerald-800 text-[10px] font-family-semibold">
                       {itemDiscountPct}% OFF
                     </span>
                   </div>
@@ -1547,17 +1547,17 @@ export default function TourDetailsComponent() {
 
                 <div className="flex items-baseline justify-between pt-0.5">
                   <div>
-                    <span className="text-xl sm:text-2xl font-family-bold text-[#004a70] tracking-tight">
+                    <span className="text-xl sm:text-2xl font-family-semibold text-[#004a70] tracking-tight">
                       ${finalPriceUSD.toFixed(2)}
                     </span>
-                    <span className="text-xs font-family-bold text-[#004a70] ml-1">USD</span>
+                    <span className="text-xs font-family-semibold text-[#004a70] ml-1">USD</span>
                     <span className="text-[11px] text-slate-500 font-family-medium ml-1.5">
                       {isGroup
                         ? "per group"
                         : `${totalGuests} guest${totalGuests === 1 ? "" : "s"}`}
                     </span>
                   </div>
-                  <span className="text-xs font-family-bold text-slate-500">
+                  <span className="text-xs font-family-semibold text-slate-500">
                     ≈ ${finalPriceXcd.toFixed(2)} XCD
                   </span>
                 </div>
@@ -1582,7 +1582,7 @@ export default function TourDetailsComponent() {
               <button
                 type="button"
                 onClick={handleBookNow}
-                className="w-full py-3 rounded-xl bg-[#004a70] hover:bg-[#003855] text-white text-xs sm:text-sm font-family-bold transition-all shadow-md shadow-[#004a70]/20 flex items-center justify-center gap-2 cursor-pointer border-none select-none active:scale-[0.98]"
+                className="w-full py-3 rounded-xl bg-[#004a70] hover:bg-[#003855] text-white text-xs sm:text-sm font-family-semibold transition-all shadow-md shadow-[#004a70]/20 flex items-center justify-center gap-2 cursor-pointer border-none select-none active:scale-[0.98]"
               >
                 <span>Book This Tour</span>
               </button>
@@ -1726,7 +1726,7 @@ export default function TourDetailsComponent() {
                       ))}
                     </div>
                   )}
-                  <span className="!bg-white/20 !px-3 !py-1 !rounded-full !text-[11px] !font-family-bold !shrink-0">
+                  <span className="!bg-white/20 !px-3 !py-1 !rounded-full !text-[11px] !font-family-semibold !shrink-0">
                     {lightboxIdx + 1} / {displayImages.length}
                   </span>
                 </div>

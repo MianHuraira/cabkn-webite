@@ -36,10 +36,11 @@ import { setPaymentCards } from "@/components/Redux/Slices/AuthSlice";
 import { AuthTextField, AuthSpinner, AuthPrimaryButton } from "@/components/auth/AuthShell";
 import { Loader } from "@googlemaps/js-api-loader";
 
-const apiKey = "0FGR7.1720815360";
-const apiSecret = "6EF4CAFCD82E689DECA28EDFDE15ADB35D12BF5982B182E468758A9F8DD072DF";
-const tokenUrl = "https://jad.cash/HAPI/token";
-const paymentUrl = "https://jad.cash/HAPI/cardpayment";
+const apiKey = process.env.NEXT_PUBLIC_JAD_API_KEY;
+const apiSecret = process.env.NEXT_PUBLIC_JAD_API_SECRET;
+const tokenUrl = process.env.NEXT_PUBLIC_JAD_TOKEN_URL;
+const paymentUrl = process.env.NEXT_PUBLIC_JAD_PAYMENT_URL;
+const jadNumber = process.env.NEXT_PUBLIC_JAD_NUMBER;
 
 const XCD_PER_USD = 2.7;
 
@@ -627,7 +628,7 @@ function BookServiceComponent() {
         live: "1",
         timestamp: moment().format("YYYYMMDDHHmmss"),
         refnum: "101",
-        jadnumber: "101310573865",
+        jadnumber: jadNumber,
         amount: totalPayableUSD.toFixed(2),
         cardnumber: cleanNumber,
         cardexpmonth: month?.trim() || "",
@@ -671,7 +672,7 @@ function BookServiceComponent() {
       <div className="min-h-screen flex flex-col items-center justify-center bg-slate-50 p-4">
         <h2 className="text-lg font-family-semibold text-slate-800">Service Not Found</h2>
         <p className="text-xs text-slate-500 mb-4">The selected service could not be loaded.</p>
-        <Link href="/services" className="px-5 py-2.5 rounded-xl bg-[#004a70] text-white text-xs font-family-bold">
+        <Link href="/services" className="px-5 py-2.5 rounded-xl bg-[#004a70] text-white text-xs font-family-semibold">
           Explore All Services
         </Link>
       </div>
@@ -721,7 +722,7 @@ function BookServiceComponent() {
           </div>
 
           <div>
-            <h1 className="text-2xl sm:text-3xl md:text-4xl font-family-bold text-white tracking-tight !m-0 leading-tight">
+            <h1 className="text-2xl sm:text-3xl md:text-4xl font-family-semibold text-white tracking-tight !m-0 leading-tight">
               Book a <span className="bg-gradient-to-r from-sky-400 via-teal-300 to-emerald-400 bg-clip-text text-transparent">Service</span>
             </h1>
             <p className="text-xs sm:text-sm text-slate-300 font-family-regular !m-0 mt-1.5 max-w-2xl">
@@ -745,7 +746,7 @@ function BookServiceComponent() {
                       <FaCalendarAlt size={12} />
                     </div>
                     <div>
-                      <h3 className="text-[13px] font-family-bold text-slate-900 !m-0">Select Date & Time</h3>
+                      <h3 className="text-[13px] font-family-semibold text-slate-900 !m-0">Select Date & Time</h3>
                       <p className="text-[10.5px] text-slate-400 font-family-regular !m-0">
                         Choose your preferred service schedule
                       </p>
@@ -867,7 +868,7 @@ function BookServiceComponent() {
                       <FaUsers size={11} />
                     </div>
                     <div>
-                      <h3 className="text-[13px] font-family-bold text-slate-900 !m-0">
+                      <h3 className="text-[13px] font-family-semibold text-slate-900 !m-0">
                         {isGroup ? "Group Booking" : "Travelers / Clients"}
                       </h3>
                       <p className="text-[10.5px] text-slate-400 font-family-regular !m-0">
@@ -879,12 +880,12 @@ function BookServiceComponent() {
                   {isGroup ? (
                     <div className="p-2.5 rounded-lg bg-slate-50 border border-slate-200/70 flex items-center justify-between">
                       <div>
-                        <span className="text-xs font-family-bold text-slate-800 block">Flat Group Rate</span>
+                        <span className="text-xs font-family-semibold text-slate-800 block">Flat Group Rate</span>
                         <span className="text-[10.5px] text-slate-500">
                           Capacity: {service.minPersons || 1}–{service.maxPersons || 10} persons
                         </span>
                       </div>
-                      <span className="text-xs font-family-bold text-[#004a70]">
+                      <span className="text-xs font-family-semibold text-[#004a70]">
                         ${toUsd(service.price).toFixed(2)} USD
                       </span>
                     </div>
@@ -907,7 +908,7 @@ function BookServiceComponent() {
                           >
                             <FaMinus size={9} />
                           </button>
-                          <span className="text-xs font-family-bold w-5 text-center">{adults}</span>
+                          <span className="text-xs font-family-semibold w-5 text-center">{adults}</span>
                           <button
                             type="button"
                             disabled={adults >= 20}
@@ -936,7 +937,7 @@ function BookServiceComponent() {
                           >
                             <FaMinus size={9} />
                           </button>
-                          <span className="text-xs font-family-bold w-5 text-center">{kids}</span>
+                          <span className="text-xs font-family-semibold w-5 text-center">{kids}</span>
                           <button
                             type="button"
                             disabled={kids >= 20}
@@ -965,7 +966,7 @@ function BookServiceComponent() {
                           >
                             <FaMinus size={9} />
                           </button>
-                          <span className="text-xs font-family-bold w-5 text-center">{infants}</span>
+                          <span className="text-xs font-family-semibold w-5 text-center">{infants}</span>
                           <button
                             type="button"
                             disabled={infants >= 10}
@@ -987,7 +988,7 @@ function BookServiceComponent() {
                       <FaLocationDot size={11} />
                     </div>
                     <div>
-                      <h3 className="text-[13px] font-family-bold text-slate-900 !m-0">
+                      <h3 className="text-[13px] font-family-semibold text-slate-900 !m-0">
                         {atLocation ? "Where Should We Come?" : "Meeting Location"}
                       </h3>
                       <p className="text-[10.5px] text-slate-400 font-family-regular !m-0">
@@ -1065,7 +1066,7 @@ function BookServiceComponent() {
                 <button
                   type="submit"
                   disabled={Boolean(existingBookingForDate)}
-                  className="w-full py-2.5 rounded-xl bg-[#004a70] hover:bg-[#003855] text-white text-xs font-family-bold uppercase tracking-wider transition-all shadow-sm flex items-center justify-center gap-2 cursor-pointer border-none disabled:opacity-50 active:scale-[0.98]"
+                  className="w-full py-2.5 rounded-xl bg-[#004a70] hover:bg-[#003855] text-white text-xs font-family-semibold uppercase tracking-wider transition-all shadow-sm flex items-center justify-center gap-2 cursor-pointer border-none disabled:opacity-50 active:scale-[0.98]"
                 >
                   <span>Continue to Payment</span>
                 </button>
@@ -1076,7 +1077,7 @@ function BookServiceComponent() {
                 <div className="bg-white rounded-xl p-3.5 sm:p-4 border border-slate-200/80 shadow-xs space-y-3">
                   <div className="flex items-center justify-between pb-2 border-b border-slate-100">
                     <div>
-                      <h3 className="text-sm font-family-bold text-slate-900 !m-0">Choose Payment Method</h3>
+                      <h3 className="text-sm font-family-semibold text-slate-900 !m-0">Choose Payment Method</h3>
                       <p className="text-[10.5px] text-slate-400 font-family-regular !m-0">
                         Funds are held until confirmed by provider
                       </p>
@@ -1106,7 +1107,7 @@ function BookServiceComponent() {
                         <BsCashCoin size={14} />
                       </div>
                       <div>
-                        <span className="text-xs font-family-bold text-slate-900 block">CabKn Wallet</span>
+                        <span className="text-xs font-family-semibold text-slate-900 block">CabKn Wallet</span>
                         <span className="text-[10.5px] text-slate-500 block mt-0.5">
                           Balance: ${(Number(userData?.user?.amount ?? userData?.amount ?? 0)).toFixed(2)} XCD
                         </span>
@@ -1127,7 +1128,7 @@ function BookServiceComponent() {
                         <BsCreditCard2Back size={14} />
                       </div>
                       <div>
-                        <span className="text-xs font-family-bold text-slate-900 block">Credit / Debit Card</span>
+                        <span className="text-xs font-family-semibold text-slate-900 block">Credit / Debit Card</span>
                         <span className="text-[10.5px] text-slate-500 block mt-0.5">
                           Visa, Mastercard, JAD Cash
                         </span>
@@ -1207,7 +1208,7 @@ function BookServiceComponent() {
                           handleJadCardCheckout();
                         }
                       }}
-                      className="w-full py-3.5 rounded-xl bg-[#004a70] hover:bg-[#003855] text-white text-xs font-family-bold uppercase tracking-wider transition-all shadow-md flex items-center justify-center gap-2 cursor-pointer border-none disabled:opacity-50 active:scale-[0.98]"
+                      className="w-full py-3.5 rounded-xl bg-[#004a70] hover:bg-[#003855] text-white text-xs font-family-semibold uppercase tracking-wider transition-all shadow-md flex items-center justify-center gap-2 cursor-pointer border-none disabled:opacity-50 active:scale-[0.98]"
                     >
                       {bookingLoading ? (
                         <>
@@ -1229,10 +1230,10 @@ function BookServiceComponent() {
                 </div>
 
                 <div className="space-y-1">
-                  <span className="px-3 py-1 rounded-full text-xs font-family-bold uppercase tracking-wider bg-amber-100 text-amber-800">
+                  <span className="px-3 py-1 rounded-full text-xs font-family-semibold uppercase tracking-wider bg-amber-100 text-amber-800">
                     Status: Pending Confirmation
                   </span>
-                  <h2 className="text-xl sm:text-2xl font-family-bold text-slate-900 !m-0 pt-2">
+                  <h2 className="text-xl sm:text-2xl font-family-semibold text-slate-900 !m-0 pt-2">
                     Booking Request Placed!
                   </h2>
                   <p className="text-xs sm:text-sm text-slate-500 font-family-regular max-w-md mx-auto">
@@ -1244,7 +1245,7 @@ function BookServiceComponent() {
                 <div className="text-left bg-slate-50 rounded-xl p-4 border border-slate-200/70 space-y-2.5 text-xs">
                   <div className="flex items-center justify-between pb-2 border-b border-slate-200">
                     <span className="text-slate-500">Service</span>
-                    <span className="font-family-bold text-slate-900">{service.title}</span>
+                    <span className="font-family-semibold text-slate-900">{service.title}</span>
                   </div>
                   <div className="flex items-center justify-between">
                     <span className="text-slate-500">Date & Time</span>
@@ -1265,8 +1266,8 @@ function BookServiceComponent() {
                     </span>
                   </div>
                   <div className="flex items-center justify-between pt-2 border-t border-slate-200">
-                    <span className="text-slate-500 font-family-bold">Total Paid</span>
-                    <span className="font-family-bold text-base text-[#004a70]">
+                    <span className="text-slate-500 font-family-semibold">Total Paid</span>
+                    <span className="font-family-semibold text-base text-[#004a70]">
                       ${totalPayableUSD.toFixed(2)} USD (${totalPayableXCD} XCD)
                     </span>
                   </div>
@@ -1275,13 +1276,13 @@ function BookServiceComponent() {
                 <div className="flex items-center justify-center gap-3 pt-2">
                   <Link
                     href="/"
-                    className="px-5 py-2.5 rounded-xl bg-slate-100 hover:bg-slate-200 text-slate-700 text-xs font-family-bold no-underline transition-all"
+                    className="px-5 py-2.5 rounded-xl bg-slate-100 hover:bg-slate-200 text-slate-700 text-xs font-family-semibold no-underline transition-all"
                   >
                     Back to Home
                   </Link>
                   <Link
                     href="/services"
-                    className="px-5 py-2.5 rounded-xl bg-[#004a70] hover:bg-[#003855] text-white text-xs font-family-bold no-underline transition-all shadow-xs"
+                    className="px-5 py-2.5 rounded-xl bg-[#004a70] hover:bg-[#003855] text-white text-xs font-family-semibold no-underline transition-all shadow-xs"
                   >
                     Explore More Services
                   </Link>
@@ -1307,10 +1308,10 @@ function BookServiceComponent() {
                     />
                   </div>
                   <div className="min-w-0 flex-1">
-                    <span className="text-[10px] font-family-bold uppercase tracking-wider text-[#004a70] block">
+                    <span className="text-[10px] font-family-semibold uppercase tracking-wider text-[#004a70] block">
                       {service.category?.name || (isGroup ? "Group Service" : "Service")}
                     </span>
-                    <h4 className="text-xs sm:text-sm font-family-bold text-slate-900 leading-snug !m-0 line-clamp-2 mt-0.5">
+                    <h4 className="text-xs sm:text-sm font-family-semibold text-slate-900 leading-snug !m-0 line-clamp-2 mt-0.5">
                       {service.title}
                     </h4>
                     <span className="text-[11px] text-slate-500 font-family-medium block mt-1">
@@ -1336,7 +1337,7 @@ function BookServiceComponent() {
                       type="button"
                       disabled={couponLoading || !couponCode.trim()}
                       onClick={handleApplyCoupon}
-                      className="px-4 py-2.5 rounded-xl bg-[#004a70] hover:bg-[#003855] text-white text-xs font-family-bold disabled:opacity-50 cursor-pointer border-none shrink-0 min-w-[76px] flex items-center justify-center transition-all shadow-xs"
+                      className="px-4 py-2.5 rounded-xl bg-[#004a70] hover:bg-[#003855] text-white text-xs font-family-semibold disabled:opacity-50 cursor-pointer border-none shrink-0 min-w-[76px] flex items-center justify-center transition-all shadow-xs"
                     >
                       {couponLoading ? (
                         <AuthSpinner className="!w-3.5 !h-3.5" />
@@ -1402,7 +1403,7 @@ function BookServiceComponent() {
                   </div>
 
                   {/* Total Payable */}
-                  <div className="pt-2 border-t border-slate-200 flex items-center justify-between text-sm font-family-bold text-slate-900">
+                  <div className="pt-2 border-t border-slate-200 flex items-center justify-between text-sm font-family-semibold text-slate-900">
                     <span>Total</span>
                     <span className="text-[#004a70] text-base">${totalPayableUSD.toFixed(2)} USD</span>
                   </div>

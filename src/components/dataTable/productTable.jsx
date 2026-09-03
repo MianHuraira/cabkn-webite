@@ -132,7 +132,7 @@ const ProductTable = ({
     <div className="font-poppins">
       {rowHeading && (
         <CardHeader className="flex items-center justify-between mb-3">
-          <CardTitle className="font-family-bold" tag={"h4"}>
+          <CardTitle className="font-family-semibold" tag={"h4"}>
             {rowHeading}
           </CardTitle>
           {setSearch && (

@@ -5,7 +5,28 @@
 "use client";
 import React, { useEffect, useState, useRef } from "react";
 import { Nav, Navbar, Form, Offcanvas, Modal } from "react-bootstrap";
-import { FaUser, FaCheckDouble, FaExclamationCircle, FaCheckCircle, FaInfoCircle, FaTimes } from "react-icons/fa";
+import {
+  FaUser,
+  FaCheckDouble,
+  FaExclamationCircle,
+  FaCheckCircle,
+  FaInfoCircle,
+  FaTimes,
+  FaCar,
+  FaPlaneArrival,
+  FaBox,
+  FaCompass,
+  FaHiking,
+  FaMapMarkedAlt,
+  FaStore,
+  FaShoppingBag,
+  FaTags,
+  FaStar,
+  FaCalendarCheck,
+  FaChevronDown,
+  FaChevronUp,
+  FaWallet,
+} from "react-icons/fa";
 import { IoMdTime } from "react-icons/io";
 
 import { message } from "antd";
@@ -43,6 +64,43 @@ const InnerHeader = () => {
   const notifLastTotalRef = useRef(0);
   const socket = useSocket();
   const { getAllConversation } = ApiFile;
+
+  // Dropdown States for Categorized Navigation
+  const [activeDropdown, setActiveDropdown] = useState(null);
+  const [mobileOpenCat, setMobileOpenCat] = useState(null);
+  const dropdownTimeoutRef = useRef(null);
+  const navMenuRef = useRef(null);
+
+  const handleMouseEnter = (id) => {
+    if (dropdownTimeoutRef.current) {
+      clearTimeout(dropdownTimeoutRef.current);
+    }
+    setActiveDropdown(id);
+  };
+
+  const handleMouseLeave = () => {
+    dropdownTimeoutRef.current = setTimeout(() => {
+      setActiveDropdown(null);
+    }, 150);
+  };
+
+  const handleToggleDropdown = (id) => {
+    setActiveDropdown((prev) => (prev === id ? null : id));
+  };
+
+  useEffect(() => {
+    const handleClickOutside = (e) => {
+      if (navMenuRef.current && !navMenuRef.current.contains(e.target)) {
+        setActiveDropdown(null);
+      }
+    };
+    document.addEventListener("mousedown", handleClickOutside);
+    return () => document.removeEventListener("mousedown", handleClickOutside);
+  }, []);
+
+  useEffect(() => {
+    setActiveDropdown(null);
+  }, [pathname]);
 
   useEffect(() => {
     if (!userData?.token) return;
@@ -248,81 +306,325 @@ const InnerHeader = () => {
     return pathname.startsWith(href);
   };
 
-  const navLinks = [
-    { label: "Home", href: "/" },
-    { label: "My Bookings", href: "/admin" },
-    { label: "Book Ride", href: "/ride" },
-    { label: "Make Own Tours", href: "/makeowntours" },
-    { label: "List Own Place", href: "/listownplace" },
-    { label: "Shop", href: "/serviceLocations" },
-    { label: "Wallet", href: "/wallet" },
-    // { label: "Chat", href: "/chat" },
-    // { label: "Favorites", href: "/favorites" },
-    { label: "Offers", href: "/coupon" },
-    { label: "Reviews", href: "/userreviews" },
+  const navCategories = [
+    {
+      id: "rides",
+      label: "Rides & Transit",
+      hrefPrefixes: ["/ride", "/airport-pickups", "/sendparcel", "/admin"],
+      items: [
+        {
+          title: "Book a Ride",
+          desc: "Book certified drivers for island transfers, sightseeing, and travel.",
+          href: "/ride",
+          icon: <FaCar size={16} />,
+        },
+        {
+          title: "Airport Pickups",
+          desc: "Scheduled airport transfers with live flight tracking and luggage help.",
+          href: "/airport-pickups",
+          icon: <FaPlaneArrival size={16} />,
+        },
+        {
+          title: "Send a Parcel",
+          desc: "Fast door-to-door courier service for packages, food, and documents.",
+          href: "/sendparcel",
+          icon: <FaBox size={16} />,
+        },
+        {
+          title: "My Bookings",
+          desc: "Manage your requested rides, view upcoming trips, and receipts.",
+          href: "/admin",
+          icon: <FaCalendarCheck size={16} />,
+        },
+      ],
+      featured: {
+        tag: "BOOK A RIDE",
+        title: "Island transportation, on demand",
+        desc: "One account for instant cabs, airport shuttles, and courier delivery — booked with verified local drivers.",
+        buttonText: "Book a Ride",
+        buttonHref: "/ride",
+      },
+    },
+    {
+      id: "tours",
+      label: "Explore & Tours",
+      hrefPrefixes: ["/makeowntours", "/tours", "/popularplaces", "/listownplace"],
+      items: [
+        {
+          title: "Make Own Tours",
+          desc: "Custom-build your island itinerary, choose scenic stops, and explore.",
+          href: "/makeowntours",
+          icon: <FaCompass size={16} />,
+        },
+        {
+          title: "Top Island Tours",
+          desc: "Book guided volcano hikes, scenic railway tours, and rainforest trips.",
+          href: "/tours",
+          icon: <FaHiking size={16} />,
+        },
+        {
+          title: "Popular Places",
+          desc: "Explore Brimstone Hill Fortress, Cockleshell Bay, and scenic sights.",
+          href: "/popularplaces",
+          icon: <FaMapMarkedAlt size={16} />,
+        },
+        {
+          title: "List Own Place",
+          desc: "Partner with us and showcase your resort, villa, or venue to tourists.",
+          href: "/listownplace",
+          icon: <FaStore size={16} />,
+        },
+      ],
+      featured: {
+        tag: "EXPLORE TOURS",
+        title: "Tours & excursions, on demand",
+        desc: "Discover historic fortresses, breathtaking turquoise beaches, and lush rainforest trails with certified guides.",
+        buttonText: "Book a Tour",
+        buttonHref: "/tours",
+      },
+    },
+    {
+      id: "services",
+      label: "Services & More",
+      hrefPrefixes: ["/serviceLocations", "/coupon", "/userreviews"],
+      items: [
+        {
+          title: "Shop & Services",
+          desc: "Order local Caribbean food, catering, beach equipment, and rentals.",
+          href: "/serviceLocations",
+          icon: <FaShoppingBag size={16} />,
+        },
+        {
+          title: "Special Offers",
+          desc: "Access seasonal travel discounts, promotional coupons, and deals.",
+          href: "/coupon",
+          icon: <FaTags size={16} />,
+        },
+        {
+          title: "Customer Reviews",
+          desc: "Read authentic reviews and ratings from fellow island travelers.",
+          href: "/userreviews",
+          icon: <FaStar size={16} />,
+        },
+        {
+          title: "Drive & Earn",
+          desc: "Join our driver network, register your vehicle, and start earning.",
+          action: "driverModal",
+          icon: <FaCar size={16} />,
+        },
+      ],
+      featured: {
+        tag: "BOOK A SERVICE",
+        title: "Cleanup & site services, on demand",
+        desc: "One account for verified local services, equipment rentals, certified vendors, and trusted providers.",
+        buttonText: "Book a Service",
+        buttonHref: "/serviceLocations",
+      },
+    },
   ];
 
-  const linkStyle = (href) => ({
-    padding: "8px 12px",
-    color: isActive(href) ? (isScrolled ? "#004a70" : "#fff") : (isScrolled ? "#4b5563" : "rgba(255,255,255,0.9)"),
-    fontSize: 13.5,
-    textDecoration: "none",
-    whiteSpace: "nowrap",
-    position: "relative",
-    transition: "color 0.2s ease",
-    borderBottom: isActive(href) ? `2px solid ${isScrolled ? "#004a70" : "#fff"}` : "2px solid transparent",
-    paddingBottom: 4,
-  });
+  const isCategoryActive = (category) => {
+    return category.hrefPrefixes.some((prefix) => pathname.startsWith(prefix));
+  };
 
   return (
     <div className="font-poppins">
       <header
-        className={`fixed top-0 left-0 right-0 w-full z-[999] transition-all duration-300 ${
-          mounted ? "animate-header-slide-down" : "opacity-0"
+        className={`!fixed !top-0 !left-0 !right-0 !w-full !z-[999] !transition-all !duration-300 ${
+          mounted ? "!animate-header-slide-down" : "!opacity-0"
         } ${
           isScrolled
-            ? "bg-white/95 backdrop-blur-md shadow-sm !border-b !border-slate-200/80 py-2.5 sm:py-3"
-            : "bg-transparent py-3.5 sm:py-5 !border-b !border-transparent shadow-none"
+            ? "!bg-white/95 !backdrop-blur-md !shadow-sm !border-b !border-slate-200/80 !py-2 sm:!py-2.5"
+            : "!bg-transparent !py-3 sm:!py-4 !border-b !border-transparent !shadow-none"
         }`}
       >
-        <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 flex items-center justify-between">
+        <div className="!max-w-7xl !mx-auto !px-4 sm:!px-6 lg:!px-8 !flex !items-center !justify-between !relative">
           {/* Logo */}
           <Link
             href={"/"}
-            className="flex items-center flex-shrink-0 no-underline transition-transform duration-300 hover:scale-105"
+            className="!flex !items-center !flex-shrink-0 !no-underline !transition-transform !duration-300 hover:!scale-105"
           >
             <Image
               src={isScrolled ? logoBlue : whiteLogo}
               alt="Welcome to Saint Kitts"
               width={72}
               height={40}
-              className="h-8 sm:h-9 w-auto object-contain"
+              className="!h-7 sm:!h-8 !w-auto !object-contain"
               priority
             />
           </Link>
 
-          {/* Desktop Nav - Centered */}
-          <div className="hidden xl:flex items-center gap-1 overflow-x-auto flex-1 justify-center px-4 no-scrollbar">
-            {navLinks.map((link) => {
-              const active = isActive(link.href);
+          {/* Desktop Nav - Categorized with Mega Dropdown */}
+          <div ref={navMenuRef} className="hidden xl:!flex !items-center !gap-1 !flex-1 !justify-center !px-4 !relative">
+            {/* 1. Home Link */}
+            <Link
+              href="/"
+              className={`!px-3.5 !py-1.5 !rounded-full !text-[13px] !transition-all !duration-200 !whitespace-nowrap !select-none !no-underline ${
+                isActive("/")
+                  ? isScrolled
+                    ? "!bg-[#004a70] !text-white !font-family-semibold !font-semibold !shadow-sm"
+                    : "!bg-white/25 !text-white !font-family-semibold !font-semibold !backdrop-blur-md !shadow-sm"
+                  : isScrolled
+                  ? "!text-slate-700 hover:!text-[#004a70] hover:!bg-slate-100/80 !font-family-medium !font-normal"
+                  : "!text-white/90 hover:!text-white hover:!bg-white/15 !font-family-medium !font-normal"
+              }`}
+            >
+              Home
+            </Link>
+
+            {/* 2. Categorized Mega Dropdown Triggers */}
+            {navCategories.map((category) => {
+              const active = isCategoryActive(category);
+              const isOpen = activeDropdown === category.id;
+
               return (
-                <Link
-                  key={link.href}
-                  href={link.href}
-                  className={`px-3.5 py-1.5 rounded-full text-[13.5px] transition-all duration-200 whitespace-nowrap select-none no-underline ${
-                    active
-                      ? isScrolled
-                        ? "bg-[#004a70] text-white font-family-semibold shadow-sm"
-                        : "bg-white/25 text-white font-family-semibold backdrop-blur-md shadow-sm"
-                      : isScrolled
-                      ? "text-slate-700 hover:text-[#004a70] hover:bg-slate-100/80 font-family-medium"
-                      : "text-white/90 hover:text-white hover:bg-white/15 font-family-medium"
-                  }`}
+                <div
+                  key={category.id}
+                  className="!relative"
+                  onMouseEnter={() => handleMouseEnter(category.id)}
+                  onMouseLeave={handleMouseLeave}
                 >
-                  {link.label}
-                </Link>
+                  <button
+                    type="button"
+                    onClick={() => handleToggleDropdown(category.id)}
+                    className={`!px-3.5 !py-1.5 !rounded-full !text-[13px] !transition-all !duration-200 !whitespace-nowrap !select-none !flex !items-center !gap-1.5 !border-none !cursor-pointer ${
+                      active || isOpen
+                        ? isScrolled
+                          ? "!bg-[#004a70] !text-white !font-family-semibold !font-semibold !shadow-sm"
+                          : "!bg-white/25 !text-white !font-family-semibold !font-semibold !backdrop-blur-md !shadow-sm"
+                        : isScrolled
+                        ? "!text-slate-700 hover:!text-[#004a70] hover:!bg-slate-100/80 !font-family-medium !font-normal !bg-transparent"
+                        : "!text-white/90 hover:!text-white hover:!bg-white/15 !font-family-medium !font-normal !bg-transparent"
+                    }`}
+                  >
+                    <span>{category.label}</span>
+                    <FaChevronDown
+                      size={9}
+                      className={`!transition-transform !duration-200 ${
+                        isOpen ? "!rotate-180" : ""
+                      } ${
+                        active || isOpen
+                          ? "!text-white"
+                          : isScrolled
+                          ? "!text-slate-500"
+                          : "!text-white/80"
+                      }`}
+                    />
+                  </button>
+
+                  {/* Mega Menu Dropdown (Matches User Screenshot: Single column of items + Right Featured Card) */}
+                  {isOpen && (
+                    <div
+                      className={`!animate-fade-in-up !absolute !top-[calc(100%+12px)] ${
+                        category.id === "rides"
+                          ? "!left-0"
+                          : category.id === "services"
+                          ? "!right-0"
+                          : "!left-1/2 !-translate-x-1/2"
+                      } !w-[660px] sm:!w-[700px] !bg-white !rounded-3xl !shadow-[0_25px_60px_-15px_rgba(0,0,0,0.22)] !border !border-slate-150/70 !p-7 sm:!p-8 !z-[9999] !flex !items-stretch !text-left !cursor-default`}
+                      onMouseEnter={() => handleMouseEnter(category.id)}
+                      onMouseLeave={handleMouseLeave}
+                    >
+                      {/* Left Column: 4 items stacked vertically with generous right clearance from line */}
+                      <div className="!flex !flex-col !gap-2.5 !flex-1 !pr-6 sm:!pr-7">
+                        {category.items.map((item) => {
+                          if (item.action === "driverModal") {
+                            return (
+                              <div
+                                key={item.title}
+                                onClick={() => {
+                                  setActiveDropdown(null);
+                                  HandleModal();
+                                }}
+                                className="!flex !items-start !gap-3.5 !p-2.5 !rounded-2xl hover:!bg-slate-50/90 !transition-all !duration-150 !cursor-pointer !group !text-left"
+                              >
+                                <div className="!w-10 !h-10 !rounded-xl !flex !items-center !justify-center !shrink-0 !bg-slate-100/70 !text-slate-700 !border !border-slate-200/60 group-hover:!bg-sky-50 group-hover:!text-[#004a70] group-hover:!border-sky-200 !transition-colors">
+                                  {item.icon}
+                                </div>
+                                <div className="!min-w-0">
+                                  <span className="!text-[13.5px] !font-family-semibold !font-semibold !text-slate-900 group-hover:!text-[#004a70] !transition-colors !leading-tight !block">
+                                    {item.title}
+                                  </span>
+                                  <p className="!text-[11.5px] !text-slate-500 !font-family-regular !font-normal !mt-1 !leading-snug !m-0">
+                                    {item.desc}
+                                  </p>
+                                </div>
+                              </div>
+                            );
+                          }
+
+                          return (
+                            <Link
+                              key={item.href}
+                              href={item.href}
+                              onClick={() => setActiveDropdown(null)}
+                              className="!flex !items-start !gap-3.5 !p-2.5 !rounded-2xl hover:!bg-slate-50/90 !transition-all !duration-150 !no-underline !cursor-pointer !group !text-left"
+                            >
+                              <div className="!w-10 !h-10 !rounded-xl !flex !items-center !justify-center !shrink-0 !bg-slate-100/70 !text-slate-700 !border !border-slate-200/60 group-hover:!bg-sky-50 group-hover:!text-[#004a70] group-hover:!border-sky-200 !transition-colors">
+                                {item.icon}
+                              </div>
+                              <div className="!min-w-0">
+                                <span className="!text-[13.5px] !font-family-semibold !font-semibold !text-slate-900 group-hover:!text-[#004a70] !transition-colors !leading-tight !block">
+                                  {item.title}
+                                </span>
+                                <p className="!text-[11.5px] !text-slate-500 !font-family-regular !font-normal !mt-1 !leading-snug !m-0">
+                                  {item.desc}
+                                </p>
+                              </div>
+                            </Link>
+                          );
+                        })}
+                      </div>
+
+                      {/* Clean Vertical Divider with independent clearance on both sides */}
+                      <div className="!w-px !bg-slate-200/90 !self-stretch !shrink-0 !my-1" />
+
+                      {/* Right Column: Featured Section with Primary App Color Scheme (#004a70) */}
+                      <div className="!w-[230px] !shrink-0 !pl-6 sm:!pl-7 !flex !flex-col !justify-between">
+                        <div>
+                          <span className="!text-[11px] !font-family-semibold !font-semibold !uppercase !tracking-wider !text-[#004a70] !block">
+                            {category.featured.tag}
+                          </span>
+                          <div className="!text-[16px] !font-family-semibold !font-semibold !text-slate-900 !mt-2 !leading-snug">
+                            {category.featured.title}
+                          </div>
+                          <p className="!text-[11.5px] !text-slate-500 !font-family-regular !font-normal !mt-2 !leading-relaxed !m-0">
+                            {category.featured.desc}
+                          </p>
+                        </div>
+
+                        <div className="!pt-4">
+                          <Link
+                            href={category.featured.buttonHref}
+                            onClick={() => setActiveDropdown(null)}
+                            className="!w-full !py-2.5 !rounded-xl !text-[13px] !font-family-semibold !font-semibold !text-white !bg-[#004a70] hover:!bg-[#003856] !flex !items-center !justify-center !transition-all !shadow-md hover:!shadow-lg !cursor-pointer !no-underline"
+                          >
+                            {category.featured.buttonText}
+                          </Link>
+                        </div>
+                      </div>
+                    </div>
+                  )}
+                </div>
               );
             })}
+
+            {/* 3. Wallet Link */}
+            <Link
+              href="/wallet"
+              className={`!px-3.5 !py-1.5 !rounded-full !text-[13px] !transition-all !duration-200 !whitespace-nowrap !select-none !no-underline !flex !items-center !gap-1.5 ${
+                isActive("/wallet")
+                  ? isScrolled
+                    ? "!bg-[#004a70] !text-white !font-family-semibold !font-semibold !shadow-sm"
+                    : "!bg-white/25 !text-white !font-family-semibold !font-semibold !backdrop-blur-md !shadow-sm"
+                  : isScrolled
+                  ? "!text-slate-700 hover:!text-[#004a70] hover:!bg-slate-100/80 !font-family-medium !font-normal"
+                  : "!text-white/90 hover:!text-white hover:!bg-white/15 !font-family-medium !font-normal"
+              }`}
+            >
+              <FaWallet size={11} className="!opacity-80" />
+              <span>Wallet</span>
+            </Link>
           </div>
 
           {/* Right: Icons + User + Mobile Toggle */}
@@ -384,7 +686,7 @@ const InnerHeader = () => {
                         <MdNotificationsActive size={16} color="#004a70" />
                       </div>
                       <div>
-                        <h4 className="font-family-bold text-sm text-slate-800 !m-0 leading-tight">
+                        <h4 className="font-family-semibold text-sm text-slate-800 !m-0 leading-tight">
                           Notifications
                         </h4>
                         <p className="font-family-medium text-[11px] text-slate-400 !m-0 mt-0.5">
@@ -575,7 +877,7 @@ const InnerHeader = () => {
                         <span>Chat</span>
                       </div>
                       {unreadCount > 0 && (
-                        <span className="bg-red-500 text-white text-[10px] font-family-bold px-1.5 py-0.2 rounded-full">
+                        <span className="bg-red-500 text-white text-[10px] font-family-semibold px-1.5 py-0.2 rounded-full">
                           {unreadCount}
                         </span>
                       )}
@@ -762,7 +1064,7 @@ const InnerHeader = () => {
                   >
                     Chat
                     {unreadCount > 0 && (
-                      <span className="absolute -top-1 -right-1 bg-red-500 text-white text-[9px] font-family-bold w-4 h-4 rounded-full flex items-center justify-center">
+                      <span className="absolute -top-1 -right-1 bg-red-500 text-white text-[9px] font-family-semibold w-4 h-4 rounded-full flex items-center justify-center">
                         {unreadCount}
                       </span>
                     )}
@@ -779,17 +1081,93 @@ const InnerHeader = () => {
               </div>
             )}
 
-            {/* Navigation Links */}
-            <div className="flex flex-col gap-1">
-              {navLinks.map((link, index) => (
-                <div key={link.href} className="animate-fade-in" style={{ animationDelay: `${(index + 1) * 25}ms` }}>
-                  <MobileNavItem
-                    label={link.label}
-                    active={isActive(link.href)}
-                    onClick={() => Route(link.href === "/" ? "" : link.href.slice(1))}
-                  />
-                </div>
-              ))}
+            {/* Navigation Links - Categorized Accordions on Mobile */}
+            <div className="flex flex-col gap-1.5">
+              {/* Home */}
+              <MobileNavItem
+                label="Home"
+                active={isActive("/")}
+                onClick={() => Route("")}
+              />
+
+              {/* Categorized Dropdowns on Mobile */}
+              {navCategories.map((cat) => {
+                const isOpen = mobileOpenCat === cat.id;
+                const isCatActive = isCategoryActive(cat);
+
+                return (
+                  <div key={cat.id} className="rounded-xl border border-slate-150/70 overflow-hidden bg-slate-50/50">
+                    <button
+                      type="button"
+                      onClick={() => setMobileOpenCat((prev) => (prev === cat.id ? null : cat.id))}
+                      className={`w-full flex items-center justify-between p-3 text-xs font-family-semibold transition-colors border-none cursor-pointer ${
+                        isCatActive
+                          ? "text-[#004a70] bg-sky-50/60"
+                          : "text-slate-700 hover:bg-slate-100/80 bg-transparent"
+                      }`}
+                    >
+                      <span className="text-[13px]">{cat.label}</span>
+                      <FaChevronDown
+                        size={10}
+                        className={`transition-transform duration-200 text-slate-400 ${
+                          isOpen ? "rotate-180" : ""
+                        }`}
+                      />
+                    </button>
+
+                    {isOpen && (
+                      <div className="p-2 pt-0 space-y-1 bg-white border-t border-slate-100">
+                        {cat.items.map((item) => {
+                          if (item.action === "driverModal") {
+                            return (
+                              <div
+                                key={item.title}
+                                onClick={() => {
+                                  handleClose();
+                                  HandleModal();
+                                }}
+                                className="flex items-center gap-2.5 p-2 rounded-lg hover:bg-slate-50 cursor-pointer"
+                              >
+                                <div className={`w-7 h-7 rounded-lg flex items-center justify-center shrink-0 border ${item.color}`}>
+                                  {item.icon}
+                                </div>
+                                <span className="text-xs font-family-medium text-slate-800">
+                                  {item.title}
+                                </span>
+                              </div>
+                            );
+                          }
+
+                          return (
+                            <Link
+                              key={item.href}
+                              href={item.href}
+                              onClick={handleClose}
+                              className="flex items-center gap-2.5 p-2 rounded-lg hover:bg-slate-50 no-underline"
+                            >
+                              <div className={`w-7 h-7 rounded-lg flex items-center justify-center shrink-0 border ${item.color}`}>
+                                {item.icon}
+                              </div>
+                              <div className="min-w-0">
+                                <span className="text-xs font-family-medium text-slate-800 block">
+                                  {item.title}
+                                </span>
+                              </div>
+                            </Link>
+                          );
+                        })}
+                      </div>
+                    )}
+                  </div>
+                );
+              })}
+
+              {/* Wallet */}
+              <MobileNavItem
+                label="Customer Wallet"
+                active={isActive("/wallet")}
+                onClick={() => Route("wallet")}
+              />
             </div>
           </div>
 

@@ -90,7 +90,7 @@ const WhyChooseUs = () => {
         style={{ maxWidth: 1400 }}
       >
         <div className="text-center mb-16">
-          <h2 className="text-2xl md:text-3xl lg:text-4xl font-family-bold text-slate-900 mb-4">
+          <h2 className="text-2xl md:text-3xl lg:text-4xl font-family-semibold text-slate-900 mb-4">
             WE ARE INNOVATIVE AND PASSIONATE
             <br />
             ABOUT THE WORK WE DO.
@@ -116,13 +116,13 @@ const WhyChooseUs = () => {
                   {feature.icon}
                 </div>
                 <div className="pt-8">
-                  <h3 className="text-2xl font-family-bold text-slate-900 mb-4">
+                  <h3 className="text-2xl font-family-semibold text-slate-900 mb-4">
                     {feature.title}
                   </h3>
                   <p className="text-slate-600 font-family-regular leading-relaxed">
                     {feature.description}
                   </p>
-                  <button className="inline-flex mt-[1rem] items-center gap-2 bg-brand-600 hover:bg-brand-700 text-white font-family-bold px-6 py-3 rounded-xl transition-all duration-300">
+                  <button className="inline-flex mt-[1rem] items-center gap-2 bg-brand-600 hover:bg-brand-700 text-white font-family-semibold px-6 py-3 rounded-xl transition-all duration-300">
                     Book Now
                     <FiArrowRight className="w-5 h-5" />
                   </button>
@@ -224,9 +224,21 @@ const HomeComponent = () => {
                 endContent={
                   <FiArrowRight className="group-hover:translate-x-1 transition-transform duration-300" />
                 }
-                className="group !bg-green-500 !border-0 !shadow-lg !shadow-black/20 font-family-semibold text-base"
+                className="group !bg-green-500 !border-0 !shadow-lg !shadow-black/20 font-family-medium text-base"
               >
                 Book a Ride
+              </CustomButton>
+
+              <CustomButton
+                onClick={() => router.push("/airport-pickups")}
+                variant="primary"
+                size="lg"
+                endContent={
+                  <FiArrowRight className="group-hover:translate-x-1 transition-transform duration-300" />
+                }
+                className="group !bg-[#004a70] hover:!bg-[#003855] !border-0 !shadow-lg !shadow-black/20 !font-family-medium text-base"
+              >
+                Airport Pickups
               </CustomButton>
             </div>
           </div>

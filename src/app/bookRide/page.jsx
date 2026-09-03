@@ -23,10 +23,11 @@ import { useRouter, useSearchParams } from "next/navigation";
 import Link from "next/link";
 import CustomButton from "@/components/CustomButton";
 
-const apiKey = "0FGR7.1720815360";
-const apiSecret = "6EF4CAFCD82E689DECA28EDFDE15ADB35D12BF5982B182E468758A9F8DD072DF";
-const tokenUrl = "https://jad.cash/HAPI/token";
-const paymentUrl = "https://jad.cash/HAPI/cardpayment";
+const apiKey = process.env.NEXT_PUBLIC_JAD_API_KEY;
+const apiSecret = process.env.NEXT_PUBLIC_JAD_API_SECRET;
+const tokenUrl = process.env.NEXT_PUBLIC_JAD_TOKEN_URL;
+const paymentUrl = process.env.NEXT_PUBLIC_JAD_PAYMENT_URL;
+const jadNumber = process.env.NEXT_PUBLIC_JAD_NUMBER;
 
 mapboxgl.accessToken =
   "pk.eyJ1IjoibWFybGVncmFudCIsImEiOiJjbTgwdmV0MjkweXB2MnFzNXBjM2x6NThnIn0.3oz3YGaDHiFDh8W5ALk09w";
@@ -36,7 +37,6 @@ const CONVENIENCE_FEE_XCD = 3.0;
 
 function BookRideComponent() {
   const searchParams = useSearchParams();
-  const encodedData = searchParams.get("data");
   const { putData, postData, getData, header1, userData } = ApiFunction();
   const socket = useSocket();
   const dispatch = useDispatch();
@@ -95,6 +95,8 @@ function BookRideComponent() {
   const [jadLoading, setJadLoading] = useState(false);
   const [isMounted, setIsMounted] = useState(false);
   const [parcelImgFailed, setParcelImgFailed] = useState(false);
+  const [parcelImageFromSession, setParcelImageFromSession] = useState("");
+  const [showParcelModal, setShowParcelModal] = useState(false);
 
   useEffect(() => {
     setIsMounted(true);
@@ -160,28 +162,43 @@ function BookRideComponent() {
   };
 
   useEffect(() => {
-    if (encodedData) {
-      try {
-        const parsed = JSON.parse(decodeURIComponent(encodedData));
-        setProductDetail(parsed);
-        generateCode();
-        generatePinCode();
-
-        if (parsed.distance) {
-          setCalculatedDistance(Number(parsed.distance));
-          setTimeDropOff(Math.round(Number(parsed.distance) * 3));
-        }
-
-        if (parsed.bookingtype === "schedule" || parsed.schedule_date) {
-          setWantToScheduleTour(true);
-          if (parsed.schedule_date) setScheduleDate(parsed.schedule_date);
-          if (parsed.schedule_time) setScheduleTime(parsed.schedule_time);
-        }
-      } catch (err) {
-        console.error("Failed to parse booking data:", err);
+    if (typeof window === "undefined") return;
+    try {
+      const raw = sessionStorage.getItem("cabkn_ride_draft");
+      if (!raw) return;
+      const parsed = JSON.parse(raw);
+      // Restore parcel image from sessionStorage if it was stripped
+      const savedImg = sessionStorage.getItem("cabkn_parcel_image");
+      if (savedImg && (!parsed.parcelImage || parsed.parcelImage === "")) {
+        parsed.parcelImage = savedImg;
+        parsed.image = savedImg;
+        setParcelImageFromSession(savedImg);
+      } else if (parsed.parcelImage) {
+        setParcelImageFromSession(parsed.parcelImage);
       }
+      console.log("productDetail", parsed);
+      setProductDetail(parsed);
+      generateCode();
+      generatePinCode();
+
+      if (parsed.distance) {
+        setCalculatedDistance(Number(parsed.distance));
+        setTimeDropOff(Math.round(Number(parsed.distance) * 3));
+      }
+
+      if (parsed.passengerCount) {
+        setPassengerCount(String(parsed.passengerCount));
+      }
+
+      if (parsed.bookingtype === "schedule" || parsed.schedule_date || parsed.isAirportPickup) {
+        setWantToScheduleTour(true);
+        if (parsed.schedule_date) setScheduleDate(parsed.schedule_date);
+        if (parsed.schedule_time) setScheduleTime(parsed.schedule_time);
+      }
+    } catch (err) {
+      console.error("Failed to parse booking data from sessionStorage:", err);
     }
-  }, [encodedData]);
+  }, []);
 
   // Fetch Vehicle Liabilities
   const fetchLiabilities = async () => {
@@ -200,7 +217,9 @@ function BookRideComponent() {
     fetchLiabilities();
   }, []);
 
-  // Booking Type Identification (Parcel vs Tour vs Ride)
+  // Booking Type Identification (Parcel vs Tour vs Ride vs Airport Pickup)
+  const isAirportPickup = Boolean(productDetail?.isAirportPickup);
+
   const isParcelBooking = useMemo(() => {
     return (
       productDetail?.rideType === "parcel" ||
@@ -217,6 +236,14 @@ function BookRideComponent() {
       (productDetail?.stop && Array.isArray(productDetail?.stop) && productDetail.stop.length > 0 && !productDetail?.rideType)
     );
   }, [isParcelBooking, productDetail]);
+
+  useEffect(() => {
+    if (!ProductData?.length) return;
+    if (productDetail?.liability) {
+      const match = ProductData.find((p) => p._id === productDetail.liability);
+      if (match && match._id !== RideType?._id) setRideType(match);
+    }
+  }, [productDetail?.liability, ProductData]);
 
   // EXACT Mobile App Pricing Algorithm:
   const distanceKM = useMemo(() => Number(productDetail?.distance || 0), [productDetail]);
@@ -290,9 +317,13 @@ function BookRideComponent() {
     return Math.max(0, Number((baseFareXCD - couponDiscountAmount).toFixed(2)));
   }, [baseFareXCD, couponDiscountAmount]);
 
+  const luggageFeeXCD = useMemo(() => {
+    return isAirportPickup ? Number(productDetail?.luggageFee || 0) : 0;
+  }, [isAirportPickup, productDetail?.luggageFee]);
+
   const totalAmountXCD = useMemo(() => {
-    return Number((totalFareXCD + CONVENIENCE_FEE_XCD).toFixed(2));
-  }, [totalFareXCD]);
+    return Number((totalFareXCD + CONVENIENCE_FEE_XCD + luggageFeeXCD).toFixed(2));
+  }, [totalFareXCD, luggageFeeXCD]);
 
   const totalAmountUSD = useMemo(() => {
     return Number((totalAmountXCD / XCD_PER_USD).toFixed(2));
@@ -697,13 +728,17 @@ function BookRideComponent() {
       start_address: productDetail?.name,
       start_lat: productDetail?.start?.[1],
       start_lng: productDetail?.start?.[0],
-      type: productDetail?.type || "driver",
-      rideType: productDetail?.rideType || (isParcelBooking ? "parcel" : "driver"),
+      type: isParcelBooking ? "parcel" : (productDetail?.type || "driver"),
+      rideType: isParcelBooking ? "parcel" : (productDetail?.rideType || "driver"),
       title: productDetail?.parcelTitle || productDetail?.title || "",
       image: productDetail?.parcelImage || productDetail?.image || "",
       distance: productDetail?.distance,
       stops: productDetail?.stop || [],
       note: note || "",
+      isAirportPickup: Boolean(productDetail?.isAirportPickup),
+      flightNumber: productDetail?.flightNumber || "",
+      luggageCount: Number(productDetail?.luggageCount) || 0,
+      luggageFee: luggageFeeXCD,
       ...(productDetail?.service ? { service: productDetail.service } : {}),
       ...(productDetail?.FavUserId ? { FavUserId: productDetail.FavUserId } : {}),
       ...(wantToScheduleTour && {
@@ -818,7 +853,7 @@ function BookRideComponent() {
         live: "1",
         timestamp: moment().format("YYYYMMDDHHmmss"),
         refnum: "101",
-        jadnumber: "101310573865",
+        jadnumber: jadNumber,
         amount: totalAmountXCD.toFixed(2),
         cardnumber: cardDetails.number.replace(/\s+/g, ""),
         cardexpmonth: month,
@@ -904,21 +939,29 @@ function BookRideComponent() {
             </Link>
             <span className="!text-slate-500">/</span>
             {isParcelBooking ? (
-              <Link href={`/ride${encodedData ? `?data=${encodedData}` : ""}`} className="!text-slate-400 hover:!text-white !transition-colors !no-underline">
+              <Link href="/sendparcel" className="!text-slate-400 hover:!text-white !transition-colors !no-underline">
                 Send a Parcel
               </Link>
             ) : isTourBooking ? (
               <Link href="/makeowntours" className="!text-slate-400 hover:!text-white !transition-colors !no-underline">
                 Make Tour
               </Link>
+            ) : isAirportPickup ? (
+              <Link href="/airport-pickups" className="!text-slate-400 hover:!text-white !transition-colors !no-underline">
+                Airport Pickups
+              </Link>
             ) : (
-              <Link href={`/ride${encodedData ? `?data=${encodedData}` : ""}`} className="!text-slate-400 hover:!text-white !transition-colors !no-underline">
+              <Link href="/ride" className="!text-slate-400 hover:!text-white !transition-colors !no-underline">
                 Book a Ride
               </Link>
             )}
             <span className="!text-slate-500">/</span>
             <span className="!text-slate-200">
-              {isParcelBooking ? "Choose Parcel Vehicle" : "Choose Your Ride"}
+              {isParcelBooking
+                ? "Choose Parcel Vehicle"
+                : isAirportPickup
+                ? "Confirm Airport Transfer"
+                : "Choose Your Ride"}
             </span>
           </div>
 
@@ -927,20 +970,32 @@ function BookRideComponent() {
               <div className="!w-12 !h-12 sm:!w-14 sm:!h-14 !rounded-2xl !bg-white/10 !backdrop-blur-md !border !border-white/15 !flex !items-center !justify-center !shrink-0 !shadow-inner">
                 {isParcelBooking ? (
                   <FaBox className="!text-white !text-2xl sm:!text-3xl" />
+                ) : isAirportPickup ? (
+                  <span className="!text-2xl sm:!text-3xl">✈️</span>
                 ) : (
                   <MdOutlineDirectionsCar className="!text-white !text-2xl sm:!text-3xl" />
                 )}
               </div>
               <div>
-                <h1 className="!text-white !text-2xl sm:!text-3xl md:!text-4xl !font-family-bold !tracking-tight !m-0 !leading-tight">
-                  {isParcelBooking ? "Choose Parcel " : "Confirm Your "}
+                <h1 className="!text-white !text-2xl sm:!text-3xl md:!text-4xl !font-family-semibold !tracking-tight !m-0 !leading-tight">
+                  {isParcelBooking
+                    ? "Choose Parcel "
+                    : isAirportPickup
+                    ? "Confirm Airport "
+                    : "Confirm Your "}
                   <span className="!text-transparent !bg-clip-text !bg-gradient-to-r !from-brand-300 !via-sky-300 !to-indigo-200">
-                    {isParcelBooking ? "Courier" : "Ride"}
+                    {isParcelBooking
+                      ? "Courier"
+                      : isAirportPickup
+                      ? "Pickup"
+                      : "Ride"}
                   </span>
                 </h1>
                 <p className="!text-slate-300 !text-xs sm:!text-sm !mt-1.5 !m-0 !font-family-regular">
                   {isParcelBooking
                     ? "Review delivery route, pick vehicle size & dispatch parcel"
+                    : isAirportPickup
+                    ? "Review your airport transfer from SKB, choose vehicle & book your driver"
                     : "Review your route, choose vehicle tier & find nearby drivers"}
                 </p>
               </div>
@@ -949,12 +1004,12 @@ function BookRideComponent() {
             <div className="!flex !items-center !gap-3 !bg-white/10 !backdrop-blur-md !px-4 !py-2 !rounded-2xl !border !border-white/15 !text-white">
               <div className="!text-right">
                 <span className="!text-[11px] !text-slate-300 !block">Estimated Distance</span>
-                <span className="!text-sm !font-family-bold">{calculatedDistance} Km</span>
+                <span className="!text-sm !font-family-semibold">{calculatedDistance} Km</span>
               </div>
               <div className="!h-7 !w-px !bg-white/20" />
               <div className="!text-right">
                 <span className="!text-[11px] !text-slate-300 !block">Total Stops</span>
-                <span className="!text-sm !font-family-bold">{stopsCount} Places</span>
+                <span className="!text-sm !font-family-semibold">{stopsCount} Places</span>
               </div>
             </div>
           </div>
@@ -981,7 +1036,7 @@ function BookRideComponent() {
                 <div className="!w-6 !h-6 !rounded-lg !bg-[#004a70] !text-white !flex !items-center !justify-center !shrink-0">
                   <FaLocationDot size={12} />
                 </div>
-                <span className="!text-xs !font-family-bold !text-slate-800 !truncate">
+                <span className="!text-xs !font-family-semibold !text-slate-800 !truncate">
                   Interactive Route Map
                 </span>
                 {activeFocusedLocation && (
@@ -1013,7 +1068,7 @@ function BookRideComponent() {
                   title="Click to zoom on start location"
                 >
                   <span className="!w-2 !h-2 !rounded-full !bg-[#004a70] !shrink-0" />
-                  <span className="!font-family-bold !text-[#004a70]">Start:</span>
+                  <span className="!font-family-semibold !text-[#004a70]">Start:</span>
                   <span className="!truncate !text-[11.5px]">{productDetail?.name || "Pickup location"}</span>
                 </div>
 
@@ -1025,7 +1080,7 @@ function BookRideComponent() {
                   title="Click to zoom on end destination"
                 >
                   <span className="!w-2 !h-2 !rounded-full !bg-rose-600 !shrink-0" />
-                  <span className="!font-family-bold !text-rose-600">End:</span>
+                  <span className="!font-family-semibold !text-rose-600">End:</span>
                   <span className="!truncate !text-[11.5px]">{productDetail?.metaTitle || "Destination"}</span>
                 </div>
               </div>
@@ -1055,24 +1110,30 @@ function BookRideComponent() {
             
             {/* Header Card */}
             <div className="!bg-white !rounded-3xl !border !border-slate-200/90 !p-5 !shadow-[0_4px_25px_rgba(0,0,0,0.04)]">
-              <h2 className="!text-lg sm:!text-xl !font-family-bold !text-slate-800 !m-0">
-                {isParcelBooking ? "Choose parcel courier" : "Choose your ride"}
+              <h2 className="!text-lg sm:!text-xl !font-family-semibold !text-slate-800 !m-0">
+                {isParcelBooking
+                  ? "Choose parcel courier"
+                  : isAirportPickup
+                  ? "Airport Transfer & Vehicle"
+                  : "Choose your ride"}
               </h2>
               <p className="!text-xs !text-slate-500 !font-family-regular !m-0 !mt-1">
                 {isParcelBooking
                   ? "Schedule delivery time if needed, then select a vehicle."
+                  : isAirportPickup
+                  ? "Review flight arrival schedule, then pick your vehicle."
                   : "Schedule if you want, then pick a vehicle."}
               </p>
 
               {/* Parcel Info Banner */}
               {isParcelBooking && productDetail?.parcelTitle && (
-                <div className="!mt-4 !p-3.5 !bg-sky-50/80 !border !border-sky-200/80 !rounded-2xl !flex !items-center !gap-3">
-                  {productDetail?.parcelImage && !parcelImgFailed ? (
+                <div className="!my-4 !p-3.5 !bg-sky-50/80 !border !border-sky-200/80 !rounded-2xl !flex !items-center !gap-3 cursor-pointer hover:!bg-sky-100/80 !transition-colors !group" onClick={() => setShowParcelModal(true)}>
+                  {(parcelImageFromSession || productDetail?.parcelImage) && !parcelImgFailed ? (
                     <img
-                      src={productDetail.parcelImage}
+                      src={parcelImageFromSession || productDetail.parcelImage}
                       alt={productDetail.parcelTitle || "Parcel"}
                       onError={() => setParcelImgFailed(true)}
-                      className="!w-12 !h-12 !rounded-xl !object-cover !border !border-sky-200 !shadow-xs"
+                      className="!w-12 !h-12 !rounded-xl !object-cover !border !border-sky-200 !shadow-xs !shrink-0"
                     />
                   ) : (
                     <div className="!w-12 !h-12 !rounded-xl !bg-sky-100 !text-[#004a70] !flex !items-center !justify-center !shrink-0">
@@ -1080,96 +1141,192 @@ function BookRideComponent() {
                     </div>
                   )}
                   <div className="!flex-1 !min-w-0">
-                    <span className="!text-[10px] !font-family-bold !uppercase !tracking-wider !text-[#004a70] !block">
+                    <span className="!text-[10px] !font-family-semibold !uppercase !tracking-wider !text-[#004a70] !block">
                       Parcel Delivery
                     </span>
-                    <h4 className="!text-xs sm:!text-sm !font-family-bold !text-slate-900 !m-0 !truncate">
+                    <h4 className="!text-xs sm:!text-sm !font-family-semibold !text-slate-900 !m-0 !truncate">
                       {productDetail.parcelTitle}
                     </h4>
                     <span className="!text-[11px] !text-slate-500 !font-family-regular !block !mt-0.5">
                       Ready for courier dispatch
                     </span>
                   </div>
+                  <button
+                    type="button"
+                    className="!shrink-0 !text-[10.5px] !font-family-semibold !text-[#004a70] !bg-sky-100 hover:!bg-sky-200 !px-2.5 !py-1 !rounded-lg !border !border-sky-200 !transition-colors !whitespace-nowrap cursor-pointer"
+                    onClick={(e) => { e.stopPropagation(); setShowParcelModal(true); }}
+                  >
+                    View Details
+                  </button>
                 </div>
               )}
 
-              {/* 1. Custom Themed "Want to Schedule Tour?" Card */}
-              <div className="!mt-4 !p-3.5 !bg-slate-50/80 !border !border-slate-200/80 !rounded-2xl !transition-all">
-                <div
-                  onClick={() => setWantToScheduleTour(!wantToScheduleTour)}
-                  className="!flex !items-center !gap-3 !cursor-pointer !select-none"
-                >
-                  <div
-                    className={`!w-5 !h-5 !rounded-lg !border-2 !flex !items-center !justify-center !transition-all !duration-200 ${
-                      wantToScheduleTour
-                        ? "!bg-[#004a70] !border-[#004a70] !text-white !shadow-xs"
-                        : "!bg-white !border-slate-300 hover:!border-[#004a70]"
-                    }`}
-                  >
-                    {wantToScheduleTour && <FaCheck size={10} />}
+            {/* 1. Schedule / Airport Transfer Details Card (Matching Mobile App MapScreen) */}
+            <div className="!bg-white !rounded-3xl !border !border-slate-200/90 !p-5 !shadow-[0_4px_25px_rgba(0,0,0,0.04)]">
+              {isAirportPickup ? (
+                <div className="!space-y-3.5">
+                  {/* Airport Flight Header */}
+                  <div className="!flex !items-center !justify-between !pb-3 !border-b !border-slate-100">
+                    <div className="!flex !items-center !gap-2.5">
+                      <div className="!w-9 !h-9 !rounded-xl !bg-[#004a70] !text-white !flex !items-center !justify-center !shadow-xs">
+                        <span className="!text-lg">✈️</span>
+                      </div>
+                      <div>
+                        <h4 className="!text-sm sm:!text-[15px] !font-family-semibold !text-slate-900 !m-0 !leading-tight">
+                          Flight {productDetail?.flightNumber || "—"}
+                        </h4>
+                        <p className="!text-[11px] !text-slate-500 !font-family-regular !m-0 !mt-0.5">
+                          Robert L. Bradshaw International Airport (SKB)
+                        </p>
+                      </div>
+                    </div>
+                    <span className="!px-3 !py-1 !rounded-full !bg-sky-50 !text-sky-700 !border !border-sky-200/80 !text-[11px] !font-family-semibold">
+                      Meet &amp; Greet
+                    </span>
                   </div>
-                  <span className="!text-xs sm:!text-[13.5px] !font-family-semibold !text-slate-800">
-                    Want to Schedule {isParcelBooking ? "Parcel Delivery" : isTourBooking ? "Tour" : "Ride"}?
-                  </span>
-                </div>
 
-                {wantToScheduleTour && (
-                  <div className="!mt-3.5 !pt-3.5 !border-t !border-slate-200/70 !space-y-3 animate-fade-in">
+                  {/* Flight Info Stats: Passengers & Luggage */}
+                  <div className="!grid !grid-cols-2 !gap-3">
+                    <div className="!p-3 !bg-slate-50/90 !rounded-2xl !border !border-slate-200/70">
+                      <span className="!text-[10px] !text-slate-400 !font-family-semibold !uppercase !tracking-wider !block">
+                        PASSENGERS
+                      </span>
+                      <span className="!font-family-semibold !text-slate-800 !text-xs sm:!text-[13px] !block !mt-0.5">
+                        {passengerCount || productDetail?.passengerCount || 1} Passengers
+                      </span>
+                      <span className="!text-[11px] !text-slate-500 !font-family-medium !block !mt-0.5">
+                        Selected for Transfer
+                      </span>
+                    </div>
+
+                    <div className="!p-3 !bg-slate-50/90 !rounded-2xl !border !border-slate-200/70">
+                      <span className="!text-[10px] !text-slate-400 !font-family-semibold !uppercase !tracking-wider !block">
+                        LUGGAGE PIECES
+                      </span>
+                      <span className="!font-family-semibold !text-slate-800 !text-xs sm:!text-[13px] !block !mt-0.5">
+                        {productDetail?.luggageCount || 0} Pieces
+                      </span>
+                      <span className="!text-[11px] !text-slate-500 !font-family-medium !block !mt-0.5">
+                        Surcharge: ${luggageFeeXCD.toFixed(2)} XCD
+                      </span>
+                    </div>
+                  </div>
+
+                  {/* Estimated Arrival Date & Time Inputs */}
+                  <div className="!grid !grid-cols-1 sm:!grid-cols-2 !gap-3 !pt-1">
                     <div>
                       <label className="!text-xs !text-slate-700 !block !mb-1 !font-family-semibold !flex !items-center !gap-1.5">
                         <FaCalendarAlt size={12} className="!text-[#004a70]" />
-                        Schedule Date
+                        Estimated Arrival Date
                       </label>
-                      <div className="!relative !flex !items-center">
-                        <div className="!absolute !left-3.5 !flex !items-center !pointer-events-none !text-slate-400 !z-10">
-                          <FaCalendarAlt className="!w-3.5 !h-3.5 !text-[#004a70]" />
-                        </div>
-                        <input
-                          type="date"
-                          min={moment().format("YYYY-MM-DD")}
-                          value={scheduleDate}
-                          onChange={(e) => {
-                            setScheduleDate(e.target.value);
-                            setScheduleErrors((prev) => ({ ...prev, date: "" }));
-                          }}
-                          className="!w-full !pl-10 !pr-3.5 !py-2.5 !rounded-xl !bg-white !border !border-gray-200 !text-[13px] !text-gray-900 !placeholder-gray-400 focus:!outline-none focus:!ring-1 focus:!ring-primary-500 focus:!ring-offset-1 focus:!border-none !transition-all !duration-200 !shadow-xs hover:!shadow-sm"
-                        />
-                      </div>
-                      {scheduleErrors.date && (
-                        <span className="!text-[10.5px] !text-rose-500 !block !mt-1 !font-family-medium">
-                          {scheduleErrors.date}
-                        </span>
-                      )}
+                      <input
+                        type="date"
+                        min={moment().format("YYYY-MM-DD")}
+                        value={scheduleDate}
+                        onChange={(e) => {
+                          setScheduleDate(e.target.value);
+                          setScheduleErrors((prev) => ({ ...prev, date: "" }));
+                        }}
+                        className="!w-full !px-3 !py-2.5 !rounded-xl !bg-white !border !border-gray-200 !text-[12.5px] !font-family-medium !text-gray-900 focus:!outline-none focus:!border-[#004a70]"
+                      />
                     </div>
 
                     <div>
                       <label className="!text-xs !text-slate-700 !block !mb-1 !font-family-semibold !flex !items-center !gap-1.5">
                         <MdAccessTime size={13} className="!text-[#004a70]" />
-                        Schedule Time
+                        Estimated Arrival Time
                       </label>
-                      <div className="!relative !flex !items-center">
-                        <div className="!absolute !left-3.5 !flex !items-center !pointer-events-none !text-slate-400 !z-10">
-                          <MdAccessTime className="!w-4 !h-4 !text-[#004a70]" />
-                        </div>
-                        <input
-                          type="time"
-                          value={scheduleTime}
-                          onChange={(e) => {
-                            setScheduleTime(e.target.value);
-                            setScheduleErrors((prev) => ({ ...prev, time: "" }));
-                          }}
-                          className="!w-full !pl-10 !pr-3.5 !py-2.5 !rounded-xl !bg-white !border !border-gray-200 !text-[13px] !text-gray-900 !placeholder-gray-400 focus:!outline-none focus:!ring-1 focus:!ring-primary-500 focus:!ring-offset-1 focus:!border-none !transition-all !duration-200 !shadow-xs hover:!shadow-sm"
-                        />
-                      </div>
-                      {scheduleErrors.time && (
-                        <span className="!text-[10.5px] !text-rose-500 !block !mt-1 !font-family-medium">
-                          {scheduleErrors.time}
-                        </span>
-                      )}
+                      <input
+                        type="time"
+                        value={scheduleTime}
+                        onChange={(e) => {
+                          setScheduleTime(e.target.value);
+                          setScheduleErrors((prev) => ({ ...prev, time: "" }));
+                        }}
+                        className="!w-full !px-3 !py-2.5 !rounded-xl !bg-white !border !border-gray-200 !text-[12.5px] !font-family-medium !text-gray-900 focus:!outline-none focus:!border-[#004a70]"
+                      />
                     </div>
                   </div>
-                )}
-              </div>
+                </div>
+              ) : (
+                <>
+                  <div
+                    onClick={() => setWantToScheduleTour(!wantToScheduleTour)}
+                    className="!flex !items-center !gap-3 !cursor-pointer !select-none group"
+                  >
+                    <div
+                      className={`!w-5 !h-5 !rounded-lg !border-2 !flex !items-center !justify-center !transition-all !duration-200 ${
+                        wantToScheduleTour
+                          ? "!bg-[#004a70] !border-[#004a70] !text-white !shadow-xs"
+                          : "!bg-white !border-slate-300 hover:!border-[#004a70]"
+                      }`}
+                    >
+                      {wantToScheduleTour && <FaCheck size={10} />}
+                    </div>
+                    <span className="!text-xs sm:!text-[13.5px] !font-family-semibold !text-slate-800">
+                      Want to Schedule {isParcelBooking ? "Parcel Delivery" : isTourBooking ? "Tour" : "Ride"}?
+                    </span>
+                  </div>
+
+                  {wantToScheduleTour && (
+                    <div className="!mt-3.5 !pt-3.5 !border-t !border-slate-200/70 !space-y-3 animate-fade-in">
+                      <div>
+                        <label className="!text-xs !text-slate-700 !block !mb-1 !font-family-semibold !flex !items-center !gap-1.5">
+                          <FaCalendarAlt size={12} className="!text-[#004a70]" />
+                          Schedule Date
+                        </label>
+                        <div className="!relative !flex !items-center">
+                          <div className="!absolute !left-3.5 !flex !items-center !pointer-events-none !text-slate-400 !z-10">
+                            <FaCalendarAlt className="!w-3.5 !h-3.5 !text-[#004a70]" />
+                          </div>
+                          <input
+                            type="date"
+                            min={moment().format("YYYY-MM-DD")}
+                            value={scheduleDate}
+                            onChange={(e) => {
+                              setScheduleDate(e.target.value);
+                              setScheduleErrors((prev) => ({ ...prev, date: "" }));
+                            }}
+                            className="!w-full !pl-10 !pr-3.5 !py-2.5 !rounded-xl !bg-white !border !border-gray-200 !text-[13px] !text-gray-900 !placeholder-gray-400 focus:!outline-none focus:!ring-1 focus:!ring-primary-500 focus:!ring-offset-1 focus:!border-none !transition-all !duration-200 !shadow-xs hover:!shadow-sm"
+                          />
+                        </div>
+                        {scheduleErrors.date && (
+                          <span className="!text-[10.5px] !text-rose-500 !block !mt-1 !font-family-medium">
+                            {scheduleErrors.date}
+                          </span>
+                        )}
+                      </div>
+
+                      <div>
+                        <label className="!text-xs !text-slate-700 !block !mb-1 !font-family-semibold !flex !items-center !gap-1.5">
+                          <MdAccessTime size={13} className="!text-[#004a70]" />
+                          Schedule Time
+                        </label>
+                        <div className="!relative !flex !items-center">
+                          <div className="!absolute !left-3.5 !flex !items-center !pointer-events-none !text-slate-400 !z-10">
+                            <MdAccessTime className="!w-4 !h-4 !text-[#004a70]" />
+                          </div>
+                          <input
+                            type="time"
+                            value={scheduleTime}
+                            onChange={(e) => {
+                              setScheduleTime(e.target.value);
+                              setScheduleErrors((prev) => ({ ...prev, time: "" }));
+                            }}
+                            className="!w-full !pl-10 !pr-3.5 !py-2.5 !rounded-xl !bg-white !border !border-gray-200 !text-[13px] !text-gray-900 !placeholder-gray-400 focus:!outline-none focus:!ring-1 focus:!ring-primary-500 focus:!ring-offset-1 focus:!border-none !transition-all !duration-200 !shadow-xs hover:!shadow-sm"
+                          />
+                        </div>
+                        {scheduleErrors.time && (
+                          <span className="!text-[10.5px] !text-rose-500 !block !mt-1 !font-family-medium">
+                            {scheduleErrors.time}
+                          </span>
+                        )}
+                      </div>
+                    </div>
+                  )}
+                </>
+              )}
+            </div>
 
               {/* 2. Vehicle Selection Cards */}
               <div className="!mt-4">
@@ -1203,7 +1360,7 @@ function BookRideComponent() {
 
                         <div className="!flex !items-start !justify-between !gap-3 !pr-7">
                           <div>
-                            <h4 className="!text-xs sm:!text-[13.5px] !font-family-bold !text-slate-800 !m-0 !leading-tight">
+                            <h4 className="!text-xs sm:!text-[13.5px] !font-family-semibold !text-slate-800 !m-0 !leading-tight">
                               {item.title} - ${priceXCD?.toFixed(2)} XCD
                             </h4>
 
@@ -1216,7 +1373,7 @@ function BookRideComponent() {
                           </div>
 
                           <div className="!text-right">
-                            <span className="!text-xs sm:!text-sm !font-family-bold !text-[#004a70] !block">
+                            <span className="!text-xs sm:!text-sm !font-family-semibold !text-[#004a70] !block">
                               ${priceUSD} <span className="!text-[10px] !text-slate-400 !font-family-regular">USD</span>
                             </span>
                             <div className="!mt-1 !flex !items-center !justify-end">
@@ -1238,7 +1395,7 @@ function BookRideComponent() {
             {/* 3. Perfectly Centered Vertical Route Stops Timeline */}
             <div className="!bg-white !rounded-3xl !border !border-slate-200/90 !p-5 !shadow-[0_4px_25px_rgba(0,0,0,0.04)]">
               <div className="!flex !items-center !justify-between !mb-3.5">
-                <h3 className="!text-sm sm:!text-[15px] !font-family-bold !text-slate-800 !m-0">
+                <h3 className="!text-sm sm:!text-[15px] !font-family-semibold !text-slate-800 !m-0">
                   Route Stops
                 </h3>
                 <span className="!text-[11px] !text-slate-400 !font-family-medium">
@@ -1257,7 +1414,7 @@ function BookRideComponent() {
                     <div className="!w-3.5 !h-3.5 !rounded-full !bg-[#004a70] !ring-4 !ring-white !shadow-xs group-hover:!scale-125 !transition-transform" />
                   </div>
                   <div className="!flex !items-center !justify-between">
-                    <span className="!text-[10px] !uppercase !tracking-wider !font-family-bold !text-slate-400 !block">
+                    <span className="!text-[10px] !uppercase !tracking-wider !font-family-semibold !text-slate-400 !block">
                       Start
                     </span>
                     <span className="!text-[10px] !text-[#004a70] !font-family-semibold !opacity-0 group-hover:!opacity-100 !transition-opacity">
@@ -1286,7 +1443,7 @@ function BookRideComponent() {
                         <div className="!w-3.5 !h-3.5 !rounded-full !bg-amber-500 !ring-4 !ring-white !shadow-xs group-hover:!scale-125 !transition-transform" />
                       </div>
                       <div className="!flex !items-center !justify-between">
-                        <span className="!text-[10px] !uppercase !tracking-wider !font-family-bold !text-amber-600 !block">
+                        <span className="!text-[10px] !uppercase !tracking-wider !font-family-semibold !text-amber-600 !block">
                           Stop {idx + 1}
                         </span>
                         <span className="!text-[10px] !text-amber-600 !font-family-semibold !opacity-0 group-hover:!opacity-100 !transition-opacity">
@@ -1310,7 +1467,7 @@ function BookRideComponent() {
                     <div className="!w-3.5 !h-3.5 !rounded-full !bg-rose-600 !ring-4 !ring-white !shadow-xs group-hover:!scale-125 !transition-transform" />
                   </div>
                   <div className="!flex !items-center !justify-between">
-                    <span className="!text-[10px] !uppercase !tracking-wider !font-family-bold !text-rose-500 !block">
+                    <span className="!text-[10px] !uppercase !tracking-wider !font-family-semibold !text-rose-500 !block">
                       End
                     </span>
                     <span className="!text-[10px] !text-rose-600 !font-family-semibold !opacity-0 group-hover:!opacity-100 !transition-opacity">
@@ -1327,7 +1484,7 @@ function BookRideComponent() {
             {/* 4. Itinerary Stops Pill List (if stops exist) */}
             {Array.isArray(productDetail?.stop) && productDetail.stop.length > 0 && (
               <div className="!bg-white !rounded-3xl !border !border-slate-200/90 !p-5 !shadow-[0_4px_25px_rgba(0,0,0,0.04)]">
-                <h3 className="!text-sm sm:!text-[15px] !font-family-bold !text-slate-800 !m-0 !mb-3">
+                <h3 className="!text-sm sm:!text-[15px] !font-family-semibold !text-slate-800 !m-0 !mb-3">
                   Itinerary stops ({stopsCount})
                 </h3>
                 <div className="!space-y-2">
@@ -1338,7 +1495,7 @@ function BookRideComponent() {
                       className="!flex !items-center !gap-2.5 !p-2.5 !bg-slate-50 hover:!bg-amber-50/60 !border !border-slate-100 !rounded-xl !cursor-pointer !transition-colors"
                       title="Click to zoom on map"
                     >
-                      <span className="!w-5 !h-5 !rounded-full !bg-amber-100 !text-amber-800 !flex !items-center !justify-center !text-[11px] !font-family-bold !shrink-0">
+                      <span className="!w-5 !h-5 !rounded-full !bg-amber-100 !text-amber-800 !flex !items-center !justify-center !text-[11px] !font-family-semibold !shrink-0">
                         {idx + 1}
                       </span>
                       <span className="!text-xs !font-family-medium !text-slate-700 !truncate !flex-1">
@@ -1355,7 +1512,7 @@ function BookRideComponent() {
 
             {/* 5. Trip Summary Card - Matching Mobile App Exact Breakdown */}
             <div className="!bg-white !rounded-3xl !border !border-slate-200/90 !p-5 !shadow-[0_4px_25px_rgba(0,0,0,0.04)]">
-              <h3 className="!text-sm sm:!text-[15px] !font-family-bold !text-slate-800 !m-0 !mb-3.5">
+              <h3 className="!text-sm sm:!text-[15px] !font-family-semibold !text-slate-800 !m-0 !mb-3.5">
                 Trip summary
               </h3>
 
@@ -1370,7 +1527,39 @@ function BookRideComponent() {
                   <span className="!font-family-semibold !text-slate-800">{timeDropOff} min</span>
                 </div>
 
-                {multiPrice > 0 ? (
+                {isAirportPickup && (
+                  <>
+                    <div className="!flex !justify-between !items-center !text-slate-500">
+                      <span>Flight</span>
+                      <span className="!font-family-semibold !text-slate-800">
+                        {productDetail?.flightNumber ? `Flight ${productDetail.flightNumber}` : "N/A"}
+                      </span>
+                    </div>
+
+                    <div className="!flex !justify-between !items-center !text-slate-500">
+                      <span>Arrival Schedule</span>
+                      <span className="!font-family-semibold !text-slate-800">
+                        {scheduleDate ? moment(scheduleDate).format("DD MMM YYYY") : ""} {scheduleTime ? `• ${scheduleTime}` : ""}
+                      </span>
+                    </div>
+
+                    <div className="!flex !justify-between !items-center !text-slate-500">
+                      <span>Passengers</span>
+                      <span className="!font-family-semibold !text-slate-800">
+                        {passengerCount || productDetail?.passengerCount || 1} Passengers
+                      </span>
+                    </div>
+
+                    <div className="!flex !justify-between !items-center !text-slate-500">
+                      <span>Luggage Pieces</span>
+                      <span className="!font-family-semibold !text-slate-800">
+                        {productDetail?.luggageCount || 0} Pieces
+                      </span>
+                    </div>
+                  </>
+                )}
+
+                {multiPrice > 0 && !isAirportPickup ? (
                   <>
                     <div className="!flex !justify-between !items-center !text-slate-500">
                       <span>Total stops</span>
@@ -1405,17 +1594,24 @@ function BookRideComponent() {
                   <span className="!font-family-medium">$3.00 XCD - $1.11 USD</span>
                 </div>
 
+                {isAirportPickup && luggageFeeXCD > 0 && (
+                  <div className="!flex !justify-between !items-center !text-slate-500">
+                    <span>Luggage ({productDetail?.luggageCount || 0} pieces × $6 XCD)</span>
+                    <span className="!font-family-medium">${luggageFeeXCD.toFixed(2)} XCD</span>
+                  </div>
+                )}
+
                 {/* Total Amount Row */}
                 <div className="!pt-3 !border-t !border-slate-200 !flex !justify-between !items-baseline">
                   <div>
-                    <span className="!text-xs !font-family-bold !text-slate-800 !block">
+                    <span className="!text-xs !font-family-semibold !text-slate-800 !block">
                       Total amount
                     </span>
                     <span className="!text-[11px] !text-slate-400">
                       ≈ ${totalAmountUSD} USD
                     </span>
                   </div>
-                  <span className="!text-lg sm:!text-xl !font-family-bold !text-[#004a70]">
+                  <span className="!text-lg sm:!text-xl !font-family-semibold !text-[#004a70]">
                     ${totalAmountXCD.toFixed(2)} <span className="!text-xs !font-family-semibold text-slate-500">XCD</span>
                   </span>
                 </div>
@@ -1428,10 +1624,9 @@ function BookRideComponent() {
                   variant="primary"
                   size="lg"
                   loading={WalletLoading}
-                  className="!w-full !py-3.5 !bg-[#004a70] hover:!bg-[#003855] !text-white !font-family-bold !rounded-2xl !shadow-md !transition-all !cursor-pointer !border-none !text-sm"
+                  className="!w-full !py-3.5 !bg-[#004a70] hover:!bg-[#003855] !text-white !font-family-semibold !rounded-2xl !shadow-md !transition-all !cursor-pointer !border-none !text-sm"
                 >
                   <span>Proceed to Payment</span>
-                  <FiArrowRight className="!inline-block !ml-1.5" />
                 </CustomButton>
               </div>
             </div>
@@ -1456,7 +1651,7 @@ function BookRideComponent() {
 
                 {/* Modal Header */}
                 <div className="!flex !items-center !justify-between !mb-5 !relative">
-                  <h3 className="!text-base sm:!text-lg !font-family-bold !text-slate-900 !m-0 !w-full !text-center">
+                  <h3 className="!text-base sm:!text-lg !font-family-semibold !text-slate-900 !m-0 !w-full !text-center">
                     Select Payment Method
                   </h3>
                   <button
@@ -1503,7 +1698,7 @@ function BookRideComponent() {
                         type="button"
                         onClick={applyCoupon}
                         disabled={couponLoading || !couponCode.trim()}
-                        className="!px-4 !py-2.5 !rounded-xl !bg-sky-50 hover:!bg-sky-100 !text-[#004a70] !border !border-sky-200 disabled:!opacity-60 !font-family-bold !text-xs !cursor-pointer disabled:!cursor-not-allowed !transition-all !shrink-0 !flex !items-center !justify-center !min-w-[80px] !shadow-xs"
+                        className="!px-4 !py-2.5 !rounded-xl !bg-sky-50 hover:!bg-sky-100 !text-[#004a70] !border !border-sky-200 disabled:!opacity-60 !font-family-semibold !text-xs !cursor-pointer disabled:!cursor-not-allowed !transition-all !shrink-0 !flex !items-center !justify-center !min-w-[80px] !shadow-xs"
                       >
                         {couponLoading ? (
                           <div className="!h-4 !w-4 !animate-spin !rounded-full !border-2 !border-[#004a70]/25 !border-t-[#004a70]" />
@@ -1526,7 +1721,7 @@ function BookRideComponent() {
 
                   {/* Payment Methods */}
                   <div>
-                    <label className="!text-xs !font-family-bold !text-slate-800 !block !mb-2.5">
+                    <label className="!text-xs !font-family-semibold !text-slate-800 !block !mb-2.5">
                       Payment method
                     </label>
 
@@ -1545,7 +1740,7 @@ function BookRideComponent() {
                             <FaWallet size={16} />
                           </div>
                           <div>
-                            <h5 className="!text-xs sm:!text-[13px] !font-family-bold !text-slate-900 !m-0">
+                            <h5 className="!text-xs sm:!text-[13px] !font-family-semibold !text-slate-900 !m-0">
                               Wallet
                             </h5>
                             <span className="!text-[11px] !text-slate-400 !font-family-medium">
@@ -1569,7 +1764,7 @@ function BookRideComponent() {
                             <BsCreditCard2Back size={17} />
                           </div>
                           <div>
-                            <h5 className="!text-xs sm:!text-[13px] !font-family-bold !text-slate-900 !m-0">
+                            <h5 className="!text-xs sm:!text-[13px] !font-family-semibold !text-slate-900 !m-0">
                               Credit / Debit Card
                             </h5>
                             <span className="!text-[11px] !text-slate-400 !font-family-medium">
@@ -1593,7 +1788,7 @@ function BookRideComponent() {
                             <BsCashCoin size={17} />
                           </div>
                           <div>
-                            <h5 className="!text-xs sm:!text-[13px] !font-family-bold !text-slate-900 !m-0">
+                            <h5 className="!text-xs sm:!text-[13px] !font-family-semibold !text-slate-900 !m-0">
                               Cash
                             </h5>
                           </div>
@@ -1605,7 +1800,7 @@ function BookRideComponent() {
                   {/* Total Amount in Modal */}
                   <div className="!pt-2 !flex !justify-between !items-center !text-xs !text-slate-600">
                     <span className="!font-family-semibold">Total Payable</span>
-                    <span className="!text-sm !font-family-bold !text-[#004a70]">
+                    <span className="!text-sm !font-family-semibold !text-[#004a70]">
                       ${totalAmountXCD.toFixed(2)} XCD (≈ ${totalAmountUSD} USD)
                     </span>
                   </div>
@@ -1616,7 +1811,7 @@ function BookRideComponent() {
                       type="button"
                       onClick={handleConfirmPaymentMethod}
                       disabled={WalletLoading}
-                      className="!w-full !py-3.5 !bg-[#004a70] hover:!bg-[#003855] !text-white !font-family-bold !rounded-2xl !text-sm !shadow-md !cursor-pointer !border-none !transition-all"
+                      className="!w-full !py-3.5 !bg-[#004a70] hover:!bg-[#003855] !text-white !font-family-semibold !rounded-2xl !text-sm !shadow-md !cursor-pointer !border-none !transition-all"
                     >
                       {WalletLoading ? "Processing..." : "Done"}
                     </button>
@@ -1639,7 +1834,7 @@ function BookRideComponent() {
               <div className="!relative !z-10 !bg-white !rounded-3xl !shadow-2xl !max-w-2xl !w-full !overflow-hidden !max-h-[90vh] !overflow-y-auto">
                 {/* Custom Header with guaranteed working close button */}
                 <div className="!flex !items-center !justify-between !px-6 !py-4 !border-b !border-slate-100">
-                  <h4 className="!text-base !font-family-bold !text-slate-900 !m-0">
+                  <h4 className="!text-base !font-family-semibold !text-slate-900 !m-0">
                     Secure Card Payment
                   </h4>
                   <button
@@ -1657,7 +1852,7 @@ function BookRideComponent() {
                 <div className="!p-6">
                   <div className="!mb-4 !flex !justify-between !items-center !p-3 !bg-slate-50 !rounded-2xl !border !border-slate-200/80">
                     <span className="!text-xs !font-family-semibold !text-slate-700">Total Payable</span>
-                    <span className="!text-base !font-family-bold !text-[#004a70]">
+                    <span className="!text-base !font-family-semibold !text-[#004a70]">
                       ${totalAmountXCD.toFixed(2)} XCD <span className="!text-xs !font-family-regular !text-slate-500">(≈ ${totalAmountUSD} USD)</span>
                     </span>
                   </div>
@@ -1771,7 +1966,7 @@ function BookRideComponent() {
                 {/* Modal Content Body */}
                 <div className="!p-6 !space-y-4">
                   <div className="!text-center">
-                    <h3 className="!text-base sm:!text-lg !font-family-bold !text-slate-900 !m-0">
+                    <h3 className="!text-base sm:!text-lg !font-family-semibold !text-slate-900 !m-0">
                       Finding Your Driver...
                     </h3>
                     <p className="!text-xs !text-slate-500 !font-family-regular !m-0 !mt-1">
@@ -1784,7 +1979,7 @@ function BookRideComponent() {
                     <div className="!flex !items-start !gap-2.5">
                       <span className="!w-2.5 !h-2.5 !rounded-full !bg-[#004a70] !mt-1 !shrink-0" />
                       <div className="!min-w-0 !flex-1">
-                        <span className="!text-[10px] !uppercase !font-family-bold !text-slate-400 !block">
+                        <span className="!text-[10px] !uppercase !font-family-semibold !text-slate-400 !block">
                           Pickup
                         </span>
                         <p className="!text-xs !font-family-medium !text-slate-800 !m-0 !truncate">
@@ -1796,7 +1991,7 @@ function BookRideComponent() {
                     <div className="!flex !items-start !gap-2.5">
                       <span className="!w-2.5 !h-2.5 !rounded-full !bg-rose-600 !mt-1 !shrink-0" />
                       <div className="!min-w-0 !flex-1">
-                        <span className="!text-[10px] !uppercase !font-family-bold !text-rose-400 !block">
+                        <span className="!text-[10px] !uppercase !font-family-semibold !text-rose-400 !block">
                           Destination
                         </span>
                         <p className="!text-xs !font-family-medium !text-slate-800 !m-0 !truncate">
@@ -1807,7 +2002,7 @@ function BookRideComponent() {
 
                     <div className="!pt-2 !border-t !border-slate-200/70 !flex !items-center !justify-between !text-xs">
                       <div className="!flex !items-center !gap-2">
-                        <span className="!px-2 !py-0.5 !rounded-lg !bg-[#004a70]/10 !text-[#004a70] !font-family-bold !text-[11px]">
+                        <span className="!px-2 !py-0.5 !rounded-lg !bg-[#004a70]/10 !text-[#004a70] !font-family-semibold !text-[11px]">
                           {RideType?.title || "Standard"}
                         </span>
                         <span className="!text-slate-400">·</span>
@@ -1815,7 +2010,7 @@ function BookRideComponent() {
                           {PaymentMethod === "jad" ? "Card" : PaymentMethod}
                         </span>
                       </div>
-                      <span className="!font-family-bold !text-slate-900 !text-[13px]">
+                      <span className="!font-family-semibold !text-slate-900 !text-[13px]">
                         ${totalAmountXCD.toFixed(2)} XCD
                       </span>
                     </div>
@@ -1827,7 +2022,7 @@ function BookRideComponent() {
                       type="button"
                       onClick={CancelRequest}
                       disabled={cancelLoading}
-                      className="!w-full !py-3 !rounded-2xl !bg-rose-50 hover:!bg-rose-100 !text-rose-600 hover:!text-rose-700 !font-family-bold !text-xs !transition-colors !border !border-rose-200/80 !cursor-pointer !flex !items-center !justify-center !gap-2"
+                      className="!w-full !py-3 !rounded-2xl !bg-rose-50 hover:!bg-rose-100 !text-rose-600 hover:!text-rose-700 !font-family-semibold !text-xs !transition-colors !border !border-rose-200/80 !cursor-pointer !flex !items-center !justify-center !gap-2"
                     >
                       {cancelLoading ? (
                         <div className="!h-4 !w-4 !animate-spin !rounded-full !border-2 !border-rose-300 !border-t-rose-600" />
@@ -1848,7 +2043,7 @@ function BookRideComponent() {
                 <div className="!w-16 !h-16 !rounded-full !bg-emerald-100 !text-emerald-600 !flex !items-center !justify-center !mx-auto !mb-4">
                   <FiCheckCircle size={32} />
                 </div>
-                <h3 className="!text-lg !font-family-bold !text-slate-900 !m-0 !mb-1.5">
+                <h3 className="!text-lg !font-family-semibold !text-slate-900 !m-0 !mb-1.5">
                   Booking Confirmed!
                 </h3>
                 <p className="!text-xs !text-slate-500 !font-family-regular !mb-6">
@@ -1857,7 +2052,9 @@ function BookRideComponent() {
                 <CustomButton
                   onClick={() => {
                     setShowSuccessModal(false);
-                    router.push("/admin");
+                    // Smart navigation: scheduled → upcoming tab, others → requested tab
+                    const tab = wantToScheduleTour ? "upcoming" : "requested";
+                    router.push(`/admin?tab=${tab}`);
                   }}
                   variant="primary"
                   size="md"
@@ -1869,6 +2066,115 @@ function BookRideComponent() {
             </div>
           )}
         </>,
+        document.body
+      )}
+
+      {/* ===== PARCEL DETAILS MODAL ===== */}
+      {isMounted && showParcelModal && createPortal(
+        <div
+          className="!fixed !inset-0 !z-[9999] !flex !items-center !justify-center !p-4"
+          style={{ background: "rgba(0,18,30,0.65)", backdropFilter: "blur(6px)" }}
+          onClick={() => setShowParcelModal(false)}
+        >
+          <div
+            className="!relative !z-10 !bg-white !rounded-3xl !shadow-2xl !max-w-sm !w-full !overflow-hidden"
+            onClick={(e) => e.stopPropagation()}
+          >
+            {/* Header */}
+            <div className="!flex !items-center !justify-between !px-5 !pt-5 !pb-3 !border-b !border-slate-100">
+              <div className="!flex !items-center !gap-2.5">
+                <div className="!w-9 !h-9 !rounded-xl !bg-sky-50 !text-[#004a70] !flex !items-center !justify-center !border !border-sky-200">
+                  <FaBox size={17} />
+                </div>
+                <div>
+                  <h3 className="!text-sm !font-family-semibold !text-slate-900 !m-0">Parcel Details</h3>
+                  <p className="!text-[10.5px] !text-slate-400 !font-family-regular !m-0">Item to be couriered</p>
+                </div>
+              </div>
+              <button
+                onClick={() => setShowParcelModal(false)}
+                className="!w-8 !h-8 !rounded-xl !bg-slate-100 hover:!bg-slate-200 !text-slate-500 !flex !items-center !justify-center !border-none !transition-colors !cursor-pointer"
+              >
+                <IoMdClose size={16} />
+              </button>
+            </div>
+
+            {/* Parcel Image */}
+            {(parcelImageFromSession || productDetail?.parcelImage) && !parcelImgFailed ? (
+              <div className="!relative !w-full !h-52 !bg-slate-100 !overflow-hidden">
+                <img
+                  src={parcelImageFromSession || productDetail?.parcelImage}
+                  alt={productDetail?.parcelTitle || "Parcel"}
+                  onError={() => setParcelImgFailed(true)}
+                  className="!w-full !h-full !object-cover"
+                />
+                <div className="!absolute !inset-0 !bg-gradient-to-t !from-black/30 !via-transparent !to-transparent !pointer-events-none" />
+              </div>
+            ) : (
+              <div className="!w-full !h-36 !bg-sky-50 !flex !items-center !justify-center">
+                <div className="!text-center">
+                  <FaBox size={40} className="!text-sky-300 !mx-auto !mb-2" />
+                  <p className="!text-xs !text-slate-400 !font-family-regular !m-0">No image attached</p>
+                </div>
+              </div>
+            )}
+
+            {/* Details */}
+            <div className="!p-5 !space-y-3">
+              <div className="!flex !items-start !justify-between !gap-3">
+                <div className="!flex-1 !min-w-0">
+                  <span className="!text-[10px] !font-family-semibold !uppercase !tracking-wider !text-[#004a70] !block !mb-0.5">
+                    Item Name
+                  </span>
+                  <h4 className="!text-base !font-family-semibold !text-slate-900 !m-0">
+                    {productDetail?.parcelTitle || productDetail?.title || "—"}
+                  </h4>
+                </div>
+                <span className="!shrink-0 !text-[10.5px] !font-family-semibold !text-sky-700 !bg-sky-50 !px-2.5 !py-1 !rounded-lg !border !border-sky-200">
+                  📦 Courier
+                </span>
+              </div>
+
+              <div className="!space-y-2 !bg-slate-50 !rounded-2xl !p-3 !border !border-slate-100">
+                <div className="!flex !items-start !gap-2">
+                  <FaLocationDot size={12} className="!text-emerald-500 !mt-0.5 !shrink-0" />
+                  <div className="!min-w-0">
+                    <span className="!text-[10px] !text-slate-400 !font-family-medium !block">Pickup</span>
+                    <span className="!text-xs !text-slate-800 !font-family-medium !truncate !block">
+                      {productDetail?.name || productDetail?.start_address || "—"}
+                    </span>
+                  </div>
+                </div>
+                <div className="!w-px !h-3 !bg-slate-200 !ml-3.5" />
+                <div className="!flex !items-start !gap-2">
+                  <FaLocationDot size={12} className="!text-rose-500 !mt-0.5 !shrink-0" />
+                  <div className="!min-w-0">
+                    <span className="!text-[10px] !text-slate-400 !font-family-medium !block">Delivery To</span>
+                    <span className="!text-xs !text-slate-800 !font-family-medium !truncate !block">
+                      {productDetail?.metaTitle || productDetail?.end_address || "—"}
+                    </span>
+                  </div>
+                </div>
+              </div>
+
+              {productDetail?.distance > 0 && (
+                <div className="!flex !items-center !gap-2 !text-xs !text-slate-500 !font-family-medium">
+                  <MdOutlineDirectionsCar size={14} className="!text-[#004a70]" />
+                  <span>Distance: <strong className="!text-slate-800">{productDetail.distance} km</strong></span>
+                </div>
+              )}
+
+              <CustomButton
+                onClick={() => setShowParcelModal(false)}
+                variant="primary"
+                size="md"
+                className="!w-full !py-2.5 !bg-[#004a70] hover:!bg-[#003855] !text-white !font-family-semibold !rounded-xl !border-none !cursor-pointer !mt-1"
+              >
+                Got it
+              </CustomButton>
+            </div>
+          </div>
+        </div>,
         document.body
       )}
     </div>

@@ -138,7 +138,7 @@ export default function CouponPage() {
                 <MdLocalOffer size={14} className="text-amber-300" />
                 <span>Special Promotions</span>
               </div>
-              <h1 className="text-2xl sm:text-3xl lg:text-4xl font-family-bold text-white tracking-tight !m-0">
+              <h1 className="text-2xl sm:text-3xl lg:text-4xl font-family-semibold text-white tracking-tight !m-0">
                 Exclusive Coupons & Offers
               </h1>
               <p className="text-slate-300/85 text-xs sm:text-sm mt-1.5 !m-0 font-family-regular max-w-xl">
@@ -169,7 +169,7 @@ export default function CouponPage() {
             <div className="w-14 h-14 rounded-2xl bg-slate-50 border border-slate-200/80 flex items-center justify-center text-slate-400 mb-3 mx-auto">
               <MdLocalOffer size={22} className="text-slate-400" />
             </div>
-            <h3 className="text-base font-family-bold text-slate-800 !m-0 mb-1">
+            <h3 className="text-base font-family-semibold text-slate-800 !m-0 mb-1">
               No Active Coupons
             </h3>
             <p className="text-xs text-slate-500 font-family-medium !m-0 leading-relaxed">
@@ -196,11 +196,11 @@ export default function CouponPage() {
                     {/* Top Row: Discount Badge + Expiry */}
                     <div className="flex items-center justify-between gap-2 mb-3">
                       {discountLabel ? (
-                        <span className="inline-flex items-center text-[11px] font-family-bold text-emerald-800 bg-emerald-50 border border-emerald-200/80 px-2.5 py-0.5 rounded-full uppercase tracking-wide">
+                        <span className="inline-flex items-center text-[11px] font-family-semibold text-emerald-800 bg-emerald-50 border border-emerald-200/80 px-2.5 py-0.5 rounded-full uppercase tracking-wide">
                           {discountLabel}
                         </span>
                       ) : (
-                        <span className="inline-flex items-center text-[11px] font-family-bold text-[#004a70] bg-blue-50 border border-blue-200/80 px-2.5 py-0.5 rounded-full uppercase tracking-wide">
+                        <span className="inline-flex items-center text-[11px] font-family-semibold text-[#004a70] bg-blue-50 border border-blue-200/80 px-2.5 py-0.5 rounded-full uppercase tracking-wide">
                           Promo Deal
                         </span>
                       )}
@@ -215,7 +215,7 @@ export default function CouponPage() {
                     </div>
 
                     {/* Coupon Title */}
-                    <h3 className="text-sm sm:text-[15px] font-family-bold text-slate-900 group-hover:text-[#004a70] transition-colors leading-snug !m-0 line-clamp-2">
+                    <h3 className="text-sm sm:text-[15px] font-family-semibold text-slate-900 group-hover:text-[#004a70] transition-colors leading-snug !m-0 line-clamp-2">
                       {item?.title || "Special Promotional Coupon"}
                     </h3>
 
@@ -231,7 +231,7 @@ export default function CouponPage() {
                   <div className="mt-4 pt-3 border-t border-slate-100 flex items-center justify-between gap-2">
                     <div className="flex items-center gap-2 bg-slate-50 border border-dashed border-slate-300/85 rounded-xl px-2.5 py-1.5 min-w-0 flex-1">
                       <FaTag size={11} className="text-[#004a70] shrink-0" />
-                      <span className="font-mono text-xs font-family-bold text-slate-800 tracking-wider truncate">
+                      <span className="font-mono text-xs font-family-semibold text-slate-800 tracking-wider truncate">
                         {item?.code}
                       </span>
                     </div>
@@ -282,10 +282,10 @@ export default function CouponPage() {
             {/* Header with Title & Close */}
             <div className="flex items-start justify-between gap-3 pb-3 border-b border-slate-100 mb-4">
               <div>
-                <span className="inline-flex items-center gap-1 text-[10.5px] font-family-bold uppercase tracking-wider text-[#004a70] bg-blue-50 border border-blue-200/80 px-2 py-0.5 rounded-full mb-1">
+                <span className="inline-flex items-center gap-1 text-[10.5px] font-family-semibold uppercase tracking-wider text-[#004a70] bg-blue-50 border border-blue-200/80 px-2 py-0.5 rounded-full mb-1">
                   Coupon Details
                 </span>
-                <h3 className="text-base sm:text-lg font-family-bold text-slate-900 !m-0 leading-tight">
+                <h3 className="text-base sm:text-lg font-family-semibold text-slate-900 !m-0 leading-tight">
                   {CouponCode?.title}
                 </h3>
               </div>
@@ -302,7 +302,7 @@ export default function CouponPage() {
             {getDiscountLabel(CouponCode) && (
               <div className="p-3 rounded-2xl bg-emerald-50/90 border border-emerald-200/80 flex items-center justify-between mb-4">
                 <span className="text-xs font-family-semibold text-emerald-800">Savings Discount</span>
-                <span className="text-sm font-family-bold text-emerald-900 font-mono">
+                <span className="text-sm font-family-semibold text-emerald-900 font-mono">
                   {getDiscountLabel(CouponCode)}
                 </span>
               </div>
@@ -313,7 +313,7 @@ export default function CouponPage() {
               <span className="text-[11px] font-family-semibold text-slate-400 uppercase tracking-widest block mb-1">
                 Coupon Code
               </span>
-              <div className="text-2xl sm:text-3xl font-mono font-family-bold text-[#004a70] tracking-widest select-all mb-3">
+              <div className="text-2xl sm:text-3xl font-mono font-family-semibold text-[#004a70] tracking-widest select-all mb-3">
                 {CouponCode?.code}
               </div>
               <button

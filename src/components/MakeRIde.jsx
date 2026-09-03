@@ -36,9 +36,10 @@ const rideTabs = [
   { key: "myBookings", label: "My Bookings", icon: <FaHistory size={15} /> },
 ];
 
-const RidePage = () => {
+const RidePage = ({ defaultTab }) => {
   const searchParams = useSearchParams();
   const encodedData = searchParams.get("data");
+  const typeParam = searchParams.get("type");
   const router = useRouter();
   const [Currentlocation, setCurrentLocation] = useState({
     latitude: null,
@@ -61,7 +62,7 @@ const RidePage = () => {
   const [productData, setProductData] = useState("");
   const mapRef = useRef();
   const mapContainerRef = useRef();
-  const [TypeRide, setTypeRide] = useState("driver");
+  const [TypeRide, setTypeRide] = useState(defaultTab || "driver");
   const [predictions, setPredictions] = useState([]);
   const [noData, setNoData] = useState(false);
   const [searchQuery, setSearchQuery] = useState("");
@@ -88,6 +89,7 @@ const RidePage = () => {
   const [parcelImage, setParcelImage] = useState(null);
   const [uploadLoading, setUploadLoading] = useState(false);
   const parcelInputRef = useRef(null);
+
 
   const handleParcelImageChange = async (e) => {
     const file = e.target.files?.[0];
@@ -125,6 +127,35 @@ const RidePage = () => {
   const [mounted, setMounted] = useState(false);
   useEffect(() => {
     setMounted(true);
+  }, []);
+
+  // Initialize default Mapbox map on mount (Saint Kitts & Nevis center)
+  useEffect(() => {
+    if (!mapContainerRef.current || mapRef.current) return;
+    mapboxgl.accessToken =
+      "pk.eyJ1IjoibWFybGVncmFudCIsImEiOiJjbTgwdmV0MjkweXB2MnFzNXBjM2x6NThnIn0.3oz3YGaDHiFDh8W5ALk09w";
+
+    mapRef.current = new mapboxgl.Map({
+      container: mapContainerRef.current,
+      style: "mapbox://styles/mapbox/streets-v12",
+      center: [-62.7, 17.35], // Saint Kitts & Nevis
+      zoom: 10,
+      attributionControl: false,
+    });
+
+    mapRef.current.addControl(
+      new mapboxgl.NavigationControl({ showCompass: false }),
+      "top-right"
+    );
+
+    const handleResize = () => {
+      if (mapRef.current) mapRef.current.resize();
+    };
+    window.addEventListener("resize", handleResize);
+
+    return () => {
+      window.removeEventListener("resize", handleResize);
+    };
   }, []);
 
   useEffect(() => {
@@ -324,11 +355,17 @@ const RidePage = () => {
             lng: row.end[0],
           });
         }
+      } else {
+        const targetType = defaultTab || typeParam;
+        if (targetType === "parcel") {
+          setTypeRide("parcel");
+          setValue("category", "parcel");
+        }
       }
     } catch (error) {
       console.error("Error parsing row or data:", error);
     }
-  }, [encodedData]);
+  }, [encodedData, defaultTab, typeParam]);
 
   const onChangeSchedule = (e) => {
     setSchuale(e.target.checked);
@@ -369,10 +406,16 @@ const RidePage = () => {
 
     mapRef.current = new mapboxgl.Map({
       container: mapContainerRef.current,
-      style: "mapbox://styles/mapbox/streets-v11",
+      style: "mapbox://styles/mapbox/streets-v12",
       center: defaultCenter,
       zoom: hasStart && (hasEnd || hasStops) ? 8 : 11,
+      attributionControl: false,
     });
+
+    mapRef.current.addControl(
+      new mapboxgl.NavigationControl({ showCompass: false }),
+      "top-right"
+    );
 
     const bounds = new mapboxgl.LngLatBounds();
 
@@ -414,13 +457,25 @@ const RidePage = () => {
     };
 
     const createPopup = (title, address) => {
-      return new mapboxgl.Popup({ offset: 25, closeButton: false })
-        .setHTML(`
-          <div style="font-family: 'Inter', sans-serif; padding: 4px 8px; max-width: 220px;">
+      return new mapboxgl.Popup({
+        offset: [0, -30],
+        closeButton: true,
+        closeOnClick: false,
+        maxWidth: "240px",
+      }).setHTML(`
+          <div style="font-family: 'Inter', sans-serif; padding: 6px 4px 4px; max-width: 220px;">
             <p style="margin: 0; font-size: 11px; font-weight: 700; color: #0f172a;">${title}</p>
-            ${address ? `<p style="margin: 2px 0 0; font-size: 10px; color: #64748b; line-height: 1.4; white-space: normal; word-break: break-word;">${address}</p>` : ""}
+            ${address ? `<p style="margin: 4px 0 0; font-size: 10px; color: #64748b; line-height: 1.4; white-space: normal; word-break: break-word;">${address}</p>` : ""}
           </div>
         `);
+    };
+
+    // Click-toggle helper — avoids mouseenter/mouseleave glitch
+    const attachClickToggle = (el, marker) => {
+      el.addEventListener("click", (e) => {
+        e.stopPropagation();
+        marker.togglePopup();
+      });
     };
 
     if (hasStart) {
@@ -431,13 +486,7 @@ const RidePage = () => {
         .setLngLat(start)
         .setPopup(popup)
         .addTo(mapRef.current);
-      
-      el.addEventListener("mouseenter", () => {
-        if (!marker.getPopup().isOpen()) marker.togglePopup();
-      });
-      el.addEventListener("mouseleave", () => {
-        if (marker.getPopup().isOpen()) marker.togglePopup();
-      });
+      attachClickToggle(el, marker);
       bounds.extend(start);
     }
 
@@ -449,13 +498,7 @@ const RidePage = () => {
         .setLngLat(end)
         .setPopup(popup)
         .addTo(mapRef.current);
-
-      el.addEventListener("mouseenter", () => {
-        if (!marker.getPopup().isOpen()) marker.togglePopup();
-      });
-      el.addEventListener("mouseleave", () => {
-        if (marker.getPopup().isOpen()) marker.togglePopup();
-      });
+      attachClickToggle(el, marker);
       bounds.extend(end);
     }
 
@@ -473,13 +516,7 @@ const RidePage = () => {
           .setLngLat([stop.longitude, stop.latitude])
           .setPopup(popup)
           .addTo(mapRef.current);
-
-        el.addEventListener("mouseenter", () => {
-          if (!marker.getPopup().isOpen()) marker.togglePopup();
-        });
-        el.addEventListener("mouseleave", () => {
-          if (marker.getPopup().isOpen()) marker.togglePopup();
-        });
+        attachClickToggle(el, marker);
         bounds.extend([stop.longitude, stop.latitude]);
       });
     }
@@ -494,13 +531,7 @@ const RidePage = () => {
         .setLngLat([selectedStop.latLng.lng, selectedStop.latLng.lat])
         .setPopup(popup)
         .addTo(mapRef.current);
-
-      el.addEventListener("mouseenter", () => {
-        if (!marker.getPopup().isOpen()) marker.togglePopup();
-      });
-      el.addEventListener("mouseleave", () => {
-        if (marker.getPopup().isOpen()) marker.togglePopup();
-      });
+      attachClickToggle(el, marker);
       bounds.extend([selectedStop.latLng.lng, selectedStop.latLng.lat]);
     }
 
@@ -529,7 +560,19 @@ const RidePage = () => {
           if (!route || route.length === 0) return;
 
           route.forEach((coord) => bounds.extend(coord));
-          mapRef.current.fitBounds(bounds, { padding: 50 });
+          mapRef.current.on("load", () => {
+            mapRef.current.fitBounds(bounds, {
+              padding: { top: 80, bottom: 60, left: 60, right: 60 },
+              maxZoom: 14,
+            });
+          });
+          // Also fit immediately in case map already loaded
+          if (mapRef.current.isStyleLoaded()) {
+            mapRef.current.fitBounds(bounds, {
+              padding: { top: 80, bottom: 60, left: 60, right: 60 },
+              maxZoom: 14,
+            });
+          }
 
           if (hasEnd) {
             const startCoords = { latitude: start[1], longitude: start[0] };
@@ -566,7 +609,10 @@ const RidePage = () => {
         .catch((error) => console.log("Failed to fetch directions"));
     } else {
       if (hasStart || hasEnd || hasStops) {
-        mapRef.current.fitBounds(bounds, { padding: 100, maxZoom: 14 });
+        mapRef.current.fitBounds(bounds, {
+          padding: { top: 80, bottom: 60, left: 60, right: 60 },
+          maxZoom: 14,
+        });
       }
     }
   };
@@ -873,7 +919,7 @@ const RidePage = () => {
     defaultValues: {
       name: "",
       metaTitle: "",
-      category: "",
+      category: defaultTab || "",
       Type: "",
       stop: "",
     },
@@ -900,6 +946,7 @@ const RidePage = () => {
       metaTitle: data.metaTitle || SearchQueryEnd || locationDetails1?.address,
       end_address: SearchQueryEnd || locationDetails1?.address,
       bookingtype: "live",
+      type: TypeRide === "parcel" ? "parcel" : "driver",
       rideType: TypeRide,
       category: TypeRide,
       distance: distance,
@@ -908,7 +955,7 @@ const RidePage = () => {
         locationDetails?.lat || Currentlocation?.latitude,
       ],
       end: [locationDetails1?.lng, locationDetails1.lat],
-      stop: LocationDetails3,
+      stop: TypeRide === "parcel" ? [] : LocationDetails3,
       title: parcelTitle || "",
       image: parcelImage || "",
       parcelTitle: parcelTitle || "",
@@ -922,15 +969,21 @@ const RidePage = () => {
       productPrice: RowData?.productPrice,
       ...(FavUserId ? { FavUserId } : {}),
     };
-    const encodedData = encodeURIComponent(JSON.stringify(body));
+   
+
     if (typeof window !== "undefined") {
       try {
         sessionStorage.setItem("cabkn_ride_draft", JSON.stringify(body));
+        if (parcelImage) {
+          sessionStorage.setItem("cabkn_parcel_image", parcelImage);
+        } else {
+          sessionStorage.removeItem("cabkn_parcel_image");
+        }
       } catch (err) {
         console.warn("Could not save to sessionStorage:", err);
       }
     }
-    router.push(`/bookRide?data=${encodedData}`);
+    router.push("/bookRide");
   };
 
   const hasAnyLocation = (locationDetails?.lng && locationDetails?.lat) || (Currentlocation?.longitude && Currentlocation?.latitude) || (locationDetails1?.lng && locationDetails1?.lat) || (LocationDetails3 && LocationDetails3.length > 0) || (selectedStop && selectedStop.latLng && selectedStop.latLng.lng);
@@ -966,7 +1019,7 @@ const RidePage = () => {
                 )}
               </div>
               <div>
-                <h1 className="text-white text-2xl sm:text-3xl font-family-bold tracking-tight !m-0 leading-tight">
+                <h1 className="text-white text-2xl sm:text-3xl font-family-semibold tracking-tight !m-0 leading-tight">
                   {TypeRide === "parcel" ? "Send a Parcel" : "Book a Driver"}
                 </h1>
                 <p className="text-slate-300 text-xs sm:text-sm !mt-1 !m-0 font-family-regular">
@@ -1029,7 +1082,7 @@ const RidePage = () => {
           <div className="lg:col-span-5 bg-white rounded-2xl border border-slate-200/90 !p-5 sm:!p-6 shadow-[0_4px_25px_rgba(0,0,0,0.04)] lg:sticky lg:top-24 z-10">
             <div className="flex items-center justify-between mb-4 pb-3 border-b border-slate-100">
               <div>
-                <h2 className="text-base font-family-bold text-slate-800 !m-0">
+                <h2 className="text-base font-family-semibold text-slate-800 !m-0">
                   {TypeRide === "parcel" ? "Parcel Details" : "Ride Request"}
                 </h2>
                 <p className="text-xs text-slate-500 font-family-regular !m-0 mt-0.5">
@@ -1038,7 +1091,7 @@ const RidePage = () => {
                     : "Specify your pickup & destination"}
                 </p>
               </div>
-              <span className="px-2.5 py-1 rounded-full bg-sky-50 text-[#004a70] text-[11px] font-family-bold uppercase tracking-wider">
+              <span className="px-2.5 py-1 rounded-full bg-sky-50 text-[#004a70] text-[11px] font-family-semibold uppercase tracking-wider">
                 {TypeRide === "parcel" ? "Parcel" : "Driver"}
               </span>
             </div>
@@ -1238,82 +1291,84 @@ const RidePage = () => {
                 />
               </div>
 
-              {/* Add Stop */}
-              <div>
-                <label className="text-xs text-slate-700 block !mb-1.5 font-family-semibold flex items-center gap-1.5">
-                  <MdOutlinePlace size={14} className="text-[#004a70]" />
-                  <span>Add Stop (Optional)</span>
-                </label>
-                <Controller
-                  name="stop"
-                  control={control}
-                  render={({ field }) => (
-                    <div className="relative">
-                      <div className="relative flex items-center">
-                        <div className="absolute left-3.5 flex items-center pointer-events-none text-slate-400 z-10">
-                          <FaSearch className="w-3.5 h-3.5" />
-                        </div>
-                        <input
-                          {...field}
-                          placeholder="Enter stop location"
-                          value={SearchQueryStop}
-                          onChange={(e) => HandleStopSearch(e.target.value)}
-                          className="w-full pl-10 pr-11 py-2.5 rounded-xl bg-white border border-gray-200 text-[13.5px] text-gray-900 placeholder-gray-400 focus:outline-none focus:ring-1 focus:ring-primary-500 focus:ring-offset-1 focus:border-none transition-all duration-200 shadow-xs hover:shadow-sm font-family-medium"
-                        />
+              {/* Add Stop (Hidden for Parcel delivery matching mobile app) */}
+              {TypeRide !== "parcel" && (
+                <div>
+                  <label className="text-xs text-slate-700 block !mb-1.5 font-family-semibold flex items-center gap-1.5">
+                    <MdOutlinePlace size={14} className="text-[#004a70]" />
+                    <span>Add Stop (Optional)</span>
+                  </label>
+                  <Controller
+                    name="stop"
+                    control={control}
+                    render={({ field }) => (
+                      <div className="relative">
+                        <div className="relative flex items-center">
+                          <div className="absolute left-3.5 flex items-center pointer-events-none text-slate-400 z-10">
+                            <FaSearch className="w-3.5 h-3.5" />
+                          </div>
+                          <input
+                            {...field}
+                            placeholder="Enter stop location"
+                            value={SearchQueryStop}
+                            onChange={(e) => HandleStopSearch(e.target.value)}
+                            className="w-full pl-10 pr-11 py-2.5 rounded-xl bg-white border border-gray-200 text-[13.5px] text-gray-900 placeholder-gray-400 focus:outline-none focus:ring-1 focus:ring-primary-500 focus:ring-offset-1 focus:border-none transition-all duration-200 shadow-xs hover:shadow-sm font-family-medium"
+                          />
 
-                        {/* Inside Add Button / Spinner */}
-                        <div className="absolute right-2.5 flex items-center gap-1 z-10">
-                          {PridicLoadingStop ? (
-                            <div className="h-4 w-4 animate-spin rounded-full border-2 border-slate-200 border-t-brand-600" />
-                          ) : (
-                            <button
-                              type="button"
-                              onClick={addlocation}
-                              disabled={!selectedStop}
-                              title="Add Stop"
-                              className="w-7 h-7 rounded-lg bg-[#004a70] hover:bg-[#003855] text-white flex items-center justify-center border-none transition-colors disabled:opacity-35 cursor-pointer shadow-xs"
-                            >
-                              <IoMdAddCircleOutline size={16} />
-                            </button>
-                          )}
+                          {/* Inside Add Button / Spinner */}
+                          <div className="absolute right-2.5 flex items-center gap-1 z-10">
+                            {PridicLoadingStop ? (
+                              <div className="h-4 w-4 animate-spin rounded-full border-2 border-slate-200 border-t-brand-600" />
+                            ) : (
+                              <button
+                                type="button"
+                                onClick={addlocation}
+                                disabled={!selectedStop}
+                                title="Add Stop"
+                                className="w-7 h-7 rounded-lg bg-[#004a70] hover:bg-[#003855] text-white flex items-center justify-center border-none transition-colors disabled:opacity-35 cursor-pointer shadow-xs"
+                              >
+                                <IoMdAddCircleOutline size={16} />
+                              </button>
+                            )}
+                          </div>
                         </div>
+
+                        {StopPredictions.length > 0 && (
+                          <ListGroup className="absolute z-30 w-full bg-white rounded-2xl shadow-xl border border-slate-100 max-h-[220px] overflow-y-auto !mt-1.5 p-1">
+                            {StopPredictions.map((prediction) => (
+                              <ListGroupItem
+                                key={prediction.place_id}
+                                onClick={() => HadleStopPridication(prediction)}
+                                className="px-3 py-2 text-xs text-slate-700 font-family-medium cursor-pointer hover:bg-slate-50 hover:text-[#004a70] rounded-xl transition-colors border-none"
+                              >
+                                {prediction.description}
+                              </ListGroupItem>
+                            ))}
+                          </ListGroup>
+                        )}
                       </div>
+                    )}
+                  />
 
-                      {StopPredictions.length > 0 && (
-                        <ListGroup className="absolute z-30 w-full bg-white rounded-2xl shadow-xl border border-slate-100 max-h-[220px] overflow-y-auto !mt-1.5 p-1">
-                          {StopPredictions.map((prediction) => (
-                            <ListGroupItem
-                              key={prediction.place_id}
-                              onClick={() => HadleStopPridication(prediction)}
-                              className="px-3 py-2 text-xs text-slate-700 font-family-medium cursor-pointer hover:bg-slate-50 hover:text-[#004a70] rounded-xl transition-colors border-none"
-                            >
-                              {prediction.description}
-                            </ListGroupItem>
-                          ))}
-                        </ListGroup>
-                      )}
-                    </div>
-                  )}
-                />
-
-                {LocationDetails3.map((item, index) => (
-                  <div
-                    key={index}
-                    className="flex items-center justify-between gap-3 p-2.5 bg-slate-50 border border-slate-200/80 rounded-xl !mt-2 shadow-2xs"
-                  >
-                    <span className="text-xs font-family-medium text-slate-800 truncate">
-                      {item?.address}
-                    </span>
-                    <button
-                      type="button"
-                      onClick={() => RemoveStop(index)}
-                      className="text-rose-500 hover:text-rose-700 bg-transparent border-none p-0 flex items-center shrink-0 cursor-pointer"
+                  {LocationDetails3.map((item, index) => (
+                    <div
+                      key={index}
+                      className="flex items-center justify-between gap-3 p-2.5 bg-slate-50 border border-slate-200/80 rounded-xl !mt-2 shadow-2xs"
                     >
-                      <IoMdCloseCircle size={16} />
-                    </button>
-                  </div>
-                ))}
-              </div>
+                      <span className="text-xs font-family-medium text-slate-800 truncate">
+                        {item?.address}
+                      </span>
+                      <button
+                        type="button"
+                        onClick={() => RemoveStop(index)}
+                        className="text-rose-500 hover:text-rose-700 bg-transparent border-none p-0 flex items-center shrink-0 cursor-pointer"
+                      >
+                        <IoMdCloseCircle size={16} />
+                      </button>
+                    </div>
+                  ))}
+                </div>
+              )}
 
               {/* End Location */}
               <div>
@@ -1397,7 +1452,7 @@ const RidePage = () => {
             <div
               id="map-container"
               ref={mapContainerRef}
-              className="w-full h-full"
+              className="absolute inset-0 w-full h-full"
             />
             
             {/* Map Placeholder Prompt Overlay */}
@@ -1406,7 +1461,7 @@ const RidePage = () => {
                 <div className="w-16 h-16 rounded-2xl bg-white text-brand-600 flex items-center justify-center !mb-4 shadow-md !border !border-slate-100 flex-shrink-0 animate-bounce" style={{ animationDuration: '4s' }}>
                   <BiCurrentLocation size={28} />
                 </div>
-                <h3 className="text-base font-family-bold text-slate-800 !m-0">
+                <h3 className="text-base font-family-semibold text-slate-800 !m-0">
                   Ready to Map Your Route?
                 </h3>
                 <p className="text-xs text-slate-400 !m-0 !mt-2 leading-relaxed max-w-[280px] font-family-regular">
@@ -1426,7 +1481,7 @@ const RidePage = () => {
             <div className="w-16 h-16 rounded-full bg-brand-50 text-brand-600 flex items-center justify-center mx-auto !mb-4">
               <BiCurrentLocation size={30} />
             </div>
-            <h2 className="text-lg font-family-bold text-slate-900 !mb-2">
+            <h2 className="text-lg font-family-semibold text-slate-900 !mb-2">
               Location Access Required
             </h2>
             <p className="text-xs text-slate-500 font-family-regular leading-relaxed !mb-6">
@@ -1491,10 +1546,10 @@ const selectStyles = (error) => ({
   }),
 });
 
-const MakeRIde = () => {
+const MakeRIde = (props) => {
   return (
     <Suspense fallback={<div className="flex items-center justify-center p-12"><Spinner animation="border" /></div>}>
-      <RidePage />
+      <RidePage {...props} />
     </Suspense>
   );
 };

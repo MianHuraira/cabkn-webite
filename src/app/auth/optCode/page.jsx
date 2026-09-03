@@ -121,9 +121,14 @@ const Otp = () => {
         email: rowdata?.email,
         type: "customer",
       };
-      const res = await postData("users/forget-password", body, header1);
-      if (res?.token) {
-        toast.success("Verification code resent!");
+      const isForgot = rowdata?.isForgot == "true";
+      const url = isForgot ? "users/forget-password" : "users/send-code";
+      const res = await postData(url, body, header1);
+      if (res?.success !== false) {
+        if (isForgot && res?.token) {
+          setRowdata((prev) => ({ ...prev, token: res.token }));
+        }
+        toast.success(res?.message || "Verification code resent!");
         setCode(["", "", "", ""]);
         setTimer(30);
         setTimerActive(true);
@@ -132,7 +137,7 @@ const Otp = () => {
         toast.error(res?.message || "Failed to resend code.");
       }
     } catch (err) {
-      toast.error("Something went wrong.");
+      toast.error(err?.response?.data?.message || "Something went wrong.");
     } finally {
       setResendLoading(false);
     }
@@ -190,16 +195,19 @@ const Otp = () => {
   const handleSubmit = async () => {
     const codeString = code.join("");
     setLoading(true);
+    const rawPhone = SginUpdata?.phone ? String(SginUpdata.phone).trim() : "";
+    const formattedPhone = rawPhone ? (rawPhone.startsWith("+") ? rawPhone : `+${rawPhone}`) : "";
     const apiData = {
       name: SginUpdata?.fullname,
       password: rowdata?.password,
       email: rowdata?.email,
       dob: SginUpdata?.date,
-      phone: SginUpdata?.phone,
+      phone: formattedPhone,
       gender: SginUpdata?.gender,
       image: Image,
       code: codeString,
       address: SginUpdata?.address,
+      fcmtoken: "",
     };
 
     postData("users/signup/customer", apiData, header1)
@@ -273,7 +281,7 @@ const Otp = () => {
               value={digit}
               onChange={(e) => handleInputChange(index, e.target.value)}
               onKeyDown={(e) => handleKeyDown(index, e)}
-              className={`h-12 w-12 sm:h-13 sm:w-13 text-center text-xl font-family-bold rounded-xl !border transition-all duration-200 outline-none shadow-sm !text-white md:!text-slate-900 bg-transparent caret-white md:caret-slate-900 ${
+              className={`h-12 w-12 sm:h-13 sm:w-13 text-center text-xl font-family-semibold rounded-xl !border transition-all duration-200 outline-none shadow-sm !text-white md:!text-slate-900 bg-transparent caret-white md:caret-slate-900 ${
                 digit
                   ? "border-white md:border-[#004a70] md:bg-[#004a70]/5 shadow-md ring-2 ring-white/30 md:ring-[#004a70]/20"
                   : "border-white/40 md:border-gray-200 md:bg-white hover:border-white/60 md:hover:border-gray-300 focus:border-white md:focus:border-[#004a70] focus:ring-2 focus:ring-white/30 md:focus:ring-[#004a70]/20"
@@ -320,7 +328,7 @@ const Otp = () => {
               </button>
             ) : (
               <span className="text-white/60 md:text-slate-400 font-family-medium">
-                Resend in <span className="text-sky-300 md:text-[#004a70] font-family-bold">{timer}s</span>
+                Resend in <span className="text-sky-300 md:text-[#004a70] font-family-semibold">{timer}s</span>
               </span>
             )}
           </p>

@@ -24,7 +24,7 @@ export const metadata = {
 
 export default function RootLayout({ children }) {
   return (
-    <html lang="en" className={poppins.variable}>
+    <html lang="en" suppressHydrationWarning={true} className={poppins.variable}>
       <head>
         {/* Your Head content */}
         <link rel="icon" type="image/png" href="/favicon.png" />

@@ -160,7 +160,7 @@ export default function WhyUs() {
               style={{ animationDelay: "200ms" }}
             >
               Why Choose{" "}
-              <span className="font-family-bold text-transparent bg-clip-text bg-gradient-to-r from-brand-300 via-sky-300 to-indigo-200">
+              <span className="font-family-semibold text-transparent bg-clip-text bg-gradient-to-r from-brand-300 via-sky-300 to-indigo-200">
                 Us
               </span>
               ?
@@ -226,7 +226,7 @@ export default function WhyUs() {
                 <span className="w-1.5 h-1.5 rounded-full bg-brand-600" />
                 Why Cabkn
               </span>
-              <h2 className="text-2xl sm:text-3xl lg:text-[34px] font-family-bold text-slate-800 mt-4 tracking-tight leading-tight">
+              <h2 className="text-2xl sm:text-3xl lg:text-[34px] font-family-semibold text-slate-800 mt-4 tracking-tight leading-tight">
                 Trusted Numbers,{" "}
                 <span className="text-brand-600">Real Results</span>
               </h2>
@@ -248,7 +248,7 @@ export default function WhyUs() {
                 <div className={`relative inline-flex w-11 h-11 rounded-2xl bg-gradient-to-br ${stat.color} text-white items-center justify-center mb-2.5 shadow-lg group-hover:scale-110 transition-transform duration-300`}>
                   {stat.icon}
                 </div>
-                <h3 className="text-2xl md:text-[28px] font-family-bold text-slate-900 m-0 tracking-tight">
+                <h3 className="text-2xl md:text-[28px] font-family-semibold text-slate-900 m-0 tracking-tight">
                   {stat.decimals ? (
                     <><Counter end={4} />.<Counter end={9} /></>
                   ) : (
@@ -277,7 +277,7 @@ export default function WhyUs() {
                     {usp.icon}
                   </div>
                   <div>
-                    <h4 className="text-[15px] sm:text-[16px] font-family-bold text-slate-800 leading-tight">{usp.title}</h4>
+                    <h4 className="text-[15px] sm:text-[16px] font-family-semibold text-slate-800 leading-tight">{usp.title}</h4>
                     <p className="text-xs sm:text-[13px] text-slate-500 leading-relaxed font-family-regular mt-1 m-0">{usp.desc}</p>
                   </div>
                 </div>
@@ -296,7 +296,7 @@ export default function WhyUs() {
                 <span className="w-1.5 h-1.5 rounded-full bg-brand-600" />
                 Our Story
               </span>
-              <h2 className="text-2xl sm:text-3xl lg:text-[34px] font-family-bold text-slate-800 mt-5 mb-6 leading-tight tracking-tight">
+              <h2 className="text-2xl sm:text-3xl lg:text-[34px] font-family-semibold text-slate-800 mt-5 mb-6 leading-tight tracking-tight">
                 Making Travel Between{" "}
                 <span className="relative text-brand-600">
                   Islands
@@ -318,22 +318,21 @@ export default function WhyUs() {
                   { label: "Driver Partners", value: "200+" },
                 ].map((item, i) => (
                   <div key={i} className="group bg-white !border !border-slate-100 shadow-[0_8px_30px_rgba(0,0,0,0.03)] hover:shadow-[0_16px_40px_rgba(0,74,112,0.12)] rounded-2xl px-6 py-5 min-w-[125px] text-center md:text-left hover:-translate-y-1 hover:!border-brand-100 transition-all duration-300">
-                    <div className="text-2xl font-family-bold text-brand-600 leading-none">{item.value}</div>
+                    <div className="text-2xl font-family-semibold text-brand-600 leading-none">{item.value}</div>
                     <div className="text-[10px] text-slate-400 font-family-semibold uppercase tracking-wider mt-2">{item.label}</div>
                   </div>
                 ))}
               </div>
             </div>
 
-            <div className="relative">
-              <div className="absolute -inset-4 rounded-[2.5rem]  -z-10" />
-              <div className="absolute top-8 -left-6 w-24 h-24 rounded-full -z-10" />
-              <div className="relative rounded-[2rem] overflow-hidden !border !border-slate-100">
-                <Image src={CarBanner} alt="Welcome to Saint Kitts service" className="w-full h-auto object-cover hover:scale-105 transition-transform duration-700" />
-                <div className="absolute inset-0 bg-gradient-to-tr from-brand-950/30 via-transparent to-transparent pointer-events-none" />
+            <div className="relative flex justify-center lg:justify-end">
+              <div className="relative max-w-[440px] w-full rounded-[1.75rem] overflow-hidden">
+                <Image
+                  src={CarBanner}
+                  alt="Welcome to Saint Kitts service"
+                  className="w-full h-auto object-cover hover:scale-105 transition-transform duration-700"
+                />
               </div>
-
-             
             </div>
           </div>
         </section>
@@ -351,7 +350,7 @@ export default function WhyUs() {
                 <span className="w-1.5 h-1.5 rounded-full bg-brand-600" />
                 Our Values
               </span>
-              <h2 className="text-2xl sm:text-3xl lg:text-[34px] font-family-bold text-slate-800 mt-5 tracking-tight">
+              <h2 className="text-2xl sm:text-3xl lg:text-[34px] font-family-semibold text-slate-800 mt-5 tracking-tight">
                 What Sets Us Apart
               </h2>
               <p className="text-slate-500 text-sm sm:text-[15px] mt-3 max-w-xl mx-auto font-family-regular">
@@ -370,7 +369,7 @@ export default function WhyUs() {
                     <div className={`w-12 h-12 rounded-2xl ${v.bg} ${v.color} flex items-center justify-center mb-3 !border !border-slate-100/55 shadow-inner group-hover:scale-110 group-hover:shadow-lg transition-all duration-300`}>
                       {v.icon}
                     </div>
-                    <h3 className="text-[15px] sm:text-[17px] font-family-bold text-slate-800 mb-2">{v.title}</h3>
+                    <h3 className="text-[15px] sm:text-[17px] font-family-semibold text-slate-800 mb-2">{v.title}</h3>
                     <p className="text-xs sm:text-sm text-slate-500 leading-relaxed font-family-regular m-0">{v.desc}</p>
                   </div>
 
@@ -395,7 +394,7 @@ export default function WhyUs() {
               <span className="inline-flex items-center gap-2 text-brand-600 text-xs md:text-sm font-family-semibold tracking-widest uppercase !mb-3">
                 Features
               </span>
-              <h2 className="text-2xl sm:text-3xl lg:text-[34px] font-family-bold text-slate-800 !mt-2 !mb-6 leading-tight tracking-tight">
+              <h2 className="text-2xl sm:text-3xl lg:text-[34px] font-family-semibold text-slate-800 !mt-2 !mb-6 leading-tight tracking-tight">
                 Designed to Protect & Support
               </h2>
               <p className="text-slate-550 text-sm sm:text-[15px] leading-relaxed font-family-regular !mb-8">
@@ -436,7 +435,7 @@ export default function WhyUs() {
                   <div className="w-12 h-12 rounded-2xl bg-white/10 !border !border-white/20 text-brand-300 flex items-center justify-center mb-5 backdrop-blur-md shadow-inner">
                     <FiAward size={22} />
                   </div>
-                  <h3 className="text-lg sm:text-xl font-family-bold mb-3">Our Commitment</h3>
+                  <h3 className="text-lg sm:text-xl font-family-semibold mb-3">Our Commitment</h3>
                   <p className="text-slate-400 text-xs sm:text-sm leading-relaxed font-family-regular mb-8">
                     We are dedicated to providing the safest, most reliable transportation service in Saint Kitts and Nevis. Every ride is an opportunity to earn your trust.
                   </p>
@@ -449,7 +448,7 @@ export default function WhyUs() {
                     { value: "24/7", label: "Support" },
                   ].map((item, i) => (
                     <div key={i} className="bg-white/5 !border !border-white/10 rounded-2xl p-3.5 text-center backdrop-blur-sm hover:bg-white/10 transition-colors">
-                      <div className="text-base font-family-bold text-white leading-none">{item.value}</div>
+                      <div className="text-base font-family-semibold text-white leading-none">{item.value}</div>
                       <div className="text-[9px] text-slate-300 font-family-semibold uppercase tracking-wider mt-1.5 leading-none">{item.label}</div>
                     </div>
                   ))}
@@ -476,7 +475,7 @@ export default function WhyUs() {
               
                 Join Us Today
               </span>
-              <h2 className="text-white text-2xl sm:text-3xl lg:text-4xl font-family-bold mb-3 leading-tight tracking-tight">
+              <h2 className="text-white text-2xl sm:text-3xl lg:text-4xl font-family-semibold mb-3 leading-tight tracking-tight">
                 Ready to Experience the{" "}
                 <span className="text-transparent bg-clip-text bg-gradient-to-r from-brand-300 via-sky-300 to-indigo-200">
                   Welcome to Saint Kitts Difference

@@ -67,7 +67,7 @@ export default function Referrals() {
           </div>
           <div>
             <h3 className="text-sm font-family-semibold text-gray-800 mb-0">Referral Code</h3>
-            <p className="text-sm font-family-bold text-brand-600 mb-0">{userData?.user?.referral_code || "—"}</p>
+            <p className="text-sm font-family-semibold text-brand-600 mb-0">{userData?.user?.referral_code || "—"}</p>
           </div>
         </div>
         <CustomButton onClick={handleShow} style={{ padding: "8px 20px" }}>
@@ -93,7 +93,7 @@ export default function Referrals() {
                 <path strokeLinecap="round" strokeLinejoin="round" d="M7.217 10.907a2.25 2.25 0 100 2.186m0-2.186c.18.324.283.696.283 1.093s-.103.77-.283 1.093m0-2.186l9.566-5.314m-9.566 7.5l9.566 5.314m0 0a2.25 2.25 0 103.935 2.186 2.25 2.25 0 00-3.935-2.186zm0-12.814a2.25 2.25 0 103.933-2.185 2.25 2.25 0 00-3.933 2.185z" />
               </svg>
             </div>
-            <h3 className="text-white font-family-bold text-lg mb-1">Share & Earn</h3>
+            <h3 className="text-white font-family-semibold text-lg mb-1">Share & Earn</h3>
             <p className="text-white/70 text-sm font-family-regular">Invite friends with your referral code</p>
           </div>
 

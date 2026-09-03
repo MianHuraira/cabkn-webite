@@ -182,7 +182,7 @@ export default function ServiceComponent() {
                 </svg>
               </div>
               <div>
-                <h1 className="text-white text-3xl font-family-bold tracking-tight !m-0 leading-tight">
+                <h1 className="text-white text-3xl font-family-semibold tracking-tight !m-0 leading-tight">
                   Our{" "}
                   <span className="text-transparent bg-clip-text bg-gradient-to-r from-brand-300 via-sky-300 to-indigo-200">
                     Products

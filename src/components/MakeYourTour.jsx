@@ -558,7 +558,7 @@ function MakeYourTour() {
                 <FaMapLocationDot className="!text-white !text-xl sm:!text-2xl" />
               </div>
               <div>
-                <h1 className="!text-white !text-2xl sm:!text-3xl !font-family-bold !tracking-tight !m-0 !leading-tight">
+                <h1 className="!text-white !text-2xl sm:!text-3xl !font-family-semibold !tracking-tight !m-0 !leading-tight">
                   Make Your Own Tour
                 </h1>
                 <p className="!text-slate-300 !text-xs sm:!text-sm !mt-1 !m-0 !font-family-regular">
@@ -640,7 +640,7 @@ function MakeYourTour() {
               </div>
 
               {MutiRides.length > 0 && (
-                <span className="!px-2.5 !py-0.5 !rounded-full !bg-sky-50 !text-[#004a70] !text-[11px] !font-family-bold">
+                <span className="!px-2.5 !py-0.5 !rounded-full !bg-sky-50 !text-[#004a70] !text-[11px] !font-family-semibold">
                   {MutiRides.length} Stop{MutiRides.length !== 1 ? "s" : ""}
                 </span>
               )}
@@ -774,7 +774,7 @@ function MakeYourTour() {
                     <FaCheck className="!text-emerald-600 !text-[10px]" />
                     Estimated Distance:
                   </span>
-                  <span className="!font-family-bold">{distance} km</span>
+                  <span className="!font-family-semibold">{distance} km</span>
                 </div>
               )}
 
@@ -786,14 +786,14 @@ function MakeYourTour() {
                 >
                   <div className="!flex !items-center !justify-between">
                     <div className="!flex !items-center !gap-2">
-                      <div className="!w-5 !h-5 !rounded-full !bg-[#004a70] !text-white !flex !items-center !justify-center !text-[10px] !font-family-bold">
+                      <div className="!w-5 !h-5 !rounded-full !bg-[#004a70] !text-white !flex !items-center !justify-center !text-[10px] !font-family-semibold">
                         {MutiRides.length}
                       </div>
                       <span className="!text-xs !font-family-semibold !text-slate-800">
                         Selected Places
                       </span>
                     </div>
-                    <span className="!text-xs !font-family-bold !text-[#004a70]">
+                    <span className="!text-xs !font-family-semibold !text-[#004a70]">
                       ${TotalPrice} USD
                     </span>
                   </div>
@@ -977,7 +977,7 @@ function MakeYourTour() {
                               <span className="!text-[10px] !text-slate-400 !block !font-family-medium !leading-none !mb-0.5">
                                 Price
                               </span>
-                              <span className="!text-[14px] !font-family-bold !text-[#004a70]">
+                              <span className="!text-[14px] !font-family-semibold !text-[#004a70]">
                                 ${price} <span className="!text-[10px] !font-family-regular !text-slate-400">USD</span>
                               </span>
                             </div>
@@ -1114,7 +1114,7 @@ function MakeYourTour() {
                               <span className="!truncate">{item?.address || "St. Kitts & Nevis"}</span>
                             </p>
 
-                            <span className="!text-[13px] !font-family-bold !text-[#004a70] !block !mt-1">
+                            <span className="!text-[13px] !font-family-semibold !text-[#004a70] !block !mt-1">
                               ${item?.location_price || 135} <span className="!text-[9.5px] !font-family-regular !text-slate-400">USD</span>
                             </span>
                           </div>
@@ -1153,7 +1153,7 @@ function MakeYourTour() {
                   <span className="!text-xs !text-slate-500 !font-family-medium">
                     Total Estimated Price
                   </span>
-                  <span className="!text-lg sm:!text-xl !font-family-bold !text-[#004a70]">
+                  <span className="!text-lg sm:!text-xl !font-family-semibold !text-[#004a70]">
                     ${TotalPrice} <span className="!text-xs !font-family-regular !text-slate-500">USD</span>
                   </span>
                 </div>

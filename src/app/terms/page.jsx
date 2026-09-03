@@ -32,7 +32,7 @@ export default function TermsPage() {
             <FaChevronRight size={8} />
             <span>Terms & Conditions</span>
           </div>
-          <h1 className="font-family-bold" style={{ color: "#fff", fontSize: "clamp(24px, 4vw, 32px)", margin: 0, display: "flex", alignItems: "center", gap: 12 }}>
+          <h1 className="font-family-semibold" style={{ color: "#fff", fontSize: "clamp(24px, 4vw, 32px)", margin: 0, display: "flex", alignItems: "center", gap: 12 }}>
             <FaFileContract size={24} />
             Terms & Conditions
           </h1>
