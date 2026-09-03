@@ -487,7 +487,7 @@ const InnerHeader = () => {
                   <button
                     type="button"
                     onClick={() => handleToggleDropdown(category.id)}
-                    className={`!px-3.5 !py-1.5 !rounded-full !text-[13px] !transition-all !duration-200 !whitespace-nowrap !select-none !flex !items-center !gap-1.5 !border-none !cursor-pointer ${
+                    className={`!px-3 !py-1.5 !rounded-full !text-[13px] !transition-all !duration-200 !whitespace-nowrap !select-none !flex !items-center !gap-1.5 !border-none !cursor-pointer ${
                       active || isOpen
                         ? isScrolled
                           ? "!bg-[#004a70] !text-white !font-family-semibold !font-semibold !shadow-sm"
@@ -521,7 +521,7 @@ const InnerHeader = () => {
                           : category.id === "services"
                           ? "!right-0"
                           : "!left-1/2 !-translate-x-1/2"
-                      } !w-[660px] sm:!w-[700px] !bg-white !rounded-3xl !shadow-[0_25px_60px_-15px_rgba(0,0,0,0.22)] !border !border-slate-150/70 !p-7 sm:!p-8 !z-[9999] !flex !items-stretch !text-left !cursor-default`}
+                      } !w-[660px] sm:!w-[700px] !bg-white !rounded-3xl !shadow-[0_25px_60px_-15px_rgba(0,0,0,0.22)] !border !border-slate-150/70 !p-3 sm:!p-5 !z-[9999] !flex !items-stretch !text-left !cursor-default`}
                       onMouseEnter={() => handleMouseEnter(category.id)}
                       onMouseLeave={handleMouseLeave}
                     >
@@ -622,7 +622,7 @@ const InnerHeader = () => {
                   : "!text-white/90 hover:!text-white hover:!bg-white/15 !font-family-medium !font-normal"
               }`}
             >
-              <FaWallet size={11} className="!opacity-80" />
+              {/* <FaWallet size={11} className="!opacity-80" /> */}
               <span>Wallet</span>
             </Link>
           </div>
