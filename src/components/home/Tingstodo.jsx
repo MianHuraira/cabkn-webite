@@ -389,7 +389,8 @@ export default function Tingstodo() {
 
   return (
     <div ref={sectionRef} className="w-full max-w-full overflow-hidden">
-      <div className={`mx-auto flex flex-col select-none lg:flex-row justify-between items-start lg:items-center !mb-2 mt-5 gap-3 reveal ${inView ? "visible" : ""}`} style={{ maxWidth: 1200, padding: "0 16px", transitionDelay: "50ms", position: "relative", zIndex: 100 }}>
+      <Container>
+        <div className={`flex flex-col select-none lg:flex-row justify-between items-start lg:items-center !mb-2 mt-5 gap-3 px-1 reveal ${inView ? "visible" : ""}`} style={{ transitionDelay: "50ms", position: "relative", zIndex: 100 }}>
         <div className="flex flex-col text-left w-full lg:w-auto">
           <h2 className="text-2xl sm:text-3xl lg:text-[34px] font-family-semibold text-slate-800 tracking-tight m-0 leading-tight">
             Top Locations
@@ -470,7 +471,7 @@ export default function Tingstodo() {
         </div>
       </div>
 
-      <div className="mx-auto p-3 w-full max-w-full overflow-hidden" style={{ maxWidth: 1200 }}>
+      <div className="p-1 w-full max-w-full overflow-hidden">
         {/* Show spinner when location loading or category loading */}
         {locationLoading || loading ? (
           <div className="w-full py-4">
@@ -560,7 +561,8 @@ export default function Tingstodo() {
               description="We couldn't find any tours or activities matching your selection. Try exploring other categories!"
             />
           )}
-      </div>
+        </div>
+      </Container>
     </div>
   );
 }

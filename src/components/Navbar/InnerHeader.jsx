@@ -973,107 +973,102 @@ const InnerHeader = () => {
         </div>
       </header>
 
-      {/* Mobile Offcanvas */}
+      {/* Mobile Offcanvas (Clean White Background Theme) */}
       <Offcanvas
         show={show}
         onHide={handleClose}
         placement="start"
-        className="font-poppins !bg-white"
+        className="font-poppins !bg-white !text-slate-800"
         style={{
           width: 320,
           maxWidth: "85vw",
-          borderRight: "1px solid rgba(0,0,0,0.06)",
+          backgroundColor: "#ffffff",
+          borderRight: "1px solid #f1f5f9",
         }}
       >
         <Offcanvas.Header
+          className="!bg-white !border-b !border-slate-100 !px-5 !py-4 !flex !items-center !justify-between"
           style={{
+            backgroundColor: "#ffffff",
             borderBottom: "1px solid #f1f5f9",
-            padding: "16px 20px",
-            display: "flex",
-            alignItems: "center",
-            justifyContent: "space-between",
           }}
         >
           <Link
             href={"/"}
-            style={{ textDecoration: "none", display: "flex", alignItems: "center" }}
+            className="!flex !items-center !no-underline"
             onClick={handleClose}
           >
             <Image
               src={logoBlue}
               alt="Welcome to Saint Kitts"
-              width={72}
+              width={76}
               height={40}
-              className="h-9 w-auto object-contain"
-              style={{ objectFit: "contain" }}
+              className="!h-8 !w-auto !object-contain"
             />
           </Link>
           <button
             onClick={handleClose}
-            className="bg-slate-100 rounded-lg w-8 h-8 flex items-center justify-center text-slate-500 hover:bg-slate-200 transition-all cursor-pointer !border-none"
+            className="!bg-slate-100 hover:!bg-slate-200 !rounded-full !w-8 !h-8 !flex !items-center !justify-center !text-slate-500 !transition-all !cursor-pointer !border-none"
           >
             ✕
           </button>
         </Offcanvas.Header>
 
-        <Offcanvas.Body className="!p-0 flex flex-col justify-between h-[calc(100vh-70px)] bg-white overflow-hidden">
-          {/* Scrollable content */}
-          <div className="flex-1 overflow-y-auto p-4 flex flex-col gap-2 no-scrollbar">
+        <Offcanvas.Body
+          className="!p-0 !flex !flex-col !justify-between !h-[calc(100vh-65px)] !bg-white !text-slate-800 !overflow-hidden"
+          style={{ backgroundColor: "#ffffff" }}
+        >
+          {/* Scrollable Navigation Area */}
+          <div className="!flex-1 !overflow-y-auto !px-5 !py-4 !flex !flex-col !gap-1 no-scrollbar">
             {/* If Logged In: User Profile Header Card */}
             {userData?.user && (
-              <div className="bg-slate-50/80 !border !border-slate-100 rounded-2xl p-3.5 mb-1 animate-fade-in">
-                <div className="flex items-center gap-3">
-                  <div className="w-10 h-10 rounded-full bg-[#004a70]/10 flex items-center justify-center shrink-0 overflow-hidden !border !border-[#004a70]/20">
+              <div className="!bg-slate-50/90 !border !border-slate-150 !rounded-2xl !p-3.5 !mb-3 !animate-fade-in">
+                <div className="!flex !items-center !gap-3">
+                  <div className="!w-10 !h-10 !rounded-full !bg-[#004a70]/10 !flex !items-center !justify-center !shrink-0 !overflow-hidden !border !border-[#004a70]/20">
                     {userData?.user?.image ? (
                       <Image
                         width={40}
                         height={40}
                         src={userData.user.image}
-                        className="w-full h-full object-cover"
+                        className="!w-full !h-full !object-cover"
                         alt="user"
                       />
                     ) : (
-                      <FaUser size={16} className="text-[#004a70]" />
+                      <FaUser size={16} className="!text-[#004a70]" />
                     )}
                   </div>
-                  <div className="min-w-0 flex-1">
-                    <p className="font-family-semibold text-[14px] text-slate-800 !m-0 truncate leading-tight">
+                  <div className="!min-w-0 !flex-1">
+                    <p className="!font-family-semibold !font-semibold !text-[14px] !text-slate-900 !m-0 !truncate !leading-tight">
                       {userData?.user?.name || "My Account"}
                     </p>
-                    <p className="font-family-medium text-[11.5px] text-slate-400 !m-0 truncate mt-0.5">
+                    <p className="!font-family-medium !text-[11.5px] !text-slate-400 !m-0 !truncate !mt-0.5">
                       {userData?.user?.email || "Member"}
                     </p>
                   </div>
                 </div>
 
                 {/* Quick actions row */}
-                <div className="grid grid-cols-3 gap-1.5 mt-3 pt-3 !border-t !border-slate-200/60 text-center">
+                <div className="!grid !grid-cols-3 !gap-1.5 !mt-3 !pt-2.5 !border-t !border-slate-200/70 !text-center">
                   <button
-                    onClick={() => {
-                      Route("profile");
-                    }}
-                    className="py-1.5 px-1 rounded-lg bg-white !border !border-slate-200/70 text-slate-700 font-family-medium text-[11.5px] hover:text-[#004a70] hover:!border-[#004a70] transition-all cursor-pointer"
+                    onClick={() => Route("profile")}
+                    className="!py-1.5 !px-1 !rounded-lg !bg-white hover:!bg-slate-100 !border !border-slate-200/80 !text-slate-700 !font-family-medium !text-[11.5px] !transition-all !cursor-pointer shadow-2xs"
                   >
                     Profile
                   </button>
                   <button
-                    onClick={() => {
-                      Route("chat");
-                    }}
-                    className="py-1.5 px-1 rounded-lg bg-white !border !border-slate-200/70 text-slate-700 font-family-medium text-[11.5px] hover:text-[#004a70] hover:!border-[#004a70] transition-all cursor-pointer relative"
+                    onClick={() => Route("chat")}
+                    className="!py-1.5 !px-1 !rounded-lg !bg-white hover:!bg-slate-100 !border !border-slate-200/80 !text-slate-700 !font-family-medium !text-[11.5px] !transition-all !cursor-pointer !relative shadow-2xs"
                   >
                     Chat
                     {unreadCount > 0 && (
-                      <span className="absolute -top-1 -right-1 bg-red-500 text-white text-[9px] font-family-semibold w-4 h-4 rounded-full flex items-center justify-center">
+                      <span className="!absolute !-top-1 !-right-1 !bg-red-500 !text-white !text-[9px] !font-family-semibold !w-4 !h-4 !rounded-full !flex !items-center !justify-center">
                         {unreadCount}
                       </span>
                     )}
                   </button>
                   <button
-                    onClick={() => {
-                      Route("favorites");
-                    }}
-                    className="py-1.5 px-1 rounded-lg bg-white !border !border-slate-200/70 text-slate-700 font-family-medium text-[11.5px] hover:text-[#004a70] hover:!border-[#004a70] transition-all cursor-pointer"
+                    onClick={() => Route("favorites")}
+                    className="!py-1.5 !px-1 !rounded-lg !bg-white hover:!bg-slate-100 !border !border-slate-200/80 !text-slate-700 !font-family-medium !text-[11.5px] !transition-all !cursor-pointer shadow-2xs"
                   >
                     Favorites
                   </button>
@@ -1081,160 +1076,152 @@ const InnerHeader = () => {
               </div>
             )}
 
-            {/* Navigation Links - Categorized Accordions on Mobile */}
-            <div className="flex flex-col gap-1.5">
-              {/* Home */}
-              <MobileNavItem
-                label="Home"
-                active={isActive("/")}
-                onClick={() => Route("")}
-              />
+            {/* Direct Link: Home */}
+            <div className="!border-b !border-slate-100 !pb-1">
+              <Link
+                href="/"
+                onClick={handleClose}
+                className={`!flex !items-center !justify-between !py-3 !px-1 !no-underline !transition-colors ${
+                  isActive("/")
+                    ? "!text-[#004a70] !font-family-semibold !font-semibold"
+                    : "!text-slate-600 hover:!text-[#004a70] !font-family-medium"
+                }`}
+              >
+                <span className="!text-[12.5px] !uppercase !tracking-wider">Home</span>
+              </Link>
+            </div>
 
-              {/* Categorized Dropdowns on Mobile */}
-              {navCategories.map((cat) => {
-                const isOpen = mobileOpenCat === cat.id;
-                const isCatActive = isCategoryActive(cat);
+            {/* Categorized Accordion Groups (Matches Screenshot Hierarchy with White Theme) */}
+            {navCategories.map((cat) => {
+              const isOpen = mobileOpenCat === cat.id;
 
-                return (
-                  <div key={cat.id} className="rounded-xl border border-slate-150/70 overflow-hidden bg-slate-50/50">
-                    <button
-                      type="button"
-                      onClick={() => setMobileOpenCat((prev) => (prev === cat.id ? null : cat.id))}
-                      className={`w-full flex items-center justify-between p-3 text-xs font-family-semibold transition-colors border-none cursor-pointer ${
-                        isCatActive
-                          ? "text-[#004a70] bg-sky-50/60"
-                          : "text-slate-700 hover:bg-slate-100/80 bg-transparent"
+              return (
+                <div key={cat.id} className="!border-b !border-slate-100 !pb-1">
+                  <button
+                    type="button"
+                    onClick={() => setMobileOpenCat((prev) => (prev === cat.id ? null : cat.id))}
+                    className="!w-full !flex !items-center !justify-between !py-3 !px-1 !border-none !cursor-pointer !bg-transparent !text-left"
+                  >
+                    <span className="!text-[12.5px] !font-family-medium !uppercase !tracking-wider !text-slate-600 hover:!text-[#004a70]">
+                      {cat.label}
+                    </span>
+                    <FaChevronDown
+                      size={11}
+                      className={`!transition-transform !duration-200 !text-slate-400 ${
+                        isOpen ? "!rotate-180 !text-[#004a70]" : ""
                       }`}
-                    >
-                      <span className="text-[13px]">{cat.label}</span>
-                      <FaChevronDown
-                        size={10}
-                        className={`transition-transform duration-200 text-slate-400 ${
-                          isOpen ? "rotate-180" : ""
-                        }`}
-                      />
-                    </button>
+                    />
+                  </button>
 
-                    {isOpen && (
-                      <div className="p-2 pt-0 space-y-1 bg-white border-t border-slate-100">
-                        {cat.items.map((item) => {
-                          if (item.action === "driverModal") {
-                            return (
-                              <div
-                                key={item.title}
-                                onClick={() => {
-                                  handleClose();
-                                  HandleModal();
-                                }}
-                                className="flex items-center gap-2.5 p-2 rounded-lg hover:bg-slate-50 cursor-pointer"
-                              >
-                                <div className={`w-7 h-7 rounded-lg flex items-center justify-center shrink-0 border ${item.color}`}>
-                                  {item.icon}
-                                </div>
-                                <span className="text-xs font-family-medium text-slate-800">
-                                  {item.title}
-                                </span>
-                              </div>
-                            );
-                          }
-
+                  {/* Expanded Child Links */}
+                  {isOpen && (
+                    <div className="!flex !flex-col !gap-0.5 !pt-1 !pb-2 !pl-1 !animate-fade-in">
+                      {cat.items.map((item) => {
+                        if (item.action === "driverModal") {
                           return (
-                            <Link
-                              key={item.href}
-                              href={item.href}
-                              onClick={handleClose}
-                              className="flex items-center gap-2.5 p-2 rounded-lg hover:bg-slate-50 no-underline"
+                            <div
+                              key={item.title}
+                              onClick={() => {
+                                handleClose();
+                                HandleModal();
+                              }}
+                              className="!py-2 !px-2 !rounded-lg hover:!bg-slate-50 !text-slate-800 hover:!text-[#004a70] !font-family-medium !text-[14.5px] sm:!text-[15px] !transition-colors !cursor-pointer"
                             >
-                              <div className={`w-7 h-7 rounded-lg flex items-center justify-center shrink-0 border ${item.color}`}>
-                                {item.icon}
-                              </div>
-                              <div className="min-w-0">
-                                <span className="text-xs font-family-medium text-slate-800 block">
-                                  {item.title}
-                                </span>
-                              </div>
-                            </Link>
+                              {item.title}
+                            </div>
                           );
-                        })}
-                      </div>
-                    )}
-                  </div>
-                );
-              })}
+                        }
 
-              {/* Wallet */}
-              <MobileNavItem
-                label="Customer Wallet"
-                active={isActive("/wallet")}
-                onClick={() => Route("wallet")}
-              />
+                        return (
+                          <Link
+                            key={item.href}
+                            href={item.href}
+                            onClick={handleClose}
+                            className="!py-2 !px-2 !rounded-lg hover:!bg-slate-50 !text-slate-800 hover:!text-[#004a70] !font-family-medium !text-[14.5px] sm:!text-[15px] !transition-colors !no-underline !block"
+                          >
+                            {item.title}
+                          </Link>
+                        );
+                      })}
+                    </div>
+                  )}
+                </div>
+              );
+            })}
+
+            {/* Direct Link: Customer Wallet */}
+            <div className="!border-b !border-slate-100 !pb-1">
+              <Link
+                href="/wallet"
+                onClick={handleClose}
+                className={`!flex !items-center !justify-between !py-3 !px-1 !no-underline !transition-colors ${
+                  isActive("/wallet")
+                    ? "!text-[#004a70] !font-family-semibold !font-semibold"
+                    : "!text-slate-600 hover:!text-[#004a70] !font-family-medium"
+                }`}
+              >
+                <span className="!text-[12.5px] !uppercase !tracking-wider">Customer Wallet</span>
+              </Link>
             </div>
           </div>
 
-          {/* Bottom Sticky Section ("niche") */}
-          <div className="p-4 !border-t !border-slate-100 bg-slate-50/80 shrink-0 flex flex-col gap-2">
-            {userData?.user ? (
-              <>
-                <button
-                  onClick={() => {
-                    handleClose();
-                    HandleModal();
-                  }}
-                  className="w-full py-2 px-3 rounded-xl bg-white !border !border-slate-200/80 text-slate-700 font-family-medium text-[12.5px] hover:text-[#004a70] hover:!border-[#004a70] transition-all flex items-center justify-center gap-1.5 cursor-pointer"
-                >
-                  <svg width={15} height={15} viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth={1.75} className="text-slate-500">
-                    <path strokeLinecap="round" strokeLinejoin="round" d="M8.25 18.75a1.5 1.5 0 0 1-3 0m3 0a1.5 1.5 0 0 0-3 0m3 0h6m-9 0H3.375a1.125 1.125 0 0 1-1.125-1.125V14.25m17.25 4.5a1.5 1.5 0 0 1-3 0m3 0a1.5 1.5 0 0 0-3 0m3 0h1.125c.621 0 1.129-.504 1.09-1.124a17.902 17.902 0 0 0-3.213-9.193 2.056 2.056 0 0 0-1.58-.86H14.25M16.5 18.75h-2.25m0-11.177v-.958c0-.568-.422-1.048-.987-1.106a48.554 48.554 0 0 0-10.026 0 1.106 1.106 0 0 0-.987 1.106v7.635m12-6.677v6.677m0 4.5v-4.5m0 0h-12" />
-                  </svg>
-                  <span>Signup as Driver</span>
-                </button>
+          {/* Bottom Sticky Action Buttons (Compact & Sleek) */}
+          <div className="!p-3.5 sm:!p-4 !border-t !border-slate-100 !bg-white !shrink-0 !flex !flex-col !gap-2">
+            {/* Primary Filled CTA Button */}
+            <Link
+              href="/ride"
+              onClick={handleClose}
+              className="!w-full !py-2 sm:!py-2.5 !rounded-xl !bg-[#004a70] hover:!bg-[#003856] !text-white !font-family-medium !text-[13px] !shadow-xs !flex !items-center !justify-center !no-underline !border-none !cursor-pointer !transition-all active:!scale-95"
+            >
+              Book a Ride
+            </Link>
 
-                {/* Logout Button placed distinctly at the bottom ("niche") */}
+            {/* Secondary Button */}
+            {userData?.user ? (
+              <button
+                onClick={() => {
+                  handleClose();
+                  HandleModal();
+                }}
+                className="!w-full !py-2 sm:!py-2.5 !rounded-xl !bg-slate-100 hover:!bg-slate-200 !text-slate-700 !font-family-medium !text-[13px] !border !border-slate-200/80 !flex !items-center !justify-center !border-none !cursor-pointer !transition-all active:!scale-95"
+              >
+                Join as Driver
+              </button>
+            ) : (
+              <button
+                onClick={() => {
+                  handleClose();
+                  HandleModal();
+                }}
+                className="!w-full !py-2 sm:!py-2.5 !rounded-xl !bg-slate-100 hover:!bg-slate-200 !text-slate-700 !font-family-medium !text-[13px] !border !border-slate-200/80 !flex !items-center !justify-center !border-none !cursor-pointer !transition-all active:!scale-95"
+              >
+                Join Free
+              </button>
+            )}
+
+            {/* Sub-actions: Login / Logout */}
+            <div className="!text-center !pt-0.5">
+              {userData?.user ? (
                 <button
                   onClick={() => {
                     handleLogout();
                     handleClose();
                     router.push("/auth/login");
                   }}
-                  className="w-full py-2.5 px-4 rounded-xl bg-red-50 text-red-600 hover:bg-red-100 !border !border-red-200/70 font-family-semibold text-[13.5px] transition-all flex items-center justify-center gap-2 cursor-pointer shadow-2xs"
+                  className="!text-red-500 hover:!text-red-600 !font-family-medium !text-[11.5px] !bg-transparent !border-none !cursor-pointer"
                 >
-                  <MdLogout size={16} />
-                  <span>Logout</span>
+                  Log Out
                 </button>
-              </>
-            ) : (
-              <>
-                <button
-                  onClick={() => {
-                    handleClose();
-                    router.push("/auth/stepOne");
-                  }}
-                  className="w-full py-2.5 px-4 rounded-xl bg-[#004a70] text-white font-family-semibold text-[13.5px] hover:bg-[#003855] shadow-sm transition-all flex items-center justify-center gap-2 cursor-pointer !border-none"
+              ) : (
+                <Link
+                  href="/auth/login"
+                  onClick={handleClose}
+                  className="!text-slate-500 hover:!text-[#004a70] !font-family-medium !text-[11.5px] !no-underline"
                 >
-                  Sign Up
-                </button>
-                <button
-                  onClick={() => {
-                    handleClose();
-                    router.push("/auth/login");
-                  }}
-                  className="w-full py-2.5 px-4 rounded-xl bg-white text-slate-700 !border !border-slate-200 font-family-semibold text-[13.5px] hover:text-[#004a70] hover:!border-[#004a70] hover:bg-slate-50 transition-all flex items-center justify-center gap-2 cursor-pointer"
-                >
-                  Login
-                </button>
-                <button
-                  onClick={() => {
-                    handleClose();
-                    HandleModal();
-                  }}
-                  className="w-full py-2 px-3 rounded-xl bg-slate-100 text-slate-600 !border !border-slate-200/60 font-family-medium text-[12.5px] hover:bg-slate-200 hover:text-slate-800 transition-all flex items-center justify-center gap-1.5 cursor-pointer mt-0.5"
-                >
-                  <svg width={15} height={15} viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth={1.75} className="text-slate-500">
-                    <path strokeLinecap="round" strokeLinejoin="round" d="M8.25 18.75a1.5 1.5 0 0 1-3 0m3 0a1.5 1.5 0 0 0-3 0m3 0h6m-9 0H3.375a1.125 1.125 0 0 1-1.125-1.125V14.25m17.25 4.5a1.5 1.5 0 0 1-3 0m3 0a1.5 1.5 0 0 0-3 0m3 0h1.125c.621 0 1.129-.504 1.09-1.124a17.902 17.902 0 0 0-3.213-9.193 2.056 2.056 0 0 0-1.58-.86H14.25M16.5 18.75h-2.25m0-11.177v-.958c0-.568-.422-1.048-.987-1.106a48.554 48.554 0 0 0-10.026 0 1.106 1.106 0 0 0-.987 1.106v7.635m12-6.677v6.677m0 4.5v-4.5m0 0h-12" />
-                  </svg>
-                  <span>Signup as Driver</span>
-                </button>
-              </>
-            )}
+                  Already have an account? <span className="!underline !font-family-semibold !text-[#004a70]">Log In</span>
+                </Link>
+              )}
+            </div>
           </div>
         </Offcanvas.Body>
       </Offcanvas>

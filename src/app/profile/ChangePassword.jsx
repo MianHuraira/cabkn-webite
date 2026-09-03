@@ -21,37 +21,42 @@ const schema = yup.object().shape({
 
 const PasswordField = ({ label, name, placeholder, control, errors }) => {
   const [show, setShow] = useState(false);
+  const hasError = Boolean(errors[name]);
   return (
-    <div className="mb-4 last:mb-0">
-      <div className={`rounded-xl border p-3.5 transition-all duration-300 relative ${
-        errors[name] 
-          ? 'border-red-400 bg-red-50/10 focus-within:border-red-500 focus-within:ring-4 focus-within:ring-red-100' 
-          : 'border-slate-200 bg-slate-50/50 focus-within:bg-white focus-within:border-brand-500 focus-within:ring-4 focus-within:ring-brand-500/10'
-      }`}>
-        <label className="block text-[10px] font-family-semibold uppercase tracking-wider text-slate-400 mb-1">{label} *</label>
+    <div className="!space-y-1.5 !mb-4 last:!mb-0">
+      <label className="!block !text-[13px] !font-family-semibold !text-slate-700 !select-none !pl-0.5">
+        {label} <span className="!text-red-500">*</span>
+      </label>
+      <div className="!relative">
         <Controller
           name={name}
           control={control}
           render={({ field }) => (
-            <>
-              <input
-                {...field}
-                type={show ? "text" : "password"}
-                placeholder={placeholder}
-                className="w-full bg-transparent text-sm text-slate-800 outline-none border-none p-0 pr-8 focus:ring-0 placeholder-slate-400"
-              />
-              <button
-                type="button"
-                onClick={() => setShow((s) => !s)}
-                className="absolute right-3.5 bottom-3.5 text-slate-400 hover:text-brand-600 transition-colors border-none bg-transparent cursor-pointer p-0"
-              >
-                {show ? <FaEyeSlash size={16} /> : <FaEye size={16} />}
-              </button>
-            </>
+            <input
+              {...field}
+              type={show ? "text" : "password"}
+              placeholder={placeholder}
+              className={`input-field !pr-11 ${
+                hasError
+                  ? "!border-rose-400 focus:!border-rose-500 focus:!ring-rose-500/20"
+                  : ""
+              }`}
+            />
           )}
         />
+        <button
+          type="button"
+          onClick={() => setShow((s) => !s)}
+          className="!absolute !inset-y-0 !right-0 !flex !items-center !pr-3.5 !text-slate-400 hover:!text-slate-600 !transition-colors !border-none !bg-transparent !cursor-pointer focus:!outline-none"
+        >
+          {show ? <FaEyeSlash size={16} /> : <FaEye size={16} />}
+        </button>
       </div>
-      {errors[name] && <p className="text-red-500 text-xs mt-1.5 ml-1 font-family-regular">{errors[name].message}</p>}
+      {hasError && (
+        <p className="!text-[11px] !text-rose-500 !font-family-medium !mt-1 !pl-1">
+          {errors[name].message}
+        </p>
+      )}
     </div>
   );
 };

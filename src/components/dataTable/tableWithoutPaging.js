@@ -1,4 +1,3 @@
-/* eslint-disable no-unused-vars */
 import { CircularProgress } from '@mui/material'
 import { Button, Dropdown, Menu } from 'antd'
 import React, { Fragment, useState } from 'react'

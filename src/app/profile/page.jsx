@@ -388,62 +388,39 @@ export default function EditProfile() {
                     gap: 20,
                   }}
                 >
-                  <div>
-                    <div className={`rounded-xl border p-3.5 transition-all duration-300 ${
-                      errors.name 
-                        ? 'border-red-400 bg-red-50/10 focus-within:border-red-500 focus-within:ring-4 focus-within:ring-red-100' 
-                        : 'border-slate-200 bg-slate-50/50 focus-within:bg-white focus-within:border-brand-500 focus-within:ring-4 focus-within:ring-brand-500/10'
-                    }`}>
-                      <label className="block text-[10px] font-family-semibold uppercase tracking-wider text-slate-400 mb-1">Full Name *</label>
-                      <Controller
-                        name="name"
-                        control={control}
-                        render={({ field }) => (
-                          <input
-                            {...field}
-                            placeholder="Enter Full Name"
-                            className="w-full bg-transparent text-sm text-slate-800 outline-none border-none p-0 focus:ring-0 placeholder-slate-400"
-                          />
-                        )}
-                      />
-                    </div>
-                    {errors.name && <p className="text-red-500 text-xs mt-1.5 ml-1 font-family-regular">{errors.name.message}</p>}
+                  {/* Full Name */}
+                  <div className="!space-y-1.5">
+                    <label className="!block !text-[13px] !font-family-semibold !text-slate-700 !select-none !pl-0.5">
+                      Full Name <span className="!text-red-500">*</span>
+                    </label>
+                    <Controller
+                      name="name"
+                      control={control}
+                      render={({ field }) => (
+                        <input
+                          {...field}
+                          placeholder="Enter Full Name"
+                          className={`input-field ${
+                            errors.name
+                              ? "!border-rose-400 focus:!border-rose-500 focus:!ring-rose-500/20"
+                              : ""
+                          }`}
+                        />
+                      )}
+                    />
+                    {errors.name && (
+                      <p className="!text-[11px] !text-rose-500 !font-family-medium !mt-1 !pl-1">
+                        {errors.name.message}
+                      </p>
+                    )}
                   </div>
 
-                  <div>
-                    <div className={`rounded-xl border p-3.5 transition-all duration-300 ${
-                      errors.phone 
-                        ? 'border-red-400 bg-red-50/10 focus-within:border-red-500 focus-within:ring-4 focus-within:ring-red-100' 
-                        : 'border-slate-200 bg-slate-50/50 focus-within:bg-white focus-within:border-brand-500 focus-within:ring-4 focus-within:ring-brand-500/10'
-                    }`}>
-                      <label className="block text-[10px] font-family-semibold uppercase tracking-wider text-slate-400 mb-1">Phone Number *</label>
-                      <style>{`
-                        .react-tel-input {
-                          display: flex !important;
-                          align-items: center !important;
-                          height: 24px !important;
-                        }
-                        .react-tel-input .form-control {
-                          height: 24px !important;
-                          line-height: 24px !important;
-                          padding-top: 0 !important;
-                          padding-bottom: 0 !important;
-                          margin-top: 0 !important;
-                          margin-bottom: 0 !important;
-                        }
-                        .react-tel-input .flag-dropdown {
-                          height: 24px !important;
-                          top: 50% !important;
-                          transform: translateY(-50%) !important;
-                          border: none !important;
-                          background: transparent !important;
-                        }
-                        .react-tel-input .selected-flag {
-                          height: 24px !important;
-                          padding: 0 !important;
-                          background: transparent !important;
-                        }
-                      `}</style>
+                  {/* Phone Number */}
+                  <div className="!space-y-1.5">
+                    <label className="!block !text-[13px] !font-family-semibold !text-slate-700 !select-none !pl-0.5">
+                      Phone Number <span className="!text-red-500">*</span>
+                    </label>
+                    <div className="!relative">
                       <Controller
                         name="phone"
                         control={control}
@@ -454,125 +431,115 @@ export default function EditProfile() {
                             onChange={(value) => field.onChange(value)}
                             onBlur={field.onBlur}
                             disabled={true}
-                            inputStyle={{
-                              width: "100%",
-                              padding: "0px 0px 0px 42px",
-                              borderRadius: "0",
-                              border: "none",
-                              fontSize: "0.875rem",
-                              outline: "none",
-                              background: "transparent",
-                              height: "24px",
-                              lineHeight: "24px",
-                              color: "#1e293b",
-                              fontFamily: "inherit",
-                              cursor: "not-allowed"
-                            }}
-                            buttonStyle={{
-                              border: "none",
-                              background: "transparent",
-                              borderRadius: "0",
-                              paddingLeft: "0",
-                              height: "24px",
-                              minWidth: "auto",
-                              cursor: "not-allowed"
-                            }}
-                            dropdownStyle={{ borderRadius: "0.75rem", color: "#333" }}
+                            inputClass="!w-full !h-[42px] !min-h-[42px] !rounded-xl !bg-slate-50/80 !border !border-gray-200 !text-[13.5px] !text-slate-600 !pl-[48px] !cursor-not-allowed !shadow-xs"
+                            buttonClass="!bg-transparent !border-none !rounded-l-xl !h-[42px]"
+                            containerClass="!w-full"
+                            dropdownClass="!rounded-xl !shadow-lg"
                           />
                         )}
                       />
                     </div>
-                    {errors.phone && <p className="text-red-500 text-xs mt-1.5 ml-1 font-family-regular">{errors.phone.message}</p>}
+                    {errors.phone && (
+                      <p className="!text-[11px] !text-rose-500 !font-family-medium !mt-1 !pl-1">
+                        {errors.phone.message}
+                      </p>
+                    )}
                   </div>
 
-                  <div>
-                    <div className={`rounded-xl border p-3.5 transition-all duration-300 ${
-                      errors.email 
-                        ? 'border-red-400 bg-red-50/10 focus-within:border-red-500 focus-within:ring-4 focus-within:ring-red-100' 
-                        : 'border-slate-200 bg-slate-50/50 focus-within:bg-white focus-within:border-brand-500 focus-within:ring-4 focus-within:ring-brand-500/10'
-                    }`}>
-                      <label className="block text-[10px] font-family-semibold uppercase tracking-wider text-slate-400 mb-1">Email *</label>
-                      <Controller
-                        name="email"
-                        control={control}
-                        render={({ field }) => (
-                          <input
-                            {...field}
-                            readOnly
-                            placeholder="Enter Email"
-                            className="w-full bg-transparent text-sm text-slate-500 outline-none border-none p-0 focus:ring-0 placeholder-slate-400 cursor-not-allowed"
-                          />
-                        )}
-                      />
-                    </div>
-                    {errors.email && <p className="text-red-500 text-xs mt-1.5 ml-1 font-family-regular">{errors.email.message}</p>}
+                  {/* Email */}
+                  <div className="!space-y-1.5">
+                    <label className="!block !text-[13px] !font-family-semibold !text-slate-700 !select-none !pl-0.5">
+                      Email <span className="!text-red-500">*</span>
+                    </label>
+                    <Controller
+                      name="email"
+                      control={control}
+                      render={({ field }) => (
+                        <input
+                          {...field}
+                          readOnly
+                          placeholder="Enter Email"
+                          className="input-field !bg-slate-50/80 !text-slate-500 !cursor-not-allowed !border-gray-200"
+                        />
+                      )}
+                    />
+                    {errors.email && (
+                      <p className="!text-[11px] !text-rose-500 !font-family-medium !mt-1 !pl-1">
+                        {errors.email.message}
+                      </p>
+                    )}
                   </div>
 
-                  <div>
-                    <div className={`rounded-xl border p-3.5 transition-all duration-300 ${
-                      errors.address 
-                        ? 'border-red-400 bg-red-50/10 focus-within:border-red-500 focus-within:ring-4 focus-within:ring-red-100' 
-                        : 'border-slate-200 bg-slate-50/50 focus-within:bg-white focus-within:border-brand-500 focus-within:ring-4 focus-within:ring-brand-500/10'
-                    }`}>
-                      <label className="block text-[10px] font-family-semibold uppercase tracking-wider text-slate-400 mb-1">Address *</label>
+                  {/* Address */}
+                  <div className="!space-y-1.5">
+                    <label className="!block !text-[13px] !font-family-semibold !text-slate-700 !select-none !pl-0.5">
+                      Address <span className="!text-red-500">*</span>
+                    </label>
+                    <div className="!relative">
                       <Controller
                         name="address"
                         control={control}
                         render={({ field }) => (
-                          <div style={{ position: "relative" }}>
-                            <input
-                              {...field}
-                              placeholder="Enter address"
-                              value={searchQuery}
-                              onChange={(e) => handleSearch(e.target.value)}
-                              className="w-full bg-transparent text-sm text-slate-800 outline-none border-none p-0 focus:ring-0 placeholder-slate-400"
-                            />
-                            {PridicLoading && (
-                              <span className="font-family-regular" style={{ fontSize: 12, color: "#6b7280", marginTop: 4, display: "block" }}>
-                                Loading...
-                              </span>
-                            )}
-                            {predictions.length > 0 && (
-                              <ListGroup
-                                style={{
-                                  position: "absolute",
-                                  top: "100%",
-                                  left: 0,
-                                  zIndex: 10,
-                                  width: "100%",
-                                  maxHeight: "200px",
-                                  overflowY: "auto",
-                                  borderRadius: 10,
-                                  border: "1px solid #e5e7eb",
-                                  background: "#fff",
-                                  boxShadow: "0 10px 25px rgba(0,0,0,0.1)",
-                                  marginTop: "8px"
-                                }}
-                              >
-                                {predictions.map((prediction) => (
-                                  <ListGroupItem
-                                    key={prediction.place_id}
-                                    onClick={() =>
-                                      handlePredictionPress(prediction)
-                                    }
-                                    className="font-family-medium hover:bg-slate-50 transition-colors"
-                                    style={{ cursor: "pointer", fontSize: 13, padding: "10px 14px", border: "none", borderBottom: "1px solid #f1f5f9" }}
-                                  >
-                                    {prediction.description}
-                                  </ListGroupItem>
-                                ))}
-                              </ListGroup>
-                            )}
-                            {noData && (
-                              <span className="font-family-regular" style={{ fontSize: 12, color: "#6b7280", marginTop: 4, display: "block" }}>
-                                No results found
-                              </span>
-                            )}
-                          </div>
+                          <input
+                            {...field}
+                            placeholder="Enter address"
+                            value={searchQuery}
+                            onChange={(e) => handleSearch(e.target.value)}
+                            className={`input-field ${
+                              errors.address
+                                ? "!border-rose-400 focus:!border-rose-500 focus:!ring-rose-500/20"
+                                : ""
+                            }`}
+                          />
                         )}
                       />
+                      {PridicLoading && (
+                        <span className="!font-family-regular !text-[11px] !text-slate-400 !mt-1 !block !pl-1">
+                          Loading...
+                        </span>
+                      )}
+                      {predictions.length > 0 && (
+                        <ListGroup
+                          style={{
+                            position: "absolute",
+                            top: "100%",
+                            left: 0,
+                            zIndex: 20,
+                            width: "100%",
+                            maxHeight: "200px",
+                            overflowY: "auto",
+                            borderRadius: 12,
+                            border: "1px solid #e5e7eb",
+                            background: "#fff",
+                            boxShadow: "0 10px 25px rgba(0,0,0,0.1)",
+                            marginTop: "6px",
+                          }}
+                        >
+                          {predictions.map((prediction) => (
+                            <ListGroupItem
+                              key={prediction.place_id}
+                              onClick={() =>
+                                handlePredictionPress(prediction)
+                              }
+                              className="!font-family-medium hover:!bg-slate-50 !transition-colors"
+                              style={{ cursor: "pointer", fontSize: 13, padding: "10px 14px", border: "none", borderBottom: "1px solid #f1f5f9" }}
+                            >
+                              {prediction.description}
+                            </ListGroupItem>
+                          ))}
+                        </ListGroup>
+                      )}
+                      {noData && (
+                        <span className="!font-family-regular !text-[11px] !text-slate-400 !mt-1 !block !pl-1">
+                          No results found
+                        </span>
+                      )}
                     </div>
-                    {errors.address && <p className="text-red-500 text-xs mt-1.5 ml-1 font-family-regular">{errors.address.message}</p>}
+                    {errors.address && (
+                      <p className="!text-[11px] !text-rose-500 !font-family-medium !mt-1 !pl-1">
+                        {errors.address.message}
+                      </p>
+                    )}
                   </div>
                 </div>
 

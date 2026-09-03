@@ -298,8 +298,8 @@
   font-weight: 600 !important;
 }
 
-.font-family-semibold,
-.\!font-family-semibold {
+.font-family-bold,
+.\!font-family-bold {
   font-family: var(--font-poppins-local), sans-serif !important;
   font-weight: 700 !important;
 }

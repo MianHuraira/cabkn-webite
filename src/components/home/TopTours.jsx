@@ -6,6 +6,7 @@
 import React, { useEffect, useState, useRef } from "react";
 import { Swiper, SwiperSlide } from "swiper/react";
 import "swiper/css";
+import { Container } from "react-bootstrap";
 import { useApi } from "../ApiFunction/ApiFunction";
 import { useRouter } from "next/navigation";
 import Image from "next/image";
@@ -88,33 +89,34 @@ export default function TopTours() {
 
   return (
     <div ref={sectionRef} className="w-full max-w-full overflow-hidden py-6">
-      {/* Header Row */}
-      <div
-        className={`mx-auto flex flex-row justify-between items-center mb-6 reveal ${
-          inView ? "visible" : ""
-        }`}
-        style={{ maxWidth: 1200, padding: "0 16px", transitionDelay: "50ms" }}
-      >
-        <div className="text-left">
-          <h2 className="text-2xl sm:text-3xl lg:text-[34px] font-family-semibold text-slate-800 tracking-tight m-0 leading-tight">
-            Top Tours
-          </h2>
-          <p className="text-slate-500 font-family-regular text-sm sm:text-[15px] !m-0 mt-1">
-            Experiences around St. Kitts
-          </p>
+      <Container>
+        {/* Header Row */}
+        <div
+          className={`flex flex-row justify-between items-center mb-6 px-1 reveal ${
+            inView ? "visible" : ""
+          }`}
+          style={{ transitionDelay: "50ms" }}
+        >
+          <div className="text-left">
+            <h2 className="text-2xl sm:text-3xl lg:text-[34px] font-family-semibold text-slate-800 tracking-tight m-0 leading-tight">
+              Top Tours
+            </h2>
+            <p className="text-slate-500 font-family-regular text-sm sm:text-[15px] !m-0 mt-1">
+              Experiences around St. Kitts
+            </p>
+          </div>
+
+          <Link
+            href="/tours"
+            className="flex items-center gap-1.5 px-4 py-2 rounded-full bg-brand-50 hover:bg-brand-100 text-[#004a70] font-family-semibold text-xs sm:text-sm transition-all duration-200 no-underline shrink-0 group"
+          >
+            <span>See All</span>
+            <FiArrowRight className="group-hover:translate-x-1 transition-transform" />
+          </Link>
         </div>
 
-        <Link
-          href="/tours"
-          className="flex items-center gap-1.5 px-4 py-2 rounded-full bg-brand-50 hover:bg-brand-100 text-[#004a70] font-family-semibold text-xs sm:text-sm transition-all duration-200 no-underline shrink-0 group"
-        >
-          <span>See All</span>
-          <FiArrowRight className="group-hover:translate-x-1 transition-transform" />
-        </Link>
-      </div>
-
-      {/* Swiper Content Container */}
-      <div className="mx-auto p-3 w-full max-w-full overflow-hidden" style={{ maxWidth: 1200 }}>
+        {/* Swiper Content Container */}
+        <div className="px-1 w-full max-w-full overflow-hidden">
         {loading ? (
           <div className="flex gap-4 overflow-x-auto pb-4 scrollbar-hide">
             {[1, 2, 3, 4].map((item) => (
@@ -293,7 +295,8 @@ export default function TopTours() {
             description="We couldn't find any tours right now. Please check back soon!"
           />
         )}
-      </div>
+        </div>
+      </Container>
     </div>
   );
 }
