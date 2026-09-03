@@ -11,6 +11,8 @@ const NotificationHandler = () => {
   const { header1, putData } = ApiFunction();
   const userData = useSelector((state) => state.auth?.user?.user);
   const tokenSyncedRef = useRef(false);
+  const audioRef = useRef(null);
+  const audioCtxRef = useRef(null);
 
   useEffect(() => {
     console.log(
@@ -53,6 +55,113 @@ const NotificationHandler = () => {
     initPushNotifications();
   }, [userData?._id]);
 
+  // Auto-unlock audio on user interaction so browsers don't block background chimes
+  useEffect(() => {
+    const unlock = () => {
+      if (audioRef.current) {
+        audioRef.current.play().then(() => {
+          audioRef.current.pause();
+          audioRef.current.currentTime = 0;
+        }).catch(() => {});
+      }
+
+      const AudioContext = window.AudioContext || window.webkitAudioContext;
+      if (AudioContext) {
+        if (!audioCtxRef.current || audioCtxRef.current.state === "closed") {
+          audioCtxRef.current = new AudioContext();
+        }
+        if (audioCtxRef.current && audioCtxRef.current.state === "suspended") {
+          audioCtxRef.current.resume();
+        }
+      }
+
+      window.removeEventListener("click", unlock);
+      window.removeEventListener("keydown", unlock);
+      window.removeEventListener("touchstart", unlock);
+    };
+
+    window.addEventListener("click", unlock);
+    window.addEventListener("keydown", unlock);
+    window.addEventListener("touchstart", unlock);
+
+    return () => {
+      window.removeEventListener("click", unlock);
+      window.removeEventListener("keydown", unlock);
+      window.removeEventListener("touchstart", unlock);
+    };
+  }, []);
+
+  // Play notification chime sound
+  const playNotificationSound = () => {
+    console.log("[Notification] Triggering notification sound...");
+
+    if (audioRef.current) {
+      audioRef.current.currentTime = 0;
+      audioRef.current.volume = 1.0;
+      const playPromise = audioRef.current.play();
+      if (playPromise !== undefined) {
+        playPromise
+          .then(() => {
+            console.log("[Notification] Chime played via audio element.");
+          })
+          .catch((err) => {
+            console.warn("[Notification] HTML5 audio blocked, attempting Web Audio synth:", err);
+            playWebAudioChime();
+          });
+        return;
+      }
+    }
+
+    playWebAudioChime();
+  };
+
+  const playWebAudioChime = () => {
+    try {
+      const AudioContext = window.AudioContext || window.webkitAudioContext;
+      if (!AudioContext) return;
+
+      let ctx = audioCtxRef.current;
+      if (!ctx || ctx.state === "closed") {
+        ctx = new AudioContext();
+        audioCtxRef.current = ctx;
+      }
+
+      if (ctx.state === "suspended") {
+        ctx.resume();
+      }
+
+      const now = ctx.currentTime;
+
+      // Note 1: 784 Hz (G5) Ding
+      const osc1 = ctx.createOscillator();
+      const gain1 = ctx.createGain();
+      osc1.type = "sine";
+      osc1.frequency.setValueAtTime(783.99, now);
+      gain1.gain.setValueAtTime(0.7, now);
+      gain1.gain.exponentialRampToValueAtTime(0.001, now + 0.45);
+      osc1.connect(gain1);
+      gain1.connect(ctx.destination);
+      osc1.start(now);
+      osc1.stop(now + 0.45);
+
+      // Note 2: 1046.5 Hz (C6) Dong
+      const osc2 = ctx.createOscillator();
+      const gain2 = ctx.createGain();
+      osc2.type = "sine";
+      osc2.frequency.setValueAtTime(1046.5, now + 0.15);
+      gain2.gain.setValueAtTime(0.75, now + 0.15);
+      gain2.gain.exponentialRampToValueAtTime(0.001, now + 0.7);
+      osc2.connect(gain2);
+      gain2.connect(ctx.destination);
+      osc2.start(now + 0.15);
+      osc2.stop(now + 0.7);
+
+      console.log("[Notification] Chime played via Web Audio synthesizer.");
+    } catch (e) {
+      console.warn("[Notification] Web Audio chime error:", e);
+    }
+  };
+
   useEffect(() => {
     // Listen for foreground push messages
     let unsubscribe = () => {};
@@ -62,12 +171,15 @@ const NotificationHandler = () => {
         const title = payload?.notification?.title || payload?.data?.title || "New Notification";
         const body = payload?.notification?.body || payload?.data?.body || "";
 
+        // Play audio chime on notification arrival
+        playNotificationSound();
+
         toast.custom(
           (t) => (
             <div
               className={`${
                 t.visible ? "animate-enter" : "animate-leave"
-              } max-w-md w-full bg-white shadow-xl rounded-2xl pointer-events-auto flex ring-1 ring-black/5 p-4 border border-slate-100 cursor-pointer transition-all hover:shadow-2xl`}
+              } max-w-md w-full bg-white shadow-xl rounded-2xl pointer-events-auto flex ring-1 ring-black/5 !p-4 border border-slate-100 cursor-pointer transition-all hover:shadow-2xl`}
               onClick={() => {
                 toast.dismiss(t.id);
                 const clickUrl = payload?.data?.url || payload?.data?.click_action || "/admin";
@@ -114,7 +226,15 @@ const NotificationHandler = () => {
     };
   }, []);
 
-  return null;
+  return (
+    <audio
+      ref={audioRef}
+      src="/notification.wav"
+      preload="auto"
+      playsInline
+      style={{ display: "none" }}
+    />
+  );
 };
 
 export default NotificationHandler;

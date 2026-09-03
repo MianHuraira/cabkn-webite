@@ -1002,69 +1002,63 @@ function Page() {
                   return (
                     <div
                       key={`${order?._id}-${index}`}
-                      className="group bg-white rounded-2xl shadow-sm hover:shadow-lg transition-all duration-300 flex flex-col relative overflow-hidden"
-                      style={{ border: "1px solid #e8edf2" }}
+                      className="group !bg-white !rounded-2xl !border !border-slate-200/90 hover:!border-slate-300 !shadow-sm hover:!shadow-md hover:!-translate-y-0.5 !transition-all !duration-300 !flex !flex-col !relative !overflow-hidden"
                     >
-                      {/* Accent top bar */}
-                      <div className={`h-1 w-full bg-gradient-to-r ${isParcel ? "from-orange-500 via-amber-400 to-orange-300" : "from-[#004a70] via-sky-500 to-cyan-400"}`} />
+                      <div className="!p-4 sm:!p-5 !flex !flex-col !flex-1 !gap-3">
 
-                      <div className="p-4 sm:p-5 flex flex-col flex-1 gap-3">
-
-                        {/* ── Row 1: Status / ID / Type + Price ── */}
-                        <div className="flex items-start justify-between gap-2">
-                          <div className="flex flex-col gap-1 min-w-0">
-                            <StatusBadge status={order?.status} />
-                            {order?.order_id && (
-                              <span className="text-[10px] font-family-medium text-slate-400 tabular-nums">
-                                #{order.order_id}
-                              </span>
-                            )}
+                        {/* ── Row 1: Status / ID / Type + Price & Date ── */}
+                        <div className="!flex !items-start !justify-between !gap-3 !mb-1">
+                          <div className="!flex !flex-col !gap-1.5 !min-w-0">
+                            <div className="!flex !items-center !gap-2 !flex-wrap">
+                              <StatusBadge status={order?.status} />
+                              {order?.order_id && (
+                                <span className="!text-[11px] !font-family-semibold !text-slate-500 !tabular-nums">
+                                  #{order.order_id}
+                                </span>
+                              )}
+                            </div>
                             {/* Ride Type Pill */}
                             <span
-                              className="inline-flex items-center gap-1 px-2 py-[3px] rounded-full text-[9px] font-family-bold uppercase tracking-widest w-fit"
-                              style={{
-                                background: isParcel ? "#fff7ed" : "#eff6ff",
-                                color: isParcel ? "#c2410c" : "#0369a1",
-                                border: `1px solid ${isParcel ? "#fed7aa" : "#bae6fd"}`,
-                              }}
+                              className={`!inline-flex !items-center !gap-1.5 !px-2.5 !py-0.5 !rounded-full !text-[10px] !font-family-semibold !tracking-wide !w-fit ${
+                                isParcel
+                                  ? "!bg-orange-50 !text-orange-700 !border !border-orange-200/80"
+                                  : "!bg-[#004a70]/5 !text-[#004a70] !border !border-[#004a70]/15"
+                              }`}
                             >
-                              {isParcel ? <FaBox size={7} /> : <FaCar size={7} />}
-                              {rideTypeLabel}
+                              {isParcel ? <FaBox size={8} /> : <FaCar size={8} />}
+                              <span>{rideTypeLabel}</span>
                             </span>
                           </div>
 
-                          <div className="text-right shrink-0">
-                            <span className="text-xl font-family-bold text-emerald-600 block leading-tight tabular-nums">
+                          <div className="!text-right !shrink-0">
+                            <span className="!text-lg sm:!text-xl !font-family-semibold !text-[#004a70] !block !leading-tight !tabular-nums">
                               ${Number(order?.price || 0).toFixed(2)}
                             </span>
-                            <span className="text-[10px] text-slate-400 font-family-regular block mt-0.5">
-                              {moment(order?.createdAt).format("DD MMM YYYY")}
-                            </span>
-                            <span className="text-[10px] text-slate-300 font-family-regular block">
-                              {moment(order?.createdAt).format("hh:mm A")}
-                            </span>
+                            <div className="!text-[11px] !text-slate-400 !font-family-medium !mt-1 !flex !items-center !justify-end !gap-1">
+                              <MdOutlineSchedule size={12} className="!text-slate-400 !shrink-0" />
+                              <span>{moment(order?.createdAt).format("DD MMM YYYY • hh:mm A")}</span>
+                            </div>
                           </div>
                         </div>
 
                         {/* ── Parcel Details (parcel only) ── */}
                         {isParcel && (order?.image || order?.title) && (
-                          <div
-                            className="flex items-center gap-2.5 rounded-xl p-2.5"
-                            style={{ background: "#fff7ed", border: "1px solid #fed7aa" }}
-                          >
+                          <div className="!flex !items-center !gap-2.5 !rounded-xl !p-2.5 !bg-orange-50/60 !border !border-orange-200/70">
                             {order?.image && (
-                              <div className="w-11 h-11 rounded-lg overflow-hidden shrink-0 bg-white" style={{ border: "1px solid #fdba74" }}>
+                              <div className="!w-11 !h-11 !rounded-lg !overflow-hidden !shrink-0 !bg-white !border !border-orange-200">
                                 <img
                                   src={order.image}
                                   alt="parcel"
-                                  className="w-full h-full object-cover"
+                                  className="!w-full !h-full !object-cover"
                                   onError={(e) => { e.target.style.display = "none"; }}
                                 />
                               </div>
                             )}
-                            <div className="min-w-0 flex-1">
-                              <span className="text-[9px] font-family-bold uppercase tracking-widest text-orange-500 block">Parcel Item</span>
-                              <p className="text-xs font-family-semibold text-slate-800 !m-0 truncate mt-0.5">
+                            <div className="!min-w-0 !flex-1">
+                              <span className="!text-[9.5px] !font-family-semibold !uppercase !tracking-wider !text-orange-600 !block">
+                                Parcel Item
+                              </span>
+                              <p className="!text-xs !font-family-semibold !text-slate-800 !m-0 !truncate !mt-0.5">
                                 {order?.title || "Parcel Delivery"}
                               </p>
                             </div>
@@ -1072,37 +1066,38 @@ function Page() {
                         )}
 
                         {/* ── Route Strip ── */}
-                        <div
-                          className="rounded-xl p-3 flex flex-col gap-2.5"
-                          style={{ background: "#f8fafc", border: "1px solid #e8edf2" }}
-                        >
+                        <div className="!rounded-xl !p-3 !flex !flex-col !gap-2.5 !bg-slate-50/70 !border !border-slate-100">
                           {/* Pickup */}
-                          <div className="flex items-start gap-2">
-                            <div className="w-5 h-5 rounded-full bg-emerald-500 text-white flex items-center justify-center shrink-0 mt-0.5 shadow-sm">
+                          <div className="!flex !items-start !gap-2.5">
+                            <div className="!w-5 !h-5 !rounded-full !bg-emerald-500 !text-white !flex !items-center !justify-center !shrink-0 !mt-0.5 !shadow-xs">
                               <FaLocationDot size={9} />
                             </div>
-                            <div className="min-w-0 flex-1">
-                              <span className="text-[8.5px] font-family-bold uppercase tracking-widest text-emerald-600 block">Pickup</span>
-                              <p className="text-[11.5px] font-family-medium text-slate-800 !m-0 leading-snug truncate">
+                            <div className="!min-w-0 !flex-1">
+                              <span className="!text-[9px] !font-family-semibold !uppercase !tracking-wider !text-emerald-700 !block">
+                                Pickup
+                              </span>
+                              <p className="!text-[12px] !font-family-medium !text-slate-800 !m-0 !leading-snug !truncate" title={order?.start_address || "—"}>
                                 {order?.start_address || "—"}
                               </p>
                             </div>
                           </div>
 
-                          {/* Connector dot */}
-                          <div className="flex items-center gap-2 pl-[9px]">
-                            <div className="w-1.5 h-1.5 rounded-full bg-slate-300" />
-                            <div className="flex-1 h-px bg-slate-200" />
+                          {/* Connector */}
+                          <div className="!flex !items-center !gap-2 !pl-[9px]">
+                            <div className="!w-1.5 !h-1.5 !rounded-full !bg-slate-300" />
+                            <div className="!flex-1 !h-px !bg-slate-200" />
                           </div>
 
                           {/* Destination */}
-                          <div className="flex items-start gap-2">
-                            <div className="w-5 h-5 rounded-full bg-[#004a70] text-white flex items-center justify-center shrink-0 mt-0.5 shadow-sm">
+                          <div className="!flex !items-start !gap-2.5">
+                            <div className="!w-5 !h-5 !rounded-full !bg-[#004a70] !text-white !flex !items-center !justify-center !shrink-0 !mt-0.5 !shadow-xs">
                               <MdOutlineMyLocation size={10} />
                             </div>
-                            <div className="min-w-0 flex-1">
-                              <span className="text-[8.5px] font-family-bold uppercase tracking-widest text-[#004a70] block">Destination</span>
-                              <p className="text-[11.5px] font-family-medium text-slate-800 !m-0 leading-snug truncate">
+                            <div className="!min-w-0 !flex-1">
+                              <span className="!text-[9px] !font-family-semibold !uppercase !tracking-wider !text-[#004a70] !block">
+                                Destination
+                              </span>
+                              <p className="!text-[12px] !font-family-medium !text-slate-800 !m-0 !leading-snug !truncate" title={order?.end_address || "—"}>
                                 {order?.end_address || "—"}
                               </p>
                             </div>
@@ -1111,62 +1106,58 @@ function Page() {
 
                         {/* ── Driver Row ── */}
                         {order?.to_id ? (
-                          <div
-                            className="flex items-center justify-between gap-2"
-                            style={{ background: "#f8fafc", border: "1px solid #e8edf2", borderRadius: "12px", padding: "8px 10px" }}
-                          >
-                            <div className="flex items-center gap-2 min-w-0 flex-1">
-                              <div className="w-8 h-8 rounded-full overflow-hidden shrink-0" style={{ border: "2px solid #e8edf2" }}>
+                          <div className="!flex !items-center !justify-between !gap-2.5 !p-2.5 !rounded-xl !bg-slate-50/60 !border !border-slate-100">
+                            <div className="!flex !items-center !gap-2.5 !min-w-0 !flex-1">
+                              <div className="!w-8 !h-8 !rounded-full !overflow-hidden !shrink-0 !border !border-white !shadow-xs">
                                 <img
                                   alt=""
                                   width={32}
                                   height={32}
                                   src={order?.to_id?.image || "/placeholder.jpg"}
-                                  className="w-full h-full object-cover"
+                                  className="!w-full !h-full !object-cover"
                                 />
                               </div>
-                              <div className="min-w-0 flex-1">
-                                <h4 className="text-[11.5px] font-family-semibold text-slate-900 !m-0 truncate leading-tight">
+                              <div className="!min-w-0 !flex-1">
+                                <h4 className="!text-[12px] !font-family-semibold !text-slate-900 !m-0 !truncate !leading-tight">
                                   {order?.to_id?.name || "Driver"}
                                 </h4>
-                                <p className="text-[10px] text-slate-400 font-family-regular !m-0 truncate">
-                                  {order?.to_id?.email || ""}
+                                <p className="!text-[10.5px] !text-slate-400 !font-family-regular !m-0 !truncate">
+                                  {order?.to_id?.email || "Driver assigned"}
                                 </p>
                               </div>
                             </div>
-                            {order?.to_id?.rating && (
-                              <span className="inline-flex items-center gap-0.5 text-[10px] font-family-bold text-amber-600 bg-amber-50 px-2 py-1 rounded-full shrink-0" style={{ border: "1px solid #fde68a" }}>
-                                <FaStar size={9} className="text-amber-400" />
-                                {order?.to_id?.rating}.0
+                            {order?.to_id?.rating && order?.to_id?.rating !== "0" && (
+                              <span className="!inline-flex !items-center !gap-1 !text-[11px] !font-family-semibold !text-amber-600 !bg-amber-50 !px-2 !py-0.5 !rounded-full !border !border-amber-200/70 !shrink-0">
+                                <FaStar size={10} className="!text-amber-400" />
+                                <span>{order?.to_id?.rating}.0</span>
                               </span>
                             )}
                           </div>
                         ) : (
-                          <div className="flex items-center justify-center gap-1.5 py-2 rounded-xl" style={{ background: "#f8fafc", border: "1px dashed #cbd5e1" }}>
-                            <FaCar size={11} className="text-slate-300" />
-                            <p className="text-[11px] text-slate-400 font-family-regular !m-0">Driver not assigned yet</p>
+                          <div className="!flex !items-center !justify-center !gap-2 !py-2.5 !rounded-xl !bg-slate-50/60 !border !border-dashed !border-slate-200">
+                            <FaCar size={12} className="!text-slate-400" />
+                            <p className="!text-[11px] !text-slate-400 !font-family-medium !m-0">Driver not assigned yet</p>
                           </div>
                         )}
 
                         {/* ── PIN Code ── */}
                         {order?.pincode && (
-                          <div
-                            className="flex items-center justify-between px-3.5 py-2.5 rounded-xl"
-                            style={{ background: "linear-gradient(135deg, #0f172a 0%, #1e293b 100%)", border: "1px solid #334155" }}
-                          >
-                            <span className="text-[9px] font-family-bold uppercase tracking-[0.2em] text-slate-500">Ride PIN</span>
-                            <span className="text-base font-mono font-black text-white tracking-[0.3em]">
+                          <div className="!flex !items-center !justify-between !px-3.5 !py-2 !rounded-xl !bg-[#004a70]/5 !border !border-[#004a70]/15">
+                            <span className="!text-[10px] !font-family-semibold !uppercase !tracking-wider !text-[#004a70]">
+                              Ride PIN
+                            </span>
+                            <span className="!text-sm !font-mono !font-semibold !text-[#004a70] !tracking-[0.25em] !bg-white !px-3 !py-0.5 !rounded-lg !border !border-[#004a70]/20 !shadow-xs">
                               {order.pincode}
                             </span>
                           </div>
                         )}
 
                         {/* ── Action Buttons ── */}
-                        <div className="flex items-center gap-2 pt-2" style={{ borderTop: "1px solid #f1f5f9" }}>
+                        <div className="!flex !items-center !gap-2 !pt-2.5 !border-t !border-slate-100 !mt-auto">
                           <button
+                            type="button"
                             onClick={() => gotoDetails(order)}
-                            className="flex-1 h-10 rounded-xl text-white text-xs font-family-semibold flex items-center justify-center gap-1.5 transition-all duration-200 cursor-pointer !border-none active:scale-[0.98]"
-                            style={{ background: "linear-gradient(135deg, #004a70 0%, #006a9e 100%)" }}
+                            className="!flex-1 !h-9 sm:!h-10 !rounded-xl !bg-[#004a70] hover:!bg-[#003856] !text-white !text-xs !font-family-semibold !flex !items-center !justify-center !gap-1.5 !transition-all !duration-200 !cursor-pointer !border-none !shadow-xs active:!scale-[0.98]"
                           >
                             <FaEye size={12} />
                             <span>View Details</span>
@@ -1175,52 +1166,29 @@ function Page() {
                           {/* Review button — completed rides only */}
                           {isCompleted && (
                             <button
+                              type="button"
                               onClick={() => openReviewModal(order)}
-                              className="h-10 px-3 rounded-xl text-xs font-family-semibold flex items-center justify-center gap-1.5 transition-all duration-200 cursor-pointer active:scale-[0.98]"
-                              style={{
-                                background: "#fffbeb",
-                                color: "#b45309",
-                                border: "1px solid #fde68a",
-                              }}
+                              className="!h-9 sm:!h-10 !px-3.5 !rounded-xl !text-xs !font-family-semibold !flex !items-center !justify-center !gap-1.5 !transition-all !duration-200 !cursor-pointer active:!scale-[0.98] !bg-amber-50 hover:!bg-amber-100 !text-amber-700 !border !border-amber-200"
                             >
-                              <FaStar size={11} className="text-amber-400" />
+                              <FaStar size={11} className="!text-amber-400" />
                               <span>Review</span>
                             </button>
                           )}
 
-                          {/* Tip button — non-completed or completed without tip */}
-                          {!isCompleted && (
-                            <button
-                              disabled={order?.tip === 1}
-                              onClick={() => { openModal(true); setTipOrderId(order?._id); }}
-                              className={`h-10 px-3 rounded-xl text-xs font-family-semibold flex items-center justify-center gap-1.5 transition-all duration-200 active:scale-[0.98] ${
-                                order?.tip === 1
-                                  ? "bg-slate-100 text-slate-400 cursor-not-allowed"
-                                  : "bg-white text-slate-700 hover:bg-slate-50 cursor-pointer"
-                              }`}
-                              style={{ border: order?.tip === 1 ? "1px solid #e2e8f0" : "1px solid #cbd5e1" }}
-                            >
-                              <FaPlus size={10} className={order?.tip === 1 ? "text-slate-300" : "text-[#004a70]"} />
-                              <span>{order?.tip === 1 ? "Tipped ✓" : "Tip"}</span>
-                            </button>
-                          )}
-
-                          {/* Completed: show both tip + review */}
-                          {isCompleted && (
-                            <button
-                              disabled={order?.tip === 1}
-                              onClick={() => { openModal(true); setTipOrderId(order?._id); }}
-                              className={`h-10 px-3 rounded-xl text-xs font-family-semibold flex items-center justify-center gap-1.5 transition-all duration-200 active:scale-[0.98] ${
-                                order?.tip === 1
-                                  ? "bg-slate-100 text-slate-400 cursor-not-allowed"
-                                  : "bg-white text-slate-700 hover:bg-slate-50 cursor-pointer"
-                              }`}
-                              style={{ border: order?.tip === 1 ? "1px solid #e2e8f0" : "1px solid #cbd5e1" }}
-                            >
-                              <FaPlus size={10} className={order?.tip === 1 ? "text-slate-300" : "text-[#004a70]"} />
-                              <span>{order?.tip === 1 ? "✓" : "Tip"}</span>
-                            </button>
-                          )}
+                          {/* Tip button */}
+                          <button
+                            type="button"
+                            disabled={order?.tip === 1}
+                            onClick={() => { openModal(true); setTipOrderId(order?._id); }}
+                            className={`!h-9 sm:!h-10 !px-3.5 !rounded-xl !text-xs !font-family-semibold !flex !items-center !justify-center !gap-1.5 !transition-all !duration-200 active:!scale-[0.98] ${
+                              order?.tip === 1
+                                ? "!bg-slate-100 !text-slate-400 !border !border-slate-200 !cursor-not-allowed"
+                                : "!bg-white hover:!bg-[#004a70]/5 !text-[#004a70] !border !border-slate-200 hover:!border-[#004a70] !cursor-pointer"
+                            }`}
+                          >
+                            <FaPlus size={10} className={order?.tip === 1 ? "!text-slate-300" : "!text-[#004a70]"} />
+                            <span>{order?.tip === 1 ? "Tipped ✓" : "Tip"}</span>
+                          </button>
                         </div>
                       </div>
                     </div>
@@ -1582,7 +1550,7 @@ function Page() {
         >
           <div className="bg-white rounded-2xl overflow-hidden shadow-2xl">
             {/* Header */}
-            <div className="flex items-center justify-between px-5 pt-5 pb-4">
+            <div className="flex items-center justify-between !px-5 !pt-5 !pb-4">
               <div className="flex items-center gap-2">
                 <span className="w-8 h-8 rounded-full bg-amber-50 flex items-center justify-center">
                   <FaStar size={16} className="text-amber-400" />

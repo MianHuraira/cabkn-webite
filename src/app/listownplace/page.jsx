@@ -6,16 +6,10 @@ import { yupResolver } from "@hookform/resolvers/yup";
 import * as Yup from "yup";
 import Select from "react-select";
 import {
-  Label,
-  Input,
-  FormFeedback,
-  Spinner,
-  Badge,
   ListGroup,
   ListGroupItem,
 } from "reactstrap";
-import { Container, Form } from "react-bootstrap";
-import CustomButton from "@/components/CustomButton";
+import { Form } from "react-bootstrap";
 import ApiFunction from "@/components/ApiFunction/ApiFunction";
 import { Loader } from "@googlemaps/js-api-loader";
 import { message } from "antd";
@@ -545,34 +539,6 @@ const page = () => {
 
   return (
     <div className={`min-h-screen bg-slate-50/50 ${mounted ? "animate-fade-in" : "opacity-0"}`}>
-      <style>{`
-        .modern-list-form input:not([class*="-Input"]):not([id*="react-select"]),
-        .modern-list-form textarea {
-          background-color: #f8fafc80 !important;
-          border: 2px solid #f1f5f9 !important;
-          border-radius: 12px !important;
-          padding: 12px 16px !important;
-          font-size: 14px !important;
-          color: #0f172a !important;
-          font-weight: 500 !important;
-          outline: none !important;
-          box-shadow: none !important;
-          transition: all 0.2s ease-in-out !important;
-        }
-        .modern-list-form input:focus,
-        .modern-list-form textarea:focus {
-          background-color: #ffffff !important;
-          border-color: #004a70 !important;
-          box-shadow: 0 10px 15px -3px rgba(0, 74, 112, 0.05) !important;
-        }
-        .modern-list-form label {
-          font-size: 12px !important;
-          font-weight: 600 !important;
-          color: #334155 !important;
-          margin-bottom: 8px !important;
-        }
-      `}</style>
-
       {/* ===== HERO BANNER ===== */}
       <section className="relative overflow-hidden bg-gradient-to-br from-slate-900 via-brand-900 to-brand-950 !pt-28 !pb-28">
         <div className="absolute inset-0 opacity-[0.04]" style={{
@@ -617,8 +583,8 @@ const page = () => {
 
       {/* ===== CONTENT LAYOUT ===== */}
       <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 relative z-10 !-mt-12 !pb-24">
-        <Form onSubmit={handleSubmit(onSubmit)} className="modern-list-form">
-          <div className={`bg-white/95 backdrop-blur-xl rounded-3xl !border !border-slate-100 p-6 md:p-8 shadow-[0_8px_30px_rgba(0,0,0,0.02)] ${mounted ? "animate-fade-in-up" : "opacity-0"}`} style={{ animationDelay: "150ms" }}>
+        <Form onSubmit={handleSubmit(onSubmit)}>
+          <div className={`bg-white rounded-3xl !border !border-slate-100 p-6 md:p-8 shadow-[0_8px_30px_rgba(0,0,0,0.02)] ${mounted ? "animate-fade-in-up" : "opacity-0"}`} style={{ animationDelay: "150ms" }}>
 
             {/* Images - Top */}
             <div className="!mb-6">
@@ -636,7 +602,7 @@ const page = () => {
               
               <div
                 onClick={() => document.getElementById("image-upload-input").click()}
-                className="w-full max-w-sm px-6 py-8 bg-slate-50/50 hover:bg-brand-50/20 !border-2 !border-dashed !border-slate-200 hover:!border-brand-600 rounded-3xl text-center cursor-pointer transition-all duration-200"
+                className="w-full max-w-sm px-6 py-8 bg-slate-50/70 hover:bg-[#004a70]/5 !border-2 !border-dashed !border-slate-200 hover:!border-[#004a70] rounded-2xl text-center cursor-pointer transition-all duration-200"
               >
                 <svg width={32} height={32} viewBox="0 0 24 24" fill="none" stroke="#9ca3af" strokeWidth={1.5} className="mx-auto">
                   <path strokeLinecap="round" strokeLinejoin="round" d="M2.25 15.75l5.159-5.159a2.25 2.25 0 0 1 3.182 0l5.159 5.159m-1.5-1.5l1.409-1.409a2.25 2.25 0 0 1 3.182 0l2.909 2.909M3.75 21h16.5A2.25 2.25 0 0 0 22.5 18.75V5.25A2.25 2.25 0 0 0 20.25 3H3.75A2.25 2.25 0 0 0 1.5 5.25v13.5A2.25 2.25 0 0 0 3.75 21Z" />
@@ -647,7 +613,7 @@ const page = () => {
                 <p className="text-[10px] text-slate-400 !m-0 font-family-regular">
                   JPG, PNG, SVG up to 1MB each
                 </p>
-                <Input
+                <input
                   id="image-upload-input"
                   type="file"
                   multiple
@@ -661,12 +627,12 @@ const page = () => {
               {imageUrls.length > 0 && (
                 <div className="flex flex-wrap gap-3 !mt-5">
                   {imageUrls.map((url, index) => (
-                    <div key={index} className="relative w-24 h-24 rounded-2xl overflow-hidden !border !border-slate-100 shadow-sm">
+                    <div key={index} className="relative w-24 h-24 rounded-2xl overflow-hidden !border !border-slate-150 shadow-xs">
                       <img src={url} alt={`Upload ${index + 1}`} className="w-full h-full object-cover" />
                       <button
                         type="button"
                         onClick={() => handleRemoveImage(index)}
-                        className="absolute top-1.5 right-1.5 w-5 h-5 rounded-full bg-slate-900/60 text-white flex items-center justify-center !border-none cursor-pointer transition-colors hover:bg-rose-600"
+                        className="absolute top-1.5 right-1.5 w-5 h-5 rounded-full bg-slate-900/60 text-white flex items-center justify-center !border-none cursor-pointer transition-colors hover:bg-rose-600 text-xs"
                       >
                         ✕
                       </button>
@@ -682,10 +648,10 @@ const page = () => {
             <div className="grid grid-cols-1 md:grid-cols-2 gap-6">
               
               {/* Category */}
-              <div>
-                <Label for="category">
-                  Category <span className="text-rose-500">*</span>
-                </Label>
+              <div className="!space-y-1.5">
+                <label className="!block !text-[13px] !font-family-semibold !text-slate-700 !select-none !pl-0.5">
+                  Category <span className="!text-rose-500">*</span>
+                </label>
                 <Controller
                   name="category"
                   control={control}
@@ -713,7 +679,7 @@ const page = () => {
                         styles={selectStyles(errors.category)}
                       />
                       {errors.category && (
-                        <span className="text-xs text-rose-500 block !mt-1.5 font-family-medium">
+                        <span className="!text-[11px] !text-rose-500 !block !mt-1 !pl-1 !font-family-medium">
                           {errors.category.message}
                         </span>
                       )}
@@ -723,10 +689,10 @@ const page = () => {
               </div>
 
               {/* Sub Category */}
-              <div>
-                <Label for="sucat">
-                  Sub Category <span className="text-rose-500">*</span>
-                </Label>
+              <div className="!space-y-1.5">
+                <label className="!block !text-[13px] !font-family-semibold !text-slate-700 !select-none !pl-0.5">
+                  Sub Category <span className="!text-rose-500">*</span>
+                </label>
                 <Controller
                   name="sucat"
                   control={control}
@@ -753,7 +719,7 @@ const page = () => {
                         styles={selectStyles(errors.sucat)}
                       />
                       {errors.sucat && (
-                        <span className="text-xs text-rose-500 block !mt-1.5 font-family-medium">
+                        <span className="!text-[11px] !text-rose-500 !block !mt-1 !pl-1 !font-family-medium">
                           {errors.sucat.message}
                         </span>
                       )}
@@ -763,57 +729,65 @@ const page = () => {
               </div>
 
               {/* Title */}
-              <div>
-                <Label>
-                  Title <span className="text-rose-500">*</span>
-                </Label>
+              <div className="!space-y-1.5">
+                <label className="!block !text-[13px] !font-family-semibold !text-slate-700 !select-none !pl-0.5">
+                  Title <span className="!text-rose-500">*</span>
+                </label>
                 <Controller
                   name="title"
                   control={control}
                   render={({ field }) => (
-                    <Input
+                    <input
                       {...field}
                       placeholder="Enter title"
-                      invalid={errors.title && true}
+                      className={`input-field ${
+                        errors.title
+                          ? "!border-rose-400 focus:!border-rose-500 focus:!ring-rose-500/20"
+                          : ""
+                      }`}
                     />
                   )}
                 />
                 {errors.title && (
-                  <span className="text-xs text-rose-500 block !mt-1.5 font-family-medium">
+                  <span className="!text-[11px] !text-rose-500 !block !mt-1 !pl-1 !font-family-medium">
                     {errors.title.message}
                   </span>
                 )}
               </div>
 
               {/* Location */}
-              <div>
-                <Label>
+              <div className="!space-y-1.5">
+                <label className="!block !text-[13px] !font-family-semibold !text-slate-700 !select-none !pl-0.5">
                   Location / Address
-                </Label>
+                </label>
                 <Controller
                   name="location"
                   control={control}
                   render={({ field }) => (
-                    <div className="relative">
-                      <Input
+                    <div className="!relative">
+                      <input
                         {...field}
                         placeholder="Enter location"
                         value={searchQuery}
                         onChange={(e) => handleSearch(e.target.value)}
-                        invalid={errors.location && true}
+                        className={`input-field ${
+                          errors.location
+                            ? "!border-rose-400 focus:!border-rose-500 focus:!ring-rose-500/20"
+                            : ""
+                        }`}
                       />
                       {PridicLoading && (
-                        <span className="absolute right-4 top-1/2 -translate-y-1/2 text-xs text-slate-400 font-family-medium">
+                        <span className="!absolute !right-4 !top-1/2 !-translate-y-1/2 !text-xs !text-slate-400 !font-family-medium">
                           Loading...
                         </span>
                       )}
                       {predictions.length > 0 && (
-                        <ListGroup className="absolute z-20 w-full bg-white/95 backdrop-blur-md rounded-2xl shadow-xl !border !border-slate-100 max-h-[200px] overflow-y-auto !mt-2.5">
+                        <ListGroup className="!absolute !z-20 !w-full !bg-white !rounded-xl !shadow-xl !border !border-slate-200 !max-h-[200px] !overflow-y-auto !mt-1.5 !p-1">
                           {predictions.map((prediction) => (
                             <ListGroupItem
                               key={prediction.place_id}
                               onClick={() => handlePredictionPress(prediction)}
-                              className="px-4 py-3 text-xs text-slate-700 font-family-medium cursor-pointer hover:bg-slate-50 hover:text-slate-950 transition-colors !border-b !border-slate-100 last:!border-none"
+                              className="!px-3.5 !py-2.5 !text-xs !text-slate-700 !font-family-medium !cursor-pointer hover:!bg-slate-50 hover:!text-slate-950 !transition-colors !border-none !rounded-lg"
                             >
                               {prediction.description}
                             </ListGroupItem>
@@ -821,7 +795,7 @@ const page = () => {
                         </ListGroup>
                       )}
                       {noData && (
-                        <span className="text-xs text-slate-400 block !mt-1.5 font-family-medium">
+                        <span className="!text-[11px] !text-slate-400 !block !mt-1 !pl-1 !font-family-medium">
                           No results found
                         </span>
                       )}
@@ -832,31 +806,28 @@ const page = () => {
             </div>
 
             {/* Description */}
-            <div className="!mt-6">
-              <p className="font-family-semibold text-sm text-slate-800 flex items-center gap-2 !m-0 !mb-3">
-                <svg width={16} height={16} viewBox="0 0 24 24" fill="none" stroke="#004a70" strokeWidth={2} strokeLinecap="round" strokeLinejoin="round">
-                  <path d="M14 2H6a2 2 0 0 0-2 2v16a2 2 0 0 0 2 2h12a2 2 0 0 0 2-2V8z" />
-                  <polyline points="14 2 14 8 20 8" />
-                  <line x1="16" y1="13" x2="8" y2="13" />
-                  <line x1="16" y1="17" x2="8" y2="17" />
-                </svg>
-                Description <span className="text-rose-500">*</span>
-              </p>
+            <div className="!mt-6 !space-y-1.5">
+              <label className="!block !text-[13px] !font-family-semibold !text-slate-700 !select-none !pl-0.5">
+                Description <span className="!text-rose-500">*</span>
+              </label>
               <Controller
                 name="description"
                 control={control}
                 render={({ field }) => (
-                  <Input
-                    type="textarea"
+                  <textarea
+                    rows={4}
                     {...field}
                     placeholder="Describe your place..."
-                    className="min-h-[120px] resize-y"
-                    invalid={errors.description && true}
+                    className={`input-field !min-h-[110px] !resize-y ${
+                      errors.description
+                        ? "!border-rose-400 focus:!border-rose-500 focus:!ring-rose-500/20"
+                        : ""
+                    }`}
                   />
                 )}
               />
               {errors.description && (
-                <span className="text-xs text-rose-500 block !mt-1.5 font-family-medium">
+                <span className="!text-[11px] !text-rose-500 !block !mt-1 !pl-1 !font-family-medium">
                   {errors.description.message}
                 </span>
               )}
@@ -866,15 +837,12 @@ const page = () => {
 
             {/* Highlights */}
             <div>
-              <p className="font-family-semibold text-sm text-slate-800 flex items-center gap-2 !m-0 !mb-4">
-                <svg width={16} height={16} viewBox="0 0 24 24" fill="none" stroke="#004a70" strokeWidth={2} strokeLinecap="round" strokeLinejoin="round">
-                  <polygon points="12 2 15.09 8.26 22 9.27 17 14.14 18.18 21.02 12 17.77 5.82 21.02 7 14.14 2 9.27 8.91 8.26 12 2" />
-                </svg>
+              <label className="!block !text-[13px] !font-family-semibold !text-slate-700 !select-none !pl-0.5 !mb-2.5">
                 Highlights
-              </p>
-              <div className="space-y-3 !mb-4 max-w-xl">
+              </label>
+              <div className="!space-y-2.5 !mb-3.5 !max-w-xl">
                 {highlightFields.map((field, index) => (
-                  <div key={field.id} className="flex gap-2.5">
+                  <div key={field.id} className="!flex !gap-2">
                     <Controller
                       name={`highlights.${index}`}
                       control={control}
@@ -885,14 +853,14 @@ const page = () => {
                           placeholder="Enter highlight"
                           value={field.value || ""}
                           onChange={(e) => field.onChange(e.target.value)}
-                          className="flex-grow px-4 py-3 bg-slate-50/50 !border-2 !border-slate-100 rounded-xl text-sm font-family-medium text-slate-900 focus:bg-white focus:!border-brand-600 outline-none transition-all duration-200"
+                          className="input-field"
                         />
                       )}
                     />
                     <button
                       type="button"
                       onClick={() => removeHighlight(index)}
-                      className="w-11 h-11 rounded-xl !border !border-rose-100 bg-rose-50 text-rose-600 flex items-center justify-center shrink-0 hover:bg-rose-100 hover:text-rose-700 transition-colors cursor-pointer"
+                      className="!w-10 !h-10 !rounded-xl !border !border-rose-200 !bg-rose-50 hover:!bg-rose-100 !text-rose-600 !flex !items-center !justify-center !shrink-0 !transition-colors !cursor-pointer !text-sm"
                     >
                       ✕
                     </button>
@@ -902,7 +870,7 @@ const page = () => {
               <button
                 type="button"
                 onClick={() => addHighlight("")}
-                className="px-5 py-2.5 rounded-full !border !border-dashed !border-brand-600 bg-brand-50/20 text-brand-750 font-family-semibold text-xs hover:bg-brand-50 transition-colors cursor-pointer"
+                className="!inline-flex !items-center !gap-1.5 !px-4 !py-2 !rounded-xl !bg-[#004a70]/10 hover:!bg-[#004a70]/20 !text-[#004a70] !font-family-semibold !text-xs !transition-colors !border-none !cursor-pointer"
               >
                 + Add Highlight
               </button>
@@ -912,7 +880,7 @@ const page = () => {
             {selectedCategory?.name === "Excursion" && (
               <>
                 <div className="!my-6 !border-t !border-slate-100" />
-                <p className="font-family-semibold text-sm text-slate-800 flex items-center gap-2 !m-0 !mb-4">
+                <p className="!font-family-semibold !text-sm !text-slate-800 !flex !items-center !gap-2 !m-0 !mb-4">
                   <svg width={16} height={16} viewBox="0 0 24 24" fill="none" stroke="#004a70" strokeWidth={2} strokeLinecap="round" strokeLinejoin="round">
                     <circle cx="12" cy="12" r="10" />
                     <path d="M12 6v6l4 2" />
@@ -920,66 +888,111 @@ const page = () => {
                   Excursion Details
                 </p>
                 
-                <div className="grid grid-cols-1 md:grid-cols-2 gap-6 !mb-4">
-                  <div>
-                    <Label>Max Travelers</Label>
+                <div className="!grid !grid-cols-1 md:!grid-cols-2 !gap-6 !mb-4">
+                  <div className="!space-y-1.5">
+                    <label className="!block !text-[13px] !font-family-semibold !text-slate-700 !select-none !pl-0.5">
+                      Max Travelers <span className="!text-rose-500">*</span>
+                    </label>
                     <Controller
                       name="trevelers"
                       control={control}
                       render={({ field }) => (
-                        <Input {...field} required placeholder="e.g. 10" invalid={errors.trevelers && true} />
+                        <input
+                          {...field}
+                          required
+                          placeholder="e.g. 10"
+                          className={`input-field ${
+                            errors.trevelers
+                              ? "!border-rose-400 focus:!border-rose-500 focus:!ring-rose-500/20"
+                              : ""
+                          }`}
+                        />
                       )}
                     />
                     {errors.trevelers && (
-                      <span className="text-xs text-rose-500 block !mt-1.5 font-family-medium">
+                      <span className="!text-[11px] !text-rose-500 !block !mt-1 !pl-1 !font-family-medium">
                         {errors.trevelers.message}
                       </span>
                     )}
                   </div>
 
-                  <div>
-                    <Label>Duration</Label>
+                  <div className="!space-y-1.5">
+                    <label className="!block !text-[13px] !font-family-semibold !text-slate-700 !select-none !pl-0.5">
+                      Duration <span className="!text-rose-500">*</span>
+                    </label>
                     <Controller
                       name="duration"
                       control={control}
                       render={({ field }) => (
-                        <Input {...field} required placeholder="e.g. 3 Hours" invalid={errors.duration && true} />
+                        <input
+                          {...field}
+                          required
+                          placeholder="e.g. 3 Hours"
+                          className={`input-field ${
+                            errors.duration
+                              ? "!border-rose-400 focus:!border-rose-500 focus:!ring-rose-500/20"
+                              : ""
+                          }`}
+                        />
                       )}
                     />
                     {errors.duration && (
-                      <span className="text-xs text-rose-500 block !mt-1.5 font-family-medium">
+                      <span className="!text-[11px] !text-rose-500 !block !mt-1 !pl-1 !font-family-medium">
                         {errors.duration.message}
                       </span>
                     )}
                   </div>
 
-                  <div>
-                    <Label>Departure Time</Label>
+                  <div className="!space-y-1.5">
+                    <label className="!block !text-[13px] !font-family-semibold !text-slate-700 !select-none !pl-0.5">
+                      Departure Time <span className="!text-rose-500">*</span>
+                    </label>
                     <Controller
                       name="time"
                       control={control}
                       render={({ field }) => (
-                        <Input {...field} required placeholder="e.g. 09:00 AM" invalid={errors.time && true} />
+                        <input
+                          {...field}
+                          required
+                          placeholder="e.g. 09:00 AM"
+                          className={`input-field ${
+                            errors.time
+                              ? "!border-rose-400 focus:!border-rose-500 focus:!ring-rose-500/20"
+                              : ""
+                          }`}
+                        />
                       )}
                     />
                     {errors.time && (
-                      <span className="text-xs text-rose-500 block !mt-1.5 font-family-medium">
+                      <span className="!text-[11px] !text-rose-500 !block !mt-1 !pl-1 !font-family-medium">
                         {errors.time.message}
                       </span>
                     )}
                   </div>
 
-                  <div>
-                    <Label>Location / Entry Price ($)</Label>
+                  <div className="!space-y-1.5">
+                    <label className="!block !text-[13px] !font-family-semibold !text-slate-700 !select-none !pl-0.5">
+                      Location / Entry Price ($) <span className="!text-rose-500">*</span>
+                    </label>
                     <Controller
                       name="location_price"
                       control={control}
                       render={({ field }) => (
-                        <Input {...field} required type="number" placeholder="Price per traveler" invalid={errors.location_price && true} />
+                        <input
+                          {...field}
+                          required
+                          type="number"
+                          placeholder="Price per traveler"
+                          className={`input-field ${
+                            errors.location_price
+                              ? "!border-rose-400 focus:!border-rose-500 focus:!ring-rose-500/20"
+                              : ""
+                          }`}
+                        />
                       )}
                     />
                     {errors.location_price && (
-                      <span className="text-xs text-rose-500 block !mt-1.5 font-family-medium">
+                      <span className="!text-[11px] !text-rose-500 !block !mt-1 !pl-1 !font-family-medium">
                         {errors.location_price.message}
                       </span>
                     )}
@@ -992,61 +1005,61 @@ const page = () => {
 
             {/* Payment Method */}
             <div>
-              <p className="font-family-semibold text-sm text-slate-800 flex items-center gap-2 !m-0">
+              <p className="!font-family-semibold !text-[13.5px] !text-slate-800 !flex !items-center !gap-2 !m-0">
                 <svg width={16} height={16} viewBox="0 0 24 24" fill="none" stroke="#004a70" strokeWidth={2} strokeLinecap="round" strokeLinejoin="round">
                   <rect x="1" y="4" width="22" height="16" rx="2" ry="2" />
                   <line x1="1" y1="10" x2="23" y2="10" />
                 </svg>
                 Payment Method
               </p>
-              <p className="text-xs text-slate-400 !mt-1.5 !mb-5 font-family-regular flex items-center gap-1.5">
+              <p className="!text-xs !text-slate-400 !mt-1 !mb-4 !font-family-regular !flex !items-center !gap-1.5">
                 <svg width={14} height={14} viewBox="0 0 24 24" fill="none" stroke="#94a3b8" strokeWidth={2} strokeLinecap="round" strokeLinejoin="round">
                   <line x1="12" y1="1" x2="12" y2="23" />
                   <path d="M17 5H9.5a3.5 3.5 0 0 0 0 7h5a3.5 3.5 0 0 1 0 7H6" />
                 </svg>
-                Listing Registration Fee: <strong className="font-family-semibold text-brand-650">$40.00</strong>
+                Listing Registration Fee: <strong className="!font-family-semibold !text-[#004a70]">$40.00</strong>
               </p>
 
-              <div className="flex gap-4 flex-wrap max-w-2xl">
+              <div className="!flex !gap-3 !flex-wrap !max-w-2xl">
                 {/* Card Payment option */}
                 <div
                   onClick={() => selectMethod("jad")}
-                  className={`flex-1 min-w-[180px] max-w-[240px] p-3.5 rounded-2xl cursor-pointer flex items-center gap-3 transition-all duration-200 border-2 ${
+                  className={`!flex-1 !min-w-[180px] !max-w-[240px] !p-3.5 !rounded-xl !cursor-pointer !flex !items-center !gap-3 !transition-all !duration-200 !border-2 ${
                     PaymentMethod === "jad"
-                      ? "bg-brand-50/20 border-brand-900 shadow-sm shadow-brand-900/5"
-                      : "bg-white border-slate-100 hover:bg-slate-50 shadow-sm"
+                      ? "!bg-[#004a70]/5 !border-[#004a70] !shadow-xs"
+                      : "!bg-white !border-slate-200/80 hover:!bg-slate-50"
                   }`}
                 >
-                  <div className={`w-9 h-9 rounded-xl flex items-center justify-center shrink-0 transition-colors ${
-                    PaymentMethod === "jad" ? "bg-brand-900 text-white" : "bg-slate-50 text-slate-500"
+                  <div className={`!w-9 !h-9 !rounded-xl !flex !items-center !justify-center !shrink-0 !transition-colors ${
+                    PaymentMethod === "jad" ? "!bg-[#004a70] !text-white" : "!bg-slate-100 !text-slate-500"
                   }`}>
                     <svg width={16} height={16} viewBox="0 0 24 24" fill="currentColor">
                       <path d="M4 4h16c1.1 0 2 .9 2 2v12c0 1.1-.9 2-2 2H4c-1.1 0-2-.9-2-2V6c0-1.1.9-2 2-2zm0 2v12h16V6H4zm2 6h12v2H6v-2zm0-3h12v2H6V9zm0 6h8v2H6v-2z" />
                     </svg>
                   </div>
                   <div>
-                    <h4 className="font-family-semibold text-xs text-slate-800 !m-0">Credit / Debit</h4>
-                    <span className="text-[10px] text-slate-400 font-family-regular !mt-0.5 block">Pay with card</span>
+                    <h4 className="!font-family-semibold !text-xs !text-slate-800 !m-0">Credit / Debit</h4>
+                    <span className="!text-[10px] !text-slate-400 !font-family-regular !mt-0.5 !block">Pay with card</span>
                   </div>
                 </div>
 
                 {/* Wallet Payment option */}
                 <div
                   onClick={() => selectMethod("wallet")}
-                  className={`flex-1 min-w-[180px] max-w-[240px] p-3.5 rounded-2xl cursor-pointer flex items-center gap-3 transition-all duration-200 border-2 ${
+                  className={`!flex-1 !min-w-[180px] !max-w-[240px] !p-3.5 !rounded-xl !cursor-pointer !flex !items-center !gap-3 !transition-all !duration-200 !border-2 ${
                     PaymentMethod === "wallet"
-                      ? "bg-brand-50/20 border-brand-900 shadow-sm shadow-brand-900/5"
-                      : "bg-white border-slate-100 hover:bg-slate-50 shadow-sm"
+                      ? "!bg-[#004a70]/5 !border-[#004a70] !shadow-xs"
+                      : "!bg-white !border-slate-200/80 hover:!bg-slate-50"
                   }`}
                 >
-                  <div className={`w-9 h-9 rounded-xl flex items-center justify-center shrink-0 transition-colors ${
-                    PaymentMethod === "wallet" ? "bg-brand-900 text-white" : "bg-slate-50 text-slate-500"
+                  <div className={`!w-9 !h-9 !rounded-xl !flex !items-center !justify-center !shrink-0 !transition-colors ${
+                    PaymentMethod === "wallet" ? "!bg-[#004a70] !text-white" : "!bg-slate-100 !text-slate-500"
                   }`}>
                     <FaWallet size={14} />
                   </div>
                   <div>
-                    <h4 className="font-family-semibold text-xs text-slate-800 !m-0">Wallet</h4>
-                    <span className="text-[10px] text-slate-400 font-family-regular !mt-0.5 block">
+                    <h4 className="!font-family-semibold !text-xs !text-slate-800 !m-0">Wallet</h4>
+                    <span className="!text-[10px] !text-slate-400 !font-family-regular !mt-0.5 !block">
                       Balance: ${userData?.amount?.toFixed(2) || "0.00"}
                     </span>
                   </div>
@@ -1055,15 +1068,17 @@ const page = () => {
             </div>
 
             {/* Submit Action */}
-            <div className="flex justify-end !mt-8">
-              <CustomButton
+            <div className="!flex !justify-end !mt-8">
+              <button
                 type="submit"
-                loading={isLoading}
-                disabled={imageLoading}
-                className="px-8 py-3.5 bg-gradient-to-r from-brand-600 to-brand-700 hover:from-brand-700 hover:to-brand-800 text-white font-family-semibold rounded-full shadow-lg shadow-brand-600/10 hover:shadow-xl hover:-translate-y-0.5 active:translate-y-0 transition-all duration-300 border-none"
+                disabled={isLoading || imageLoading}
+                className="!w-full sm:!w-auto !px-8 !py-3 !rounded-xl !bg-[#004a70] hover:!bg-[#003856] !text-white !font-family-semibold !text-sm !shadow-md hover:!shadow-lg hover:!-translate-y-0.5 active:!translate-y-0 !transition-all !duration-200 !border-none !cursor-pointer disabled:!opacity-60 disabled:!cursor-not-allowed !inline-flex !items-center !justify-center !gap-2"
               >
-                Submit Listing
-              </CustomButton>
+                {isLoading ? (
+                  <div className="!h-4 !w-4 !animate-spin !rounded-full !border-2 !border-white/30 !border-t-white" />
+                ) : null}
+                <span>Submit Listing</span>
+              </button>
             </div>
 
           </div>
@@ -1102,52 +1117,55 @@ const page = () => {
           )}
           <div className="grid grid-cols-1 md:grid-cols-2 gap-6 items-center">
             <div><Cards className="cardStyle" cvc={cardDetails.cvc} expiry={cardDetails.expiry} name={cardDetails.name} number={cardDetails.number} /></div>
-            <div className="space-y-4">
+            <div className="space-y-3.5">
               <div>
-                <label className="text-[11px] font-family-semibold text-slate-500 block !mb-1">Card Number</label>
-                <input type="text" name="number" placeholder="1234 5678 9012 3456" value={cardDetails.number} onChange={handleInputChange} maxLength="16" required className="w-full px-4 py-2.5 bg-slate-50/50 !border !border-slate-200 rounded-xl text-xs font-family-medium text-slate-900 focus:bg-white outline-none" />
+                <label className="!block !text-[12px] !font-family-semibold !text-slate-700 !select-none !mb-1">Card Number</label>
+                <input type="text" name="number" placeholder="1234 5678 9012 3456" value={cardDetails.number} onChange={handleInputChange} maxLength="16" required className="input-field" />
               </div>
               <div>
-                <label className="text-[11px] font-family-semibold text-slate-500 block !mb-1">Cardholder Name</label>
-                <input type="text" name="name" placeholder="John Doe" value={cardDetails.name} onChange={handleInputChange} required className="w-full px-4 py-2.5 bg-slate-50/50 !border !border-slate-200 rounded-xl text-xs font-family-medium text-slate-900 focus:bg-white outline-none" />
+                <label className="!block !text-[12px] !font-family-semibold !text-slate-700 !select-none !mb-1">Cardholder Name</label>
+                <input type="text" name="name" placeholder="John Doe" value={cardDetails.name} onChange={handleInputChange} required className="input-field" />
               </div>
-              <div className="flex gap-4">
+              <div className="flex gap-3">
                 <div className="flex-1">
-                  <label className="text-[11px] font-family-semibold text-slate-500 block !mb-1">Expiry</label>
+                  <label className="!block !text-[12px] !font-family-semibold !text-slate-700 !select-none !mb-1">Expiry</label>
                   <input type="text" name="expiry" placeholder="MM/YY" value={cardDetails.expiry}
                     onChange={(e) => {
                       let value = e.target.value.replace(/\D/g, "");
                       if (value.length >= 3) value = value.slice(0, 2) + "/" + value.slice(2, 4);
                       e.target.value = value.slice(0, 5);
                       handleInputChange(e);
-                    }} maxLength="5" required className="w-full px-4 py-2.5 bg-slate-50/50 !border !border-slate-200 rounded-xl text-xs font-family-medium text-slate-900 focus:bg-white outline-none" />
+                    }} maxLength="5" required className="input-field" />
                 </div>
                 <div className="flex-1">
-                  <label className="text-[11px] font-family-semibold text-slate-500 block !mb-1">CVC</label>
-                  <input type="text" name="cvc" placeholder="123" value={cardDetails.cvc} onChange={handleInputChange} maxLength="3" required className="w-full px-4 py-2.5 bg-slate-50/50 !border !border-slate-200 rounded-xl text-xs font-family-medium text-slate-900 focus:bg-white outline-none" />
+                  <label className="!block !text-[12px] !font-family-semibold !text-slate-700 !select-none !mb-1">CVC</label>
+                  <input type="text" name="cvc" placeholder="123" value={cardDetails.cvc} onChange={handleInputChange} maxLength="3" required className="input-field" />
                 </div>
               </div>
             </div>
           </div>
-          <div className="grid grid-cols-2 gap-4 !mt-6">
-            <div><label className="text-[11px] font-family-semibold text-slate-500 block !mb-1">First Name</label><input type="text" name="firstName" placeholder="John" value={cardDetails.firstName} onChange={handleInputChange} required className="w-full px-4 py-2.5 bg-slate-50/50 !border !border-slate-200 rounded-xl text-xs font-family-medium text-slate-900 focus:bg-white outline-none" /></div>
-            <div><label className="text-[11px] font-family-semibold text-slate-500 block !mb-1">Last Name</label><input type="text" name="lastName" placeholder="Doe" value={cardDetails.lastName} onChange={handleInputChange} required className="w-full px-4 py-2.5 bg-slate-50/50 !border !border-slate-200 rounded-xl text-xs font-family-medium text-slate-900 focus:bg-white outline-none" /></div>
-            <div><label className="text-[11px] font-family-semibold text-slate-500 block !mb-1">Address</label><input type="text" name="address" placeholder="Address" value={cardDetails.address} onChange={handleInputChange} required className="w-full px-4 py-2.5 bg-slate-50/50 !border !border-slate-200 rounded-xl text-xs font-family-medium text-slate-900 focus:bg-white outline-none" /></div>
-            <div><label className="text-[11px] font-family-semibold text-slate-500 block !mb-1">Postal Code</label><input type="text" name="postalCode" placeholder="Postal code" value={cardDetails.postalCode} onChange={handleInputChange} required className="w-full px-4 py-2.5 bg-slate-50/50 !border !border-slate-200 rounded-xl text-xs font-family-medium text-slate-900 focus:bg-white outline-none" /></div>
-            <div><label className="text-[11px] font-family-semibold text-slate-500 block !mb-1">Country</label><input type="text" name="countary" placeholder="Country" value={cardDetails.countary} onChange={handleInputChange} required className="w-full px-4 py-2.5 bg-slate-50/50 !border !border-slate-200 rounded-xl text-xs font-family-medium text-slate-900 focus:bg-white outline-none" /></div>
-            <div><label className="text-[11px] font-family-semibold text-slate-500 block !mb-1">City</label><input type="text" name="city" placeholder="City" value={cardDetails.city} onChange={handleInputChange} required className="w-full px-4 py-2.5 bg-slate-50/50 !border !border-slate-200 rounded-xl text-xs font-family-medium text-slate-900 focus:bg-white outline-none" /></div>
-            <div><label className="text-[11px] font-family-semibold text-slate-500 block !mb-1">State</label><input type="text" name="state" placeholder="State" value={cardDetails.state} onChange={handleInputChange} required className="w-full px-4 py-2.5 bg-slate-50/50 !border !border-slate-200 rounded-xl text-xs font-family-medium text-slate-900 focus:bg-white outline-none" /></div>
-            <div><label className="text-[11px] font-family-semibold text-slate-500 block !mb-1">Phone</label><input type="text" name="phone" placeholder="+1 (___)-___-____" value={cardDetails.phone} onChange={handleInputChange} required className="w-full px-4 py-2.5 bg-slate-50/50 !border !border-slate-200 rounded-xl text-xs font-family-medium text-slate-900 focus:bg-white outline-none" /></div>
-            <div className="col-span-2"><label className="text-[11px] font-family-semibold text-slate-500 block !mb-1">Email</label><input type="text" name="email" placeholder="email@example.com" value={cardDetails.email} onChange={handleInputChange} required className="w-full px-4 py-2.5 bg-slate-50/50 !border !border-slate-200 rounded-xl text-xs font-family-medium text-slate-900 focus:bg-white outline-none" /></div>
+          <div className="grid grid-cols-2 gap-3.5 !mt-5">
+            <div><label className="!block !text-[12px] !font-family-semibold !text-slate-700 !select-none !mb-1">First Name</label><input type="text" name="firstName" placeholder="John" value={cardDetails.firstName} onChange={handleInputChange} required className="input-field" /></div>
+            <div><label className="!block !text-[12px] !font-family-semibold !text-slate-700 !select-none !mb-1">Last Name</label><input type="text" name="lastName" placeholder="Doe" value={cardDetails.lastName} onChange={handleInputChange} required className="input-field" /></div>
+            <div><label className="!block !text-[12px] !font-family-semibold !text-slate-700 !select-none !mb-1">Address</label><input type="text" name="address" placeholder="Address" value={cardDetails.address} onChange={handleInputChange} required className="input-field" /></div>
+            <div><label className="!block !text-[12px] !font-family-semibold !text-slate-700 !select-none !mb-1">Postal Code</label><input type="text" name="postalCode" placeholder="Postal code" value={cardDetails.postalCode} onChange={handleInputChange} required className="input-field" /></div>
+            <div><label className="!block !text-[12px] !font-family-semibold !text-slate-700 !select-none !mb-1">Country</label><input type="text" name="countary" placeholder="Country" value={cardDetails.countary} onChange={handleInputChange} required className="input-field" /></div>
+            <div><label className="!block !text-[12px] !font-family-semibold !text-slate-700 !select-none !mb-1">City</label><input type="text" name="city" placeholder="City" value={cardDetails.city} onChange={handleInputChange} required className="input-field" /></div>
+            <div><label className="!block !text-[12px] !font-family-semibold !text-slate-700 !select-none !mb-1">State</label><input type="text" name="state" placeholder="State" value={cardDetails.state} onChange={handleInputChange} required className="input-field" /></div>
+            <div><label className="!block !text-[12px] !font-family-semibold !text-slate-700 !select-none !mb-1">Phone</label><input type="text" name="phone" placeholder="+1 (___)-___-____" value={cardDetails.phone} onChange={handleInputChange} required className="input-field" /></div>
+            <div className="col-span-2"><label className="!block !text-[12px] !font-family-semibold !text-slate-700 !select-none !mb-1">Email</label><input type="text" name="email" placeholder="email@example.com" value={cardDetails.email} onChange={handleInputChange} required className="input-field" /></div>
           </div>
-          <CustomButton
+          <button
+            type="button"
             onClick={jadAPiFunction}
-            className="w-full !mt-6 h-12 bg-gradient-to-r from-brand-600 to-brand-700 hover:from-brand-700 hover:to-brand-800 text-white font-family-semibold rounded-full shadow-lg shadow-brand-600/10 hover:shadow-xl hover:-translate-y-0.5 active:translate-y-0 transition-all duration-300 border-none"
-            loading={loading}
-            disabled={!areAllFieldsFilled()}
+            disabled={!areAllFieldsFilled() || loading}
+            className="!w-full !mt-6 !h-11 !bg-[#004a70] hover:!bg-[#003856] !text-white !font-family-semibold !rounded-xl !shadow-md hover:!shadow-lg !transition-all !duration-200 !border-none !cursor-pointer disabled:!opacity-60 disabled:!cursor-not-allowed !flex !items-center !justify-center !gap-2 !text-sm"
           >
-            Pay $40.00
-          </CustomButton>
+            {loading ? (
+              <div className="!h-4 !w-4 !animate-spin !rounded-full !border-2 !border-white/30 !border-t-white" />
+            ) : null}
+            <span>Pay $40.00</span>
+          </button>
         </div>
       </Modal>
 
@@ -1161,12 +1179,13 @@ const page = () => {
           </div>
           <h2 className="font-family-semibold text-lg text-slate-900 !mb-1">Payment Successful!</h2>
           <p className="text-xs text-slate-400 font-family-regular !mb-6">Your listing has been submitted</p>
-          <CustomButton
+          <button
+            type="button"
             onClick={() => { setShow1(false); router.push("/") }}
-            className="px-6 py-2.5 bg-slate-900 hover:bg-black text-white font-family-semibold text-xs rounded-full shadow-md transition-colors"
+            className="!px-6 !py-2.5 !bg-[#004a70] hover:!bg-[#003856] !text-white !font-family-semibold !text-xs !rounded-xl !shadow-md !transition-colors !border-none !cursor-pointer"
           >
             Back to Home
-          </CustomButton>
+          </button>
         </div>
       </Modal>
     </div>
@@ -1177,43 +1196,22 @@ const selectStyles = (error) => ({
   control: (base, state) => ({
     ...base,
     borderRadius: 12,
-    borderWidth: 2,
-    borderColor: error ? "#fca5a5" : (state.isFocused ? "#004a70" : "#f1f5f9"),
-    backgroundColor: state.isFocused ? "#ffffff" : "#f8fafc80",
-    minHeight: 46,
-    fontSize: 14,
-    fontFamily: "Inter, sans-serif",
-    fontWeight: "500",
-    boxShadow: state.isFocused ? "0 10px 15px -3px rgba(0, 74, 112, 0.05)" : "none",
+    borderWidth: 1,
+    borderColor: error ? "#f87171" : (state.isFocused ? "#004a70" : "#e2e8f0"),
+    backgroundColor: "#ffffff",
+    minHeight: 42,
+    height: 42,
+    fontSize: 13.5,
+    fontFamily: "var(--font-poppins-local), 'Inter', sans-serif",
+    fontWeight: "400",
+    boxShadow: state.isFocused ? "0 0 0 1px #004a70" : "0 1px 2px 0 rgba(0, 0, 0, 0.05)",
     transition: "all 0.2s ease-in-out",
-    "&:hover": { borderColor: "#004a70" },
+    "&:hover": { borderColor: "#cbd5e1" },
   }),
-  placeholder: (base) => ({ ...base, fontSize: 14, color: "#9ca3af" }),
+  placeholder: (base) => ({ ...base, fontSize: 13.5, color: "#9ca3af" }),
   multiValue: (base) => ({ ...base, borderRadius: 8, background: "#f0f7ff" }),
   multiValueLabel: (base) => ({ ...base, color: "#004a70", fontSize: 12 }),
   multiValueRemove: (base) => ({ ...base, color: "#004a70", "&:hover": { background: "#e0edf7", color: "#004a70" } }),
 });
-
-const inputStyle = (error) => ({
-  borderRadius: 12,
-  border: error ? "2px solid #fca5a5" : "2px solid #f1f5f9",
-  padding: "12px 16px",
-  fontSize: 14,
-  marginTop: 0,
-  width: "100%",
-  backgroundColor: "#f8fafc80",
-  color: "#0f172a",
-  fontFamily: "Inter, sans-serif",
-  fontWeight: "500",
-});
-
-const modalInputStyle = {
-  width: "100%",
-  padding: "10px 14px",
-  borderRadius: 10,
-  border: "1px solid #d1d5db",
-  fontSize: 14,
-  outline: "none",
-};
 
 export default page;

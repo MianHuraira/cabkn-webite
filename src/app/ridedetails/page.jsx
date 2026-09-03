@@ -1027,7 +1027,7 @@ const RideDetail = () => {
                           style={{ border: "1px solid #e8edf2", background: "#fff" }}
                         >
                           {/* Form Header */}
-                          <div className="flex items-center gap-2 px-4 pt-4 pb-3" style={{ borderBottom: "1px solid #f1f5f9" }}>
+                          <div className="flex items-center gap-2 !px-4 !pt-4 !pb-3" style={{ borderBottom: "1px solid #f1f5f9" }}>
                             <span className="w-7 h-7 rounded-full bg-amber-50 flex items-center justify-center shrink-0">
                               <FaStar size={13} className="text-amber-400" />
                             </span>
