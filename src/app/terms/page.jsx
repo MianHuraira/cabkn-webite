@@ -25,22 +25,30 @@ export default function TermsPage() {
   return (
     <div className={mounted ? 'animate-fade-in' : 'opacity-0'} style={{ minHeight: "100vh", background: "#f8fafc" }}>
       {/* Header */}
-      <div className={mounted ? 'animate-fade-in-down' : 'opacity-0'} style={{ background: "linear-gradient(135deg, #004a70 0%, #002d47 100%)", padding: "28px 0 44px", animationDelay: "50ms" }}>
-        <div style={{ maxWidth: 1200, margin: "0 auto", padding: "0 16px" }}>
-          <div className="font-family-regular" style={{ color: "rgba(255,255,255,0.6)", fontSize: 13, marginBottom: 8, display: "flex", alignItems: "center", gap: 6 }}>
-            <Link href="/" style={{ color: "rgba(255,255,255,0.6)", textDecoration: "none" }}>Home</Link>
-            <FaChevronRight size={8} />
-            <span>Terms & Conditions</span>
+      <section className={`relative overflow-hidden bg-gradient-to-br from-[#001726] via-[#002f4a] to-[#001f33] !pt-20 sm:!pt-24 !pb-14 sm:!pb-16 text-white ${mounted ? 'animate-fade-in-down' : 'opacity-0'}`} style={{ animationDelay: "50ms" }}>
+        <div
+          className="absolute inset-0 opacity-[0.04] pointer-events-none"
+          style={{
+            backgroundImage: `radial-gradient(circle at 1px 1px, white 1px, transparent 0)`,
+            backgroundSize: "24px 24px"
+          }}
+        />
+        <div className="absolute inset-0 bg-gradient-to-t from-[#001726]/90 via-transparent to-transparent pointer-events-none" />
+
+        <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 relative z-10">
+          <div className="flex items-center gap-2 text-slate-300 text-xs font-family-medium mb-3">
+            <Link href="/" className="text-slate-300 hover:text-white transition-colors no-underline">Home</Link>
+            <span className="text-slate-400">/</span>
+            <span className="text-white font-family-semibold">Terms & Conditions</span>
           </div>
-          <h1 className="font-family-semibold" style={{ color: "#fff", fontSize: "clamp(24px, 4vw, 32px)", margin: 0, display: "flex", alignItems: "center", gap: 12 }}>
-            <FaFileContract size={24} />
+          <h1 className="font-family-semibold text-white text-2xl sm:text-3xl m-0">
             Terms & Conditions
           </h1>
         </div>
-      </div>
+      </section>
 
       {/* Content */}
-      <div className={mounted ? 'animate-fade-in-up' : 'opacity-0'} style={{ maxWidth: 1200, margin: "-28px auto 0", padding: "0 16px 48px", animationDelay: "150ms" }}>
+      <div className={mounted ? 'animate-fade-in-up' : 'opacity-0'} style={{ maxWidth: 1200, margin: "-20px auto 0", padding: "0 16px 48px", animationDelay: "150ms", position: "relative", zIndex: 20 }}>
         <div style={{ background: "#fff", borderRadius: 14, padding: "clamp(20px, 3vw, 40px)", boxShadow: "0 2px 12px rgba(0,0,0,0.04)", border: "1px solid #f0f0f0" }}>
           {loading ? (
             <div style={{ textAlign: "center", padding: "48px 0" }}>

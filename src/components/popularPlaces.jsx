@@ -24,7 +24,7 @@ import {
   HiOutlineChatBubbleLeftRight,
   HiOutlineSparkles,
 } from "react-icons/hi2";
-import { FiArrowRight, FiCheck, FiShare2, FiMaximize2 } from "react-icons/fi";
+import { FiArrowRight, FiCheck, FiShare2, FiMaximize2, FiMapPin } from "react-icons/fi";
 import { MdOutlineRateReview, MdOutlineMyLocation } from "react-icons/md";
 import { Swiper, SwiperSlide } from "swiper/react";
 import { Navigation, Pagination, Thumbs, Autoplay, FreeMode, Mousewheel, EffectFade } from "swiper/modules";
@@ -259,7 +259,7 @@ const PopularAA = () => {
   };
 
   useEffect(() => {
-    // 1. Immediately read from sessionStorage so there is NO blank delay
+    // 1. Immediately read from sessionStorage if not expired (1 min TTL)
     if (typeof window !== "undefined") {
       try {
         const stored =
@@ -268,7 +268,13 @@ const PopularAA = () => {
           sessionStorage.getItem("popularItem");
         if (stored) {
           const parsed = JSON.parse(stored);
-          if (parsed && (parsed._id === id || !id)) {
+          const now = Date.now();
+          if (parsed?._expiresAt && now >= parsed._expiresAt) {
+            // Expired after 1 min - clean up stale storage
+            sessionStorage.removeItem(`tour_${id}`);
+            sessionStorage.removeItem("selected_tour");
+            sessionStorage.removeItem("popularItem");
+          } else if (parsed && (parsed._id === id || !id)) {
             setSubcatData(parsed);
             if (parsed.schedule) {
               try {
@@ -280,6 +286,17 @@ const PopularAA = () => {
               } catch (e) {
                 setSchedule([]);
               }
+            }
+
+            // Schedule removal when 1 min expires
+            if (parsed?._expiresAt && parsed._expiresAt > now) {
+              setTimeout(() => {
+                try {
+                  sessionStorage.removeItem(`tour_${id}`);
+                  sessionStorage.removeItem("selected_tour");
+                  sessionStorage.removeItem("popularItem");
+                } catch (_) {}
+              }, parsed._expiresAt - now);
             }
           }
         }
@@ -300,19 +317,24 @@ const PopularAA = () => {
       if (response?.category) {
         const cat = response.category;
         setSubcatData(cat);
-        const scheduleData = cat.schedule;
         try {
-          const s = scheduleData
-            ? typeof scheduleData === "string"
-              ? JSON.parse(scheduleData)
-              : scheduleData
-            : [];
+          const s =
+            typeof cat.schedule === "string"
+              ? JSON.parse(cat.schedule)
+              : cat.schedule;
           setSchedule(Array.isArray(s) ? s : []);
         } catch (e) {
           setSchedule([]);
         }
         if (typeof window !== "undefined") {
-          sessionStorage.setItem(`tour_${id}`, JSON.stringify(cat));
+          sessionStorage.setItem(
+            `tour_${id}`,
+            JSON.stringify({
+              ...cat,
+              _savedAt: Date.now(),
+              _expiresAt: Date.now() + 60 * 1000,
+            })
+          );
         }
       }
     } catch (error) {
@@ -670,6 +692,7 @@ const PopularAA = () => {
       0
   );
   const priceUsd = (priceXcd / 2.7).toFixed(2);
+  const priceUsdNum = Number((priceXcd / 2.7).toFixed(2));
 
   const cleanTitle = stripHtml(SubcatData?.title) || "Tour Destination";
   const cleanAbout =
@@ -713,243 +736,163 @@ const PopularAA = () => {
       style={{ minHeight: "100vh", background: "#f8fafc" }}
     >
       {/* ========================================================================= */}
-      {/* 1. HERO TOP BANNER (Luxury Navy Blue with ambient glow)                    */}
+      {/* 1. CINEMATIC FULL-BLEED HERO SECTION (MATCHING DETAILS / HOME HERO)       */}
       {/* ========================================================================= */}
-      <section
-        className={`!relative !overflow-hidden !bg-gradient-to-br !from-[#001726] !via-[#002f4a] !to-[#001f33] !pt-20 sm:!pt-24 !pb-14 !text-white ${
-          mounted ? "!animate-fade-in-down" : "!opacity-0"
-        }`}
-      >
-        <div
-          className="!absolute !inset-0 !opacity-[0.04] !pointer-events-none"
-          style={{
-            backgroundImage: `radial-gradient(circle at 1px 1px, white 1px, transparent 0)`,
-            backgroundSize: "24px 24px",
-          }}
-        />
-        <div className="!absolute !top-1/4 !-left-20 !w-80 !h-80 !bg-sky-500/15 !rounded-full !blur-[100px] !pointer-events-none" />
-        <div className="!absolute !bottom-1/4 !-right-20 !w-96 !h-96 !bg-indigo-500/15 !rounded-full !blur-[120px] !pointer-events-none" />
-
-        <div className="!max-w-7xl !mx-auto !px-4 sm:!px-6 lg:!px-8 !relative !z-10">
-          {/* Breadcrumbs */}
-          <div className="!flex !items-center !gap-2 !text-slate-400 !text-xs !font-family-medium !mb-3 !flex-wrap">
-            <Link
-              href="/"
-              className="hover:!text-white !transition-colors !no-underline !text-slate-400"
-            >
-              Home
-            </Link>
-            <span className="!text-slate-500">/</span>
-            <Link
-              href="/top-locations"
-              className="hover:!text-white !transition-colors !no-underline !text-slate-400"
-            >
-              Popular Places
-            </Link>
-            <span className="!text-slate-500">/</span>
-            <span className="!text-slate-200 !truncate !max-w-[220px] sm:!max-w-md !font-family-medium">
-              {cleanTitle}
-            </span>
-          </div>
-
-
+      <section className="!relative !w-full !min-h-[560px] sm:!min-h-[620px] md:!min-h-[680px] !flex !items-center !overflow-hidden !pt-24 sm:!pt-28 md:!pt-32 !pb-20 sm:!pb-24 !select-none">
+        {/* Full-Bleed Background Image Swiper with CrossFade Transition */}
+        <div className="!absolute !inset-0 !z-0 !pointer-events-none">
+          <Swiper
+            key={`hero-${displayImages.length}-${SubcatData?._id || "rdy"}`}
+            modules={[Autoplay, EffectFade]}
+            effect="fade"
+            fadeEffect={{ crossFade: true }}
+            speed={1000}
+            autoplay={{
+              delay: 5500,
+              disableOnInteraction: false,
+            }}
+            loop={displayImages.length > 1}
+            onSwiper={(sw) => {
+              mainSwiperRef.current = sw;
+            }}
+            onSlideChange={(sw) => {
+              setActiveSlideIdx(sw.realIndex ?? sw.activeIndex ?? 0);
+            }}
+            className="!w-full !h-full"
+          >
+            {displayImages.map((img, i) => (
+              <SwiperSlide key={i} className="!w-full !h-full !relative">
+                <div
+                  className="!w-full !h-full !bg-cover !bg-no-repeat !bg-center !transition-transform !duration-1000 !ease-out"
+                  style={{
+                    backgroundImage: `url(${img})`,
+                  }}
+                />
+              </SwiperSlide>
+            ))}
+          </Swiper>
         </div>
+
+        {/* Dark Overlays for high text contrast on the left, clear view of image on the right */}
+        <div className="!absolute !inset-0 !bg-gradient-to-r !from-black/90 !via-black/60 sm:!via-black/50 !to-transparent !pointer-events-none !z-[1]" />
+        <div className="!absolute !inset-0 !bg-gradient-to-t !from-black/85 !via-transparent !to-black/30 !pointer-events-none !z-[1]" />
+
+        {/* Foreground Content - Clean Home Hero Architecture */}
+        <div className="!relative !z-10 !w-full !max-w-7xl !mx-auto !px-4 sm:!px-6 lg:!px-8">
+          <div className="!flex !flex-col !gap-3.5 sm:!gap-4 !max-w-xl lg:!max-w-2xl">
+            {/* Top Row: Category in Pill, Location outside */}
+            <div className="!flex !items-center !gap-2.5 sm:!gap-3 !flex-wrap">
+              {SubcatData?.category?.name && (
+                <span className="!inline-flex !items-center !bg-black/40 !backdrop-blur-md !text-brand-300 !text-[11px] sm:!text-xs !uppercase !tracking-[0.15em] !font-family-semibold !px-3 !py-1 !rounded-full !border !border-white/15 !shadow-xs">
+                  {SubcatData.category.name}
+                </span>
+              )}
+              {cleanAddress && (
+                <div className="!inline-flex !items-center !gap-1.5 !text-white/90 !text-xs sm:!text-sm !font-family-medium !drop-shadow-sm">
+                  <FiMapPin className="!text-brand-300 !text-sm !shrink-0" />
+                  <span>{cleanAddress}</span>
+                </div>
+              )}
+            </div>
+
+            {/* Main Title */}
+            <h1 className="!text-white !font-family-medium !leading-[1.2] !tracking-tight !m-0 !text-[clamp(1.85rem,4.2vw,3rem)] !drop-shadow-lg">
+              {cleanTitle}
+            </h1>
+
+            {/* Checklist / Features Row (Clean & Spacious) */}
+            <div className="!flex !gap-3.5 sm:!gap-5 !mt-1 !flex-wrap !items-center">
+              {SubcatData?.avgRating > 0 && (
+                <div className="!flex !items-center !gap-1.5 !text-amber-300 !text-xs sm:!text-sm !font-family-semibold">
+                  <FaStar className="!text-amber-400 !w-3.5 !h-3.5" />
+                  <span>{SubcatData.avgRating.toFixed(1)}</span>
+                  <span className="!text-white/60 !text-xs !font-family-regular">
+                    ({ratingLength || ratingData.length || 0})
+                  </span>
+                </div>
+              )}
+
+              <div className="!flex !items-center !gap-2">
+                <div className="!w-5 !h-5 !rounded-full !bg-[#004a70] !flex !items-center !justify-center !shrink-0">
+                  <HiOutlineCheckCircle size={12} color="#fff" />
+                </div>
+                <span className="!text-white/90 !font-family-regular !text-xs sm:!text-sm">
+                  Popular Destination
+                </span>
+              </div>
+
+              <div className="!flex !items-center !gap-2">
+                <div className="!w-5 !h-5 !rounded-full !bg-[#004a70] !flex !items-center !justify-center !shrink-0">
+                  <HiOutlineCheckCircle size={12} color="#fff" />
+                </div>
+                <span className="!text-white/90 !font-family-regular !text-xs sm:!text-sm">
+                  Verified Local Drivers
+                </span>
+              </div>
+
+              <div className="!flex !items-center !gap-2">
+                <div className="!w-5 !h-5 !rounded-full !bg-[#004a70] !flex !items-center !justify-center !shrink-0">
+                  <HiOutlineCalendarDays size={12} color="#fff" />
+                </div>
+                <span className="!text-white/90 !font-family-regular !text-xs sm:!text-sm">
+                  {Schedule.length > 0 ? `${Schedule.length} Days Schedule` : "Daily Booking"}
+                </span>
+              </div>
+            </div>
+
+            {/* Action Row: Small Primary Book Button & Separate Price Badge */}
+            <div className="!flex !items-center !gap-3 sm:!gap-3.5 !mt-2.5 sm:!mt-3 !flex-wrap">
+              <button
+                type="button"
+                onClick={HandleClick}
+                className="!inline-flex !items-center !gap-1.5 !bg-[#004a70] hover:!bg-[#003855] !text-white !font-family-semibold !text-xs sm:!text-sm !px-4 sm:!px-5 !py-2 sm:!py-2.5 !rounded-xl !shadow-md hover:!shadow-lg !transition-all !duration-200 !cursor-pointer hover:!scale-105 active:!scale-95 !border-0"
+              >
+                <span>Book a Ride</span>
+                <FiArrowRight className="!w-3.5 !h-3.5" />
+              </button>
+
+              {priceUsdNum > 0 && (
+                <div className="!inline-flex !items-baseline !gap-1.5 !bg-black/40 !backdrop-blur-md !border !border-white/15 !px-3.5 !py-2 !rounded-xl !text-white !shadow-xs">
+                  <span className="!text-[11px] sm:!text-xs !text-white/70 !font-family-regular">From</span>
+                  <span className="!text-sm sm:!text-base !font-family-semibold !text-emerald-400">
+                    ${Number.isInteger(priceUsdNum) ? priceUsdNum.toFixed(0) : priceUsdNum.toFixed(2)} USD
+                  </span>
+                  <span className="!text-[10.5px] sm:!text-xs !text-white/60 !font-family-regular">
+                    /ride
+                  </span>
+                </div>
+              )}
+            </div>
+          </div>
+        </div>
+
+        {/* Modern Pill & Dot Pagination at Bottom Center (Exact Home Hero Design) */}
+        {displayImages.length > 1 && (
+          <div className="!absolute !bottom-6 md:!bottom-8 !left-0 !right-0 !z-20 !pointer-events-auto !flex !justify-center !items-center !gap-2">
+            {displayImages.map((_, idx) => {
+              const isActive = activeSlideIdx === idx;
+              return (
+                <button
+                  key={idx}
+                  type="button"
+                  onClick={() => mainSwiperRef.current?.slideToLoop(idx)}
+                  aria-label={`Slide ${idx + 1}`}
+                  className={`!h-2.5 !rounded-full !transition-all !duration-300 !ease-in-out !cursor-pointer !border-0 !p-0 ${
+                    isActive
+                      ? "!w-8 !bg-white !shadow-[0_0_10px_rgba(255,255,255,0.8)]"
+                      : "!w-2.5 !bg-white/50 hover:!bg-white/80"
+                  }`}
+                />
+              );
+            })}
+          </div>
+        )}
       </section>
 
       {/* ========================================================================= */}
       {/* 2. MAIN COCKPIT SECTION                                                    */}
       {/* ========================================================================= */}
-      <div className="!w-full !px-4 sm:!px-6 lg:!px-8 !relative !z-20 !max-w-7xl !mx-auto !-mt-5 !pb-16">
-       
-        <div className="!relative !w-full !overflow-hidden !rounded-3xl !shadow-[0_20px_80px_rgba(0,0,0,0.35)]"
-          style={{ height: "clamp(380px, 54vw, 620px)" }}
-        >
-          {/* ── Background Image Swiper ── */}
-          <Swiper
-            key={`hero-${displayImages.length}-${SubcatData?._id || "rdy"}`}
-            modules={[Autoplay, Navigation, Pagination]}
-            loop={displayImages.length > 1}
-            speed={900}
-            grabCursor={true}
-            autoplay={{ delay: 4500, disableOnInteraction: false }}
-            pagination={{ clickable: true }}
-            navigation={{
-              prevEl: ".hero-prev",
-              nextEl: ".hero-next",
-            }}
-            onSwiper={(sw) => {
-              mainSwiperRef.current = sw;
-              try { sw.autoplay?.start(); } catch (_) {}
-            }}
-            onSlideChange={(sw) => setActiveSlideIdx(sw.realIndex ?? sw.activeIndex)}
-            className="!w-full !h-full hero-gallery-swiper"
-          >
-            {displayImages.map((img, i) => (
-              <SwiperSlide key={i} className="!w-full !h-full">
-                <div className="!w-full !h-full !relative">
-                  <img
-                    src={img}
-                    alt={`${cleanTitle} ${i + 1}`}
-                    className="!w-full !h-full !object-cover !object-center"
-                  />
-                  {/* Dark cinematic vignette */}
-                  <div className="!absolute !inset-0"
-                    style={{
-                      background: "linear-gradient(90deg, rgba(0,0,0,0.90) 0%, rgba(0,0,0,0.55) 42%, rgba(0,0,0,0.12) 72%, rgba(0,0,0,0.20) 100%)"
-                    }}
-                  />
-                  {/* Bottom fade */}
-                  <div className="!absolute !bottom-0 !left-0 !right-0 !h-40"
-                    style={{ background: "linear-gradient(to top, rgba(0,0,0,0.75) 0%, transparent 100%)" }}
-                  />
-                </div>
-              </SwiperSlide>
-            ))}
-          </Swiper>
-
-          {/* ── Nav Arrows ── */}
-          {/* {displayImages.length > 1 && (
-            <>
-              <button type="button" className="hero-prev !absolute !left-4 !top-1/2 !-translate-y-1/2 !z-30 !w-10 !h-10 !rounded-full !bg-white/10 hover:!bg-white/25 !backdrop-blur-md !border !border-white/20 !text-white !flex !items-center !justify-center !cursor-pointer !transition-all !shadow-lg">
-                <FaChevronLeft size={14} />
-              </button>
-              <button type="button" className="hero-next !absolute !right-4 !top-1/2 !-translate-y-1/2 !z-30 !w-10 !h-10 !rounded-full !bg-white/10 hover:!bg-white/25 !backdrop-blur-md !border !border-white/20 !text-white !flex !items-center !justify-center !cursor-pointer !transition-all !shadow-lg">
-                <FaChevronRight size={14} />
-              </button>
-            </>
-          )} */}
-
-          {/* ── LEFT SIDE CONTENT OVERLAY ── */}
-          <div className="!absolute !inset-0 !z-20 !flex !flex-col !justify-end !pb-8 sm:!pb-10 !px-6 sm:!px-10 !pointer-events-none">
-            <div className="!max-w-[520px] !pointer-events-auto">
-
-              {/* Top Meta Tags Row */}
-              <div className="!flex !items-center !gap-2 !flex-wrap !mb-3">
-                {SubcatData?.category?.name && (
-                  <span className="!px-2.5 !py-1 !rounded-md !text-[11px] !font-family-semibold !font-bold !uppercase !tracking-wider !bg-amber-500 !text-black !shadow-sm">
-                    {SubcatData.category.name}
-                  </span>
-                )}
-                <span className="!text-white/70 !text-xs !font-family-medium">
-                  {new Date().getFullYear()}
-                </span>
-                {SubcatData?.avgRating > 0 && (
-                  <span className="!text-white/50 !text-xs">•</span>
-                )}
-                {SubcatData?.avgRating > 0 && (
-                  <span className="!text-white/70 !text-xs !font-family-medium">
-                    ★ {SubcatData.avgRating.toFixed(1)} Rating
-                  </span>
-                )}
-                <span className="!text-white/50 !text-xs">•</span>
-                <span className="!text-white/70 !text-xs !font-family-medium">St. Kitts</span>
-              </div>
-
-              {/* Title */}
-              <h1 className="!text-white !text-3xl sm:!text-4xl md:!text-5xl !font-family-semibold !font-bold !tracking-tight !m-0 !mb-3 !leading-[1.1]">
-                {cleanTitle}
-              </h1>
-
-              {/* Rating / Info Badges */}
-              <div className="!flex !items-center !gap-2 !mb-3 !flex-wrap">
-                {SubcatData?.avgRating > 0 && (
-                  <div className="!flex !items-center !gap-1 !bg-amber-500/20 !border !border-amber-400/40 !px-2.5 !py-1 !rounded-md">
-                    <FaStar size={11} className="!text-amber-400" />
-                    <span className="!text-amber-400 !text-xs !font-family-semibold !font-bold">{SubcatData.avgRating.toFixed(1)}</span>
-                    <span className="!text-white/60 !text-[11px] !font-family-medium">IMDb</span>
-                  </div>
-                )}
-                <span className="!px-2.5 !py-1 !rounded-md !text-[11px] !font-family-semibold !text-white/80 !bg-white/10 !border !border-white/15">
-                  {SubcatData?.category?.name || "Tour"}
-                </span>
-                <span className="!px-2.5 !py-1 !rounded-md !text-[11px] !font-family-semibold !text-white/80 !bg-white/10 !border !border-white/15">
-                  Verified
-                </span>
-                {priceXcd > 0 && (
-                  <span className="!px-2.5 !py-1 !rounded-md !text-[11px] !font-family-semibold !text-white/80 !bg-white/10 !border !border-white/15">
-                    ${priceXcd.toFixed(0)} XCD
-                  </span>
-                )}
-              </div>
-
-              {/* Description */}
-              <p className="!text-white/75 !text-sm !font-family-regular !leading-relaxed !m-0 !mb-5 !line-clamp-3">
-                {cleanAbout}
-              </p>
-
-              {/* Price bar */}
-              <div className="!mb-4">
-                <div className="!flex !items-center !justify-between !mb-1.5">
-                  <span className="!text-white/60 !text-xs !font-family-medium !truncate !max-w-[200px]">
-                    {cleanAddress}
-                  </span>
-                  <span className="!text-white/60 !text-xs !font-family-medium">
-                    {displayImages.length} photos
-                  </span>
-                </div>
-                <div className="!h-[2px] !w-full !bg-white/15 !rounded-full !overflow-hidden">
-                  <div
-                    className="!h-full !bg-amber-500 !rounded-full !transition-all !duration-700"
-                    style={{ width: `${Math.min(100, ((activeSlideIdx + 1) / displayImages.length) * 100)}%` }}
-                  />
-                </div>
-              </div>
-
-              {/* CTA Buttons */}
-              <div className="!flex !items-center !gap-3 !flex-wrap">
-                <button
-                  type="button"
-                  onClick={HandleClick}
-                  className="!flex !items-center !gap-2 !px-6 !py-3 !rounded-xl !text-white !text-sm !font-family-semibold !font-bold !cursor-pointer !transition-all hover:!scale-105 !shadow-xl !border-none !select-none"
-                  style={{ background: "#004a70", boxShadow: "0 8px 30px rgba(0,74,112,0.45)" }}
-                  onMouseEnter={e => e.currentTarget.style.background = "#005f8e"}
-                  onMouseLeave={e => e.currentTarget.style.background = "#004a70"}
-                >
-                  <FaCarSide size={15} />
-                  <span>Book a Ride</span>
-                </button>
-
-                <button
-                  type="button"
-                  onClick={handleShow}
-                  className="!flex !items-center !justify-center !w-11 !h-11 !rounded-xl !bg-white/10 hover:!bg-white/20 !backdrop-blur-md !border !border-white/20 !text-white !cursor-pointer !transition-all !shadow-md"
-                  title="Write a Review"
-                >
-                  <MdOutlineRateReview size={17} />
-                </button>
-
-                <div className="!flex-1" />
-
-                {/* Right Side: Share + Gallery */}
-                <div className="!flex !items-center !gap-2">
-                  <button
-                    type="button"
-                    onClick={handleShare}
-                    className="!flex !items-center !justify-center !w-11 !h-11 !rounded-xl !bg-white/10 hover:!bg-white/20 !backdrop-blur-md !border !border-white/20 !text-white !cursor-pointer !transition-all"
-                    title="Share"
-                  >
-                    <FiShare2 size={15} />
-                  </button>
-
-                  <button
-                    type="button"
-                    onClick={() => openLightbox(activeSlideIdx)}
-                    className="!flex !items-center !justify-center !w-11 !h-11 !rounded-xl !bg-white/10 hover:!bg-white/20 !backdrop-blur-md !border !border-white/20 !text-white !cursor-pointer !transition-all"
-                    title="View all photos"
-                  >
-                    <FiMaximize2 size={15} />
-                  </button>
-                </div>
-              </div>
-            </div>
-          </div>
-
-          {/* ── Slide counter pill (top-right) ── */}
-          <div className="!absolute !top-4 !right-4 !z-30 !flex !items-center !gap-1.5 !bg-black/45 !backdrop-blur-md !border !border-white/15 !text-white !text-xs !font-family-medium !px-3 !py-1.5 !rounded-xl !pointer-events-none">
-            <FaRegImages size={11} />
-            <span>{activeSlideIdx + 1} / {displayImages.length}</span>
-          </div>
-        </div>
+      <div className="!w-full !px-4 sm:!px-6 lg:!px-8 !relative !z-20 !max-w-7xl !mx-auto !pt-8 sm:!pt-10 !pb-16">
 
 
 

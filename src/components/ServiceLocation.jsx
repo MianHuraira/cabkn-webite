@@ -11,13 +11,16 @@ import { Flex, message, Rate, Skeleton } from "antd";
 import ApiFunction from "@/components/ApiFunction/ApiFunction";
 import { useParams, useRouter, useSearchParams } from "next/navigation";
 import Link from "next/link";
-import toast from "react-hot-toast";
 import * as Yup from "yup";
 import { ErrorMessage, Field, Formik, Form } from "formik";
 import ApiFile from "./ApiFunction/ApiFile";
+import { useDispatch } from "react-redux";
+import { addToCart, openCart } from "@/components/Redux/Slices/CartSlice";
+import { FiShoppingBag } from "react-icons/fi";
 
 export default function ServiceLocation() {
   const { id } = useParams();
+  const dispatch = useDispatch();
   const [value, setValue] = useState(0);
   const [mounted, setMounted] = useState(false);
   useEffect(() => { setMounted(true); }, []);
@@ -163,16 +166,48 @@ export default function ServiceLocation() {
     mapRef.current?.resize();
   }, []);
 
-  const HandleClick = () => {
-    const body = {
-      ...SubcatData,
-      ProductColor: ProductColor,
-      Size: Size,
-      incDec: incDec,
-      productPrice: SubcatData?.location_price * incDec,
-    };
-    const encodedData = encodeURIComponent(JSON.stringify(body));
-    router.push(`/ride?data=${encodedData}`);
+  const handleAddToCart = () => {
+    if (SubcatData?.color?.length > 0 && !ProductColor) {
+      message.warning("Please select a color");
+      return;
+    }
+    if (SubcatData?.size?.length > 0 && !Size) {
+      message.warning("Please select a size");
+      return;
+    }
+
+    dispatch(
+      addToCart({
+        ...SubcatData,
+        title: SubcatData?.name || SubcatData?.title,
+        selectedColor: ProductColor,
+        selectedSize: Size,
+        cartQuantity: incDec,
+      })
+    );
+    message.success(`Added ${incDec} item(s) to cart!`);
+  };
+
+  const handleBuyNow = () => {
+    if (SubcatData?.color?.length > 0 && !ProductColor) {
+      message.warning("Please select a color");
+      return;
+    }
+    if (SubcatData?.size?.length > 0 && !Size) {
+      message.warning("Please select a size");
+      return;
+    }
+
+    dispatch(
+      addToCart({
+        ...SubcatData,
+        title: SubcatData?.name || SubcatData?.title,
+        selectedColor: ProductColor,
+        selectedSize: Size,
+        cartQuantity: incDec,
+      })
+    );
+    dispatch(openCart());
   };
 
   const getRatingData = () => {
@@ -226,41 +261,33 @@ export default function ServiceLocation() {
   return (
     <div className={`min-h-screen bg-slate-50/50 ${mounted ? "animate-fade-in" : "opacity-0"}`}>
       {/* ===== HERO BANNER ===== */}
-      <section className="relative overflow-hidden bg-gradient-to-br from-slate-900 via-brand-900 to-brand-950 !pt-28 !pb-28">
-        <div className="absolute inset-0 opacity-[0.04]" style={{
-          backgroundImage: `radial-gradient(circle at 1px 1px, white 1px, transparent 0)`,
-          backgroundSize: "24px 24px"
-        }} />
-        
-        <div className="absolute top-1/4 -left-20 w-80 h-80 bg-brand-500/10 rounded-full blur-[100px] animate-pulse pointer-events-none" style={{ animationDuration: "8s" }} />
-        <div className="absolute bottom-1/4 -right-20 w-96 h-96 bg-indigo-500/10 rounded-full blur-[120px] animate-pulse pointer-events-none" style={{ animationDuration: "12s" }} />
-        
-        <div className="absolute inset-0 bg-gradient-to-t from-brand-950/60 via-transparent to-transparent pointer-events-none" />
+      <section className="relative overflow-hidden bg-gradient-to-br from-[#001726] via-[#002f4a] to-[#001f33] !pt-20 sm:!pt-24 !pb-20 sm:!pb-24 text-white">
+        <div
+          className="absolute inset-0 opacity-[0.04] pointer-events-none"
+          style={{
+            backgroundImage: `radial-gradient(circle at 1px 1px, white 1px, transparent 0)`,
+            backgroundSize: "24px 24px"
+          }}
+        />
+        <div className="absolute inset-0 bg-gradient-to-t from-[#001726]/90 via-transparent to-transparent pointer-events-none" />
 
         <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 relative z-10">
-          <div className="flex items-center gap-2 text-slate-400 text-xs font-family-medium !mb-4">
-            <Link href="/" className="text-slate-400 hover:text-white transition-colors">Home</Link>
-            <span className="text-slate-500">/</span>
-            <Link href="/serviceLocations" className="text-slate-400 hover:text-white transition-colors">Shop</Link>
-            <span className="text-slate-500">/</span>
-            <span className="text-slate-200">Product Detail</span>
+          <div className="flex items-center gap-2 text-slate-300 text-xs font-family-medium !mb-4">
+            <Link href="/" className="text-slate-300 hover:text-white transition-colors no-underline">Home</Link>
+            <span className="text-slate-400">/</span>
+            <Link href="/serviceLocations" className="text-slate-300 hover:text-white transition-colors no-underline">Shop</Link>
+            <span className="text-slate-400">/</span>
+            <span className="text-white">Product Detail</span>
           </div>
 
           <div className="flex flex-wrap justify-between items-center gap-4">
-            <div className="flex items-center gap-4">
-              <div className="w-13 h-13 rounded-2xl bg-white/10 backdrop-blur-md flex items-center justify-center shrink-0">
-                <svg width={24} height={24} viewBox="0 0 24 24" fill="none" stroke="#fff" strokeWidth={1.5}>
-                  <path strokeLinecap="round" strokeLinejoin="round" d="M20 7l-8-4-8 4m16 0l-8 4m8-4v10l-8 4m0-10L4 7m8 4v10M4 7v10l8 4" />
-                </svg>
-              </div>
-              <div>
-                <h1 className="text-white text-3xl font-family-semibold tracking-tight !m-0 leading-tight">
-                  {SubcatData?.name || "Product Detail"}
-                </h1>
-                <p className="text-slate-400 text-sm !mt-1 !m-0 font-family-regular">
-                  Explore full features and verified rider details
-                </p>
-              </div>
+            <div>
+              <h1 className="text-white text-2xl sm:text-3xl font-family-semibold tracking-tight !m-0 leading-tight">
+                {SubcatData?.name || "Product Detail"}
+              </h1>
+              <p className="text-slate-300 text-xs sm:text-sm !mt-1 !m-0 font-family-regular">
+                Explore full features and verified rider details
+              </p>
             </div>
           </div>
         </div>
@@ -318,14 +345,23 @@ export default function ServiceLocation() {
                   </div>
                 </div>
                 
-                <div className="hidden lg:block shrink-0">
+                <div className="hidden lg:flex items-center gap-2.5 shrink-0">
+                  <button
+                    type="button"
+                    onClick={handleAddToCart}
+                    className="px-4 py-2.5 rounded-full border border-[#004a70] text-[#004a70] hover:bg-sky-50 font-family-semibold text-xs transition-all flex items-center gap-2 cursor-pointer bg-white"
+                  >
+                    <FiShoppingBag size={14} />
+                    <span>Add to Cart</span>
+                  </button>
+
                   <CustomButton
-                    onClick={HandleClick}
+                    onClick={handleBuyNow}
                     variant="primary"
                     size="md"
-                    className="bg-gradient-to-r from-brand-600 to-brand-700 hover:from-brand-700 hover:to-brand-800 text-white font-family-semibold rounded-full shadow-md transition-all border-none"
+                    className="bg-[#004a70] hover:bg-[#003855] text-white font-family-semibold rounded-full shadow-md transition-all border-none text-xs px-5 py-2.5"
                   >
-                    Buy Product
+                    Buy Now
                   </CustomButton>
                 </div>
               </div>
@@ -427,14 +463,23 @@ export default function ServiceLocation() {
               />
 
               {/* Mobile Buy Trigger */}
-              <div className="block lg:hidden !mt-5">
+              <div className="grid grid-cols-2 gap-2.5 lg:hidden !mt-5">
+                <button
+                  type="button"
+                  onClick={handleAddToCart}
+                  className="w-full h-11 rounded-full border border-[#004a70] text-[#004a70] bg-white font-family-semibold text-xs flex items-center justify-center gap-2 cursor-pointer"
+                >
+                  <FiShoppingBag size={14} />
+                  <span>Add to Cart</span>
+                </button>
+
                 <CustomButton
-                  onClick={HandleClick}
+                  onClick={handleBuyNow}
                   variant="primary"
                   size="md"
-                  className="w-full h-12 bg-gradient-to-r from-brand-600 to-brand-700 hover:from-brand-700 hover:to-brand-800 text-white font-family-semibold rounded-full shadow-lg shadow-brand-600/10 border-none"
+                  className="w-full h-11 bg-[#004a70] hover:bg-[#003855] text-white font-family-semibold rounded-full shadow-md border-none text-xs flex items-center justify-center"
                 >
-                  Buy Product
+                  Buy Now
                 </CustomButton>
               </div>
 

@@ -24,6 +24,79 @@ const ClientWrapper = ({ children }) => {
     }
   }, [pathname]);
 
+  // Auto-clear sessionStorage 1 minute after data is stored
+  useEffect(() => {
+    if (typeof window === "undefined") return;
+
+    const EXPIRY_TIME = 60 * 1000; // 1 minute (60 seconds)
+    let clearTimer = null;
+
+    const clearStorage = () => {
+      try {
+        sessionStorage.clear();
+      } catch (e) {
+        console.warn("Could not clear sessionStorage:", e);
+      }
+    };
+
+    const scheduleClear = (delay) => {
+      if (clearTimer) clearTimeout(clearTimer);
+      clearTimer = setTimeout(() => {
+        clearStorage();
+      }, delay);
+    };
+
+    // 1. Check existing timestamp on mount
+    try {
+      const savedTime = sessionStorage.getItem("_cabkn_session_timestamp");
+      if (savedTime) {
+        const elapsed = Date.now() - parseInt(savedTime, 10);
+        if (elapsed >= EXPIRY_TIME) {
+          clearStorage();
+        } else {
+          scheduleClear(EXPIRY_TIME - elapsed);
+        }
+      }
+    } catch (_) {}
+
+    // 2. Periodic check (every 10s) and on tab visibility change
+    const checkExpiry = () => {
+      try {
+        const savedTime = sessionStorage.getItem("_cabkn_session_timestamp");
+        if (savedTime && Date.now() - parseInt(savedTime, 10) >= EXPIRY_TIME) {
+          clearStorage();
+        }
+      } catch (_) {}
+    };
+
+    const intervalId = setInterval(checkExpiry, 10000);
+    document.addEventListener("visibilitychange", checkExpiry);
+
+    // 3. Patch sessionStorage.setItem to update timestamp and start 1-minute timer on any write
+    try {
+      if (!window._cabkn_session_patched) {
+        window._cabkn_session_patched = true;
+        const originalSetItem = sessionStorage.setItem;
+        sessionStorage.setItem = function (key) {
+          const result = originalSetItem.apply(this, arguments);
+          if (key !== "_cabkn_session_timestamp") {
+            try {
+              originalSetItem.call(sessionStorage, "_cabkn_session_timestamp", Date.now().toString());
+            } catch (_) {}
+            scheduleClear(EXPIRY_TIME);
+          }
+          return result;
+        };
+      }
+    } catch (_) {}
+
+    return () => {
+      if (clearTimer) clearTimeout(clearTimer);
+      clearInterval(intervalId);
+      document.removeEventListener("visibilitychange", checkExpiry);
+    };
+  }, []);
+
   useEffect(() => {
     const checkTidio = () => {
       if (typeof window.tidioChatApi !== "undefined") {

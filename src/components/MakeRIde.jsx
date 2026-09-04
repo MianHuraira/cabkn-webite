@@ -420,85 +420,121 @@ const RidePage = ({ defaultTab }) => {
     const bounds = new mapboxgl.LngLatBounds();
 
     const createCustomMarker = (text, type) => {
+      // 1. Root container: MUST NOT have CSS transform or Tailwind hover:scale to preserve Mapbox translate3d!
       const el = document.createElement("div");
-      el.className = "custom-mapbox-marker flex items-center justify-center shadow-md cursor-pointer transition-transform duration-200 hover:scale-110";
-      
+      el.className = "custom-mapbox-marker";
+      el.style.width = "36px";
+      el.style.height = "44px";
+      el.style.cursor = "pointer";
+      el.style.pointerEvents = "auto";
+      el.style.display = "flex";
+      el.style.flexDirection = "column";
+      el.style.alignItems = "center";
+      el.style.justifyContent = "flex-end";
+
       let bgColor = "#f59e0b"; // Amber/orange for stops
-      let textColor = "#ffffff";
-      let size = "26px";
-      
+      let pinSize = "28px";
+
       if (type === "start") {
-        bgColor = "#22c55e"; // Green for start
-        size = "30px";
+        bgColor = "#16a34a"; // Green for start
+        pinSize = "32px";
       } else if (type === "end") {
-        bgColor = "#ef4444"; // Red for end
-        size = "30px";
+        bgColor = "#dc2626"; // Red for end
+        pinSize = "32px";
       }
-      
-      el.style.backgroundColor = bgColor;
-      el.style.color = textColor;
-      el.style.width = size;
-      el.style.height = size;
-      el.style.borderRadius = "50% 50% 50% 0";
-      el.style.transform = "rotate(-45deg)";
-      el.style.border = "2px solid #ffffff";
-      el.style.boxShadow = "0 4px 6px -1px rgb(0 0 0 / 0.1), 0 2px 4px -2px rgb(0 0 0 / 0.1)";
-      
-      const span = document.createElement("span");
-      span.innerText = text;
-      span.style.transform = "rotate(45deg)";
-      span.style.fontSize = type === "start" || type === "end" ? "11px" : "10px";
-      span.style.fontFamily = "Inter, sans-serif";
-      span.style.fontWeight = "bold";
-      span.className = "flex items-center justify-center h-full w-full";
-      
-      el.appendChild(span);
+
+      const fontSize = type === "start" || type === "end" ? "12px" : "10px";
+
+      // 2. Inner teardrop body: All rotation, background, border, and hover scale are strictly isolated here
+      el.innerHTML = `
+        <div class="marker-pin-teardrop" style="width: ${pinSize}; height: ${pinSize}; border-radius: 50% 50% 50% 0; background-color: ${bgColor}; transform: rotate(-45deg); border: 2.5px solid #ffffff; box-shadow: 0 4px 14px rgba(0,0,0,0.3); display: flex; align-items: center; justify-content: center; transition: transform 0.2s cubic-bezier(0.34, 1.56, 0.64, 1), box-shadow 0.2s; pointer-events: auto;">
+          <span style="transform: rotate(45deg); color: #ffffff; font-size: ${fontSize}; font-family: -apple-system, BlinkMacSystemFont, 'Segoe UI', Roboto, sans-serif; font-weight: 800; display: flex; align-items: center; justify-content: center; width: 100%; height: 100%; user-select: none;">
+            ${text}
+          </span>
+        </div>
+      `;
+
+      const innerPin = el.querySelector(".marker-pin-teardrop");
+      el.addEventListener("mouseenter", () => {
+        if (innerPin) {
+          innerPin.style.transform = "rotate(-45deg) scale(1.16)";
+          innerPin.style.boxShadow = "0 6px 18px rgba(0,0,0,0.4)";
+        }
+      });
+      el.addEventListener("mouseleave", () => {
+        if (innerPin) {
+          innerPin.style.transform = "rotate(-45deg) scale(1)";
+          innerPin.style.boxShadow = "0 4px 14px rgba(0,0,0,0.3)";
+        }
+      });
+
       return el;
     };
 
-    const createPopup = (title, address) => {
-      return new mapboxgl.Popup({
-        offset: [0, -30],
-        closeButton: true,
-        closeOnClick: false,
-        maxWidth: "240px",
-      }).setHTML(`
-          <div style="font-family: 'Inter', sans-serif; padding: 6px 4px 4px; max-width: 220px;">
-            <p style="margin: 0; font-size: 11px; font-weight: 700; color: #0f172a;">${title}</p>
-            ${address ? `<p style="margin: 4px 0 0; font-size: 10px; color: #64748b; line-height: 1.4; white-space: normal; word-break: break-word;">${address}</p>` : ""}
-          </div>
-        `);
-    };
+    let activePopup = null;
 
-    // Click-toggle helper — avoids mouseenter/mouseleave glitch
-    const attachClickToggle = (el, marker) => {
+    const setupMarkerPopup = (el, lngLat, title, address, themeColor = "#004a70") => {
+      const popup = new mapboxgl.Popup({
+        offset: [0, -38],
+        closeButton: true,
+        closeOnClick: true,
+        className: "ride-marker-toast-popup",
+        maxWidth: "260px",
+      }).setHTML(`
+        <div style="font-family: -apple-system, BlinkMacSystemFont, 'Segoe UI', Roboto, sans-serif; min-width: 190px; padding: 2px;">
+          <div style="font-size: 13px; font-weight: 700; color: ${themeColor}; margin-bottom: 4px; display: flex; align-items: center; gap: 6px;">
+            <span style="width: 7px; height: 7px; border-radius: 50%; background-color: ${themeColor}; display: inline-block;"></span>
+            ${title}
+          </div>
+          <div style="font-size: 11.5px; color: #475569; line-height: 1.4; word-break: break-word;">
+            ${address || "Selected Location"}
+          </div>
+        </div>
+      `);
+
+      const marker = new mapboxgl.Marker({ element: el, anchor: "bottom" })
+        .setLngLat(lngLat)
+        .addTo(mapRef.current);
+
+      let isPopupOpen = false;
+      popup.on("close", () => {
+        isPopupOpen = false;
+        if (activePopup === popup) {
+          activePopup = null;
+        }
+      });
+
+      // Strictly show on CLICK, never on hover
       el.addEventListener("click", (e) => {
         e.stopPropagation();
-        marker.togglePopup();
+        if (isPopupOpen) {
+          popup.remove();
+          isPopupOpen = false;
+          activePopup = null;
+        } else {
+          if (activePopup && activePopup !== popup) {
+            activePopup.remove();
+          }
+          popup.setLngLat(lngLat).addTo(mapRef.current);
+          isPopupOpen = true;
+          activePopup = popup;
+        }
       });
+
+      return marker;
     };
 
     if (hasStart) {
       const el = createCustomMarker("S", "start");
       const startAddress = locationDetails?.address || Currentlocation?.address || "Pickup Point";
-      const popup = createPopup("Pickup (Start)", startAddress);
-      const marker = new mapboxgl.Marker({ element: el, anchor: "bottom" })
-        .setLngLat(start)
-        .setPopup(popup)
-        .addTo(mapRef.current);
-      attachClickToggle(el, marker);
+      setupMarkerPopup(el, start, "Pickup (Start)", startAddress, "#16a34a");
       bounds.extend(start);
     }
 
     if (hasEnd) {
       const el = createCustomMarker("E", "end");
       const endAddress = locationDetails1?.address || "Destination Point";
-      const popup = createPopup("Destination (End)", endAddress);
-      const marker = new mapboxgl.Marker({ element: el, anchor: "bottom" })
-        .setLngLat(end)
-        .setPopup(popup)
-        .addTo(mapRef.current);
-      attachClickToggle(el, marker);
+      setupMarkerPopup(el, end, "Destination (End)", endAddress, "#dc2626");
       bounds.extend(end);
     }
 
@@ -511,12 +547,7 @@ const RidePage = ({ defaultTab }) => {
         stopCount++;
         
         const el = createCustomMarker(letter, "stop");
-        const popup = createPopup(`Stop ${letter}`, stop.address);
-        const marker = new mapboxgl.Marker({ element: el, anchor: "bottom" })
-          .setLngLat([stop.longitude, stop.latitude])
-          .setPopup(popup)
-          .addTo(mapRef.current);
-        attachClickToggle(el, marker);
+        setupMarkerPopup(el, [stop.longitude, stop.latitude], `Stop ${letter}`, stop.address, "#d97706");
         bounds.extend([stop.longitude, stop.latitude]);
       });
     }
@@ -526,12 +557,7 @@ const RidePage = ({ defaultTab }) => {
       stopCount++;
       
       const el = createCustomMarker(letter, "stop");
-      const popup = createPopup(`Stop ${letter} (Preview)`, selectedStop.description);
-      const marker = new mapboxgl.Marker({ element: el, anchor: "bottom" })
-        .setLngLat([selectedStop.latLng.lng, selectedStop.latLng.lat])
-        .setPopup(popup)
-        .addTo(mapRef.current);
-      attachClickToggle(el, marker);
+      setupMarkerPopup(el, [selectedStop.latLng.lng, selectedStop.latLng.lat], `Stop ${letter} (Preview)`, selectedStop.description, "#d97706");
       bounds.extend([selectedStop.latLng.lng, selectedStop.latLng.lat]);
     }
 
@@ -990,34 +1016,55 @@ const RidePage = ({ defaultTab }) => {
 
   return (
     <div className={`min-h-screen bg-[#f8fafc] font-poppins ${mounted ? "animate-fade-in" : "opacity-0"}`}>
+      {/* Toast Popup Styles for Map Markers */}
+      <style
+        dangerouslySetInnerHTML={{
+          __html: `
+            .ride-marker-toast-popup .mapboxgl-popup-content {
+              border-radius: 16px !important;
+              box-shadow: 0 12px 32px -4px rgba(0, 74, 112, 0.18), 0 4px 12px rgba(0, 0, 0, 0.08) !important;
+              border: 1.5px solid rgba(0, 74, 112, 0.12) !important;
+              padding: 12px 14px !important;
+              background: #ffffff !important;
+            }
+            .ride-marker-toast-popup .mapboxgl-popup-close-button {
+              font-size: 16px !important;
+              color: #94a3b8 !important;
+              padding: 4px 8px !important;
+              outline: none !important;
+            }
+            .ride-marker-toast-popup .mapboxgl-popup-close-button:hover {
+              color: #004a70 !important;
+              background: transparent !important;
+            }
+            .ride-marker-toast-popup .mapboxgl-popup-tip {
+              border-top-color: #ffffff !important;
+            }
+          `,
+        }}
+      />
       {/* ===== HERO BANNER ===== */}
-      <section className="relative overflow-hidden bg-gradient-to-br from-[#001726] via-[#002842] to-[#002f4a] !pt-28 !pb-14 sm:!pb-16 text-white">
-        <div className="absolute inset-0 opacity-[0.04]" style={{
-          backgroundImage: `radial-gradient(circle at 1px 1px, white 1px, transparent 0)`,
-          backgroundSize: "24px 24px"
-        }} />
-        
-        <div className="absolute top-1/4 -left-20 w-80 h-80 bg-sky-500/10 rounded-full blur-[100px] animate-pulse pointer-events-none" style={{ animationDuration: "8s" }} />
-        <div className="absolute bottom-1/4 -right-20 w-96 h-96 bg-brand-500/10 rounded-full blur-[120px] animate-pulse pointer-events-none" style={{ animationDuration: "12s" }} />
+      <section className="relative overflow-hidden bg-gradient-to-br from-[#001726] via-[#002f4a] to-[#001f33] !pt-20 sm:!pt-22 !pb-14 sm:!pb-16 text-white">
+        <div
+          className="absolute inset-0 opacity-[0.04] pointer-events-none"
+          style={{
+            backgroundImage: `radial-gradient(circle at 1px 1px, white 1px, transparent 0)`,
+            backgroundSize: "24px 24px"
+          }}
+        />
+        <div className="absolute inset-0 bg-gradient-to-t from-[#001726]/90 via-transparent to-transparent pointer-events-none" />
 
         <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 relative z-10">
-          <div className="flex items-center gap-2 text-slate-400 text-xs font-family-medium !mb-4">
-            <Link href="/" className="text-slate-400 hover:text-white transition-colors no-underline">Home</Link>
-            <span className="text-slate-500">/</span>
-            <span className="text-slate-200">
+          <div className="flex items-center gap-2 text-slate-300 text-xs font-family-medium !mb-4">
+            <Link href="/" className="text-slate-300 hover:text-white transition-colors no-underline">Home</Link>
+            <span className="text-slate-400">/</span>
+            <span className="text-white font-family-semibold">
               {TypeRide === "parcel" ? "Send a Parcel" : "Book a Ride"}
             </span>
           </div>
 
           <div className="flex flex-wrap justify-between items-center gap-4">
             <div className="flex items-center gap-4">
-              <div className="w-13 h-13 rounded-2xl bg-white/10 backdrop-blur-md border border-white/15 flex items-center justify-center shrink-0 shadow-inner">
-                {TypeRide === "parcel" ? (
-                  <FaBox className="text-white text-2xl" />
-                ) : (
-                  <FaCar className="text-white text-2xl" />
-                )}
-              </div>
               <div>
                 <h1 className="text-white text-2xl sm:text-3xl font-family-semibold tracking-tight !m-0 leading-tight">
                   {TypeRide === "parcel" ? "Send a Parcel" : "Book a Driver"}
@@ -1059,9 +1106,9 @@ const RidePage = ({ defaultTab }) => {
                       setValue("category", tab.key);
                     }
                   }}
-                  className={`cursor-pointer transition-all duration-200 select-none flex items-center gap-2 px-5 py-2.5 rounded-full text-xs sm:text-sm font-family-semibold whitespace-nowrap !border shadow-[0_4px_16px_rgba(0,0,0,0.08)] ${
+                  className={`cursor-pointer transition-all duration-200 select-none flex items-center gap-2 px-5 py-2.5 rounded-full text-xs sm:text-sm font-family-semibold whitespace-nowrap !border ${
                     isSelected
-                      ? "text-white bg-[#004a70] !border-[#004a70] shadow-md"
+                      ? "text-white bg-[#004a70] !border-[#004a70]"
                       : "text-slate-700 bg-white !border-slate-200/90 hover:!border-[#004a70] hover:bg-slate-50 hover:text-[#004a70]"
                   }`}
                 >
@@ -1202,7 +1249,7 @@ const RidePage = ({ defaultTab }) => {
                           type="button"
                           onClick={() => setParcelImage(null)}
                           className="w-8 h-8 rounded-lg bg-rose-50 hover:bg-rose-100 text-rose-600 flex items-center justify-center border-none transition-colors cursor-pointer mr-1"
-                          title="Remove photo"
+                          aria-label="Remove photo"
                         >
                           <FiTrash2 size={15} />
                         </button>
@@ -1258,7 +1305,7 @@ const RidePage = ({ defaultTab }) => {
                             <button
                               type="button"
                               onClick={getLocation}
-                              title="Use Current Location"
+                              aria-label="Use Current Location"
                               className="w-7 h-7 rounded-lg bg-brand-50 hover:bg-brand-100 text-[#004a70] flex items-center justify-center border-none transition-colors cursor-pointer"
                             >
                               <BiCurrentLocation size={16} />
@@ -1324,7 +1371,7 @@ const RidePage = ({ defaultTab }) => {
                                 type="button"
                                 onClick={addlocation}
                                 disabled={!selectedStop}
-                                title="Add Stop"
+                                aria-label="Add Stop"
                                 className="w-7 h-7 rounded-lg bg-[#004a70] hover:bg-[#003855] text-white flex items-center justify-center border-none transition-colors disabled:opacity-35 cursor-pointer shadow-xs"
                               >
                                 <IoMdAddCircleOutline size={16} />

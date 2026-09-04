@@ -10,11 +10,14 @@ import { logout } from "../Redux/Slices/AuthSlice";
 import { useDispatch, useSelector } from "react-redux";
 import { logoBlue, whiteLogo } from "../assets/Images";
 import { HiMenuAlt3, HiX } from "react-icons/hi";
+import { HiOutlineShoppingBag } from "react-icons/hi2";
+import { Badge } from "antd";
 import Link from "next/link";
 import { AppStore, GooglePlay } from "../assets/Images";
 import Image from "next/image";
 import { useRouter, usePathname } from "next/navigation";
 import DriverModal from "./DriverModal";
+import { openCart } from "../Redux/Slices/CartSlice";
 
 const Header = () => {
   const [show, setShow] = useState(false);
@@ -32,8 +35,12 @@ const Header = () => {
   const handleClosedriver = () => SetdriverModal(false);
 
   const dispatch = useDispatch();
+  const cartItems = useSelector((state) => state.cart?.cartItems) || [];
+  const cartCount = cartItems.reduce((acc, item) => acc + (item.cartQuantity || 1), 0);
 
   const [isScrolled, setIsScrolled] = useState(false);
+  const isHome = pathname === "/";
+  const isDarkNav = isScrolled || !isHome;
 
   useEffect(() => {
     const checkScroll = () => {
@@ -96,7 +103,7 @@ const Header = () => {
             className="flex items-center flex-shrink-0 no-underline transition-transform duration-300 hover:scale-105"
           >
             <Image
-              src={isScrolled ? logoBlue : whiteLogo}
+              src={isDarkNav ? logoBlue : whiteLogo}
               alt="Welcome to Saint Kitts"
               width={72}
               height={40}
@@ -114,11 +121,11 @@ const Header = () => {
                   onClick={() => handleNavClick(link.id)}
                   className={`px-3.5 py-1.5 rounded-full text-[13.5px] transition-all duration-200 whitespace-nowrap select-none cursor-pointer !border-0 ${
                     active
-                      ? isScrolled
+                      ? isDarkNav
                         ? "bg-[#004a70] text-white font-family-semibold shadow-sm"
                         : "bg-white/25 text-white font-family-semibold backdrop-blur-md shadow-sm"
-                      : isScrolled
-                      ? "bg-transparent text-slate-700 hover:text-[#004a70] hover:bg-slate-100/80 font-family-medium"
+                      : isDarkNav
+                      ? "bg-transparent text-slate-900 hover:text-[#004a70] hover:bg-slate-100/80 font-family-medium"
                       : "bg-transparent text-white/90 hover:text-white hover:bg-white/15 font-family-medium"
                   }`}
                 >
@@ -132,10 +139,31 @@ const Header = () => {
             className="hidden xl:flex items-center gap-2 flex-shrink-0 animate-fade-in"
             style={{ animationDelay: "150ms" }}
           >
+            {/* Shopping Cart Button */}
+            <Badge
+              count={cartCount}
+              size="small"
+              offset={[-2, 2]}
+              style={{ backgroundColor: "#004a70" }}
+            >
+              <button
+                type="button"
+                onClick={() => dispatch(openCart())}
+                title="Shopping Cart"
+                className={`w-9 h-9 rounded-full flex items-center justify-center cursor-pointer transition-all duration-200 !border ${
+                  isDarkNav
+                    ? "!border-slate-200/90 bg-slate-100 hover:bg-slate-200 text-slate-700 hover:text-[#004a70] shadow-sm"
+                    : "!border-white/30 bg-white/15 hover:bg-white/25 text-white"
+                }`}
+              >
+                <HiOutlineShoppingBag size={18} />
+              </button>
+            </Badge>
+
             <Link
               href="/auth/login"
               className={`font-family-medium px-4 py-2 rounded-full text-xs sm:text-sm transition-all duration-200 no-underline ${
-                isScrolled
+                isDarkNav
                   ? "!border !border-slate-200 text-slate-700 hover:text-[#004a70] hover:!border-[#004a70] hover:bg-slate-50"
                   : "!border !border-white/30 text-white hover:!border-white/60 hover:bg-white/10"
               }`}
@@ -145,7 +173,7 @@ const Header = () => {
             <Link
               href="/auth/stepOne"
               className={`font-family-semibold px-4 py-2 rounded-full text-xs sm:text-sm transition-all duration-200 no-underline shadow-sm ${
-                isScrolled
+                isDarkNav
                   ? "bg-[#004a70] text-white hover:bg-[#003855]"
                   : "bg-white text-[#004a70] hover:bg-slate-100"
               }`}
@@ -155,7 +183,7 @@ const Header = () => {
             <button
               onClick={() => SetdriverModal(true)}
               className={`font-family-medium px-4 py-2 rounded-full text-xs sm:text-sm transition-all duration-200 cursor-pointer ${
-                isScrolled
+                isDarkNav
                   ? "!border !border-[#004a70]/40 text-[#004a70] hover:bg-[#004a70] hover:text-white bg-transparent"
                   : "!border !border-white/40 text-white hover:bg-white/15 bg-transparent"
               }`}
@@ -166,7 +194,7 @@ const Header = () => {
 
           <button
             className={`xl:hidden w-9 h-9 rounded-full flex items-center justify-center cursor-pointer transition-all duration-200 !border shadow-sm ${
-              isScrolled
+              isDarkNav
                 ? "!border-slate-200/80 bg-slate-100 hover:bg-slate-200 text-[#004a70]"
                 : "!border-white/30 bg-white/15 hover:bg-white/25 text-white"
             }`}

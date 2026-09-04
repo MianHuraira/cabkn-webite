@@ -361,39 +361,33 @@ const page = () => {
   return (
     <div className={`!min-h-screen !bg-[#f8fafc] font-poppins ${mounted ? "!animate-fade-in" : "!opacity-0"}`}>
       {/* ===== HERO BANNER (Matches MakeRide & BookRide) ===== */}
-      <section className="!relative !overflow-hidden !bg-gradient-to-br !from-[#001726] !via-[#002842] !to-[#002f4a] !pt-28 !pb-14 sm:!pb-16 !text-white">
+      <section className="relative overflow-hidden bg-gradient-to-br from-[#001726] via-[#002f4a] to-[#001f33] !pt-20 sm:!pt-24 !pb-14 sm:!pb-16 text-white">
         <div
-          className="!absolute !inset-0 !opacity-[0.04]"
+          className="absolute inset-0 opacity-[0.04] pointer-events-none"
           style={{
             backgroundImage: `radial-gradient(circle at 1px 1px, white 1px, transparent 0)`,
             backgroundSize: "24px 24px",
           }}
         />
-        <div className="!absolute !top-1/4 !-left-20 !w-80 !h-80 !bg-sky-500/10 !rounded-full !blur-[100px] !pointer-events-none" />
-        <div className="!absolute !bottom-1/4 !-right-20 !w-96 !h-96 !bg-brand-500/10 !rounded-full !blur-[120px] !pointer-events-none" />
+        <div className="absolute inset-0 bg-gradient-to-t from-[#001726]/90 via-transparent to-transparent pointer-events-none" />
 
-        <div className="!max-w-7xl !mx-auto !px-4 sm:!px-6 lg:!px-8 !relative !z-10">
-          <div className="!flex !items-center !gap-2 !text-slate-400 !text-xs !font-family-medium !mb-4">
-            <Link href="/" className="!text-slate-400 hover:!text-white !transition-colors !no-underline">
+        <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 relative z-10">
+          <div className="flex items-center gap-2 text-slate-300 text-xs font-family-medium mb-4">
+            <Link href="/" className="text-slate-300 hover:text-white transition-colors no-underline">
               Home
             </Link>
-            <span className="!text-slate-500">/</span>
-            <span className="!text-slate-200 !font-family-semibold">Wallet</span>
+            <span className="text-slate-400">/</span>
+            <span className="text-white font-family-semibold">Wallet</span>
           </div>
 
-          <div className="!flex !flex-wrap !justify-between !items-center !gap-4">
-            <div className="!flex !items-center !gap-4">
-              <div className="!w-12 !h-12 !rounded-2xl !bg-white/10 !backdrop-blur-md !border !border-white/15 !flex !items-center !justify-center !shrink-0 !shadow-inner">
-                <FaWallet className="!text-white !text-2xl" />
-              </div>
-              <div>
-                <h1 className="!text-white !text-2xl sm:!text-3xl !font-family-semibold !tracking-tight !m-0 !leading-tight">
-                  Customer Wallet
-                </h1>
-                <p className="!text-slate-300 !text-xs sm:!text-sm !mt-1 !m-0 !font-family-regular">
-                  Manage your balance, add funds, and track payments in real-time
-                </p>
-              </div>
+          <div className="flex flex-wrap justify-between items-center gap-4">
+            <div>
+              <h1 className="text-white text-2xl sm:text-3xl font-family-semibold tracking-tight !m-0 leading-tight">
+                Customer Wallet
+              </h1>
+              <p className="text-slate-300 text-xs sm:text-sm mt-1 !m-0 font-family-regular">
+                Manage your balance, add funds, and track payments in real-time
+              </p>
             </div>
 
             {/* Quick Balance Header Pill */}

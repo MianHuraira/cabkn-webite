@@ -304,8 +304,11 @@ const page = () => {
               type="button"
               onClick={googlLogin}
               disabled={GoogleLoading}
+              loading={GoogleLoading}
             >
-              <Image src={Google} alt="Google" className="h-4 w-4 object-contain" />
+              {!GoogleLoading && (
+                <Image src={Google} alt="Google" className="h-4 w-4 object-contain" />
+              )}
               <span>{GoogleLoading ? "Signing in..." : "Sign In with Google"}</span>
             </AuthSecondaryButton>
           </form>

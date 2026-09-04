@@ -34,7 +34,7 @@ import { message } from "antd";
 import { useDispatch, useSelector } from "react-redux";
 import { Badge } from "antd";
 import { AiOutlineMenuFold } from "react-icons/ai";
-import { HiOutlineChatBubbleOvalLeft } from "react-icons/hi2";
+import { HiOutlineChatBubbleOvalLeft, HiOutlineShoppingBag } from "react-icons/hi2";
 import { MdNotificationsActive, MdNotificationsNone, MdLogout } from "react-icons/md";
 import { IoHeart } from "react-icons/io5";
 import moment from "moment";
@@ -44,9 +44,11 @@ import { AppStore, GooglePlay, logoBlue, whiteLogo } from "../assets/Images";
 import Image from "next/image";
 import ApiFunction from "../ApiFunction/ApiFunction";
 import { logout, setUnreadCount, setNotifUnreadCount, setNotifLastTotal } from "../Redux/Slices/AuthSlice";
+import { openCart } from "../Redux/Slices/CartSlice";
 import { useRouter, usePathname } from "next/navigation";
 import { encryptData } from "../ApiFunction/encrypted";
 import { useSocket } from "../ApiFunction/SoketProvider";
+import { playNotificationSound } from "@/utils/notificationSound";
 import ApiFile from "../ApiFunction/ApiFile";
 import DriverModal from "./DriverModal";
 
@@ -59,9 +61,17 @@ const InnerHeader = () => {
   const dispatch = useDispatch();
   const router = useRouter();
   const pathname = usePathname();
-  const unreadCount = useSelector((state) => state.auth.unreadCount);
-  const notifUnreadCount = useSelector((state) => state.auth.notifUnreadCount);
-  const notifLastTotalRef = useRef(0);
+  const unreadCount = useSelector((state) => state.auth?.unreadCount || 0);
+  const notifUnreadCount = useSelector((state) => state.auth?.notifUnreadCount || 0);
+  const notifLastTotal = useSelector((state) => state.auth?.notifLastTotal || 0);
+  const cartItems = useSelector((state) => state.cart?.cartItems) || [];
+  const cartCount = cartItems.reduce((acc, item) => acc + (item.cartQuantity || 1), 0);
+  const notifLastTotalRef = useRef(notifLastTotal);
+  const notifUnreadCountRef = useRef(notifUnreadCount);
+
+  useEffect(() => {
+    notifUnreadCountRef.current = notifUnreadCount;
+  }, [notifUnreadCount]);
   const socket = useSocket();
   const { getAllConversation } = ApiFile;
 
@@ -134,6 +144,7 @@ const InnerHeader = () => {
       const msgSenderId = typeof message?.sender === "object" ? message?.sender?._id : message?.sender;
       if (msgSenderId && msgSenderId !== userId) {
         dispatch(setUnreadCount(unreadCount + 1));
+        playNotificationSound();
       }
     };
     socket.on("recieved-message", handleMessage);
@@ -155,7 +166,8 @@ const InnerHeader = () => {
           const diff = Math.max(0, total - notifLastTotalRef.current);
           notifLastTotalRef.current = total;
           if (diff > 0) {
-            dispatch(setNotifUnreadCount((prev) => prev + diff));
+            dispatch(setNotifUnreadCount((notifUnreadCountRef.current || 0) + diff));
+            playNotificationSound();
           }
           dispatch(setNotifLastTotal(total));
         }
@@ -172,6 +184,8 @@ const InnerHeader = () => {
   const [userMenuOpen, setUserMenuOpen] = useState(false);
   const [mounted, setMounted] = useState(false);
   const [isScrolled, setIsScrolled] = useState(false);
+  const isHome = pathname === "/";
+  const isDarkNav = isScrolled;
 
   const [notifShow, setNotifShow] = useState(false);
   const [notifications, setNotifications] = useState([]);
@@ -348,7 +362,7 @@ const InnerHeader = () => {
     {
       id: "tours",
       label: "Explore & Tours",
-      hrefPrefixes: ["/makeowntours", "/tours", "/popularplaces", "/listownplace"],
+      hrefPrefixes: ["/makeowntours", "/tours",  "/listownplace"],
       items: [
         {
           title: "Make Own Tours",
@@ -362,12 +376,7 @@ const InnerHeader = () => {
           href: "/tours",
           icon: <FaHiking size={16} />,
         },
-        {
-          title: "Popular Places",
-          desc: "Explore Brimstone Hill Fortress, Cockleshell Bay, and scenic sights.",
-          href: "/popularplaces",
-          icon: <FaMapMarkedAlt size={16} />,
-        },
+        
         {
           title: "List Own Place",
           desc: "Partner with us and showcase your resort, villa, or venue to tourists.",
@@ -445,7 +454,7 @@ const InnerHeader = () => {
             className="!flex !items-center !flex-shrink-0 !no-underline !transition-transform !duration-300 hover:!scale-105"
           >
             <Image
-              src={isScrolled ? logoBlue : whiteLogo}
+              src={isDarkNav ? logoBlue : whiteLogo}
               alt="Welcome to Saint Kitts"
               width={72}
               height={40}
@@ -461,11 +470,11 @@ const InnerHeader = () => {
               href="/"
               className={`!px-3.5 !py-1.5 !rounded-full !text-[13px] !transition-all !duration-200 !whitespace-nowrap !select-none !no-underline ${
                 isActive("/")
-                  ? isScrolled
+                  ? isDarkNav
                     ? "!bg-[#004a70] !text-white !font-family-semibold !font-semibold !shadow-sm"
                     : "!bg-white/25 !text-white !font-family-semibold !font-semibold !backdrop-blur-md !shadow-sm"
-                  : isScrolled
-                  ? "!text-slate-700 hover:!text-[#004a70] hover:!bg-slate-100/80 !font-family-medium !font-normal"
+                  : isDarkNav
+                  ? "!text-slate-900 hover:!text-[#004a70] hover:!bg-slate-100/80 !font-family-medium !font-normal"
                   : "!text-white/90 hover:!text-white hover:!bg-white/15 !font-family-medium !font-normal"
               }`}
             >
@@ -489,11 +498,11 @@ const InnerHeader = () => {
                     onClick={() => handleToggleDropdown(category.id)}
                     className={`!px-3 !py-1.5 !rounded-full !text-[13px] !transition-all !duration-200 !whitespace-nowrap !select-none !flex !items-center !gap-1.5 !border-none !cursor-pointer ${
                       active || isOpen
-                        ? isScrolled
+                        ? isDarkNav
                           ? "!bg-[#004a70] !text-white !font-family-semibold !font-semibold !shadow-sm"
                           : "!bg-white/25 !text-white !font-family-semibold !font-semibold !backdrop-blur-md !shadow-sm"
-                        : isScrolled
-                        ? "!text-slate-700 hover:!text-[#004a70] hover:!bg-slate-100/80 !font-family-medium !font-normal !bg-transparent"
+                        : isDarkNav
+                        ? "!text-slate-900 hover:!text-[#004a70] hover:!bg-slate-100/80 !font-family-medium !font-normal !bg-transparent"
                         : "!text-white/90 hover:!text-white hover:!bg-white/15 !font-family-medium !font-normal !bg-transparent"
                     }`}
                   >
@@ -505,8 +514,8 @@ const InnerHeader = () => {
                       } ${
                         active || isOpen
                           ? "!text-white"
-                          : isScrolled
-                          ? "!text-slate-500"
+                          : isDarkNav
+                          ? "!text-slate-700"
                           : "!text-white/80"
                       }`}
                     />
@@ -614,11 +623,11 @@ const InnerHeader = () => {
               href="/wallet"
               className={`!px-3.5 !py-1.5 !rounded-full !text-[13px] !transition-all !duration-200 !whitespace-nowrap !select-none !no-underline !flex !items-center !gap-1.5 ${
                 isActive("/wallet")
-                  ? isScrolled
+                  ? isDarkNav
                     ? "!bg-[#004a70] !text-white !font-family-semibold !font-semibold !shadow-sm"
                     : "!bg-white/25 !text-white !font-family-semibold !font-semibold !backdrop-blur-md !shadow-sm"
-                  : isScrolled
-                  ? "!text-slate-700 hover:!text-[#004a70] hover:!bg-slate-100/80 !font-family-medium !font-normal"
+                  : isDarkNav
+                  ? "!text-slate-900 hover:!text-[#004a70] hover:!bg-slate-100/80 !font-family-medium !font-normal"
                   : "!text-white/90 hover:!text-white hover:!bg-white/15 !font-family-medium !font-normal"
               }`}
             >
@@ -629,6 +638,27 @@ const InnerHeader = () => {
 
           {/* Right: Icons + User + Mobile Toggle */}
           <div className="flex items-center gap-2 flex-shrink-0">
+            {/* Shopping Cart Button */}
+            <Badge
+              count={cartCount}
+              size="small"
+              offset={[-2, 2]}
+              style={{ backgroundColor: "#004a70" }}
+            >
+              <button
+                type="button"
+                onClick={() => dispatch(openCart())}
+                title="Shopping Cart"
+                className={`w-9 h-9 rounded-full flex items-center justify-center cursor-pointer transition-all duration-200 !border ${
+                  isDarkNav
+                    ? "!border-slate-200/90 bg-slate-100 hover:bg-slate-200 text-slate-700 hover:text-[#004a70] shadow-sm"
+                    : "!border-white/30 bg-white/15 hover:bg-white/25 text-white"
+                }`}
+              >
+                <HiOutlineShoppingBag size={18} />
+              </button>
+            </Badge>
+
             {/* Chat Icon Button */}
             <Link
               href="/chat"
@@ -643,7 +673,7 @@ const InnerHeader = () => {
               >
                 <div
                   className={`w-9 h-9 rounded-full flex items-center justify-center cursor-pointer transition-all duration-200 !border ${
-                    isScrolled
+                    isDarkNav
                       ? "!border-slate-200/90 bg-slate-100 hover:bg-slate-200 text-slate-700 hover:text-[#004a70] shadow-sm"
                       : "!border-white/30 bg-white/15 hover:bg-white/25 text-white"
                   }`}
@@ -662,9 +692,16 @@ const InnerHeader = () => {
                 style={{ backgroundColor: "#ef4444" }}
               >
                 <button
-                  onClick={() => setNotifShow((prev) => !prev)}
+                  onClick={() => {
+                    setNotifShow((prev) => {
+                      if (!prev) {
+                        dispatch(setNotifUnreadCount(0));
+                      }
+                      return !prev;
+                    });
+                  }}
                   className={`w-9 h-9 rounded-full flex items-center justify-center cursor-pointer transition-all duration-200 !border ${
-                    isScrolled
+                    isDarkNav
                       ? "!border-slate-200/90 bg-slate-100 hover:bg-slate-200 text-slate-700 hover:text-[#004a70] shadow-sm"
                       : "!border-white/30 bg-white/15 hover:bg-white/25 text-white"
                   }`}
@@ -827,7 +864,7 @@ const InnerHeader = () => {
                 <button
                   onClick={() => setUserMenuOpen(!userMenuOpen)}
                   className={`w-9 h-9 rounded-full flex items-center justify-center cursor-pointer transition-all duration-200 overflow-hidden !border-2 shadow-sm hover:scale-105 ${
-                    isScrolled ? "!border-slate-200 bg-slate-100" : "!border-white/40 bg-white/20"
+                    isDarkNav ? "!border-slate-200 bg-slate-100" : "!border-white/40 bg-white/20"
                   }`}
                 >
                   {userData?.user?.image ? (
@@ -839,7 +876,7 @@ const InnerHeader = () => {
                       alt="userImage"
                     />
                   ) : (
-                    <FaUser size={15} className={isScrolled ? "text-slate-600" : "text-white"} />
+                    <FaUser size={15} className={isDarkNav ? "text-slate-600" : "text-white"} />
                   )}
                 </button>
                 {userMenuOpen && (
@@ -928,7 +965,7 @@ const InnerHeader = () => {
                 <Link
                   href="/auth/login"
                   className={`font-family-medium px-4 py-2 rounded-full text-xs sm:text-sm transition-all duration-200 no-underline ${
-                    isScrolled
+                    isDarkNav
                       ? "!border !border-slate-200 text-slate-700 hover:text-[#004a70] hover:!border-[#004a70] hover:bg-slate-50"
                       : "!border !border-white/30 text-white hover:!border-white/60 hover:bg-white/10"
                   }`}
@@ -938,7 +975,7 @@ const InnerHeader = () => {
                 <Link
                   href="/auth/stepOne"
                   className={`font-family-semibold px-4 py-2 rounded-full text-xs sm:text-sm transition-all duration-200 no-underline shadow-sm ${
-                    isScrolled
+                    isDarkNav
                       ? "bg-[#004a70] text-white hover:bg-[#003855]"
                       : "bg-white text-[#004a70] hover:bg-slate-100"
                   }`}
@@ -948,7 +985,7 @@ const InnerHeader = () => {
                 <button
                   onClick={() => SetdriverModal(true)}
                   className={`font-family-medium px-4 py-2 rounded-full text-xs sm:text-sm transition-all duration-200 cursor-pointer ${
-                    isScrolled
+                    isDarkNav
                       ? "!border !border-[#004a70]/40 text-[#004a70] hover:bg-[#004a70] hover:text-white bg-transparent"
                       : "!border !border-white/40 text-white hover:bg-white/15 bg-transparent"
                   }`}
@@ -962,7 +999,7 @@ const InnerHeader = () => {
             <button
               onClick={() => setShow((prev) => !prev)}
               className={`xl:hidden w-9 h-9 rounded-full flex items-center justify-center cursor-pointer transition-all duration-200 !border shadow-sm ${
-                isScrolled
+                isDarkNav
                   ? "!border-slate-200 bg-slate-100 hover:bg-slate-200 text-[#004A70]"
                   : "!border-white/30 bg-white/15 hover:bg-white/25 text-white"
               }`}

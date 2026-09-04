@@ -308,7 +308,7 @@ export default function Testimonials() {
       {/* ===== BOTTOM CTA CARD ===== */}
       <SectionReveal>
         <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 pb-20 md:pb-28">
-          <div className="relative overflow-hidden bg-gradient-to-br from-slate-900 via-brand-900 to-brand-950 rounded-[2.5rem] py-16 md:py-20 px-6 sm:px-10 text-center shadow-xl">
+          <div className="relative overflow-hidden bg-gradient-to-br from-[#001726] via-[#002f4a] to-[#001f33] !border !border-white/10 rounded-[2.5rem] py-16 md:py-20 px-6 sm:px-10 text-center shadow-xl">
             {/* Mesh background overlays */}
             <div className="absolute inset-0 opacity-[0.03]" style={{
               backgroundImage: `radial-gradient(circle at 1px 1px, white 1px, transparent 0)`,

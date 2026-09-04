@@ -459,25 +459,34 @@ export default function AirportPickupsPage() {
 
   return (
     <div className="!min-h-screen !bg-slate-50/70 font-poppins">
-      {/* ===== HEADER BANNER (Exact Match with Tours, Services, Why Us Header) ===== */}
-      <section className="!relative !bg-gradient-to-br !from-[#001726] !via-[#002f4a] !to-[#001f33] !pt-24 sm:!pt-28 !pb-14 sm:!pb-16 !text-white !overflow-hidden">
-        <div className="!max-w-7xl !mx-auto !px-3 sm:!px-6 lg:!px-8 !relative !z-10">
-          <div className="!flex !items-center !gap-2 !text-slate-300 !text-xs sm:!text-sm !font-family-medium !mb-2.5">
-            <Link href="/" className="hover:!text-white !transition-colors !no-underline !text-slate-300 !font-family-medium">
+      {/* ===== HEADER BANNER (Matches Ride Details / Luxury Navy) ===== */}
+      <section className="relative overflow-hidden bg-gradient-to-br from-[#001726] via-[#002f4a] to-[#001f33] !pt-20 sm:!pt-24 !pb-12 sm:!pb-14 text-white">
+        <div
+          className="absolute inset-0 opacity-[0.04] pointer-events-none"
+          style={{
+            backgroundImage: `radial-gradient(circle at 1px 1px, white 1px, transparent 0)`,
+            backgroundSize: "24px 24px",
+          }}
+        />
+        <div className="absolute inset-0 bg-gradient-to-t from-[#001726]/90 via-transparent to-transparent pointer-events-none" />
+
+        <div className="max-w-7xl mx-auto px-3 sm:px-6 lg:px-8 relative z-10">
+          <div className="flex items-center gap-2 text-slate-300 text-xs sm:text-sm font-family-medium mb-2.5">
+            <Link href="/" className="hover:text-white transition-colors no-underline text-slate-300 font-family-medium">
               Home
             </Link>
-            <span className="!font-family-regular">/</span>
-            <span className="!text-white !font-family-semibold">Airport Pickups</span>
+            <span className="text-slate-400">/</span>
+            <span className="text-white font-family-semibold">Airport Pickups</span>
           </div>
 
           <div>
-            <h1 className="!text-2xl sm:!text-3xl md:!text-4xl !font-family-semibold !text-white !tracking-tight !m-0 !leading-tight">
+            <h1 className="text-2xl sm:text-3xl md:text-4xl font-family-semibold text-white tracking-tight !m-0 leading-tight">
               St. Kitts (SKB){" "}
-              <span className="!bg-gradient-to-r !from-sky-400 !via-teal-300 !to-emerald-400 !bg-clip-text !text-transparent !font-family-semibold">
+              <span className="bg-gradient-to-r from-sky-400 via-teal-300 to-emerald-400 bg-clip-text text-transparent font-family-semibold">
                 Airport Pickups
               </span>
             </h1>
-            <p className="!text-xs sm:!text-sm !text-slate-300 !font-family-regular !m-0 !mt-1.5 !max-w-2xl !leading-relaxed">
+            <p className="text-xs sm:text-sm text-slate-300 font-family-regular !m-0 mt-1.5 max-w-2xl leading-relaxed">
               Pre-book your private transfer from Robert L. Bradshaw International Airport (SKB) to any hotel, resort, or villa with flight tracking and transparent flat rates.
             </p>
           </div>

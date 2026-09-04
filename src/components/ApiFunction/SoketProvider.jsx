@@ -16,6 +16,7 @@ import { io } from "socket.io-client";
 import { useDispatch, useSelector } from "react-redux";
 import ApiFunction from "./ApiFunction";
 import { setTipModal, setTipOrderId, setUser } from "../Redux/Slices/AuthSlice";
+import { playNotificationSound } from "@/utils/notificationSound";
 
 const SocketContext = createContext();
 
@@ -52,8 +53,21 @@ export const SocketProvider = ({ children }) => {
     });
 
     newSocket.on("update-order-customer", (res) => {
+      playNotificationSound();
       dispatch(setTipModal(true));
       dispatch(setTipOrderId(res?.order));
+    });
+
+    newSocket.on("notification-count", () => {
+      playNotificationSound();
+    });
+
+    newSocket.on("notification", () => {
+      playNotificationSound();
+    });
+
+    newSocket.on("new-notification", () => {
+      playNotificationSound();
     });
 
     newSocket.on("user_update", (res) => {

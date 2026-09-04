@@ -64,6 +64,26 @@ export default function TopLocationsPage() {
 
   useEffect(() => {
     setMounted(true);
+
+    // Clean up any tour items that expired after 1 minute in sessionStorage
+    if (typeof window !== "undefined") {
+      try {
+        const now = Date.now();
+        Object.keys(sessionStorage).forEach((key) => {
+          if (key.startsWith("tour_") || key === "selected_tour") {
+            try {
+              const val = sessionStorage.getItem(key);
+              if (val) {
+                const parsed = JSON.parse(val);
+                if (parsed?._expiresAt && now >= parsed._expiresAt) {
+                  sessionStorage.removeItem(key);
+                }
+              }
+            } catch (_) {}
+          }
+        });
+      } catch (_) {}
+    }
   }, []);
 
   useEffect(() => {
@@ -267,30 +287,48 @@ export default function TopLocationsPage() {
     setPridicLoading(false);
   };
 
+  const saveTourWithExpiry = (item) => {
+    if (typeof window === "undefined" || !item?._id) return;
+    try {
+      const EXPIRY_MS = 60 * 1000; // 1 minute
+      const itemWithExpiry = {
+        ...item,
+        _savedAt: Date.now(),
+        _expiresAt: Date.now() + EXPIRY_MS,
+      };
+      sessionStorage.setItem(`tour_${item._id}`, JSON.stringify(itemWithExpiry));
+      sessionStorage.setItem("selected_tour", JSON.stringify(itemWithExpiry));
+      sessionStorage.setItem(`tour_expiry_${item._id}`, (Date.now() + EXPIRY_MS).toString());
+
+      // Auto-clear this item after 1 minute
+      setTimeout(() => {
+        try {
+          const stored = sessionStorage.getItem(`tour_${item._id}`);
+          if (stored) {
+            const parsed = JSON.parse(stored);
+            if (parsed?._expiresAt && Date.now() >= parsed._expiresAt) {
+              sessionStorage.removeItem(`tour_${item._id}`);
+              sessionStorage.removeItem("selected_tour");
+              sessionStorage.removeItem(`tour_expiry_${item._id}`);
+            }
+          }
+        } catch (_) {}
+      }, EXPIRY_MS);
+    } catch (e) {
+      console.warn("sessionStorage save error:", e);
+    }
+  };
+
   const handleSelection = (category) => {
     if (category?._id) {
-      if (typeof window !== "undefined") {
-        try {
-          sessionStorage.setItem(`tour_${category._id}`, JSON.stringify(category));
-          sessionStorage.setItem("selected_tour", JSON.stringify(category));
-        } catch (e) {
-          console.warn("sessionStorage save error:", e);
-        }
-      }
+      saveTourWithExpiry(category);
       router.push(`/popular/${category._id}`);
     }
   };
 
   const handleItemClick = (item) => {
     if (item?._id) {
-      if (typeof window !== "undefined") {
-        try {
-          sessionStorage.setItem(`tour_${item._id}`, JSON.stringify(item));
-          sessionStorage.setItem("selected_tour", JSON.stringify(item));
-        } catch (e) {
-          console.warn("sessionStorage save error:", e);
-        }
-      }
+      saveTourWithExpiry(item);
       router.push(`/popular/${item._id}`);
     }
   };
@@ -301,7 +339,7 @@ export default function TopLocationsPage() {
   return (
     <div className={`min-h-screen bg-[#f8fafc] font-poppins text-slate-800 ${mounted ? "animate-fade-in" : "opacity-0"}`}>
       {/* ===== 1. HERO HEADER (Same as /admin) ===== */}
-      <section className="relative overflow-hidden bg-gradient-to-br from-[#001726] via-[#002f4a] to-[#001f33] !pt-20 sm:!pt-28 !pb-24 sm:!pb-28 text-white">
+      <section className="relative overflow-hidden bg-gradient-to-br from-[#001726] via-[#002f4a] to-[#001f33] !pt-20 sm:!pt-24 !pb-20 sm:!pb-24 text-white">
         <div
           className="absolute inset-0 opacity-[0.04] pointer-events-none"
           style={{
@@ -322,21 +360,14 @@ export default function TopLocationsPage() {
           </div>
 
           <div className="flex flex-wrap justify-between items-center gap-3">
-            <div className="flex items-center gap-3">
-              <div className="w-10 h-10 sm:w-11 sm:h-11 rounded-xl bg-white/10 backdrop-blur-md flex items-center justify-center shrink-0 !border !border-white/15">
-                <MdOutlineExplore size={22} className="text-white" />
-              </div>
-              <div>
-                <h1 className="text-xl sm:text-2xl font-family-semibold text-white tracking-tight !m-0 leading-tight">
-                  Top Locations
-                </h1>
-                <p className="text-slate-300 text-xs !mt-0.5 !m-0 font-family-regular">
-                  Places travelers love right now in Saint Kitts & Nevis
-                </p>
-              </div>
+            <div>
+              <h1 className="text-xl sm:text-2xl font-family-semibold text-white tracking-tight !m-0 leading-tight">
+                Top Locations
+              </h1>
+              <p className="text-slate-300 text-xs !mt-0.5 !m-0 font-family-regular">
+                Places travelers love right now in Saint Kitts & Nevis
+              </p>
             </div>
-
-
           </div>
         </div>
       </section>

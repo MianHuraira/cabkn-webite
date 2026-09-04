@@ -11,7 +11,7 @@ import { useApi } from "../ApiFunction/ApiFunction";
 import { useRouter } from "next/navigation";
 import Image from "next/image";
 import Link from "next/link";
-import { FaStar, FaClock, FaUsers, FaArrowRight } from "react-icons/fa6";
+import { FaStar, FaClock, FaUsers, FaArrowRight, FaChevronLeft, FaChevronRight } from "react-icons/fa6";
 import { FiArrowRight } from "react-icons/fi";
 import EmptyState from "../EmptyState";
 import { NoshowData } from "../assets/Images";
@@ -21,6 +21,7 @@ export default function TopTours() {
   const { getData, header1 } = useApi();
   const [tours, setTours] = useState([]);
   const [loading, setLoading] = useState(true);
+  const swiperRef = useRef(null);
   const sectionRef = useRef(null);
   const [inView, setInView] = useState(false);
 
@@ -106,13 +107,34 @@ export default function TopTours() {
             </p>
           </div>
 
-          <Link
-            href="/tours"
-            className="flex items-center gap-1.5 px-4 py-2 rounded-full bg-brand-50 hover:bg-brand-100 text-[#004a70] font-family-semibold text-xs sm:text-sm transition-all duration-200 no-underline shrink-0 group"
-          >
-            <span>See All</span>
-            <FiArrowRight className="group-hover:translate-x-1 transition-transform" />
-          </Link>
+          <div className="flex items-center gap-2 sm:gap-2.5 shrink-0">
+            <div className="flex items-center gap-1.5">
+              <button
+                type="button"
+                onClick={() => swiperRef.current?.slidePrev()}
+                aria-label="Previous tours"
+                className="w-8.5 h-8.5 sm:w-9 sm:h-9 rounded-full bg-white border border-slate-200 text-slate-700 hover:text-white hover:bg-[#004a70] hover:border-[#004a70] shadow-xs flex items-center justify-center transition-all duration-200 cursor-pointer active:scale-95"
+              >
+                <FaChevronLeft size={12} />
+              </button>
+              <button
+                type="button"
+                onClick={() => swiperRef.current?.slideNext()}
+                aria-label="Next tours"
+                className="w-8.5 h-8.5 sm:w-9 sm:h-9 rounded-full bg-white border border-slate-200 text-slate-700 hover:text-white hover:bg-[#004a70] hover:border-[#004a70] shadow-xs flex items-center justify-center transition-all duration-200 cursor-pointer active:scale-95"
+              >
+                <FaChevronRight size={12} />
+              </button>
+            </div>
+
+            <Link
+              href="/tours"
+              className="flex items-center gap-1.5 px-3.5 sm:px-4 py-2 rounded-full bg-brand-50 hover:bg-brand-100 text-[#004a70] font-family-semibold text-xs sm:text-sm transition-all duration-200 no-underline shrink-0 group shadow-xs"
+            >
+              <span>See All</span>
+              <FiArrowRight className="group-hover:translate-x-1 transition-transform" />
+            </Link>
+          </div>
         </div>
 
         {/* Swiper Content Container */}
@@ -136,6 +158,9 @@ export default function TopTours() {
         ) : tours.length > 0 ? (
           <div className="w-full max-w-full overflow-hidden pb-4">
             <Swiper
+              onSwiper={(sw) => {
+                swiperRef.current = sw;
+              }}
               slidesPerView={1.15}
               spaceBetween={14}
               className="w-full top-tours-swiper !py-2"

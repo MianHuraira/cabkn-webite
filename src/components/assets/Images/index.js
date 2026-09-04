@@ -35,6 +35,11 @@ import loginGlowingWave from "./login_glowing_wave.png";
 import loginGlowingRide from "./login_glowing_ride.png";
 import loginFullBg from "./login_full_bg.png";
 import Heroimg from "./hero1.png";
+import heroDailyRides from "./heroDailyRides.jpg";
+import heroAirport from "./heroAirport.jpg";
+import heroTour from "./heroTour.jpg";
+import heroParcel from "./heroParcel.jpg";
+import heroVip from "./heroVip.jpg";
 import whiteLogo from "./welcomeLogo.png";
 // import whiteLogo from "./logowhite.png";
 import welcomeLogo from "./welcomeLogo.png";
@@ -84,6 +89,11 @@ export {
   loginGlowingRide,
   loginFullBg,
   Heroimg,
+  heroDailyRides,
+  heroAirport,
+  heroTour,
+  heroParcel,
+  heroVip,
   whiteLogo,
   welcomeLogo,
   welcomeLogoWhite,

@@ -7,17 +7,25 @@ import { Container, Row, Col } from "react-bootstrap";
 import ThingstodoCard from "./ThingstodoCard";
 import { Button, Spinner } from "reactstrap";
 import Image from "next/image";
+import Link from "next/link";
 import { NoshowData } from "../assets/Images";
 import ApiFunction from "../ApiFunction/ApiFunction";
 import { useRouter } from "next/navigation";
 import CustomButton from "@/components/CustomButton";
 import EmptyState from "@/components/EmptyState";
+import { useDispatch, useSelector } from "react-redux";
+import { addToCart, openCart } from "@/components/Redux/Slices/CartSlice";
+import { message } from "antd";
+import { FiShoppingBag, FiArrowRight } from "react-icons/fi";
 
 export default function ServiceComponent() {
   const [currentPage, setCurrentPage] = useState(0);
   const [mounted, setMounted] = useState(false);
   useEffect(() => { setMounted(true); }, []);
   const router = useRouter();
+  const dispatch = useDispatch();
+  const cartItems = useSelector((state) => state.cart?.cartItems) || [];
+  const totalPrice = useSelector((state) => state.cart?.totalPrice) || 0;
   const { getData, header1 } = ApiFunction();
   const [Category, setCategory] = useState([]);
   const [selectedCategoryId, setSelectedCategoryId] = useState(0);
@@ -146,52 +154,47 @@ export default function ServiceComponent() {
     router.push(`/service/${category?._id}?isServices=true`);
   };
 
+  const handleQuickAddToCart = (item) => {
+    dispatch(addToCart(item));
+    message.success(`Added ${item?.title || "product"} to cart!`);
+  };
+
   const handleItemClick = (item) => {
-    const encodedData = encodeURIComponent(JSON.stringify(item));
-    router.push(`/ride?data=${encodedData}`);
+    dispatch(addToCart(item));
+    dispatch(openCart());
   };
 
   return (
     <div className={`min-h-screen bg-slate-50/50 ${mounted ? "animate-fade-in" : "opacity-0"}`}>
       {/* ===== HERO BANNER ===== */}
-      <section className="relative overflow-hidden bg-gradient-to-br from-slate-900 via-brand-900 to-brand-950 !pt-28 !pb-28">
-        <div className="absolute inset-0 opacity-[0.04]" style={{
-          backgroundImage: `radial-gradient(circle at 1px 1px, white 1px, transparent 0)`,
-          backgroundSize: "24px 24px"
-        }} />
-        
-        <div className="absolute top-1/4 -left-20 w-80 h-80 bg-brand-500/10 rounded-full blur-[100px] animate-pulse pointer-events-none" style={{ animationDuration: "8s" }} />
-        <div className="absolute bottom-1/4 -right-20 w-96 h-96 bg-indigo-500/10 rounded-full blur-[120px] animate-pulse pointer-events-none" style={{ animationDuration: "12s" }} />
-        
-        <div className="absolute inset-0 bg-gradient-to-t from-brand-950/60 via-transparent to-transparent pointer-events-none" />
+      <section className="relative overflow-hidden bg-gradient-to-br from-[#001726] via-[#002f4a] to-[#001f33] !pt-20 sm:!pt-24 !pb-20 sm:!pb-24 text-white">
+        <div
+          className="absolute inset-0 opacity-[0.04] pointer-events-none"
+          style={{
+            backgroundImage: `radial-gradient(circle at 1px 1px, white 1px, transparent 0)`,
+            backgroundSize: "24px 24px"
+          }}
+        />
+        <div className="absolute inset-0 bg-gradient-to-t from-[#001726]/90 via-transparent to-transparent pointer-events-none" />
 
         <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 relative z-10">
-          <div className="flex items-center gap-2 text-slate-400 text-xs font-family-medium !mb-4">
-            <a href="/" className="text-slate-400 hover:text-white transition-colors">Home</a>
-            <span className="text-slate-500">/</span>
-            <span className="text-slate-200">Shop</span>
+          <div className="flex items-center gap-2 text-slate-300 text-xs font-family-medium !mb-4">
+            <Link href="/" className="text-slate-300 hover:text-white transition-colors no-underline">Home</Link>
+            <span className="text-slate-400">/</span>
+            <span className="text-white">Shop</span>
           </div>
 
           <div className="flex flex-wrap justify-between items-center gap-4">
-            <div className="flex items-center gap-4">
-              <div className="w-13 h-13 rounded-2xl bg-white/10 backdrop-blur-md flex items-center justify-center shrink-0">
-                <svg width={26} height={26} viewBox="0 0 24 24" fill="none" stroke="#fff" strokeWidth={1.5}>
-                  <path strokeLinecap="round" strokeLinejoin="round" d="M6 2L3 6v14a2 2 0 0 0 2 2h14a2 2 0 0 0 2-2V6l-3-4z" />
-                  <line x1="3" y1="6" x2="21" y2="6" />
-                  <path d="M16 10a4 4 0 0 1-8 0" />
-                </svg>
-              </div>
-              <div>
-                <h1 className="text-white text-3xl font-family-semibold tracking-tight !m-0 leading-tight">
-                  Our{" "}
-                  <span className="text-transparent bg-clip-text bg-gradient-to-r from-brand-300 via-sky-300 to-indigo-200">
-                    Products
-                  </span>
-                </h1>
-                <p className="text-slate-400 text-sm !mt-1 !m-0 font-family-regular">
-                  Browse our collection of products and services
-                </p>
-              </div>
+            <div>
+              <h1 className="text-white text-2xl sm:text-3xl font-family-semibold tracking-tight !m-0 leading-tight">
+                Our{" "}
+                <span className="text-transparent bg-clip-text bg-gradient-to-r from-brand-300 via-sky-300 to-indigo-200">
+                  Products
+                </span>
+              </h1>
+              <p className="text-slate-300 text-xs sm:text-sm !mt-1 !m-0 font-family-regular">
+                Browse our collection of products and services
+              </p>
             </div>
           </div>
         </div>
@@ -285,7 +288,8 @@ export default function ServiceComponent() {
                       testimonial={testimonial}
                       onClick={() => handleItemClick(testimonial)}
                       onClick2={() => handleSelection(testimonial)}
-                      btnTitle={'Buy Product'}
+                      onAddToCart={() => handleQuickAddToCart(testimonial)}
+                      btnTitle={'Buy Now'}
                     />
                   </div>
                 ))}
@@ -316,6 +320,38 @@ export default function ServiceComponent() {
 
         </div>
       </div>
+
+      {/* ===== STICKY FLOATING VIEW CART BAR (CENTERED, UNOBSTRUCTED BY CHAT) ===== */}
+      {cartItems.length > 0 && (
+        <div className="fixed bottom-6 left-1/2 -translate-x-1/2 w-[calc(100%-32px)] sm:w-[440px] z-40 animate-fade-in-up">
+          <div
+            onClick={() => dispatch(openCart())}
+            className="bg-[#004a70] text-white p-3 sm:p-3.5 rounded-2xl shadow-[0_12px_36px_rgba(0,74,112,0.35)] border border-white/20 flex items-center justify-between gap-3 cursor-pointer hover:bg-[#003855] transition-all hover:scale-[1.02]"
+          >
+            <div className="flex items-center gap-3 min-w-0">
+              <div className="w-10 h-10 rounded-xl bg-white/20 backdrop-blur-sm flex items-center justify-center text-white shrink-0">
+                <FiShoppingBag size={20} />
+              </div>
+              <div className="min-w-0">
+                <span className="font-family-semibold text-xs sm:text-[13.5px] block truncate">
+                  View Cart ({cartItems.reduce((acc, i) => acc + (i.cartQuantity || 1), 0)} items)
+                </span>
+                <span className="text-[11px] text-sky-200 font-family-medium block">
+                  Total: ${Number(totalPrice).toFixed(2)} XCD
+                </span>
+              </div>
+            </div>
+
+            <button
+              type="button"
+              className="px-4 py-2 rounded-xl bg-white text-[#004a70] font-family-semibold text-xs border-none shadow-sm flex items-center gap-1.5 cursor-pointer shrink-0 hover:bg-slate-100 transition-colors"
+            >
+              <span>Checkout</span>
+              <FiArrowRight size={13} />
+            </button>
+          </div>
+        </div>
+      )}
     </div>
   );
 }

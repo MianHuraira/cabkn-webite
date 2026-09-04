@@ -710,7 +710,7 @@ const RideDetail = () => {
       {/* ========================================================================= */}
       {/* 1. HERO TOP BANNER (Compact & Clean on Mobile/Desktop)                     */}
       {/* ========================================================================= */}
-      <section className="relative overflow-hidden bg-gradient-to-br from-[#001726] via-[#002f4a] to-[#001f33] !pt-20 sm:!pt-28 !pb-12 sm:!pb-14 text-white">
+      <section className="relative overflow-hidden bg-gradient-to-br from-[#001726] via-[#002f4a] to-[#001f33] !pt-20 sm:!pt-22 !pb-12 sm:!pb-14 text-white">
         <div
           className="absolute inset-0 opacity-[0.04] pointer-events-none"
           style={{

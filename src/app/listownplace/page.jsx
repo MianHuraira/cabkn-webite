@@ -540,42 +540,34 @@ const page = () => {
   return (
     <div className={`min-h-screen bg-slate-50/50 ${mounted ? "animate-fade-in" : "opacity-0"}`}>
       {/* ===== HERO BANNER ===== */}
-      <section className="relative overflow-hidden bg-gradient-to-br from-slate-900 via-brand-900 to-brand-950 !pt-28 !pb-28">
-        <div className="absolute inset-0 opacity-[0.04]" style={{
-          backgroundImage: `radial-gradient(circle at 1px 1px, white 1px, transparent 0)`,
-          backgroundSize: "24px 24px"
-        }} />
-        
-        <div className="absolute top-1/4 -left-20 w-80 h-80 bg-brand-500/10 rounded-full blur-[100px] animate-pulse pointer-events-none" style={{ animationDuration: "8s" }} />
-        <div className="absolute bottom-1/4 -right-20 w-96 h-96 bg-indigo-500/10 rounded-full blur-[120px] animate-pulse pointer-events-none" style={{ animationDuration: "12s" }} />
-        
-        <div className="absolute inset-0 bg-gradient-to-t from-brand-950/60 via-transparent to-transparent pointer-events-none" />
+      <section className="relative overflow-hidden bg-gradient-to-br from-[#001726] via-[#002f4a] to-[#001f33] !pt-20 sm:!pt-24 !pb-20 sm:!pb-24 text-white">
+        <div
+          className="absolute inset-0 opacity-[0.04] pointer-events-none"
+          style={{
+            backgroundImage: `radial-gradient(circle at 1px 1px, white 1px, transparent 0)`,
+            backgroundSize: "24px 24px"
+          }}
+        />
+        <div className="absolute inset-0 bg-gradient-to-t from-[#001726]/90 via-transparent to-transparent pointer-events-none" />
 
         <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 relative z-10">
-          <div className="flex items-center gap-2 text-slate-400 text-xs font-family-medium !mb-4">
-            <Link href="/" className="text-slate-400 hover:text-white transition-colors">Home</Link>
-            <span className="text-slate-500">/</span>
-            <span className="text-slate-200">List Your Place</span>
+          <div className="flex items-center gap-2 text-slate-300 text-xs font-family-medium !mb-4">
+            <Link href="/" className="text-slate-300 hover:text-white transition-colors no-underline">Home</Link>
+            <span className="text-slate-400">/</span>
+            <span className="text-white">List Your Place</span>
           </div>
 
           <div className="flex flex-wrap justify-between items-center gap-4">
-            <div className="flex items-center gap-4">
-              <div className="w-13 h-13 rounded-2xl bg-white/10 backdrop-blur-md flex items-center justify-center shrink-0">
-                <svg width={26} height={26} viewBox="0 0 24 24" fill="none" stroke="#fff" strokeWidth={1.5}>
-                  <path strokeLinecap="round" strokeLinejoin="round" d="M8.25 21v-4.875c0-.621.504-1.125 1.125-1.125h2.25c.621 0 1.125.504 1.125 1.125V21m0 0h4.5V3.545M12.75 21h7.5V10.75M2.25 21h1.5m18 0h-18M2.25 9l4.5-1.636M18.75 3l-1.5.545m0 6.205l3 1m1.5.5l-1.5-.5M6.75 7.364V3h-3v18m3-13.636l10.5-3.819" />
-                </svg>
-              </div>
-              <div>
-                <h1 className="text-white text-3xl font-family-semibold tracking-tight !m-0 leading-tight">
-                  List Your{" "}
-                  <span className="text-transparent bg-clip-text bg-gradient-to-r from-brand-300 via-sky-300 to-indigo-200">
-                    Place
-                  </span>
-                </h1>
-                <p className="text-slate-400 text-sm !mt-1 !m-0 font-family-regular">
-                  Register your property or service with us
-                </p>
-              </div>
+            <div>
+              <h1 className="text-white text-2xl sm:text-3xl font-family-semibold tracking-tight !m-0 leading-tight">
+                List Your{" "}
+                <span className="text-transparent bg-clip-text bg-gradient-to-r from-brand-300 via-sky-300 to-indigo-200">
+                  Place
+                </span>
+              </h1>
+              <p className="text-slate-300 text-xs sm:text-sm !mt-1 !m-0 font-family-regular">
+                Register your property or service with us
+              </p>
             </div>
           </div>
         </div>
@@ -1087,7 +1079,7 @@ const page = () => {
 
       {/* Credit Card Modal */}
       <Modal centered show={show} onHide={handleClose} style={{ borderRadius: 20, overflow: "hidden" }} size="lg">
-        <div className="bg-gradient-to-br from-slate-900 via-brand-900 to-brand-950 p-6 md:p-8 text-center relative">
+        <div className="bg-gradient-to-br from-[#001726] via-[#002f4a] to-[#001f33] p-6 md:p-8 text-center relative text-white">
           <button onClick={handleClose} className="absolute top-4 right-4 w-8 h-8 rounded-lg bg-white/10 hover:bg-white/20 text-white border-none text-base flex items-center justify-center cursor-pointer transition-colors">✕</button>
           <div className="w-14 h-14 rounded-full bg-white/10 flex items-center justify-center mx-auto !mb-3">
             <svg width={26} height={26} viewBox="0 0 24 24" fill="none" stroke="#fff" strokeWidth={1.5}>

@@ -423,7 +423,7 @@ export default function WhyUs() {
             </div>
 
             <div className="lg:col-span-5 order-1 lg:order-2">
-              <div className="relative bg-gradient-to-br from-slate-900 via-brand-900 to-brand-950 !border !border-slate-855 rounded-[2.5rem] p-8 md:p-10 text-white shadow-2xl overflow-hidden flex flex-col justify-between min-h-[440px]">
+              <div className="relative bg-gradient-to-br from-[#001726] via-[#002f4a] to-[#001f33] !border !border-white/10 rounded-[2.5rem] p-8 md:p-10 text-white shadow-2xl overflow-hidden flex flex-col justify-between min-h-[440px]">
                 <div className="absolute inset-0 opacity-[0.04]" style={{
                   backgroundImage: `radial-gradient(circle at 1px 1px, white 1px, transparent 0)`,
                   backgroundSize: "24px 24px"
@@ -462,7 +462,7 @@ export default function WhyUs() {
       {/* ===== CTA ===== */}
       <SectionReveal>
         <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 pb-20 md:pb-28 pt-8">
-          <div className="relative overflow-hidden bg-gradient-to-br from-slate-900 via-brand-900 to-brand-950 rounded-[2.5rem] py-16 md:py-20 px-6 sm:px-10 text-center shadow-2xl">
+          <div className="relative overflow-hidden bg-gradient-to-br from-[#001726] via-[#002f4a] to-[#001f33] !border !border-white/10 rounded-[2.5rem] py-16 md:py-20 px-6 sm:px-10 text-center shadow-2xl">
             <div className="absolute inset-0 opacity-[0.04]" style={{
               backgroundImage: `radial-gradient(circle at 1px 1px, white 1px, transparent 0)`,
               backgroundSize: "24px 24px"

@@ -164,9 +164,44 @@ function BookRideComponent() {
   useEffect(() => {
     if (typeof window === "undefined") return;
     try {
-      const raw = sessionStorage.getItem("cabkn_ride_draft");
-      if (!raw) return;
-      const parsed = JSON.parse(raw);
+      let raw = null;
+      const queryData = searchParams?.get("data");
+      if (queryData) {
+        try {
+          raw = decodeURIComponent(queryData);
+        } catch (e) {
+          raw = queryData;
+        }
+      }
+      if (!raw) {
+        raw = sessionStorage.getItem("cabkn_ride_draft");
+      }
+      if (!raw) {
+        setMapLoading(false);
+        return;
+      }
+
+      let parsed = null;
+      try {
+        parsed = typeof raw === "object" ? raw : JSON.parse(raw);
+      } catch (jsonErr) {
+        console.error("Failed to JSON.parse raw booking data:", jsonErr);
+        setMapLoading(false);
+        return;
+      }
+
+      if (!parsed) {
+        setMapLoading(false);
+        return;
+      }
+
+      // Preserve into sessionStorage for subsequent reloads
+      try {
+        sessionStorage.setItem("cabkn_ride_draft", JSON.stringify(parsed));
+      } catch (err) {
+        console.warn("Could not sync to sessionStorage:", err);
+      }
+
       // Restore parcel image from sessionStorage if it was stripped
       const savedImg = sessionStorage.getItem("cabkn_parcel_image");
       if (savedImg && (!parsed.parcelImage || parsed.parcelImage === "")) {
@@ -197,8 +232,9 @@ function BookRideComponent() {
       }
     } catch (err) {
       console.error("Failed to parse booking data from sessionStorage:", err);
+      setMapLoading(false);
     }
-  }, []);
+  }, [searchParams]);
 
   // Fetch Vehicle Liabilities
   const fetchLiabilities = async () => {
@@ -392,10 +428,10 @@ function BookRideComponent() {
     setActiveFocusedLocation(null);
 
     const bounds = new mapboxgl.LngLatBounds();
-    const startLng = Number(productDetail?.start?.[0]);
-    const startLat = Number(productDetail?.start?.[1]);
-    const endLng = Number(productDetail?.end?.[0]);
-    const endLat = Number(productDetail?.end?.[1]);
+    const startLng = Number(productDetail?.start?.[0] ?? productDetail?.start?.lng ?? productDetail?.start?.longitude);
+    const startLat = Number(productDetail?.start?.[1] ?? productDetail?.start?.lat ?? productDetail?.start?.latitude);
+    const endLng = Number(productDetail?.end?.[0] ?? productDetail?.end?.lng ?? productDetail?.end?.longitude);
+    const endLat = Number(productDetail?.end?.[1] ?? productDetail?.end?.lat ?? productDetail?.end?.latitude);
 
     if (!isNaN(startLng) && !isNaN(startLat)) bounds.extend([startLng, startLat]);
     if (!isNaN(endLng) && !isNaN(endLat)) bounds.extend([endLng, endLat]);
@@ -421,10 +457,10 @@ function BookRideComponent() {
   useEffect(() => {
     if (!productDetail || !mapContainerRef.current) return;
 
-    const startLng = Number(productDetail?.start?.[0]);
-    const startLat = Number(productDetail?.start?.[1]);
-    const endLng = Number(productDetail?.end?.[0]);
-    const endLat = Number(productDetail?.end?.[1]);
+    const startLng = Number(productDetail?.start?.[0] ?? productDetail?.start?.lng ?? productDetail?.start?.longitude);
+    const startLat = Number(productDetail?.start?.[1] ?? productDetail?.start?.lat ?? productDetail?.start?.latitude);
+    const endLng = Number(productDetail?.end?.[0] ?? productDetail?.end?.lng ?? productDetail?.end?.longitude);
+    const endLat = Number(productDetail?.end?.[1] ?? productDetail?.end?.lat ?? productDetail?.end?.latitude);
 
     if (isNaN(startLng) || isNaN(startLat) || isNaN(endLng) || isNaN(endLat)) {
       setMapLoading(false);
@@ -447,193 +483,203 @@ function BookRideComponent() {
 
     const map = mapRef.current;
 
-    map.on("load", async () => {
-      // Clear old markers
-      markersRef.current.forEach((m) => m.marker.remove());
-      markersRef.current = [];
-
-      const bounds = new mapboxgl.LngLatBounds();
-      const validPoints = [];
-
-      // 1. Start Marker 🔵
-      const startEl = document.createElement("div");
-      startEl.className = "flex items-center justify-center w-8 h-8 rounded-full bg-[#004a70] text-white shadow-lg border-2 border-white ring-2 ring-sky-300 animate-pulse cursor-pointer";
-      startEl.innerHTML = `<svg stroke="currentColor" fill="currentColor" stroke-width="0" viewBox="0 0 384 512" height="14" width="14" xmlns="http://www.w3.org/2000/svg"><path d="M215.7 499.2C267 435 384 279.4 384 192C384 86 298 0 192 0S0 86 0 192c0 87.4 117 243 168.3 307.2c12.3 15.3 35.1 15.3 47.4 0zM192 128a64 64 0 1 1 0 128 64 64 0 1 1 0-128z"></path></svg>`;
-
-      const startMarker = new mapboxgl.Marker({ element: startEl })
-        .setLngLat([startLng, startLat])
-        .setPopup(
-          new mapboxgl.Popup({ offset: 25, closeButton: true }).setHTML(`
-            <div style="min-width: 170px; padding: 2px 4px;">
-              <div style="display: flex; align-items: center; gap: 6px; margin-bottom: 4px;">
-                <span style="display: inline-block; width: 8px; height: 8px; border-radius: 50%; background: #004a70;"></span>
-                <span style="font-size: 10.5px; font-weight: 700; text-transform: uppercase; letter-spacing: 0.5px; color: #004a70;">Start Location</span>
-              </div>
-              <p style="font-size: 12px; font-weight: 600; color: #1e293b; margin: 0; line-height: 1.35;">${productDetail?.name || "Pickup location"}</p>
-            </div>
-          `)
-        )
-        .addTo(map);
-
-      markersRef.current.push({ marker: startMarker, type: "start" });
-      bounds.extend([startLng, startLat]);
-      validPoints.push([startLng, startLat]);
-
-      // 2. Stops Markers 🟡
-      const validStops = Array.isArray(productDetail?.stop) ? productDetail.stop : [];
-      validStops.forEach((stop, idx) => {
-        const stopLat = Number(stop.latitude || stop.lat);
-        const stopLng = Number(stop.longitude || stop.lng);
-
-        if (!isNaN(stopLat) && !isNaN(stopLng)) {
-          const stopEl = document.createElement("div");
-          stopEl.className = "flex items-center justify-center w-7 h-7 rounded-full bg-amber-500 hover:bg-amber-600 text-white font-bold text-xs shadow-md border-2 border-white cursor-pointer transition-transform hover:scale-110";
-          stopEl.innerText = `${idx + 1}`;
-
-          const stopMarker = new mapboxgl.Marker({ element: stopEl })
-            .setLngLat([stopLng, stopLat])
-            .setPopup(
-              new mapboxgl.Popup({ offset: 20, closeButton: true }).setHTML(`
-                <div style="min-width: 170px; padding: 2px 4px;">
-                  <div style="display: flex; align-items: center; gap: 6px; margin-bottom: 4px;">
-                    <span style="display: inline-block; width: 8px; height: 8px; border-radius: 50%; background: #f59e0b;"></span>
-                    <span style="font-size: 10.5px; font-weight: 700; text-transform: uppercase; letter-spacing: 0.5px; color: #d97706;">Stop ${idx + 1}</span>
-                  </div>
-                  <p style="font-size: 12px; font-weight: 600; color: #1e293b; margin: 0; line-height: 1.35;">${stop.title || stop.address || "Attraction"}</p>
-                </div>
-              `)
-            )
-            .addTo(map);
-
-          markersRef.current.push({ marker: stopMarker, type: "stop", index: idx });
-          bounds.extend([stopLng, stopLat]);
-          validPoints.push([stopLng, stopLat]);
-        }
-      });
-
-      // 3. End Marker 🔴
-      const endEl = document.createElement("div");
-      endEl.className = "flex items-center justify-center w-8 h-8 rounded-full bg-rose-600 text-white shadow-lg border-2 border-white ring-2 ring-rose-300 cursor-pointer";
-      endEl.innerHTML = `<svg stroke="currentColor" fill="currentColor" stroke-width="0" viewBox="0 0 384 512" height="14" width="14" xmlns="http://www.w3.org/2000/svg"><path d="M215.7 499.2C267 435 384 279.4 384 192C384 86 298 0 192 0S0 86 0 192c0 87.4 117 243 168.3 307.2c12.3 15.3 35.1 15.3 47.4 0zM192 128a64 64 0 1 1 0 128 64 64 0 1 1 0-128z"></path></svg>`;
-
-      const endMarker = new mapboxgl.Marker({ element: endEl })
-        .setLngLat([endLng, endLat])
-        .setPopup(
-          new mapboxgl.Popup({ offset: 25, closeButton: true }).setHTML(`
-            <div style="min-width: 170px; padding: 2px 4px;">
-              <div style="display: flex; align-items: center; gap: 6px; margin-bottom: 4px;">
-                <span style="display: inline-block; width: 8px; height: 8px; border-radius: 50%; background: #e11d48;"></span>
-                <span style="font-size: 10.5px; font-weight: 700; text-transform: uppercase; letter-spacing: 0.5px; color: #e11d48;">Destination</span>
-              </div>
-              <p style="font-size: 12px; font-weight: 600; color: #1e293b; margin: 0; line-height: 1.35;">${productDetail?.metaTitle || "Drop-off"}</p>
-            </div>
-          `)
-        )
-        .addTo(map);
-
-      markersRef.current.push({ marker: endMarker, type: "end" });
-      bounds.extend([endLng, endLat]);
-      validPoints.push([endLng, endLat]);
-
-      // 4. Fetch Driving Route Polyline with Fallback
-      let routeGeo = null;
+    const renderRouteAndMarkers = async () => {
       try {
-        const routePoints = validPoints
-          .map((p) => `${p[0].toFixed(6)},${p[1].toFixed(6)}`)
-          .join(";");
+        // Clear old markers
+        markersRef.current.forEach((m) => m.marker.remove());
+        markersRef.current = [];
 
-        const directionsUrl = `https://api.mapbox.com/directions/v5/mapbox/driving/${routePoints}?geometries=geojson&overview=full&access_token=${mapboxgl.accessToken}`;
-        const res = await fetch(directionsUrl);
-        const data = await res.json();
+        const bounds = new mapboxgl.LngLatBounds();
+        const validPoints = [];
 
-        if (data.routes && data.routes.length > 0 && data.routes[0].geometry) {
-          routeGeo = data.routes[0].geometry;
-        }
-      } catch (e) {
-        console.warn("Mapbox Driving directions error, falling back to direct line:", e);
-      }
+        // 1. Start Marker 🔵
+        const startEl = document.createElement("div");
+        startEl.className = "flex items-center justify-center w-8 h-8 rounded-full bg-[#004a70] text-white shadow-lg border-2 border-white ring-2 ring-sky-300 animate-pulse cursor-pointer";
+        startEl.innerHTML = `<svg stroke="currentColor" fill="currentColor" stroke-width="0" viewBox="0 0 384 512" height="14" width="14" xmlns="http://www.w3.org/2000/svg"><path d="M215.7 499.2C267 435 384 279.4 384 192C384 86 298 0 192 0S0 86 0 192c0 87.4 117 243 168.3 307.2c12.3 15.3 35.1 15.3 47.4 0zM192 128a64 64 0 1 1 0 128 64 64 0 1 1 0-128z"></path></svg>`;
 
-      // Fallback: If driving API returned no routes or failed
-      if (!routeGeo || !routeGeo.coordinates || routeGeo.coordinates.length === 0) {
-        routeGeo = {
-          type: "LineString",
-          coordinates: validPoints,
-        };
-      }
+        const startMarker = new mapboxgl.Marker({ element: startEl })
+          .setLngLat([startLng, startLat])
+          .setPopup(
+            new mapboxgl.Popup({ offset: 25, closeButton: true }).setHTML(`
+              <div style="min-width: 170px; padding: 2px 4px;">
+                <div style="display: flex; align-items: center; gap: 6px; margin-bottom: 4px;">
+                  <span style="display: inline-block; width: 8px; height: 8px; border-radius: 50%; background: #004a70;"></span>
+                  <span style="font-size: 10.5px; font-weight: 700; text-transform: uppercase; letter-spacing: 0.5px; color: #004a70;">Start Location</span>
+                </div>
+                <p style="font-size: 12px; font-weight: 600; color: #1e293b; margin: 0; line-height: 1.35;">${productDetail?.name || productDetail?.start_address || "Pickup"}</p>
+              </div>
+            `)
+          )
+          .addTo(map);
 
-      // Render Route Layers on the map
-      if (routeGeo) {
-        if (map.getSource("route")) {
-          map.getSource("route").setData({
-            type: "Feature",
-            properties: {},
-            geometry: routeGeo,
+        markersRef.current.push({ marker: startMarker, type: "start" });
+        bounds.extend([startLng, startLat]);
+        validPoints.push([startLng, startLat]);
+
+        // 2. Multi-Stops (if any) 🟠
+        if (Array.isArray(productDetail?.stop)) {
+          productDetail.stop.forEach((stop, idx) => {
+            const sLng = Number(stop.longitude || stop.lng);
+            const sLat = Number(stop.latitude || stop.lat);
+            if (isNaN(sLng) || isNaN(sLat)) return;
+
+            const stopEl = document.createElement("div");
+            stopEl.className = "flex items-center justify-center w-7 h-7 rounded-full bg-amber-500 text-white font-bold text-xs shadow-md border-2 border-white ring-2 ring-amber-300 cursor-pointer";
+            stopEl.textContent = `${idx + 1}`;
+
+            const stopMarker = new mapboxgl.Marker({ element: stopEl })
+              .setLngLat([sLng, sLat])
+              .setPopup(
+                new mapboxgl.Popup({ offset: 25, closeButton: true }).setHTML(`
+                  <div style="min-width: 170px; padding: 2px 4px;">
+                    <div style="display: flex; align-items: center; gap: 6px; margin-bottom: 4px;">
+                      <span style="display: inline-block; width: 8px; height: 8px; border-radius: 50%; background: #f59e0b;"></span>
+                      <span style="font-size: 10.5px; font-weight: 700; text-transform: uppercase; letter-spacing: 0.5px; color: #b45309;">Stop #${idx + 1}</span>
+                    </div>
+                    <p style="font-size: 12px; font-weight: 600; color: #1e293b; margin: 0; line-height: 1.35;">${stop.address || `Stop ${idx + 1}`}</p>
+                  </div>
+                `)
+              )
+              .addTo(map);
+
+            markersRef.current.push({ marker: stopMarker, type: "stop", index: idx });
+            bounds.extend([sLng, sLat]);
+            validPoints.push([sLng, sLat]);
           });
-        } else {
-          map.addSource("route", {
-            type: "geojson",
-            data: {
+        }
+
+        // 3. End Marker 🔴
+        const endEl = document.createElement("div");
+        endEl.className = "flex items-center justify-center w-8 h-8 rounded-full bg-rose-600 text-white shadow-lg border-2 border-white ring-2 ring-rose-300 animate-pulse cursor-pointer";
+        endEl.innerHTML = `<svg stroke="currentColor" fill="currentColor" stroke-width="0" viewBox="0 0 384 512" height="14" width="14" xmlns="http://www.w3.org/2000/svg"><path d="M215.7 499.2C267 435 384 279.4 384 192C384 86 298 0 192 0S0 86 0 192c0 87.4 117 243 168.3 307.2c12.3 15.3 35.1 15.3 47.4 0zM192 128a64 64 0 1 1 0 128 64 64 0 1 1 0-128z"></path></svg>`;
+
+        const endMarker = new mapboxgl.Marker({ element: endEl })
+          .setLngLat([endLng, endLat])
+          .setPopup(
+            new mapboxgl.Popup({ offset: 25, closeButton: true }).setHTML(`
+              <div style="min-width: 170px; padding: 2px 4px;">
+                <div style="display: flex; align-items: center; gap: 6px; margin-bottom: 4px;">
+                  <span style="display: inline-block; width: 8px; height: 8px; border-radius: 50%; background: #e11d48;"></span>
+                  <span style="font-size: 10.5px; font-weight: 700; text-transform: uppercase; letter-spacing: 0.5px; color: #e11d48;">Destination</span>
+                </div>
+                <p style="font-size: 12px; font-weight: 600; color: #1e293b; margin: 0; line-height: 1.35;">${productDetail?.metaTitle || productDetail?.end_address || "Drop-off"}</p>
+              </div>
+            `)
+          )
+          .addTo(map);
+
+        markersRef.current.push({ marker: endMarker, type: "end" });
+        bounds.extend([endLng, endLat]);
+        validPoints.push([endLng, endLat]);
+
+        // 4. Fetch Driving Route Polyline with Fallback
+        let routeGeo = null;
+        try {
+          const routePoints = validPoints
+            .map((p) => `${p[0].toFixed(6)},${p[1].toFixed(6)}`)
+            .join(";");
+
+          const directionsUrl = `https://api.mapbox.com/directions/v5/mapbox/driving/${routePoints}?geometries=geojson&overview=full&access_token=${mapboxgl.accessToken}`;
+          const res = await fetch(directionsUrl);
+          const data = await res.json();
+
+          if (data.routes && data.routes.length > 0 && data.routes[0].geometry) {
+            routeGeo = data.routes[0].geometry;
+          }
+        } catch (e) {
+          console.warn("Mapbox Driving directions error, falling back to direct line:", e);
+        }
+
+        // Fallback: If driving API returned no routes or failed
+        if (!routeGeo || !routeGeo.coordinates || routeGeo.coordinates.length === 0) {
+          routeGeo = {
+            type: "LineString",
+            coordinates: validPoints,
+          };
+        }
+
+        // Render Route Layers on the map
+        if (routeGeo) {
+          if (map.getSource("route")) {
+            map.getSource("route").setData({
               type: "Feature",
               properties: {},
               geometry: routeGeo,
-            },
-          });
+            });
+          } else {
+            map.addSource("route", {
+              type: "geojson",
+              data: {
+                type: "Feature",
+                properties: {},
+                geometry: routeGeo,
+              },
+            });
 
-          // Outer Glow
-          map.addLayer({
-            id: "route-glow",
-            type: "line",
-            source: "route",
-            layout: { "line-join": "round", "line-cap": "round" },
-            paint: {
-              "line-color": "#38bdf8",
-              "line-width": 8,
-              "line-opacity": 0.45,
-            },
-          });
+            // Outer Glow
+            map.addLayer({
+              id: "route-glow",
+              type: "line",
+              source: "route",
+              layout: { "line-join": "round", "line-cap": "round" },
+              paint: {
+                "line-color": "#38bdf8",
+                "line-width": 8,
+                "line-opacity": 0.45,
+              },
+            });
 
-          // Core Road Line
-          map.addLayer({
-            id: "route-line",
-            type: "line",
-            source: "route",
-            layout: { "line-join": "round", "line-cap": "round" },
-            paint: {
-              "line-color": "#004a70",
-              "line-width": 4.5,
-              "line-opacity": 0.9,
-            },
-          });
+            // Core Road Line
+            map.addLayer({
+              id: "route-line",
+              type: "line",
+              source: "route",
+              layout: { "line-join": "round", "line-cap": "round" },
+              paint: {
+                "line-color": "#004a70",
+                "line-width": 4.5,
+                "line-opacity": 0.9,
+              },
+            });
 
-          // Dashed Center Tracer
-          map.addLayer({
-            id: "route-dash",
-            type: "line",
-            source: "route",
-            layout: { "line-join": "round", "line-cap": "round" },
-            paint: {
-              "line-color": "#ffffff",
-              "line-width": 2,
-              "line-dasharray": [2, 3],
-              "line-opacity": 0.8,
-            },
-          });
+            // Dashed Center Tracer
+            map.addLayer({
+              id: "route-dash",
+              type: "line",
+              source: "route",
+              layout: { "line-join": "round", "line-cap": "round" },
+              paint: {
+                "line-color": "#ffffff",
+                "line-width": 2,
+                "line-dasharray": [2, 3],
+                "line-opacity": 0.8,
+              },
+            });
+          }
         }
+
+        map.resize();
+        setTimeout(() => {
+          if (mapRef.current) mapRef.current.resize();
+        }, 300);
+
+        map.fitBounds(bounds, {
+          padding: { top: 80, bottom: 80, left: 60, right: 60 },
+          maxZoom: 15,
+          duration: 1500,
+        });
+      } catch (renderErr) {
+        console.error("Error rendering route:", renderErr);
+      } finally {
+        setMapLoading(false);
       }
+    };
 
-      map.resize();
-      setTimeout(() => {
-        if (mapRef.current) mapRef.current.resize();
-      }, 300);
-
-      map.fitBounds(bounds, {
-        padding: { top: 80, bottom: 80, left: 60, right: 60 },
-        maxZoom: 15,
-        duration: 1500,
-      });
-
-      setMapLoading(false);
-    });
+    if (map.loaded() || map.isStyleLoaded()) {
+      renderRouteAndMarkers();
+    } else {
+      map.once("load", renderRouteAndMarkers);
+    }
 
     const handleWindowResize = () => {
       if (mapRef.current) mapRef.current.resize();
@@ -923,40 +969,41 @@ function BookRideComponent() {
   return (
     <div className={`!min-h-screen !bg-[#f8fafc] !select-none ${mounted ? "animate-fade-in" : "!opacity-0"}`}>
       {/* ===== 1. HERO BANNER ===== */}
-      <section className="!relative !overflow-hidden !bg-gradient-to-br !from-[#001726] !via-[#002842] !to-[#002f4a] !pt-28 !pb-20 sm:!pb-24">
+      <section className="relative overflow-hidden bg-gradient-to-br from-[#001726] via-[#002f4a] to-[#001f33] !pt-20 sm:!pt-24 !pb-16 sm:!pb-20 text-white">
         <div
-          className="!absolute !inset-0 !opacity-[0.05]"
+          className="absolute inset-0 opacity-[0.04] pointer-events-none"
           style={{
             backgroundImage: `radial-gradient(circle at 1px 1px, white 1px, transparent 0)`,
             backgroundSize: "24px 24px",
           }}
         />
+        <div className="absolute inset-0 bg-gradient-to-t from-[#001726]/90 via-transparent to-transparent pointer-events-none" />
 
-        <div className="!max-w-7xl !mx-auto !px-4 sm:!px-6 lg:!px-8 !relative !z-10">
-          <div className="!flex !items-center !gap-2 !text-slate-400 !text-xs !font-family-medium !mb-4">
-            <Link href="/" className="!text-slate-400 hover:!text-white !transition-colors !no-underline">
+        <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 relative z-10">
+          <div className="flex items-center gap-2 text-slate-300 text-xs font-family-medium mb-4">
+            <Link href="/" className="text-slate-300 hover:text-white transition-colors no-underline">
               Home
             </Link>
-            <span className="!text-slate-500">/</span>
+            <span className="text-slate-400">/</span>
             {isParcelBooking ? (
-              <Link href="/sendparcel" className="!text-slate-400 hover:!text-white !transition-colors !no-underline">
+              <Link href="/sendparcel" className="text-slate-300 hover:text-white transition-colors no-underline">
                 Send a Parcel
               </Link>
             ) : isTourBooking ? (
-              <Link href="/makeowntours" className="!text-slate-400 hover:!text-white !transition-colors !no-underline">
+              <Link href="/makeowntours" className="text-slate-300 hover:text-white transition-colors no-underline">
                 Make Tour
               </Link>
             ) : isAirportPickup ? (
-              <Link href="/airport-pickups" className="!text-slate-400 hover:!text-white !transition-colors !no-underline">
+              <Link href="/airport-pickups" className="text-slate-300 hover:text-white transition-colors no-underline">
                 Airport Pickups
               </Link>
             ) : (
-              <Link href="/ride" className="!text-slate-400 hover:!text-white !transition-colors !no-underline">
+              <Link href="/ride" className="text-slate-300 hover:text-white transition-colors no-underline">
                 Book a Ride
               </Link>
             )}
-            <span className="!text-slate-500">/</span>
-            <span className="!text-slate-200">
+            <span className="text-slate-400">/</span>
+            <span className="text-white">
               {isParcelBooking
                 ? "Choose Parcel Vehicle"
                 : isAirportPickup
@@ -966,39 +1013,28 @@ function BookRideComponent() {
           </div>
 
           <div className="!flex !flex-wrap !justify-between !items-center !gap-4">
-            <div className="!flex !items-center !gap-3.5 sm:!gap-4">
-              <div className="!w-12 !h-12 sm:!w-14 sm:!h-14 !rounded-2xl !bg-white/10 !backdrop-blur-md !border !border-white/15 !flex !items-center !justify-center !shrink-0 !shadow-inner">
-                {isParcelBooking ? (
-                  <FaBox className="!text-white !text-2xl sm:!text-3xl" />
-                ) : isAirportPickup ? (
-                  <span className="!text-2xl sm:!text-3xl">✈️</span>
-                ) : (
-                  <MdOutlineDirectionsCar className="!text-white !text-2xl sm:!text-3xl" />
-                )}
-              </div>
-              <div>
-                <h1 className="!text-white !text-2xl sm:!text-3xl md:!text-4xl !font-family-semibold !tracking-tight !m-0 !leading-tight">
+            <div>
+              <h1 className="!text-white !text-2xl sm:!text-3xl md:!text-4xl !font-family-semibold !tracking-tight !m-0 !leading-tight">
+                {isParcelBooking
+                  ? "Choose Parcel "
+                  : isAirportPickup
+                  ? "Confirm Airport "
+                  : "Confirm Your "}
+                <span className="!text-transparent !bg-clip-text !bg-gradient-to-r !from-brand-300 !via-sky-300 !to-indigo-200">
                   {isParcelBooking
-                    ? "Choose Parcel "
+                    ? "Courier"
                     : isAirportPickup
-                    ? "Confirm Airport "
-                    : "Confirm Your "}
-                  <span className="!text-transparent !bg-clip-text !bg-gradient-to-r !from-brand-300 !via-sky-300 !to-indigo-200">
-                    {isParcelBooking
-                      ? "Courier"
-                      : isAirportPickup
-                      ? "Pickup"
-                      : "Ride"}
-                  </span>
-                </h1>
-                <p className="!text-slate-300 !text-xs sm:!text-sm !mt-1.5 !m-0 !font-family-regular">
-                  {isParcelBooking
-                    ? "Review delivery route, pick vehicle size & dispatch parcel"
-                    : isAirportPickup
-                    ? "Review your airport transfer from SKB, choose vehicle & book your driver"
-                    : "Review your route, choose vehicle tier & find nearby drivers"}
-                </p>
-              </div>
+                    ? "Pickup"
+                    : "Ride"}
+                </span>
+              </h1>
+              <p className="!text-slate-300 !text-xs sm:!text-sm !mt-1.5 !m-0 !font-family-regular">
+                {isParcelBooking
+                  ? "Review delivery route, pick vehicle size & dispatch parcel"
+                  : isAirportPickup
+                  ? "Review your airport transfer from SKB, choose vehicle & book your driver"
+                  : "Review your route, choose vehicle tier & find nearby drivers"}
+              </p>
             </div>
 
             <div className="!flex !items-center !gap-3 !bg-white/10 !backdrop-blur-md !px-4 !py-2 !rounded-2xl !border !border-white/15 !text-white">

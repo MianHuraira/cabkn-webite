@@ -48,7 +48,11 @@ if (messaging) {
     const notificationOptions = {
       body: payload.notification?.body || payload.data?.body || "",
       icon: payload.notification?.icon || payload.data?.icon || "/logoBlue.png",
+      badge: "/logoBlue.png",
       image: payload.notification?.image || payload.data?.image,
+      vibrate: [200, 100, 200],
+      sound: "/notification.wav",
+      silent: false,
       data: payload.data || {},
     };
 

@@ -55,41 +55,37 @@ export default function Page() {
   return (
     <div className="min-h-screen bg-gray-50 flex flex-col">
       {/* ===== HERO BANNER ===== */}
-      <section className={`relative overflow-hidden bg-gradient-to-br from-slate-900 via-brand-900 to-brand-950 !pt-28 !pb-28 ${mounted ? 'animate-fade-in-down' : 'opacity-0'}`} style={{ animationDelay: "50ms" }}>
-        <div className="absolute inset-0 opacity-[0.04]" style={{
-          backgroundImage: `radial-gradient(circle at 1px 1px, white 1px, transparent 0)`,
-          backgroundSize: "24px 24px"
-        }} />
-        <div className="absolute top-1/4 -left-20 w-80 h-80 bg-brand-500/10 rounded-full blur-[100px] animate-pulse pointer-events-none" style={{ animationDuration: "8s" }} />
-        <div className="absolute bottom-1/4 -right-20 w-96 h-96 bg-indigo-500/10 rounded-full blur-[120px] animate-pulse pointer-events-none" style={{ animationDuration: "12s" }} />
-        <div className="absolute inset-0 bg-gradient-to-t from-brand-950/60 via-transparent to-transparent pointer-events-none" />
+      <section className={`relative overflow-hidden bg-gradient-to-br from-[#001726] via-[#002f4a] to-[#001f33] !pt-20 sm:!pt-24 !pb-20 sm:!pb-24 text-white ${mounted ? 'animate-fade-in-down' : 'opacity-0'}`} style={{ animationDelay: "50ms" }}>
+        <div
+          className="absolute inset-0 opacity-[0.04] pointer-events-none"
+          style={{
+            backgroundImage: `radial-gradient(circle at 1px 1px, white 1px, transparent 0)`,
+            backgroundSize: "24px 24px"
+          }}
+        />
+        <div className="absolute inset-0 bg-gradient-to-t from-[#001726]/90 via-transparent to-transparent pointer-events-none" />
 
         <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 relative z-10">
-          <div className="flex items-center gap-2 text-slate-400 text-xs font-family-medium !mb-4">
-            <Link href="/" className="text-slate-400 hover:text-white transition-colors">Home</Link>
-            <span className="text-slate-500">/</span>
-            <span className="text-slate-200">Reviews</span>
+          <div className="flex items-center gap-2 text-slate-300 text-xs font-family-medium !mb-4">
+            <Link href="/" className="text-slate-300 hover:text-white transition-colors no-underline">Home</Link>
+            <span className="text-slate-400">/</span>
+            <span className="text-white">Reviews</span>
           </div>
 
           <div className="flex flex-wrap justify-between items-center gap-4">
-            <div className="flex items-center gap-4">
-              <div className="w-13 h-13 rounded-2xl bg-white/10 backdrop-blur-md flex items-center justify-center shrink-0">
-                <MdRateReview size={24} color="#fff" />
-              </div>
-              <div>
-                <h1 className="text-white text-3xl font-family-semibold tracking-tight !m-0 leading-tight">
-                  My{" "}
-                  <span className="text-transparent bg-clip-text bg-gradient-to-r from-brand-300 via-sky-300 to-indigo-200">
-                    Reviews
-                  </span>
-                </h1>
-                <p className="text-slate-400 text-sm !mt-1 !m-0 font-family-regular">
-                  See what our customers are saying about us
-                </p>
-              </div>
+            <div>
+              <h1 className="text-white text-2xl sm:text-3xl font-family-semibold tracking-tight !m-0 leading-tight">
+                My{" "}
+                <span className="text-transparent bg-clip-text bg-gradient-to-r from-brand-300 via-sky-300 to-indigo-200">
+                  Reviews
+                </span>
+              </h1>
+              <p className="text-slate-300 text-xs sm:text-sm !mt-1 !m-0 font-family-regular">
+                See what our customers are saying about us
+              </p>
             </div>
             {Reviews.length > 0 && (
-              <div className="flex items-center gap-2 bg-white/10 backdrop-blur-md rounded-full px-4 py-1.5 !border !border-white/10">
+              <div className="flex items-center gap-2 bg-white/10 backdrop-blur-md rounded-full px-4 py-1.5 !border !border-white/15">
                 <FaStar size={13} className="text-amber-400" />
                 <span className="text-xs font-family-semibold text-white">{Reviews.length} Reviews</span>
               </div>

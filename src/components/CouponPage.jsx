@@ -114,22 +114,27 @@ export default function CouponPage() {
     <div className="min-h-screen bg-[#f8fafc] font-poppins">
       {/* ===== HERO BANNER ===== */}
       <section
-        className={`relative overflow-hidden bg-gradient-to-br from-[#061b29] via-[#003855] to-[#00273c] pt-24 sm:pt-28 pb-20 sm:pb-24 text-white ${
+        className={`relative overflow-hidden bg-gradient-to-br from-[#001726] via-[#002f4a] to-[#001f33] !pt-20 sm:!pt-24 !pb-20 sm:!pb-24 text-white ${
           mounted ? "animate-fade-in" : "opacity-0"
         }`}
       >
-        {/* Subtle decorative glow accents */}
-        <div className="absolute -top-10 right-1/4 w-80 h-80 bg-sky-500/10 rounded-full blur-3xl pointer-events-none" />
-        <div className="absolute bottom-0 left-1/4 w-72 h-72 bg-indigo-500/10 rounded-full blur-3xl pointer-events-none" />
+        <div
+          className="absolute inset-0 opacity-[0.04] pointer-events-none"
+          style={{
+            backgroundImage: `radial-gradient(circle at 1px 1px, white 1px, transparent 0)`,
+            backgroundSize: "24px 24px",
+          }}
+        />
+        <div className="absolute inset-0 bg-gradient-to-t from-[#001726]/90 via-transparent to-transparent pointer-events-none" />
 
         <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 relative z-10">
           {/* Breadcrumb */}
-          <div className="flex items-center gap-2 text-slate-300/80 text-xs font-family-medium mb-3">
+          <div className="flex items-center gap-2 text-slate-300 text-xs font-family-medium mb-3">
             <Link href="/" className="text-slate-300 hover:text-white transition-colors no-underline">
               Home
             </Link>
-            <span className="text-slate-500">/</span>
-            <span className="text-sky-300 font-family-semibold">Offers</span>
+            <span className="text-slate-400">/</span>
+            <span className="text-white font-family-semibold">Offers</span>
           </div>
 
           <div className="flex flex-col sm:flex-row sm:items-center justify-between gap-4">
@@ -141,7 +146,7 @@ export default function CouponPage() {
               <h1 className="text-2xl sm:text-3xl lg:text-4xl font-family-semibold text-white tracking-tight !m-0">
                 Exclusive Coupons & Offers
               </h1>
-              <p className="text-slate-300/85 text-xs sm:text-sm mt-1.5 !m-0 font-family-regular max-w-xl">
+              <p className="text-slate-300 text-xs sm:text-sm mt-1.5 !m-0 font-family-regular max-w-xl">
                 Apply these codes during checkout to save on rides, island excursions, and concierge services.
               </p>
             </div>

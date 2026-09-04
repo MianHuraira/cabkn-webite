@@ -432,13 +432,41 @@ function Page() {
     }
   };
 
-  const [categoryTab, setCategoryTab] = useState("rides"); // rides | tours | services | shop
-  const [filterTab, setFilterTab] = useState("active"); // active | upcoming | completed | cancelled (or pending | on the way etc.)
+  const urlCategory = searchParams?.get("category");
+  const initialCategory =
+    urlCategory && ["rides", "tours", "services", "shop"].includes(urlCategory.toLowerCase())
+      ? urlCategory.toLowerCase()
+      : "rides";
+
+  const [categoryTab, setCategoryTab] = useState(initialCategory); // rides | tours | services | shop
+  const [filterTab, setFilterTab] = useState(
+    initialCategory === "shop"
+      ? "pending"
+      : initialCategory === "tours" || initialCategory === "services"
+      ? "all"
+      : "active"
+  );
+
+  useEffect(() => {
+    const cat = searchParams?.get("category")?.toLowerCase();
+    if (cat && ["rides", "tours", "services", "shop"].includes(cat) && cat !== categoryTab) {
+      setCategoryTab(cat);
+      setLastId(1);
+      if (cat === "shop") {
+        setFilterTab("pending");
+      } else if (cat === "tours" || cat === "services") {
+        setFilterTab("all");
+      } else {
+        setFilterTab("active");
+      }
+    }
+  }, [searchParams]);
 
   const handleCategoryChange = (newCat) => {
     if (newCat === categoryTab) return;
     setCategoryTab(newCat);
     setLastId(1);
+    router.replace(`/admin?category=${newCat}`, { scroll: false });
     if (newCat === "shop") {
       setFilterTab("pending");
     } else if (newCat === "tours" || newCat === "services") {
@@ -677,7 +705,7 @@ function Page() {
   return (
     <div className={`min-h-screen bg-[#f8fafc] font-poppins text-slate-800 ${mounted ? "animate-fade-in" : "opacity-0"}`}>
       {/* ===== 1. HERO DASHBOARD HEADER ===== */}
-      <section className="relative overflow-hidden bg-gradient-to-br from-[#001726] via-[#002f4a] to-[#001f33] !pt-20 sm:!pt-28 !pb-24 sm:!pb-28 text-white">
+      <section className="relative overflow-hidden bg-gradient-to-br from-[#001726] via-[#002f4a] to-[#001f33] !pt-20 sm:!pt-24 !pb-20 sm:!pb-24 text-white">
         <div
           className="absolute inset-0 opacity-[0.04] pointer-events-none"
           style={{
@@ -697,21 +725,16 @@ function Page() {
             <span className="text-white">My Bookings</span>
           </div>
 
-          <div className="flex items-center gap-3 sm:gap-4">
-            <div className="w-12 h-12 sm:w-13 sm:h-13 rounded-2xl bg-white/10 backdrop-blur-md flex items-center justify-center shrink-0 !border border-white/15">
-              <MdOutlineBookOnline size={24} className="text-white" />
-            </div>
-            <div>
-              <h1 className="text-white text-2xl sm:text-3xl font-family-semibold tracking-tight !m-0 leading-tight">
-                My{" "}
-                <span className="text-transparent bg-clip-text bg-gradient-to-r from-brand-300 via-sky-300 to-indigo-200">
-                  Bookings
-                </span>
-              </h1>
-              <p className="text-slate-300 text-xs sm:text-sm !mt-1 !m-0 font-family-regular">
-                Manage and track your Nevis & Saint Kitts transfers
-              </p>
-            </div>
+          <div>
+            <h1 className="text-white text-2xl sm:text-3xl font-family-semibold tracking-tight !m-0 leading-tight">
+              My{" "}
+              <span className="text-transparent bg-clip-text bg-gradient-to-r from-brand-300 via-sky-300 to-indigo-200">
+                Bookings
+              </span>
+            </h1>
+            <p className="text-slate-300 text-xs sm:text-sm !mt-1 !m-0 font-family-regular">
+              Manage and track your Nevis & Saint Kitts transfers
+            </p>
           </div>
         </div>
       </section>

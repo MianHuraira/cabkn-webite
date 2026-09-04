@@ -71,44 +71,38 @@ const Page = () => {
   return (
     <div className="min-h-screen bg-slate-50/50">
       {/* ===== HERO BANNER ===== */}
-      <section className={`relative overflow-hidden bg-gradient-to-br from-slate-900 via-brand-900 to-brand-950 !pt-28 !pb-28 ${mounted ? 'animate-fade-in-down' : 'opacity-0'}`} style={{ animationDelay: "50ms" }}>
-        <div className="absolute inset-0 opacity-[0.04]" style={{
-          backgroundImage: `radial-gradient(circle at 1px 1px, white 1px, transparent 0)`,
-          backgroundSize: "24px 24px"
-        }} />
-
-        <div className="absolute top-1/4 -left-20 w-80 h-80 bg-brand-500/10 rounded-full blur-[100px] animate-pulse pointer-events-none" style={{ animationDuration: "8s" }} />
-        <div className="absolute bottom-1/4 -right-20 w-96 h-96 bg-indigo-500/10 rounded-full blur-[120px] animate-pulse pointer-events-none" style={{ animationDuration: "12s" }} />
-
-        <div className="absolute inset-0 bg-gradient-to-t from-brand-950/60 via-transparent to-transparent pointer-events-none" />
+      <section className={`relative overflow-hidden bg-gradient-to-br from-[#001726] via-[#002f4a] to-[#001f33] !pt-20 sm:!pt-24 !pb-20 sm:!pb-24 text-white ${mounted ? 'animate-fade-in-down' : 'opacity-0'}`} style={{ animationDelay: "50ms" }}>
+        <div
+          className="absolute inset-0 opacity-[0.04] pointer-events-none"
+          style={{
+            backgroundImage: `radial-gradient(circle at 1px 1px, white 1px, transparent 0)`,
+            backgroundSize: "24px 24px"
+          }}
+        />
+        <div className="absolute inset-0 bg-gradient-to-t from-[#001726]/90 via-transparent to-transparent pointer-events-none" />
 
         <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 relative z-10">
-          <div className="flex items-center gap-2 text-slate-400 text-xs font-family-medium !mb-4">
-            <Link href="/" className="text-slate-400 hover:text-white transition-colors">Home</Link>
-            <span className="text-slate-500">/</span>
-            <span className="text-slate-200">Favorites</span>
+          <div className="flex items-center gap-2 text-slate-300 text-xs font-family-medium !mb-4">
+            <Link href="/" className="text-slate-300 hover:text-white transition-colors no-underline">Home</Link>
+            <span className="text-slate-400">/</span>
+            <span className="text-white">Favorites</span>
           </div>
 
           <div className="flex flex-wrap justify-between items-center gap-4">
-            <div className="flex items-center gap-4">
-              <div className="w-13 h-13 rounded-2xl bg-white/10 backdrop-blur-md flex items-center justify-center shrink-0">
-                <FaHeart size={22} color="#f87171" />
-              </div>
-              <div>
-                <h1 className="text-white text-3xl font-family-semibold tracking-tight !m-0 leading-tight">
-                  My{" "}
-                  <span className="text-transparent bg-clip-text bg-gradient-to-r from-red-300 via-rose-300 to-pink-200">
-                    Favorites
-                  </span>
-                </h1>
-                <p className="text-slate-400 text-sm !mt-1 !m-0 font-family-regular">
-                  {favorites.length} saved {favorites.length === 1 ? "driver" : "drivers"}
-                </p>
-              </div>
+            <div>
+              <h1 className="text-white text-2xl sm:text-3xl font-family-semibold tracking-tight !m-0 leading-tight">
+                My{" "}
+                <span className="text-transparent bg-clip-text bg-gradient-to-r from-red-300 via-rose-300 to-pink-200">
+                  Favorites
+                </span>
+              </h1>
+              <p className="text-slate-300 text-xs sm:text-sm !mt-1 !m-0 font-family-regular">
+                {favorites.length} saved {favorites.length === 1 ? "driver" : "drivers"}
+              </p>
             </div>
 
             {favorites.length > 0 && (
-              <div className="flex items-center gap-2 bg-white/10 backdrop-blur-md rounded-xl px-3.5 py-1.5 !border !border-white/10">
+              <div className="flex items-center gap-2 bg-white/10 backdrop-blur-md rounded-xl px-3.5 py-1.5 !border !border-white/15">
                 <FaHeart size={12} color="#f87171" />
                 <span className="font-family-semibold text-white text-xs whitespace-nowrap">
                   {favorites.length} saved

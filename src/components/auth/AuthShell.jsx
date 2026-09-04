@@ -242,7 +242,7 @@ export function AuthPrimaryButton({
   );
 }
 
-export function AuthSecondaryButton({ children, className, ...props }) {
+export function AuthSecondaryButton({ children, loading = false, className, ...props }) {
   return (
     <button
       type="button"
@@ -252,8 +252,10 @@ export function AuthSecondaryButton({ children, className, ...props }) {
         "disabled:cursor-not-allowed disabled:opacity-60",
         className
       )}
+      disabled={loading || props.disabled}
       {...props}
     >
+      {loading ? <AuthSpinner variant="dark" className="h-4 w-4" /> : null}
       {children}
     </button>
   );
@@ -271,12 +273,17 @@ export function AuthDivider({ label = "or" }) {
   );
 }
 
-export function AuthSpinner({ className }) {
+export function AuthSpinner({ className, style, variant = "default" }) {
+  const isDark = variant === "dark" || variant === "primary";
   return (
     <span
       aria-hidden="true"
+      style={style}
       className={cx(
-        "h-4 w-4 animate-spin rounded-full border-2 border-white/30 border-t-white",
+        "inline-block h-4 w-4 animate-spin rounded-full shrink-0",
+        isDark
+          ? "border-2 border-slate-300 border-t-[#004a70]"
+          : "border-2 border-white/30 border-t-white",
         className
       )}
     />

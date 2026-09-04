@@ -8,7 +8,7 @@ import "swiper/css";
 import "swiper/css/pagination";
 import { FaStar, FaLocationDot, FaArrowRight } from "react-icons/fa6";
 
-function ThingstodoCard({ testimonial, onClick, onClick2, btnTitle, isTour }) {
+function ThingstodoCard({ testimonial, onClick, onClick2, btnTitle, isTour, onAddToCart }) {
   const images = Array.isArray(testimonial?.images)
     ? testimonial.images
     : typeof testimonial?.images === "string"
@@ -127,17 +127,37 @@ function ThingstodoCard({ testimonial, onClick, onClick2, btnTitle, isTour }) {
             </span>
           </div>
 
-          <button
-            type="button"
-            onClick={(e) => {
-              e.stopPropagation();
-              if (onClick) onClick();
-            }}
-            className="!px-3.5 !py-2 !rounded-xl !bg-[#004a70] hover:!bg-[#003855] !text-white !text-xs font-family-semibold !font-semibold !transition-all !shadow-sm hover:!shadow-md !flex !items-center !gap-1.5 !cursor-pointer !border-none"
-          >
-            <span>{btnTitle || "Book Now"}</span>
-            <FaArrowRight size={10} />
-          </button>
+          <div className="!flex !items-center !gap-1.5">
+            {onAddToCart && (
+              <button
+                type="button"
+                onClick={(e) => {
+                  e.stopPropagation();
+                  onAddToCart();
+                }}
+                title="Add to cart"
+                className="!w-8 !h-8 !rounded-xl !bg-sky-50 hover:!bg-sky-100 !text-[#004a70] !flex !items-center !justify-center !transition-all !border !border-sky-200/70 !cursor-pointer"
+              >
+                <svg width="15" height="15" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2" strokeLinecap="round" strokeLinejoin="round">
+                  <path d="M6 2L3 6v14a2 2 0 0 0 2 2h14a2 2 0 0 0 2-2V6l-3-4z"></path>
+                  <line x1="3" y1="6" x2="21" y2="6"></line>
+                  <path d="M16 10a4 4 0 0 1-8 0"></path>
+                </svg>
+              </button>
+            )}
+
+            <button
+              type="button"
+              onClick={(e) => {
+                e.stopPropagation();
+                if (onClick) onClick();
+              }}
+              className="!px-3.5 !py-2 !rounded-xl !bg-[#004a70] hover:!bg-[#003855] !text-white !text-xs font-family-semibold !font-semibold !transition-all !shadow-sm hover:!shadow-md !flex !items-center !gap-1.5 !cursor-pointer !border-none"
+            >
+              <span>{btnTitle || "Book Now"}</span>
+              <FaArrowRight size={10} />
+            </button>
+          </div>
         </div>
       </div>
     </div>

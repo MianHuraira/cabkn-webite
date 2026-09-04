@@ -17,6 +17,7 @@ import ApiFunction from "../ApiFunction/ApiFunction";
 import { Toaster } from "react-hot-toast";
 
 import NotificationHandler from "../Firebase/NotificationHandler";
+import CartDrawer from "../cart/CartDrawer";
 
 const MainLayout = ({ children }) => {
   const [toggled, setToggled] = useState(false);
@@ -62,6 +63,7 @@ const MainLayout = ({ children }) => {
         <SocketProvider>
           <Provider store={store}>
             <NotificationHandler />
+            <CartDrawer />
             {mounted ? renderHeader() : null}
             {children}
             {isPublicRoute && !isRiderRequest ? <Footer /> : ""}

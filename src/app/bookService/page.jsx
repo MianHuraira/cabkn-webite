@@ -682,7 +682,7 @@ function BookServiceComponent() {
   return (
     <div className={`min-h-screen bg-[#f8fafc] font-poppins text-slate-800 ${mounted ? "animate-fade-in" : "opacity-0"}`}>
       {/* Header Banner matching Tour Booking & Popular Places */}
-      <section className="relative bg-gradient-to-br from-[#001726] via-[#002f4a] to-[#001f33] pt-24 sm:pt-28 pb-14 sm:pb-16 text-white overflow-hidden">
+      <section className="relative overflow-hidden bg-gradient-to-br from-[#001726] via-[#002f4a] to-[#001f33] !pt-20 sm:!pt-24 !pb-14 sm:!pb-16 text-white">
         <div
           className="absolute inset-0 opacity-[0.04] pointer-events-none"
           style={{
@@ -690,8 +690,7 @@ function BookServiceComponent() {
             backgroundSize: "24px 24px",
           }}
         />
-        <div className="absolute top-1/4 -left-20 w-80 h-80 bg-sky-500/15 rounded-full blur-[100px] pointer-events-none" />
-        <div className="absolute bottom-1/4 -right-20 w-96 h-96 bg-teal-500/15 rounded-full blur-[120px] pointer-events-none" />
+        <div className="absolute inset-0 bg-gradient-to-t from-[#001726]/90 via-transparent to-transparent pointer-events-none" />
 
         <div className="max-w-7xl mx-auto px-3 sm:px-6 lg:px-8 relative z-10 space-y-3">
           {/* Breadcrumb Navigation & Top Right Back Button */}
@@ -700,11 +699,11 @@ function BookServiceComponent() {
               <Link href="/" className="hover:text-white transition-colors no-underline text-slate-300">
                 Home
               </Link>
-              <span>/</span>
+              <span className="text-slate-400">/</span>
               <Link href="/services" className="hover:text-white transition-colors no-underline text-slate-300">
                 Top Services
               </Link>
-              <span>/</span>
+              <span className="text-slate-400">/</span>
               <span className="text-white font-family-semibold">Book a Service</span>
             </div>
 

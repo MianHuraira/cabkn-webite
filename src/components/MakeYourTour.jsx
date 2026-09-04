@@ -256,24 +256,45 @@ function MakeYourTour() {
   mapboxgl.accessToken =
     "pk.eyJ1IjoibWFybGVncmFudCIsImEiOiJjbTgwdmV0MjkweXB2MnFzNXBjM2x6NThnIn0.3oz3YGaDHiFDh8W5ALk09w";
 
-  const locationSet = () => {
-    const start = {
-      latitude: locationDetails?.lat,
-      longitude: locationDetails?.lng,
-    };
-    const end = {
-      latitude: locationDetails1?.lat,
-      longitude: locationDetails1?.lng,
-    };
-    const dist = getDistance(start, end) / 1000;
-    setDistance(dist.toFixed(1));
+  const locationSet = (customStart, customEnd) => {
+    const startLat = customStart?.latitude ?? locationDetails?.lat;
+    const startLng = customStart?.longitude ?? locationDetails?.lng;
+    const endLat = customEnd?.latitude ?? locationDetails1?.lat;
+    const endLng = customEnd?.longitude ?? locationDetails1?.lng;
+
+    if (
+      startLat != null &&
+      startLng != null &&
+      endLat != null &&
+      endLng != null &&
+      !isNaN(startLat) &&
+      !isNaN(startLng) &&
+      !isNaN(endLat) &&
+      !isNaN(endLng)
+    ) {
+      try {
+        const dist =
+          getDistance(
+            { latitude: Number(startLat), longitude: Number(startLng) },
+            { latitude: Number(endLat), longitude: Number(endLng) }
+          ) / 1000;
+        setDistance(dist.toFixed(1));
+      } catch (err) {
+        console.warn("Distance calculation error:", err);
+      }
+    }
   };
 
   useEffect(() => {
-    if (locationDetails?.lat && locationDetails1?.lat) {
+    if (
+      locationDetails?.lat != null &&
+      locationDetails?.lng != null &&
+      locationDetails1?.lat != null &&
+      locationDetails1?.lng != null
+    ) {
       locationSet();
     }
-  }, [locationDetails?.lat, locationDetails1?.lat]);
+  }, [locationDetails?.lat, locationDetails?.lng, locationDetails1?.lat, locationDetails1?.lng]);
 
   const handleSearch = async (text) => {
     setSearchQuery(text);
@@ -338,17 +359,25 @@ function MakeYourTour() {
   };
 
   const handlePredictionPress = (prediction) => {
-    setLocationDetails({
+    const newStart = {
       address: prediction?.description || "",
-      lat: prediction?.latLng?.lat || 0,
-      lng: prediction?.latLng?.lng || 0,
-    });
+      lat: prediction?.latLng?.lat ?? 0,
+      lng: prediction?.latLng?.lng ?? 0,
+    };
+    setLocationDetails(newStart);
     setValue("name", prediction?.description || "", { shouldValidate: true });
     clearErrors("name");
-    setSearchQuery(prediction.description);
+    setSearchQuery(prediction?.description || "");
     setCurrentLocation({});
     setPredictions([]);
     setNoData(false);
+
+    if (locationDetails1?.lat != null && locationDetails1?.lng != null) {
+      locationSet(
+        { latitude: newStart.lat, longitude: newStart.lng },
+        { latitude: locationDetails1.lat, longitude: locationDetails1.lng }
+      );
+    }
   };
 
   const HandleEndSearch = async (text) => {
@@ -414,17 +443,24 @@ function MakeYourTour() {
   };
 
   const HadleEndPridication = (prediction) => {
-    setLocationDetails1({
+    const newEnd = {
       address: prediction?.description || "",
-      lat: prediction?.latLng?.lat || 0,
-      lng: prediction?.latLng?.lng || 0,
-    });
+      lat: prediction?.latLng?.lat ?? 0,
+      lng: prediction?.latLng?.lng ?? 0,
+    };
+    setLocationDetails1(newEnd);
     setValue("metaTitle", prediction?.description || "", { shouldValidate: true });
     clearErrors("metaTitle");
-    setSearchQueryEnd(prediction.description);
+    setSearchQueryEnd(prediction?.description || "");
     setEndPredictions([]);
     setNoData(false);
-    locationSet();
+
+    if (locationDetails?.lat != null && locationDetails?.lng != null) {
+      locationSet(
+        { latitude: locationDetails.lat, longitude: locationDetails.lng },
+        { latitude: newEnd.lat, longitude: newEnd.lng }
+      );
+    }
   };
 
   const {
@@ -495,7 +531,7 @@ function MakeYourTour() {
         longitude: lng,
       }));
 
-      if (distance == 0) {
+      if (Number(distance) === 0) {
         message.error("Distance cannot be (0) Km");
       } else {
         const body = {
@@ -504,10 +540,17 @@ function MakeYourTour() {
           rideType: "driver",
           distance: distance,
           tourPrice: TotalPrice,
-          start: [locationDetails?.lng, locationDetails.lat],
-          end: [locationDetails1?.lng, locationDetails1.lat],
+          start: [locationDetails?.lng, locationDetails?.lat],
+          end: [locationDetails1?.lng, locationDetails1?.lat],
           stop: coordinates,
         };
+        if (typeof window !== "undefined") {
+          try {
+            sessionStorage.setItem("cabkn_ride_draft", JSON.stringify(body));
+          } catch (err) {
+            console.warn("Could not save to sessionStorage:", err);
+          }
+        }
         const encodedData = encodeURIComponent(JSON.stringify(body));
         router.push(`/bookRide?data=${encodedData}`);
       }
@@ -519,52 +562,37 @@ function MakeYourTour() {
   return (
     <div className={`!min-h-screen !bg-[#f8fafc] !select-none ${mounted ? "animate-fade-in" : "!opacity-0"}`}>
       {/* ===== 1. HERO BANNER ===== */}
-      <section className="!relative !overflow-hidden !bg-gradient-to-br !from-[#001726] !via-[#002842] !to-[#002f4a] !pt-28 !pb-14 sm:!pb-16">
-        {/* Subtle grid pattern */}
+      <section className="relative overflow-hidden bg-gradient-to-br from-[#001726] via-[#002f4a] to-[#001f33] !pt-20 sm:!pt-24 !pb-14 sm:!pb-16 text-white">
         <div
-          className="!absolute !inset-0 !opacity-[0.05]"
+          className="absolute inset-0 opacity-[0.04] pointer-events-none"
           style={{
             backgroundImage: `radial-gradient(circle at 1px 1px, white 1px, transparent 0)`,
             backgroundSize: "24px 24px",
           }}
         />
+        <div className="absolute inset-0 bg-gradient-to-t from-[#001726]/90 via-transparent to-transparent pointer-events-none" />
 
-        {/* Ambient floating glows */}
-        <div
-          className="!absolute !top-1/4 !-left-20 !w-80 !h-80 !bg-sky-500/10 !rounded-full !blur-[100px] !animate-pulse !pointer-events-none"
-          style={{ animationDuration: "8s" }}
-        />
-        <div
-          className="!absolute !bottom-1/4 !-right-20 !w-96 !h-96 !bg-brand-500/10 !rounded-full !blur-[120px] !animate-pulse !pointer-events-none"
-          style={{ animationDuration: "12s" }}
-        />
-
-        <div className="!max-w-7xl !mx-auto !px-4 sm:!px-6 lg:!px-8 !relative !z-10">
+        <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 relative z-10">
           {/* Breadcrumbs */}
-          <div className="!flex !items-center !gap-2 !text-slate-400 !text-xs !font-family-medium !mb-4">
+          <div className="flex items-center gap-2 text-slate-300 text-xs font-family-medium mb-4">
             <Link
               href="/"
-              className="!text-slate-400 hover:!text-white !transition-colors !no-underline"
+              className="text-slate-300 hover:text-white transition-colors no-underline"
             >
               Home
             </Link>
-            <span className="!text-slate-500">/</span>
-            <span className="!text-slate-200">Make Your Own Tour</span>
+            <span className="text-slate-400">/</span>
+            <span className="text-white">Make Your Own Tour</span>
           </div>
 
-          <div className="!flex !flex-wrap !justify-between !items-center !gap-4">
-            <div className="!flex !items-center !gap-3.5 sm:!gap-4">
-              <div className="!w-12 !h-12 sm:!w-14 sm:!h-14 !rounded-2xl !bg-white/10 !backdrop-blur-md !border !border-white/15 !flex !items-center !justify-center !shrink-0 !shadow-inner">
-                <FaMapLocationDot className="!text-white !text-xl sm:!text-2xl" />
-              </div>
-              <div>
-                <h1 className="!text-white !text-2xl sm:!text-3xl !font-family-semibold !tracking-tight !m-0 !leading-tight">
-                  Make Your Own Tour
-                </h1>
-                <p className="!text-slate-300 !text-xs sm:!text-sm !mt-1 !m-0 !font-family-regular">
-                  Plan your customized route, pick your favorite stops & enjoy St. Kitts
-                </p>
-              </div>
+          <div className="flex flex-wrap justify-between items-center gap-4">
+            <div>
+              <h1 className="text-white text-2xl sm:text-3xl font-family-semibold tracking-tight !m-0 leading-tight">
+                Make Your Own Tour
+              </h1>
+              <p className="text-slate-300 text-xs sm:text-sm mt-1 !m-0 font-family-regular">
+                Plan your customized route, pick your favorite stops & enjoy St. Kitts
+              </p>
             </div>
 
             {/* Quick Itinerary Status Badge */}

@@ -550,3 +550,14 @@
   background: #ffffff !important;
   box-shadow: 0 0 8px rgba(255, 255, 255, 0.6) !important;
 }
+
+/* Ensure Ant Design message & notification alerts always appear on the topmost layer above all modals & drawers */
+.ant-message,
+.ant-message-root,
+.ant-message-notice,
+.ant-message-notice-content,
+.ant-notification,
+.react-hot-toast,
+div[role="status"] {
+  z-index: 20000000 !important;
+}
