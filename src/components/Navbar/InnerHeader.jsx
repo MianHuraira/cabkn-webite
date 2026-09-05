@@ -376,7 +376,6 @@ const InnerHeader = () => {
           href: "/tours",
           icon: <FaHiking size={16} />,
         },
-        
         {
           title: "List Own Place",
           desc: "Partner with us and showcase your resort, villa, or venue to tourists.",
