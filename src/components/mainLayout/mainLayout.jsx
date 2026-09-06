@@ -18,14 +18,22 @@ import { Toaster } from "react-hot-toast";
 
 import NotificationHandler from "../Firebase/NotificationHandler";
 import CartDrawer from "../cart/CartDrawer";
+import { syncUserCart } from "../Redux/Slices/CartSlice";
 
 const MainLayout = ({ children }) => {
+  const dispatch = useDispatch();
   const [toggled, setToggled] = useState(false);
   const [broken, setBroken] = useState(false);
   const [mounted, setMounted] = useState(false);
   const pathname = usePathname();
   const { userData } = ApiFunction();
   const isTipModal = useSelector((state) => state.auth.isTipModal);
+
+  const currentUserId = userData?.user?._id || userData?._id || null;
+
+  useEffect(() => {
+    dispatch(syncUserCart(currentUserId));
+  }, [currentUserId, dispatch]);
 
   useEffect(() => {
     setMounted(true);

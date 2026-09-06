@@ -167,6 +167,13 @@ export default function ServiceLocation() {
   }, []);
 
   const handleAddToCart = () => {
+    const currentUserId = userData?.user?._id || userData?._id;
+    if (!currentUserId) {
+      message.error("Please login to add items to cart");
+      router.push("/auth/login");
+      return;
+    }
+
     if (SubcatData?.color?.length > 0 && !ProductColor) {
       message.warning("Please select a color");
       return;
@@ -179,6 +186,7 @@ export default function ServiceLocation() {
     dispatch(
       addToCart({
         ...SubcatData,
+        userId: currentUserId,
         title: SubcatData?.name || SubcatData?.title,
         selectedColor: ProductColor,
         selectedSize: Size,
@@ -189,6 +197,13 @@ export default function ServiceLocation() {
   };
 
   const handleBuyNow = () => {
+    const currentUserId = userData?.user?._id || userData?._id;
+    if (!currentUserId) {
+      message.error("Please login to add items to cart");
+      router.push("/auth/login");
+      return;
+    }
+
     if (SubcatData?.color?.length > 0 && !ProductColor) {
       message.warning("Please select a color");
       return;
@@ -201,6 +216,7 @@ export default function ServiceLocation() {
     dispatch(
       addToCart({
         ...SubcatData,
+        userId: currentUserId,
         title: SubcatData?.name || SubcatData?.title,
         selectedColor: ProductColor,
         selectedSize: Size,

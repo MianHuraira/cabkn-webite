@@ -637,26 +637,28 @@ const InnerHeader = () => {
 
           {/* Right: Icons + User + Mobile Toggle */}
           <div className="flex items-center gap-2 flex-shrink-0">
-            {/* Shopping Cart Button */}
-            <Badge
-              count={cartCount}
-              size="small"
-              offset={[-2, 2]}
-              style={{ backgroundColor: "#004a70" }}
-            >
-              <button
-                type="button"
-                onClick={() => dispatch(openCart())}
-                title="Shopping Cart"
-                className={`w-9 h-9 rounded-full flex items-center justify-center cursor-pointer transition-all duration-200 !border ${
-                  isDarkNav
-                    ? "!border-slate-200/90 bg-slate-100 hover:bg-slate-200 text-slate-700 hover:text-[#004a70] shadow-sm"
-                    : "!border-white/30 bg-white/15 hover:bg-white/25 text-white"
-                }`}
+            {/* Shopping Cart Button (Visible only when user is logged in) */}
+            {userData && (
+              <Badge
+                count={cartCount}
+                size="small"
+                offset={[-2, 2]}
+                style={{ backgroundColor: "#004a70" }}
               >
-                <HiOutlineShoppingBag size={18} />
-              </button>
-            </Badge>
+                <button
+                  type="button"
+                  onClick={() => dispatch(openCart())}
+                  title="Shopping Cart"
+                  className={`w-9 h-9 rounded-full flex items-center justify-center cursor-pointer transition-all duration-200 !border ${
+                    isDarkNav
+                      ? "!border-slate-200/90 bg-slate-100 hover:bg-slate-200 text-slate-700 hover:text-[#004a70] shadow-sm"
+                      : "!border-white/30 bg-white/15 hover:bg-white/25 text-white"
+                  }`}
+                >
+                  <HiOutlineShoppingBag size={18} />
+                </button>
+              </Badge>
+            )}
 
             {/* Chat Icon Button */}
             <Link

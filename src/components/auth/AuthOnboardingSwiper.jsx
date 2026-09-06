@@ -124,7 +124,7 @@ export default function AuthOnboardingSwiper({ className = "" }) {
             <Image
               src={logoBlue}
               alt="CabKn Logo"
-              className="h-8 md:h-9 w-auto object-contain filter brightness-0 invert cursor-pointer hover:opacity-90 transition-opacity"
+              className="h-8 md:h-9 w-auto object-contain  cursor-pointer hover:opacity-90 transition-opacity"
               priority
             />
           </Link>

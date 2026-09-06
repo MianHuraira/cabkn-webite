@@ -80,7 +80,7 @@ export function AuthShell({
                 <Image
                   src={logoBlue}
                   alt="Welcome to Saint Kitts Logo"
-                  className="h-8 md:h-9 w-auto object-contain filter brightness-0 invert cursor-pointer hover:opacity-85 transition-opacity"
+                  className="h-8 md:h-9 w-auto object-contain  cursor-pointer hover:opacity-85 transition-opacity"
                   priority
                 />
               </Link>
@@ -115,7 +115,7 @@ export function AuthShell({
                 src={logoBlue}
                 alt="Welcome to Saint Kitts Logo"
                 priority
-                className="h-9 sm:h-10 w-auto object-contain filter brightness-0 invert drop-shadow-md"
+                className="h-9 sm:h-10 w-auto object-contain  drop-shadow-md"
               />
             </Link>
           </div>

@@ -26,7 +26,7 @@ export default function ServiceComponent() {
   const dispatch = useDispatch();
   const cartItems = useSelector((state) => state.cart?.cartItems) || [];
   const totalPrice = useSelector((state) => state.cart?.totalPrice) || 0;
-  const { getData, header1 } = ApiFunction();
+  const { getData, header1, userData } = ApiFunction();
   const [Category, setCategory] = useState([]);
   const [selectedCategoryId, setSelectedCategoryId] = useState(0);
   const [SubCategory, setSubCategory] = useState([]);
@@ -155,12 +155,24 @@ export default function ServiceComponent() {
   };
 
   const handleQuickAddToCart = (item) => {
-    dispatch(addToCart(item));
+    const currentUserId = userData?.user?._id || userData?._id;
+    if (!currentUserId) {
+      message.error("Please login to add items to cart");
+      router.push("/auth/login");
+      return;
+    }
+    dispatch(addToCart({ ...item, userId: currentUserId }));
     message.success(`Added ${item?.title || "product"} to cart!`);
   };
 
   const handleItemClick = (item) => {
-    dispatch(addToCart(item));
+    const currentUserId = userData?.user?._id || userData?._id;
+    if (!currentUserId) {
+      message.error("Please login to add items to cart");
+      router.push("/auth/login");
+      return;
+    }
+    dispatch(addToCart({ ...item, userId: currentUserId }));
     dispatch(openCart());
   };
 
@@ -322,7 +334,7 @@ export default function ServiceComponent() {
       </div>
 
       {/* ===== STICKY FLOATING VIEW CART BAR (CENTERED, UNOBSTRUCTED BY CHAT) ===== */}
-      {cartItems.length > 0 && (
+      {Boolean(userData?.user) && cartItems.length > 0 && (
         <div className="fixed bottom-6 left-1/2 -translate-x-1/2 w-[calc(100%-32px)] sm:w-[440px] z-40 animate-fade-in-up">
           <div
             onClick={() => dispatch(openCart())}

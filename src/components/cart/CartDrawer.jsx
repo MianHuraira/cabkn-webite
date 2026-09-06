@@ -52,8 +52,15 @@ export default function CartDrawer() {
   const router = useRouter();
   const { isCartOpen, cartItems, totalPrice } = useSelector((state) => state.cart);
   const userData = useSelector((state) => state.auth.user);
+  const currentUserId = userData?.user?._id || userData?._id || null;
   const paymentCards = useSelector((state) => state.auth.paymentCards) || [];
   const { postData, putData, header1 } = ApiFunction();
+
+  useEffect(() => {
+    if (!currentUserId && isCartOpen) {
+      dispatch(closeCart());
+    }
+  }, [currentUserId, isCartOpen, dispatch]);
 
   // Drop Location Search State (Exact same as Signup page)
   const [dropLocation, setDropLocation] = useState("");
@@ -370,7 +377,7 @@ export default function CartDrawer() {
         total: totalXCD,
         method: paymentMethod,
       });
-      dispatch(clearCart());
+      dispatch(clearCart(currentUserId));
       setShowCardModal(false);
       setShowSuccessModal(true);
     } else {
@@ -657,6 +664,7 @@ export default function CartDrawer() {
                                     productId: item._id,
                                     selectedColor: item.selectedColor,
                                     selectedSize: item.selectedSize,
+                                    userId: currentUserId,
                                   })
                                 )
                               }
@@ -681,6 +689,7 @@ export default function CartDrawer() {
                                         selectedColor: e.target.value,
                                         oldColor: item.selectedColor,
                                         oldSize: item.selectedSize,
+                                        userId: currentUserId,
                                       })
                                     )
                                   }
@@ -707,6 +716,7 @@ export default function CartDrawer() {
                                         selectedSize: e.target.value,
                                         oldColor: item.selectedColor,
                                         oldSize: item.selectedSize,
+                                        userId: currentUserId,
                                       })
                                     )
                                   }
@@ -744,6 +754,7 @@ export default function CartDrawer() {
                                       quantity: itemQty - 1,
                                       selectedColor: item.selectedColor,
                                       selectedSize: item.selectedSize,
+                                      userId: currentUserId,
                                     })
                                   )
                                 }
@@ -765,6 +776,7 @@ export default function CartDrawer() {
                                         quantity: itemQty + 1,
                                         selectedColor: item.selectedColor,
                                         selectedSize: item.selectedSize,
+                                        userId: currentUserId,
                                       })
                                     );
                                   } else {
