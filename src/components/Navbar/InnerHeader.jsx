@@ -945,13 +945,27 @@ const InnerHeader = () => {
                         const colors = getNotifColor(notification.type);
                         const handleNotifClick = () => {
                           setNotifShow(false);
-                          if (notification?.type === "message" && notification?.user) {
+                          const type = notification?.type || "";
+                          if (type === "message" && notification?.user) {
                             const sender = notification?.user;
                             const target = sender?._id
                               ? { _id: sender._id, name: sender.name, image: sender.image, status: sender.status }
                               : sender;
                             const encrypted = encryptData(target);
                             router.push(`/chat?query=${encodeURIComponent(encrypted)}`);
+                            return;
+                          }
+                          if (type === "order") {
+                            const orderId = notification?.order?._id || notification?.order?.order_id || notification?.to_id;
+                            if (orderId) router.push(`/ridedetails?id=${orderId}`);
+                            return;
+                          }
+                          if (type === "service-booking") {
+                            const serviceId =
+                              notification?.serviceBooking?.service?._id ||
+                              notification?.serviceBooking?.serviceId ||
+                              notification?.serviceBooking?.service;
+                            if (serviceId) router.push(`/serviceDetails/${serviceId}`);
                             return;
                           }
                           if (notification?.to_id) {
