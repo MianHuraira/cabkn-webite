@@ -6,6 +6,7 @@ import Link from "next/link";
 import { FaStar, FaClock, FaUsers, FaArrowRight, FaXmark, FaChevronLeft, FaChevronRight } from "react-icons/fa6";
 import { FaSearch } from "react-icons/fa";
 import ApiFunction from "@/components/ApiFunction/ApiFunction";
+import { requireLogin } from "@/components/ApiFunction/requireLogin";
 import EmptyState from "@/components/EmptyState";
 import { NoshowData } from "@/components/assets/Images";
 import { AuthSpinner } from "@/components/auth/AuthShell";
@@ -90,6 +91,7 @@ export default function AllToursPage() {
 
   const handleBookClick = (e, tour) => {
     e.stopPropagation();
+    if (!requireLogin("Please log in to book a tour.")) return;
     if (tour?._id) {
       if (typeof window !== "undefined") {
         try {

@@ -25,6 +25,7 @@ import { FreeMode, Mousewheel } from "swiper/modules";
 import "swiper/css";
 import "swiper/css/free-mode";
 import ApiFunction from "@/components/ApiFunction/ApiFunction";
+import { requireLogin } from "@/components/ApiFunction/requireLogin";
 import { useRouter, useSearchParams } from "next/navigation";
 import Link from "next/link";
 import CustomButton from "./CustomButton";
@@ -945,7 +946,7 @@ const RidePage = ({ defaultTab }) => {
     defaultValues: {
       name: "",
       metaTitle: "",
-      category: defaultTab || "",
+      category: defaultTab || "driver",
       Type: "",
       stop: "",
     },
@@ -1009,6 +1010,7 @@ const RidePage = ({ defaultTab }) => {
         console.warn("Could not save to sessionStorage:", err);
       }
     }
+    if (!requireLogin("Please log in to book this ride.")) return;
     router.push("/bookRide");
   };
 

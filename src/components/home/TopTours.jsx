@@ -15,6 +15,7 @@ import { FaStar, FaClock, FaUsers, FaArrowRight, FaChevronLeft, FaChevronRight }
 import { FiArrowRight } from "react-icons/fi";
 import EmptyState from "../EmptyState";
 import { NoshowData } from "../assets/Images";
+import { requireLogin } from "../ApiFunction/requireLogin";
 
 export default function TopTours() {
   const router = useRouter();
@@ -75,6 +76,7 @@ export default function TopTours() {
 
   const handleBookClick = (e, tour) => {
     e.stopPropagation();
+    if (!requireLogin("Please log in to book a tour.")) return;
     if (tour?._id) {
       if (typeof window !== "undefined") {
         try {
@@ -89,7 +91,7 @@ export default function TopTours() {
   };
 
   return (
-    <div ref={sectionRef} className="w-full max-w-full overflow-hidden py-6">
+    <div ref={sectionRef} className="w-full max-w-full overflow-hidden pt-6 pb-1">
       <Container>
         {/* Header Row */}
         <div

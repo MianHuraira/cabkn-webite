@@ -32,6 +32,7 @@ import { MdOutlineLocalOffer, MdPayment, MdOutlineRoomService } from "react-icon
 import { BsCashCoin, BsCreditCard2Back } from "react-icons/bs";
 
 import ApiFunction from "@/components/ApiFunction/ApiFunction";
+import { requireLogin } from "@/components/ApiFunction/requireLogin";
 import { setPaymentCards } from "@/components/Redux/Slices/AuthSlice";
 import { AuthTextField, AuthSpinner, AuthPrimaryButton } from "@/components/auth/AuthShell";
 import { Loader } from "@googlemaps/js-api-loader";
@@ -472,6 +473,7 @@ function BookServiceComponent() {
   };
 
   const handleProceedToPayment = () => {
+    if (!requireLogin("Please log in to complete your payment.")) return;
     if (!selectedCalendarDate) {
       message.error("Please select a valid service date");
       return;
@@ -1329,11 +1331,10 @@ function BookServiceComponent() {
                       type="text"
                       placeholder="Coupon code"
                       value={couponCode}
-                      onChange={(e) => setCouponCode(e.target.value.toUpperCase())}
+                      onChange={(e) => setCouponCode(e.target.value)}
                       className="input-field"
                     />
-                    <button
-                      type="button"
+                    <button                      type="button"
                       disabled={couponLoading || !couponCode.trim()}
                       onClick={handleApplyCoupon}
                       className="px-4 py-2.5 rounded-xl bg-[#004a70] hover:bg-[#003855] text-white text-xs font-family-semibold disabled:opacity-50 cursor-pointer border-none shrink-0 min-w-[76px] flex items-center justify-center transition-all shadow-xs"

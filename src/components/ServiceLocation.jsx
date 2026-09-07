@@ -9,6 +9,7 @@ import mapboxgl from "mapbox-gl";
 import moment from "moment";
 import { Flex, message, Rate, Skeleton } from "antd";
 import ApiFunction from "@/components/ApiFunction/ApiFunction";
+import { requireLogin } from "@/components/ApiFunction/requireLogin";
 import { useParams, useRouter, useSearchParams } from "next/navigation";
 import Link from "next/link";
 import * as Yup from "yup";
@@ -94,10 +95,7 @@ export default function ServiceLocation() {
   }, []);
 
   const handleShow = () => {
-    if (!userData?.user) {
-      toast.error("Please login to leave a review");
-      return;
-    }
+    if (!requireLogin("Please log in to write a review.")) return;
     setShow(true);
   };
 
@@ -167,10 +165,10 @@ export default function ServiceLocation() {
   }, []);
 
   const handleAddToCart = () => {
+    if (!requireLogin("Please log in to add items to cart.")) return;
     const currentUserId = userData?.user?._id || userData?._id;
     if (!currentUserId) {
       message.error("Please login to add items to cart");
-      router.push("/auth/login");
       return;
     }
 
@@ -197,10 +195,10 @@ export default function ServiceLocation() {
   };
 
   const handleBuyNow = () => {
+    if (!requireLogin("Please log in to buy this item.")) return;
     const currentUserId = userData?.user?._id || userData?._id;
     if (!currentUserId) {
       message.error("Please login to add items to cart");
-      router.push("/auth/login");
       return;
     }
 

@@ -23,6 +23,7 @@ import { IoWallet } from "react-icons/io5";
 import Image from "next/image";
 import Link from "next/link";
 import ApiFunction from "@/components/ApiFunction/ApiFunction";
+import { requireLogin } from "@/components/ApiFunction/requireLogin";
 import EmptyState from "@/components/EmptyState";
 import { useRouter, useSearchParams } from "next/navigation";
 import { message, Rate } from "antd";
@@ -415,9 +416,10 @@ function Page() {
     try {
       const body = {
         to_id: selectedOrder?.to_id?._id,
-        orderId: selectedOrder?._id,
+        order: selectedOrder?._id,
         rating: reviewRating,
         review: reviewText,
+        type: "customer",
       };
       const res = await postData("rating/create", body, header1);
       if (res?.success) {
@@ -594,6 +596,7 @@ function Page() {
   };
 
   const getOrders = async () => {
+    if (!requireLogin("Please log in to view your bookings.")) return;
     setIsLoading(true);
     await fetchOrders({ isFirstPage: true });
     setIsLoading(false);

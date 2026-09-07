@@ -128,7 +128,7 @@ function ThingstodoCard({ testimonial, onClick, onClick2, btnTitle, isTour, onAd
           </div>
 
           <div className="!flex !items-center !gap-1.5">
-            {onAddToCart && (
+            {/* {onAddToCart && (
               <button
                 type="button"
                 onClick={(e) => {
@@ -144,7 +144,7 @@ function ThingstodoCard({ testimonial, onClick, onClick2, btnTitle, isTour, onAd
                   <path d="M16 10a4 4 0 0 1-8 0"></path>
                 </svg>
               </button>
-            )}
+            )} */}
 
             <button
               type="button"

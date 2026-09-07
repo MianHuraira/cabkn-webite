@@ -26,6 +26,10 @@ import {
   FaChevronDown,
   FaChevronUp,
   FaWallet,
+  FaThumbsUp,
+  FaAward,
+  FaComments,
+  FaEnvelope,
 } from "react-icons/fa";
 import { IoMdTime } from "react-icons/io";
 
@@ -431,6 +435,45 @@ const InnerHeader = () => {
     },
   ];
 
+  const aboutLinks = [
+    {
+      label: "Why Us",
+      title: "Why Us",
+      desc: "Discover what makes Cab K&N your trusted local travel partner.",
+      href: "/why-us",
+      icon: <FaThumbsUp size={16} />,
+    },
+    {
+      label: "Benefits",
+      title: "Benefits",
+      desc: "Member perks, wallet savings, exclusive deals, and rewards.",
+      href: "/benefits",
+      icon: <FaAward size={16} />,
+    },
+    {
+      label: "Testimonials",
+      title: "Testimonials",
+      desc: "Real stories and reviews from our travelers and partners.",
+      href: "/testimonials",
+      icon: <FaComments size={16} />,
+    },
+    {
+      label: "Contact Us",
+      title: "Contact Us",
+      desc: "Talk to our team for support, partnerships, or bookings.",
+      href: "/contact-us",
+      icon: <FaEnvelope size={16} />,
+    },
+  ];
+
+  const aboutFeatured = {
+    tag: "ABOUT US",
+    title: "Your trusted island travel partner",
+    desc: "Local expertise, verified drivers, and 24/7 support for every ride, tour, and delivery.",
+    buttonText: "Contact Us",
+    buttonHref: "/contact-us",
+  };
+
   const isCategoryActive = (category) => {
     return category.hrefPrefixes.some((prefix) => pathname.startsWith(prefix));
   };
@@ -617,7 +660,101 @@ const InnerHeader = () => {
               );
             })}
 
-            {/* 3. Wallet Link */}
+            {/* 3. About Us Dropdown */}
+            <div
+              className="!relative"
+              onMouseEnter={() => handleMouseEnter("about")}
+              onMouseLeave={handleMouseLeave}
+            >
+              <button
+                type="button"
+                onClick={() => handleToggleDropdown("about")}
+                className={`!px-3 !py-1.5 !rounded-full !text-[13px] !transition-all !duration-200 !whitespace-nowrap !select-none !flex !items-center !gap-1.5 !border-none !cursor-pointer ${
+                  activeDropdown === "about" || aboutLinks.some((link) => isActive(link.href))
+                    ? isDarkNav
+                      ? "!bg-[#004a70] !text-white !font-family-semibold !font-semibold !shadow-sm"
+                      : "!bg-white/25 !text-white !font-family-semibold !font-semibold !backdrop-blur-md !shadow-sm"
+                    : isDarkNav
+                    ? "!text-slate-900 hover:!text-[#004a70] hover:!bg-slate-100/80 !font-family-medium !font-normal !bg-transparent"
+                    : "!text-white/90 hover:!text-white hover:!bg-white/15 !font-family-medium !font-normal !bg-transparent"
+                }`}
+              >
+                <span>About Us</span>
+                <FaChevronDown
+                  size={9}
+                  className={`!transition-transform !duration-200 ${
+                    activeDropdown === "about" ? "!rotate-180" : ""
+                  } ${
+                    activeDropdown === "about"
+                      ? "!text-white"
+                      : isDarkNav
+                      ? "!text-slate-700"
+                      : "!text-white/80"
+                  }`}
+                />
+              </button>
+
+              {activeDropdown === "about" && (
+                <div
+                  className="!animate-fade-in-up !absolute !right-0 !top-[calc(100%+12px)] !w-[660px] sm:!w-[700px] !bg-white !rounded-3xl !shadow-[0_25px_60px_-15px_rgba(0,0,0,0.22)] !border !border-slate-150/70 !p-3 sm:!p-5 !z-[9999] !flex !items-stretch !text-left !cursor-default"
+                  onMouseEnter={() => handleMouseEnter("about")}
+                  onMouseLeave={handleMouseLeave}
+                >
+                  {/* Left Column: stacked items with icon */}
+                  <div className="!flex !flex-col !gap-2.5 !flex-1 !pr-6 sm:!pr-7">
+                    {aboutLinks.map((link) => (
+                      <Link
+                        key={link.href}
+                        href={link.href}
+                        onClick={() => setActiveDropdown(null)}
+                        className="!flex !items-start !gap-3.5 !p-2.5 !rounded-2xl hover:!bg-slate-50/90 !transition-all !duration-150 !no-underline !cursor-pointer !group !text-left"
+                      >
+                        <div className="!w-10 !h-10 !rounded-xl !flex !items-center !justify-center !shrink-0 !bg-slate-100/70 !text-slate-700 !border !border-slate-200/60 group-hover:!bg-sky-50 group-hover:!text-[#004a70] group-hover:!border-sky-200 !transition-colors">
+                          {link.icon}
+                        </div>
+                        <div className="!min-w-0">
+                          <span className="!text-[13.5px] !font-family-semibold !font-semibold !text-slate-900 group-hover:!text-[#004a70] !transition-colors !leading-tight !block">
+                            {link.title}
+                          </span>
+                          <p className="!text-[11.5px] !text-slate-500 !font-family-regular !font-normal !mt-1 !leading-snug !m-0">
+                            {link.desc}
+                          </p>
+                        </div>
+                      </Link>
+                    ))}
+                  </div>
+
+                  {/* Vertical Divider */}
+                  <div className="!w-px !bg-slate-200/90 !self-stretch !shrink-0 !my-1" />
+
+                  {/* Right Column: Featured */}
+                  <div className="!w-[230px] !shrink-0 !pl-6 sm:!pl-7 !flex !flex-col !justify-between">
+                    <div>
+                      <span className="!text-[11px] !font-family-semibold !font-semibold !uppercase !tracking-wider !text-[#004a70] !block">
+                        {aboutFeatured.tag}
+                      </span>
+                      <div className="!text-[16px] !font-family-semibold !font-semibold !text-slate-900 !mt-2 !leading-snug">
+                        {aboutFeatured.title}
+                      </div>
+                      <p className="!text-[11.5px] !text-slate-500 !font-family-regular !font-normal !mt-2 !leading-relaxed !m-0">
+                        {aboutFeatured.desc}
+                      </p>
+                    </div>
+                    <div className="!pt-4">
+                      <Link
+                        href={aboutFeatured.buttonHref}
+                        onClick={() => setActiveDropdown(null)}
+                        className="!w-full !py-2.5 !rounded-xl !text-[13px] !font-family-semibold !font-semibold !text-white !bg-[#004a70] hover:!bg-[#003856] !flex !items-center !justify-center !transition-all !shadow-md hover:!shadow-lg !cursor-pointer !no-underline"
+                      >
+                        {aboutFeatured.buttonText}
+                      </Link>
+                    </div>
+                  </div>
+                </div>
+              )}
+            </div>
+
+            {/* 4. Wallet Link */}
             <Link
               href="/wallet"
               className={`!px-3.5 !py-1.5 !rounded-full !text-[13px] !transition-all !duration-200 !whitespace-nowrap !select-none !no-underline !flex !items-center !gap-1.5 ${
@@ -806,9 +943,25 @@ const InnerHeader = () => {
                     ) : (
                       filteredNotifs.map((notification, index) => {
                         const colors = getNotifColor(notification.type);
+                        const handleNotifClick = () => {
+                          setNotifShow(false);
+                          if (notification?.type === "message" && notification?.user) {
+                            const sender = notification?.user;
+                            const target = sender?._id
+                              ? { _id: sender._id, name: sender.name, image: sender.image, status: sender.status }
+                              : sender;
+                            const encrypted = encryptData(target);
+                            router.push(`/chat?query=${encodeURIComponent(encrypted)}`);
+                            return;
+                          }
+                          if (notification?.to_id) {
+                            router.push(`/ride?type=parcel`);
+                          }
+                        };
                         return (
                           <div
                             key={notification.id || index}
+                            onClick={handleNotifClick}
                             className={`p-3.5 flex gap-3 items-start transition-colors duration-150 cursor-pointer ${
                               notification.isRead ? "bg-white hover:bg-slate-50/80" : "bg-blue-50/30 hover:bg-blue-50/60"
                             }`}
@@ -1200,6 +1353,39 @@ const InnerHeader = () => {
               >
                 <span className="!text-[12.5px] !uppercase !tracking-wider">Customer Wallet</span>
               </Link>
+            </div>
+
+            {/* About Us Accordion */}
+            <div className="!border-b !border-slate-100 !pb-1">
+              <button
+                type="button"
+                onClick={() => setMobileOpenCat((prev) => (prev === "about" ? null : "about"))}
+                className="!w-full !flex !items-center !justify-between !py-3 !px-1 !border-none !cursor-pointer !bg-transparent !text-left"
+              >
+                <span className="!text-[12.5px] !font-family-medium !uppercase !tracking-wider !text-slate-600 hover:!text-[#004a70]">
+                  About Us
+                </span>
+                <FaChevronDown
+                  size={11}
+                  className={`!transition-transform !duration-200 !text-slate-400 ${
+                    mobileOpenCat === "about" ? "!rotate-180 !text-[#004a70]" : ""
+                  }`}
+                />
+              </button>
+              {mobileOpenCat === "about" && (
+                <div className="!flex !flex-col !gap-0.5 !pt-1 !pb-2 !pl-1 !animate-fade-in">
+                  {aboutLinks.map((link) => (
+                    <Link
+                      key={link.href}
+                      href={link.href}
+                      onClick={handleClose}
+                      className="!py-2 !px-2 !rounded-lg hover:!bg-slate-50 !text-slate-800 hover:!text-[#004a70] !font-family-medium !text-[14.5px] sm:!text-[15px] !transition-colors !no-underline !block"
+                    >
+                      {link.label}
+                    </Link>
+                  ))}
+                </div>
+              )}
             </div>
           </div>
 

@@ -46,6 +46,7 @@ import "swiper/css/thumbs";
 import "swiper/css/free-mode";
 
 import ApiFunction from "@/components/ApiFunction/ApiFunction";
+import { requireLogin } from "@/components/ApiFunction/requireLogin";
 import { message } from "antd";
 import mapboxgl from "mapbox-gl";
 import "mapbox-gl/dist/mapbox-gl.css";
@@ -495,6 +496,7 @@ export default function TourDetailsComponent() {
   };
 
   const handleBookNow = () => {
+    if (!requireLogin("Please log in to book this tour.")) return;
     if (!isGroup && totalGuests < 1) {
       message.error("Please add at least 1 guest");
       return;

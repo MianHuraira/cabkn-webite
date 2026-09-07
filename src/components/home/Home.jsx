@@ -267,7 +267,7 @@ const WhyChooseUs = () => {
                   <div className="!mt-auto !pt-1">
                     <button
                       type="button"
-                      onClick={() => router.push(userData ? "/ride" : "/auth/login")}
+                      onClick={() => router.push( "/ride")}
                       className="!inline-flex !items-center !gap-1.5 !bg-[#004a70] hover:!bg-[#003855] !text-white !font-family-semibold !text-xs !px-4 !py-2 !rounded-lg !transition-all !duration-300 !shadow-2xs hover:!shadow-xs !cursor-pointer active:!scale-95"
                     >
                       <span>Book Now</span>

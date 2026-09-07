@@ -271,9 +271,10 @@ const RideDetail = () => {
     try {
       const body = {
         to_id: currentOrder?.to_id?._id,
-        orderId: currentOrder?._id,
+        order: currentOrder?._id,
         rating: reviewRating,
         review: reviewText,
+        type: "customer",
       };
       const res = await postData("rating/create", body, header1);
       if (res?.success) {

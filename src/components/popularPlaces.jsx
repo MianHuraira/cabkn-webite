@@ -39,6 +39,7 @@ import "mapbox-gl/dist/mapbox-gl.css";
 import moment from "moment";
 import { Rate } from "antd";
 import ApiFunction from "@/components/ApiFunction/ApiFunction";
+import { requireLogin } from "@/components/ApiFunction/requireLogin";
 import { useParams, useRouter, useSearchParams } from "next/navigation";
 import Link from "next/link";
 import { Formik, Form, Field, ErrorMessage } from "formik";
@@ -522,6 +523,7 @@ const PopularAA = () => {
   };
 
   const HandleClick = () => {
+    if (!requireLogin("Please log in to book this trip.")) return;
     const lat = Number(SubcatData?.lat ?? SubcatData?.latitude ?? 17.302605);
     const lng = Number(SubcatData?.lng ?? SubcatData?.longitude ?? -62.717692);
     // St. Kitts central pickup fallback if only destination exists
@@ -598,6 +600,10 @@ const PopularAA = () => {
   }, [urlreview]);
 
   const handleSubmit = (values, { resetForm }) => {
+    if (!requireLogin("Please log in to write a review.")) {
+      handleClose();
+      return;
+    }
     setRatingLoading(true);
     const api = giveRating;
     const apiData = {

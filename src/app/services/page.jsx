@@ -7,6 +7,7 @@ import { FaStar, FaClock, FaArrowRight, FaXmark, FaChevronLeft, FaChevronRight }
 import { FaSearch } from "react-icons/fa";
 import { MdOutlineLocationOn } from "react-icons/md";
 import ApiFunction from "@/components/ApiFunction/ApiFunction";
+import { requireLogin } from "@/components/ApiFunction/requireLogin";
 import { AuthSpinner } from "@/components/auth/AuthShell";
 
 export default function AllServicesPage() {
@@ -89,6 +90,7 @@ export default function AllServicesPage() {
 
   const handleBookClick = (e, service) => {
     e.stopPropagation();
+    if (!requireLogin("Please log in to book a service.")) return;
     if (service?._id) {
       if (typeof window !== "undefined") {
         try {

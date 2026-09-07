@@ -15,6 +15,7 @@ import { FiArrowRight } from "react-icons/fi";
 import { MdOutlineRoomService, MdOutlineLocationOn } from "react-icons/md";
 import EmptyState from "../EmptyState";
 import { NoshowData } from "../assets/Images";
+import { requireLogin } from "../ApiFunction/requireLogin";
 
 export default function TopServices() {
   const router = useRouter();
@@ -74,6 +75,7 @@ export default function TopServices() {
 
   const handleBookClick = (e, service) => {
     e.stopPropagation();
+    if (!requireLogin("Please log in to book a service.")) return;
     if (service?._id) {
       if (typeof window !== "undefined") {
         try {
@@ -267,27 +269,29 @@ export default function TopServices() {
               <SwiperSlide className="h-auto flex">
                 <div
                   onClick={() => router.push("/services")}
-                  className="w-full h-full min-h-[360px] sm:min-h-[380px] rounded-2xl bg-gradient-to-br from-[#002842] via-[#004a70] to-[#006699] p-6 sm:p-7 flex flex-col items-center justify-center text-center text-white cursor-pointer shadow-md hover:shadow-2xl hover:-translate-y-1.5 transition-all duration-300 group relative overflow-hidden !border !border-white/15 select-none"
+                  className="w-full h-full min-h-[240px] sm:min-h-[250px] rounded-2xl bg-gradient-to-br from-[#002842] via-[#004a70] to-[#006699] p-4 sm:p-5 flex flex-col items-center justify-center text-center text-white cursor-pointer shadow-md hover:shadow-xl hover:-translate-y-1 transition-all duration-300 group relative overflow-hidden !border !border-white/15 select-none"
                 >
-                  <div className="absolute -top-12 -right-12 w-32 h-32 bg-white/10 rounded-full blur-2xl group-hover:scale-150 transition-transform duration-500 pointer-events-none" />
-                  <div className="absolute -bottom-12 -left-12 w-32 h-32 bg-sky-400/15 rounded-full blur-2xl group-hover:scale-150 transition-transform duration-500 pointer-events-none" />
+                  {/* Ambient Glow */}
+                  <div className="absolute -top-12 -right-12 w-28 h-28 bg-white/10 rounded-full blur-2xl group-hover:scale-150 transition-transform duration-500 pointer-events-none" />
+                  <div className="absolute -bottom-12 -left-12 w-28 h-28 bg-sky-400/15 rounded-full blur-2xl group-hover:scale-150 transition-transform duration-500 pointer-events-none" />
 
-                  <div className="w-14 h-14 sm:w-16 sm:h-16 rounded-2xl bg-white/15 backdrop-blur-md !border !border-white/30 flex items-center justify-center text-white mb-4 sm:mb-5 shadow-inner group-hover:scale-110 group-hover:bg-white/30 group-hover:!border-white/60 transition-all duration-300">
-                    <svg width={26} height={26} viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth={2.2} className="text-white group-hover:translate-x-1 transition-transform duration-300">
+                  {/* Icon Badge */}
+                  <div className="w-11 h-11 sm:w-12 sm:h-12 rounded-xl bg-white/15 backdrop-blur-md !border !border-white/30 flex items-center justify-center text-white mb-2 sm:mb-2.5 shadow-inner group-hover:scale-105 group-hover:bg-white/30 transition-all duration-300">
+                    <svg width={20} height={20} viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth={2.2} className="text-white group-hover:translate-x-0.5 transition-transform duration-300">
                       <path strokeLinecap="round" strokeLinejoin="round" d="M13.5 4.5L21 12m0 0l-7.5 7.5M21 12H3" />
                     </svg>
                   </div>
 
-                  <h3 className="text-lg sm:text-xl font-family-semibold text-white !m-0 mb-1.5 sm:mb-2 tracking-tight">
+                  <h3 className="text-base sm:text-lg font-family-semibold !font-bold text-white !m-0 mb-1 tracking-tight">
                     Explore All Services
                   </h3>
-                  <p className="text-white/80 text-[12.5px] sm:text-[13px] font-family-regular !m-0 mb-5 sm:mb-6 max-w-[210px] leading-relaxed">
-                    Discover relaxing massages, private island videography, spa treatments & more.
+                  <p className="text-white/80 text-[11.5px] sm:text-xs font-family-regular !font-normal !m-0 mb-3 sm:mb-3.5 max-w-[200px] leading-relaxed">
+                    Discover relaxing massages, spa & more.
                   </p>
 
-                  <span className="inline-flex items-center gap-2 px-4 sm:px-5 py-2 sm:py-2.5 rounded-full bg-white text-[#004a70] font-family-semibold text-[12px] sm:text-[13px] shadow-sm group-hover:bg-sky-50 group-hover:shadow-md transition-all">
-                    <span>View All Services</span>
-                    <svg width={14} height={14} viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth={2.5} className="group-hover:translate-x-1 transition-transform duration-300">
+                  <span className="inline-flex items-center gap-1.5 px-3.5 sm:px-4 py-1.5 sm:py-2 rounded-full bg-white text-[#004a70] font-family-semibold !font-semibold text-[11px] sm:text-xs shadow-xs group-hover:bg-sky-50 transition-all">
+                    <span>View All</span>
+                    <svg width={12} height={12} viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth={2.5} className="group-hover:translate-x-0.5 transition-transform duration-300">
                       <path strokeLinecap="round" strokeLinejoin="round" d="M13.5 4.5L21 12m0 0l-7.5 7.5M21 12H3" />
                     </svg>
                   </span>

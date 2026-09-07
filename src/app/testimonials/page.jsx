@@ -5,6 +5,7 @@ import { FaStar, FaStarHalfAlt, FaRegStar, FaQuoteRight } from "react-icons/fa";
 import { FiArrowRight, FiAward, FiStar, FiMessageCircle, FiCheckCircle } from "react-icons/fi";
 import CustomButton from "../../components/CustomButton";
 import { useRouter } from "next/navigation";
+import { requireLogin } from "@/components/ApiFunction/requireLogin";
 
 function SectionReveal({ children, delay = 0 }) {
   const ref = useRef(null);
@@ -216,7 +217,10 @@ export default function Testimonials() {
               {/* CTA button */}
               <div className="lg:col-span-3 flex justify-center lg:justify-end lg:pl-6">
                 <CustomButton
-                  onClick={() => router.push('/auth/stepOne')}
+                  onClick={() => {
+                    if (!requireLogin("Please log in to book a ride.")) return;
+                    router.push('/ride');
+                  }}
                   variant="primary"
                   size="lg"
                   className="w-full font-family-semibold shadow-lg shadow-brand-600/20 bg-gradient-to-r from-brand-600 to-brand-700 border-none hover:from-brand-700 hover:to-brand-800 hover:shadow-brand-600/35 hover:!-translate-y-0.5 active:!translate-y-0"

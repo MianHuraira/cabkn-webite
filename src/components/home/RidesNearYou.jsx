@@ -4,7 +4,7 @@ import React, { useEffect, useRef, useState } from "react";
 import mapboxgl from "mapbox-gl";
 import "mapbox-gl/dist/mapbox-gl.css";
 import { useRouter } from "next/navigation";
-import { useSelector } from "react-redux";
+
 import {
   FiArrowRight,
   FiShield,
@@ -14,6 +14,7 @@ import {
 } from "react-icons/fi";
 import { FaCar } from "react-icons/fa";
 import ApiFunction from "@/components/ApiFunction/ApiFunction";
+import { requireLogin } from "@/components/ApiFunction/requireLogin";
 import CustomButton from "../CustomButton";
 import { AuthSpinner } from "@/components/auth/AuthShell";
 
@@ -54,7 +55,6 @@ const generateMockDriversAround = (lat, lng, isGps = false) => {
 const RidesNearYou = () => {
   const router = useRouter();
   const { postData, header1 } = ApiFunction();
-  const userData = useSelector((state) => state.auth.user?.user);
 
   const mapContainerRef = useRef(null);
   const mapRef = useRef(null);
@@ -77,7 +77,8 @@ const RidesNearYou = () => {
   hasGpsRef.current = hasGps;
 
   const handleBookNow = () => {
-    router.push(userData ? "/ride" : "/auth/login");
+    if (!requireLogin("Please log in to book this ride.")) return;
+    router.push("/ride");
   };
 
   // Helper to reliably fit and center camera to active drivers and/or user location

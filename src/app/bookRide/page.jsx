@@ -22,6 +22,7 @@ import { setPaymentCards, setUser } from "@/components/Redux/Slices/AuthSlice";
 import { useRouter, useSearchParams } from "next/navigation";
 import Link from "next/link";
 import CustomButton from "@/components/CustomButton";
+import { requireLogin } from "@/components/ApiFunction/requireLogin";
 
 const apiKey = process.env.NEXT_PUBLIC_JAD_API_KEY;
 const apiSecret = process.env.NEXT_PUBLIC_JAD_API_SECRET;
@@ -713,12 +714,14 @@ function BookRideComponent() {
 
   // Open "Select Payment Method" Modal
   const handleProceed = () => {
+    if (!requireLogin("Please log in to complete your payment.")) return;
     if (!validateBooking()) return;
     setShowSelectPaymentModal(true);
   };
 
   // Final Action from "Select Payment Method" modal (Done)
   const handleConfirmPaymentMethod = () => {
+    if (!requireLogin("Please log in to complete your payment.")) return;
     setShowSelectPaymentModal(false);
     if (PaymentMethod === "wallet") {
       paymentWithWallet();

@@ -5,7 +5,7 @@ import { BsFillTelephoneFill, BsTwitterX } from "react-icons/bs";
 import { FiMapPin, FiArrowRight } from "react-icons/fi";
 import { AiOutlineMail } from "react-icons/ai";
 import { FaFacebookF, FaLinkedinIn, FaYoutube, FaApple, FaGooglePlay } from "react-icons/fa";
-import { useSelector } from "react-redux";
+import { requireLogin } from "../ApiFunction/requireLogin";
 import { useApi } from "../ApiFunction/ApiFunction";
 import { whiteLogo } from "../assets/Images";
 import Image from "next/image";
@@ -13,7 +13,6 @@ import Link from "next/link";
 import { useRouter } from "next/navigation";
 
 export default function Footer() {
-  const userData = useSelector((state) => state.auth.user?.user);
   const { header1, getData } = useApi();
   const [FooterData, setFooterData] = useState({});
   const [hasError, setHasError] = useState(false);
@@ -99,7 +98,10 @@ export default function Footer() {
 
             {/* CTA Button */}
             <button
-              onClick={() => router.push(userData ? "/ride" : "/auth/login")}
+              onClick={() => {
+                if (!requireLogin("Please log in to request a driver.")) return;
+                router.push("/ride");
+              }}
               className="w-full sm:w-auto inline-flex items-center justify-center gap-2 px-5 py-2.5 bg-white/[0.08] hover:bg-white/[0.16] text-white rounded-xl transition-all duration-300 font-family-semibold text-sm cursor-pointer mt-1"
             >
               <span>Request a driver</span>

@@ -32,6 +32,7 @@ import { MdOutlineLocalOffer, MdPayment } from "react-icons/md";
 import { BsCashCoin, BsCreditCard2Back } from "react-icons/bs";
 
 import ApiFunction from "@/components/ApiFunction/ApiFunction";
+import { requireLogin } from "@/components/ApiFunction/requireLogin";
 import { setPaymentCards } from "@/components/Redux/Slices/AuthSlice";
 import { AuthTextField, AuthSpinner, AuthPrimaryButton } from "@/components/auth/AuthShell";
 import { Loader } from "@googlemaps/js-api-loader";
@@ -484,6 +485,7 @@ function BookTourComponent() {
   };
 
   const handleProceedToPayment = () => {
+    if (!requireLogin("Please log in to complete your payment.")) return;
     if (!selectedCalendarDate) {
       message.error("Please select a valid tour date");
       return;

@@ -5,6 +5,7 @@ import { useSelector } from "react-redux";
 import { FaStar, FaStarHalfAlt, FaRegStar, FaUserCircle } from "react-icons/fa";
 import { MdRateReview } from "react-icons/md";
 import ApiFunction from "@/components/ApiFunction/ApiFunction";
+import { requireLogin } from "@/components/ApiFunction/requireLogin";
 import moment from "moment";
 
 export default function Page() {
@@ -31,11 +32,16 @@ export default function Page() {
     }
   };
 
+  const userId = userData?._id;
+
   useEffect(() => {
-    if (userData) {
+    if (userId) {
       getReviews();
+      return;
     }
-  }, [userData]);
+    requireLogin("Please log in to view your reviews.");
+    setLoading(false);
+  }, [userId]);
 
   const renderStars = (rating) => {
     const stars = [];

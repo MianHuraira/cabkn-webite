@@ -22,6 +22,7 @@ import { message } from "antd";
 import moment from "moment";
 import axios from "axios";
 import ApiFunction from "@/components/ApiFunction/ApiFunction";
+import { requireLogin } from "@/components/ApiFunction/requireLogin";
 
 const MAPBOX_TOKEN =
   process.env.NEXT_PUBLIC_MAPBOX_TOKEN ||
@@ -390,6 +391,7 @@ export default function AirportPickupsPage() {
 
   // Submit and Proceed to BookRide / Checkout Flow
   const handleProceedToBooking = () => {
+    if (!requireLogin("Please log in to complete your booking.")) return;
     if (!dropoffLocation?.lng || !dropoffLocation?.lat) {
       message.error("Please enter or select your dropoff destination in St. Kitts");
       return;

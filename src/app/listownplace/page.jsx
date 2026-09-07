@@ -11,6 +11,7 @@ import {
 } from "reactstrap";
 import { Form } from "react-bootstrap";
 import ApiFunction from "@/components/ApiFunction/ApiFunction";
+import { requireLogin } from "@/components/ApiFunction/requireLogin";
 import { Loader } from "@googlemaps/js-api-loader";
 import { message } from "antd";
 
@@ -462,6 +463,7 @@ const page = () => {
   };
 
   const onSubmit = async (data) => {
+    if (!requireLogin("Please log in to list your place.")) return;
     setPaymentData(data);
 
     if (PaymentMethod == "jad") {

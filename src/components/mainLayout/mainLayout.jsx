@@ -18,6 +18,7 @@ import { Toaster } from "react-hot-toast";
 
 import NotificationHandler from "../Firebase/NotificationHandler";
 import CartDrawer from "../cart/CartDrawer";
+import ActionToast from "../ActionToast";
 import { syncUserCart } from "../Redux/Slices/CartSlice";
 
 const MainLayout = ({ children }) => {
@@ -40,25 +41,14 @@ const MainLayout = ({ children }) => {
   }, []);
 
   const pubRoute = ["/"];
-  const authRoute = [
-    "/auth/login",
-    "/payment",
-    "/auth/signup",
-    "/auth/forgotpss",
-    "/auth/optCode",
-    "/auth/stepOne",
-    "/auth/resetPass",
-  ];
   const isPublicRoute = pubRoute.includes(pathname);
-  const isPrivteRoute =
-    authRoute.includes(pathname) || pathname.startsWith("/rider-request/");
   const isRiderRequest = pathname.startsWith("/rider-request/");
+  const isLoginPage = pathname === "/auth/login";
 
   const renderHeader = () => {
-    if (!isPrivteRoute) {
-      return userData?.user ? <InnerHeader /> : <Header />;
-    }
-    return null;
+    if (isRiderRequest) return null;
+    if (isLoginPage) return null;
+    return userData?.user ? <InnerHeader /> : <Header />;
   };
 
   return (
@@ -72,6 +62,7 @@ const MainLayout = ({ children }) => {
           <Provider store={store}>
             <NotificationHandler />
             <CartDrawer />
+            <ActionToast />
             {mounted ? renderHeader() : null}
             {children}
             {isPublicRoute && !isRiderRequest ? <Footer /> : ""}

@@ -10,6 +10,7 @@ import Image from "next/image";
 import Link from "next/link";
 import { NoshowData } from "../assets/Images";
 import ApiFunction from "../ApiFunction/ApiFunction";
+import { requireLogin } from "../ApiFunction/requireLogin";
 import { useRouter } from "next/navigation";
 import CustomButton from "@/components/CustomButton";
 import EmptyState from "@/components/EmptyState";
@@ -155,23 +156,15 @@ export default function ServiceComponent() {
   };
 
   const handleQuickAddToCart = (item) => {
+    if (!requireLogin("Please log in to add items to cart.")) return;
     const currentUserId = userData?.user?._id || userData?._id;
-    if (!currentUserId) {
-      message.error("Please login to add items to cart");
-      router.push("/auth/login");
-      return;
-    }
     dispatch(addToCart({ ...item, userId: currentUserId }));
     message.success(`Added ${item?.title || "product"} to cart!`);
   };
 
   const handleItemClick = (item) => {
+    if (!requireLogin("Please log in to add items to cart.")) return;
     const currentUserId = userData?.user?._id || userData?._id;
-    if (!currentUserId) {
-      message.error("Please login to add items to cart");
-      router.push("/auth/login");
-      return;
-    }
     dispatch(addToCart({ ...item, userId: currentUserId }));
     dispatch(openCart());
   };

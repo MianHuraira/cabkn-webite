@@ -27,7 +27,7 @@ export function AuthShell({
   backHref,
 }) {
   return (
-    <div className="min-h-screen w-full relative overflow-x-hidden flex items-start md:items-center justify-center p-4 sm:p-6 md:p-3 lg:p-4 bg-slate-900 md:bg-[#f1f5f9] pt-8 sm:pt-10 md:pt-3">
+    <div className="min-h-screen w-full relative overflow-x-hidden flex items-start md:items-center justify-center p-4 sm:p-6 md:p-6 lg:p-8 bg-slate-900 md:bg-[#f1f5f9] pt-8 sm:pt-10 md:pt-8">
       {/* Mobile Ambient Background: Animated Fullscreen Swiper through Onboarding Images */}
       <div className="md:hidden fixed inset-0 z-0 overflow-hidden pointer-events-none">
         <Swiper
@@ -58,11 +58,11 @@ export function AuthShell({
       </div>
 
       {/* Main Card Container: Transparent on mobile, Solid White elevated card on desktop */}
-      <div className="w-full max-w-[380px] sm:max-w-[420px] md:max-w-[840px] lg:max-w-[880px] !bg-transparent md:!bg-white rounded-none md:rounded-[24px] overflow-visible md:overflow-hidden flex flex-col md:flex-row relative z-10 border-0 md:border md:border-slate-200/90 shadow-none md:shadow-[0_20px_50px_rgba(0,0,0,0.08)] min-h-0 md:min-h-[520px] lg:min-h-[540px]">
+      <div className="w-full max-w-[420px] sm:max-w-[480px] md:max-w-[980px] lg:max-w-[1040px] !bg-transparent md:!bg-white rounded-none md:rounded-[24px] overflow-visible md:overflow-hidden flex flex-col md:flex-row relative z-10 border-0 md:border md:border-slate-200/90 shadow-none md:shadow-[0_20px_50px_rgba(0,0,0,0.08)] min-h-0 md:min-h-[600px] lg:min-h-[620px]">
 
         {/* Left Column: Onboarding Swiper (Default) or Custom Static Cover - Desktop Only */}
         {useStaticCover ? (
-          <div className="relative m-0 rounded-none md:rounded-l-[24px] overflow-hidden hidden md:flex md:w-1/2 flex-col justify-between px-4 sm:px-5 md:px-5 py-5 text-white min-h-[460px] md:min-h-[500px] lg:min-h-[520px] self-stretch">
+          <div className="relative m-0 rounded-none md:rounded-l-[24px] overflow-hidden hidden md:flex md:w-1/2 flex-col justify-between px-4 sm:px-5 md:px-5 py-5 text-white min-h-[460px] md:min-h-[580px] lg:min-h-[600px] self-stretch">
             {/* Background cover image */}
             <Image
               src={imageSrc || otpImage}
@@ -107,7 +107,7 @@ export function AuthShell({
         )}
 
         {/* Right Column: Dynamic Form Area */}
-        <div className="w-full md:w-1/2 flex flex-col justify-center p-0 sm:p-2 md:p-7 lg:p-8 md:py-8 lg:py-9 bg-transparent md:bg-white min-h-0 md:min-h-[520px] lg:min-h-[540px] overflow-y-visible md:overflow-y-auto">
+        <div className="w-full md:w-1/2 flex flex-col justify-center p-0 sm:p-2 md:p-7 lg:p-8 md:py-8 lg:py-9 bg-transparent md:bg-white min-h-0 md:min-h-[600px] lg:min-h-[620px] overflow-y-visible md:overflow-y-auto">
           {/* Brand Logo - Shown ONLY on Mobile (< md), Inverted for dark background */}
           <div className="flex md:hidden justify-center mb-4 sm:mb-5">
             <Link href="/" className="inline-block transition-transform hover:scale-105 active:scale-95">
@@ -121,7 +121,7 @@ export function AuthShell({
           </div>
 
           {/* Heading & Child Inputs - Generous breathing room top and bottom */}
-          <div className="w-full max-w-[340px] sm:max-w-[350px] mx-auto flex flex-col justify-center py-4 sm:py-5 lg:py-6 my-auto">
+          <div className="w-full max-w-[400px] sm:max-w-[420px] mx-auto flex flex-col justify-center py-4 sm:py-5 lg:py-6 my-auto">
             {/* Clean Top-Left Back Button if onBack or backHref is provided */}
             {onBack || backHref ? (
               <div className="flex items-center justify-start mb-2.5 -mt-1">

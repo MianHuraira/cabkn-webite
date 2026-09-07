@@ -3082,7 +3082,7 @@ element {
 /* Swiper custom styles for ThingstodoCard & Category slider */
 .thingstodo-swiper {
   width: 100%;
-  height: 11rem; /* 176px - matches h-44 */
+  height: 11rem; /* 176px */
 }
 
 .thingstodo-swiper .swiper-pagination {

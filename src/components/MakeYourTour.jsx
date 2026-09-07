@@ -24,6 +24,7 @@ import { FreeMode, Mousewheel } from "swiper/modules";
 import "swiper/css";
 import "swiper/css/free-mode";
 import ApiFunction from "@/components/ApiFunction/ApiFunction";
+import { requireLogin } from "@/components/ApiFunction/requireLogin";
 import { useRouter } from "next/navigation";
 import Link from "next/link";
 import CustomButton from "./CustomButton";
@@ -551,6 +552,7 @@ function MakeYourTour() {
             console.warn("Could not save to sessionStorage:", err);
           }
         }
+        if (!requireLogin("Please log in to book this ride.")) return;
         const encodedData = encodeURIComponent(JSON.stringify(body));
         router.push(`/bookRide?data=${encodedData}`);
       }
@@ -1012,13 +1014,13 @@ function MakeYourTour() {
 
                             <div className="!flex !items-center !gap-2">
                               {/* View Details Link */}
-                              <Link
+                              {/* <Link
                                 href={`/popular/${item._id}`}
                                 className="!text-[11.5px] !font-family-medium !text-slate-600 hover:!text-[#004a70] !transition-colors !no-underline !flex !items-center !gap-1 !py-1 !px-2 hover:!bg-slate-100 !rounded-lg"
                               >
                                 <FaEye size={11} className="!text-slate-400" />
                                 <span>Details</span>
-                              </Link>
+                              </Link> */}
 
                               {/* Add / Added Circular Button */}
                               <button

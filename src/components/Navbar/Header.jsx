@@ -11,12 +11,20 @@ import { useDispatch, useSelector } from "react-redux";
 import { logoBlue, whiteLogo } from "../assets/Images";
 import { HiMenuAlt3, HiX } from "react-icons/hi";
 import { HiOutlineShoppingBag } from "react-icons/hi2";
+import {
+  FaThumbsUp,
+  FaAward,
+  FaComments,
+  FaEnvelope,
+} from "react-icons/fa";
+import { FiChevronDown } from "react-icons/fi";
 import { Badge } from "antd";
 import Link from "next/link";
 import { AppStore, GooglePlay } from "../assets/Images";
 import Image from "next/image";
 import { useRouter, usePathname } from "next/navigation";
 import DriverModal from "./DriverModal";
+import { navCategories } from "./navData";
 import { openCart } from "../Redux/Slices/CartSlice";
 import ApiFunction from "../ApiFunction/ApiFunction";
 
@@ -41,8 +49,7 @@ const Header = () => {
   const cartCount = cartItems.reduce((acc, item) => acc + (item.cartQuantity || 1), 0);
 
   const [isScrolled, setIsScrolled] = useState(false);
-  const isHome = pathname === "/";
-  const isDarkNav = isScrolled || !isHome;
+  const isDarkNav = isScrolled;
 
   useEffect(() => {
     const checkScroll = () => {
@@ -71,17 +78,73 @@ const Header = () => {
     };
   }, []);
 
-  const navLinks = [
-    { id: "why-us", label: "Why Us" },
-    { id: "benefits", label: "Benefits" },
-    { id: "testimonials", label: "Testimonials" },
-    { id: "contact-us", label: "Contact Us" },
+const aboutLinks = [
+    {
+      title: "Why Us",
+      desc: "Discover what makes Cab K&N your trusted local travel partner.",
+      href: "/why-us",
+      icon: <FaThumbsUp size={16} />,
+    },
+    {
+      title: "Benefits",
+      desc: "Member perks, wallet savings, exclusive deals, and rewards.",
+      href: "/benefits",
+      icon: <FaAward size={16} />,
+    },
+    {
+      title: "Testimonials",
+      desc: "Real stories and reviews from our travelers and partners.",
+      href: "/testimonials",
+      icon: <FaComments size={16} />,
+    },
+    {
+      title: "Contact Us",
+      desc: "Talk to our team for support, partnerships, or bookings.",
+      href: "/contact-us",
+      icon: <FaEnvelope size={16} />,
+    },
   ];
 
-  const handleNavClick = (id) => {
-    handleClose();
-    router.push(`/${id}`);
+  const aboutFeatured = {
+    tag: "ABOUT US",
+    title: "Your trusted island travel partner",
+    desc: "Local expertise, verified drivers, and 24/7 support for every ride, tour, and delivery.",
+    buttonText: "Contact Us",
+    buttonHref: "/contact-us",
   };
+
+  const [openDropdown, setOpenDropdown] = useState(null);
+  const [openMobileMenu, setOpenMobileMenu] = useState(null);
+  const navRef = useRef(null);
+
+  const closeMenus = () => {
+    setOpenDropdown(null);
+    setOpenMobileMenu(null);
+  };
+
+  const handleNavItemClick = (item) => {
+    handleClose();
+    closeMenus();
+    if (item?.action === "driverModal") {
+      SetdriverModal(true);
+      return;
+    }
+    router.push(item?.href || "/");
+  };
+
+  useEffect(() => {
+    closeMenus();
+  }, [pathname]);
+
+  useEffect(() => {
+    const handleOutsideClick = (e) => {
+      if (navRef.current && !navRef.current.contains(e.target)) {
+        setOpenDropdown(null);
+      }
+    };
+    document.addEventListener("mousedown", handleOutsideClick);
+    return () => document.removeEventListener("mousedown", handleOutsideClick);
+  }, []);
 
   const isActive = (href) => {
     if (href === "/") return pathname === "/";
@@ -114,27 +177,249 @@ const Header = () => {
             />
           </Link>
 
-          <div className="hidden xl:flex items-center gap-1.5 flex-1 justify-center px-4 overflow-x-auto no-scrollbar">
-            {navLinks.map((link) => {
-              const active = isActive(link.id);
+          <div ref={navRef} className="hidden xl:flex items-center gap-1.5 flex-1 justify-center px-4 no-scrollbar">
+            {/* Standalone Home Link (always visible, not inside a dropdown) */}
+            <Link
+              href="/"
+              onClick={() => setOpenDropdown(null)}
+              className={`!px-3.5 !py-1.5 !rounded-full !text-[13px] !transition-all !duration-200 !whitespace-nowrap !select-none !no-underline ${
+                pathname === "/"
+                  ? isDarkNav
+                    ? "!bg-[#004a70] !text-white !font-family-semibold !font-semibold !shadow-sm"
+                    : "!bg-white/25 !text-white !font-family-semibold !font-semibold !backdrop-blur-md !shadow-sm"
+                  : isDarkNav
+                  ? "!text-slate-900 hover:!text-[#004a70] hover:!bg-slate-100/80 !font-family-medium !font-normal"
+                  : "!text-white/90 hover:!text-white hover:!bg-white/15 !font-family-medium !font-normal"
+              }`}
+            >
+              <span>Home</span>
+            </Link>
+
+            {navCategories.map((category) => {
+              const open = openDropdown === category.id;
+              const active = category.hrefPrefixes.some((prefix) =>
+                pathname.startsWith(prefix)
+              );
               return (
-                <button
-                  key={link.id}
-                  onClick={() => handleNavClick(link.id)}
-                  className={`px-3.5 py-1.5 rounded-full text-[13.5px] transition-all duration-200 whitespace-nowrap select-none cursor-pointer !border-0 ${
-                    active
-                      ? isDarkNav
-                        ? "bg-[#004a70] text-white font-family-semibold shadow-sm"
-                        : "bg-white/25 text-white font-family-semibold backdrop-blur-md shadow-sm"
-                      : isDarkNav
-                      ? "bg-transparent text-slate-900 hover:text-[#004a70] hover:bg-slate-100/80 font-family-medium"
-                      : "bg-transparent text-white/90 hover:text-white hover:bg-white/15 font-family-medium"
-                  }`}
+                <div
+                  key={category.id}
+                  className="relative"
+                  onMouseEnter={() => setOpenDropdown(category.id)}
+                  onMouseLeave={() => setOpenDropdown(null)}
                 >
-                  {link.label}
-                </button>
+                  <button
+                    type="button"
+                    onClick={() => setOpenDropdown(open ? null : category.id)}
+                    className={`!px-3 !py-1.5 !rounded-full !text-[13px] !transition-all !duration-200 !whitespace-nowrap !select-none !flex !items-center !gap-1.5 !border-none !cursor-pointer ${
+                      active || open
+                        ? isDarkNav
+                          ? "!bg-[#004a70] !text-white !font-family-semibold !font-semibold !shadow-sm"
+                          : "!bg-white/25 !text-white !font-family-semibold !font-semibold !backdrop-blur-md !shadow-sm"
+                        : isDarkNav
+                        ? "!text-slate-900 hover:!text-[#004a70] hover:!bg-slate-100/80 !font-family-medium !font-normal !bg-transparent"
+                        : "!text-white/90 hover:!text-white hover:!bg-white/15 !font-family-medium !font-normal !bg-transparent"
+                    }`}
+                  >
+                    <span>{category.label}</span>
+                    <FiChevronDown
+                      size={9}
+                      className={`!transition-transform !duration-200 ${
+                        open ? "!rotate-180" : ""
+                      } ${
+                        active || open
+                          ? "!text-white"
+                          : isDarkNav
+                          ? "!text-slate-700"
+                          : "!text-white/80"
+                      }`}
+                    />
+                  </button>
+
+                  {open && (
+                    <div
+                      className={`!animate-fade-in-up !absolute !top-[calc(100%+12px)] ${
+                        category.id === "rides"
+                          ? "!left-0"
+                          : category.id === "services"
+                          ? "!right-0"
+                          : "!left-1/2 !-translate-x-1/2"
+                      } !w-[660px] sm:!w-[700px] !bg-white !rounded-3xl !shadow-[0_25px_60px_-15px_rgba(0,0,0,0.22)] !border !border-slate-150/70 !p-3 sm:!p-5 !z-[9999] !flex !items-stretch !text-left !cursor-default`}
+                      onMouseEnter={() => setOpenDropdown(category.id)}
+                      onMouseLeave={() => setOpenDropdown(null)}
+                    >
+                      {/* Left Column: stacked items with icon */}
+                      <div className="!flex !flex-col !gap-2.5 !flex-1 !pr-6 sm:!pr-7">
+                        {category.items.map((item) => {
+                          if (item.action === "driverModal") {
+                            return (
+                              <div
+                                key={item.title}
+                                onClick={() => handleNavItemClick(item)}
+                                className="!flex !items-start !gap-3.5 !p-2.5 !rounded-2xl hover:!bg-slate-50/90 !transition-all !duration-150 !cursor-pointer !group !text-left"
+                              >
+                                <div className="!w-10 !h-10 !rounded-xl !flex !items-center !justify-center !shrink-0 !bg-slate-100/70 !text-slate-700 !border !border-slate-200/60 group-hover:!bg-sky-50 group-hover:!text-[#004a70] group-hover:!border-sky-200 !transition-colors">
+                                  {item.icon}
+                                </div>
+                                <div className="!min-w-0">
+                                  <span className="!text-[13.5px] !font-family-semibold !font-semibold !text-slate-900 group-hover:!text-[#004a70] !transition-colors !leading-tight !block">
+                                    {item.title}
+                                  </span>
+                                  <p className="!text-[11.5px] !text-slate-500 !font-family-regular !font-normal !mt-1 !leading-snug !m-0">
+                                    {item.desc}
+                                  </p>
+                                </div>
+                              </div>
+                            );
+                          }
+
+                          return (
+                            <Link
+                              key={item.href}
+                              href={item.href}
+                              onClick={() => setOpenDropdown(null)}
+                              className="!flex !items-start !gap-3.5 !p-2.5 !rounded-2xl hover:!bg-slate-50/90 !transition-all !duration-150 !no-underline !cursor-pointer !group !text-left"
+                            >
+                              <div className="!w-10 !h-10 !rounded-xl !flex !items-center !justify-center !shrink-0 !bg-slate-100/70 !text-slate-700 !border !border-slate-200/60 group-hover:!bg-sky-50 group-hover:!text-[#004a70] group-hover:!border-sky-200 !transition-colors">
+                                {item.icon}
+                              </div>
+                              <div className="!min-w-0">
+                                <span className="!text-[13.5px] !font-family-semibold !font-semibold !text-slate-900 group-hover:!text-[#004a70] !transition-colors !leading-tight !block">
+                                  {item.title}
+                                </span>
+                                <p className="!text-[11.5px] !text-slate-500 !font-family-regular !font-normal !mt-1 !leading-snug !m-0">
+                                  {item.desc}
+                                </p>
+                              </div>
+                            </Link>
+                          );
+                        })}
+                      </div>
+
+                      {/* Vertical Divider */}
+                      <div className="!w-px !bg-slate-200/90 !self-stretch !shrink-0 !my-1" />
+
+                      {/* Right Column: Featured */}
+                      <div className="!w-[230px] !shrink-0 !pl-6 sm:!pl-7 !flex !flex-col !justify-between">
+                        <div>
+                          <span className="!text-[11px] !font-family-semibold !font-semibold !uppercase !tracking-wider !text-[#004a70] !block">
+                            {category.featured.tag}
+                          </span>
+                          <div className="!text-[16px] !font-family-semibold !font-semibold !text-slate-900 !mt-2 !leading-snug">
+                            {category.featured.title}
+                          </div>
+                          <p className="!text-[11.5px] !text-slate-500 !font-family-regular !font-normal !mt-2 !leading-relaxed !m-0">
+                            {category.featured.desc}
+                          </p>
+                        </div>
+                        <div className="!pt-4">
+                          <Link
+                            href={category.featured.buttonHref}
+                            onClick={() => setOpenDropdown(null)}
+                            className="!w-full !py-2.5 !rounded-xl !text-[13px] !font-family-semibold !font-semibold !text-white !bg-[#004a70] hover:!bg-[#003856] !flex !items-center !justify-center !transition-all !shadow-md hover:!shadow-lg !cursor-pointer !no-underline"
+                          >
+                            {category.featured.buttonText}
+                          </Link>
+                        </div>
+                      </div>
+                    </div>
+                  )}
+                </div>
               );
             })}
+
+            {/* "More" Dropdown for all simple pages */}
+            <div
+              className="relative"
+              onMouseEnter={() => setOpenDropdown("more")}
+              onMouseLeave={() => setOpenDropdown(null)}
+            >
+              <button
+                type="button"
+                onClick={() => setOpenDropdown(openDropdown === "more" ? null : "more")}
+                className={`!px-3 !py-1.5 !rounded-full !text-[13px] !transition-all !duration-200 !whitespace-nowrap !select-none !flex !items-center !gap-1.5 !border-none !cursor-pointer ${
+                  openDropdown === "more" || aboutLinks.some((link) => isActive(link.href))
+                    ? isDarkNav
+                      ? "!bg-[#004a70] !text-white !font-family-semibold !font-semibold !shadow-sm"
+                      : "!bg-white/25 !text-white !font-family-semibold !font-semibold !backdrop-blur-md !shadow-sm"
+                    : isDarkNav
+                    ? "!text-slate-900 hover:!text-[#004a70] hover:!bg-slate-100/80 !font-family-medium !font-normal !bg-transparent"
+                    : "!text-white/90 hover:!text-white hover:!bg-white/15 !font-family-medium !font-normal !bg-transparent"
+                }`}
+              >
+                <span>About Us</span>
+                <FiChevronDown
+                  size={9}
+                  className={`!transition-transform !duration-200 ${
+                    openDropdown === "more" ? "!rotate-180" : ""
+                  } ${
+                    openDropdown === "more"
+                      ? "!text-white"
+                      : isDarkNav
+                      ? "!text-slate-700"
+                      : "!text-white/80"
+                  }`}
+                />
+              </button>
+
+              {openDropdown === "more" && (
+                <div
+                  className="!animate-fade-in-up !absolute !right-0 !top-[calc(100%+12px)] !w-[660px] sm:!w-[700px] !bg-white !rounded-3xl !shadow-[0_25px_60px_-15px_rgba(0,0,0,0.22)] !border !border-slate-150/70 !p-3 sm:!p-5 !z-[9999] !flex !items-stretch !text-left !cursor-default"
+                  onMouseEnter={() => setOpenDropdown("more")}
+                  onMouseLeave={() => setOpenDropdown(null)}
+                >
+                  {/* Left Column: stacked items with icon */}
+                  <div className="!flex !flex-col !gap-2.5 !flex-1 !pr-6 sm:!pr-7">
+                    {aboutLinks.map((link) => (
+                      <Link
+                        key={link.href}
+                        href={link.href}
+                        onClick={() => setOpenDropdown(null)}
+                        className="!flex !items-start !gap-3.5 !p-2.5 !rounded-2xl hover:!bg-slate-50/90 !transition-all !duration-150 !no-underline !cursor-pointer !group !text-left"
+                      >
+                        <div className="!w-10 !h-10 !rounded-xl !flex !items-center !justify-center !shrink-0 !bg-slate-100/70 !text-slate-700 !border !border-slate-200/60 group-hover:!bg-sky-50 group-hover:!text-[#004a70] group-hover:!border-sky-200 !transition-colors">
+                          {link.icon}
+                        </div>
+                        <div className="!min-w-0">
+                          <span className="!text-[13.5px] !font-family-semibold !font-semibold !text-slate-900 group-hover:!text-[#004a70] !transition-colors !leading-tight !block">
+                            {link.title}
+                          </span>
+                          <p className="!text-[11.5px] !text-slate-500 !font-family-regular !font-normal !mt-1 !leading-snug !m-0">
+                            {link.desc}
+                          </p>
+                        </div>
+                      </Link>
+                    ))}
+                  </div>
+
+                  {/* Vertical Divider */}
+                  <div className="!w-px !bg-slate-200/90 !self-stretch !shrink-0 !my-1" />
+
+                  {/* Right Column: Featured */}
+                  <div className="!w-[230px] !shrink-0 !pl-6 sm:!pl-7 !flex !flex-col !justify-between">
+                    <div>
+                      <span className="!text-[11px] !font-family-semibold !font-semibold !uppercase !tracking-wider !text-[#004a70] !block">
+                        {aboutFeatured.tag}
+                      </span>
+                      <div className="!text-[16px] !font-family-semibold !font-semibold !text-slate-900 !mt-2 !leading-snug">
+                        {aboutFeatured.title}
+                      </div>
+                      <p className="!text-[11.5px] !text-slate-500 !font-family-regular !font-normal !mt-2 !leading-relaxed !m-0">
+                        {aboutFeatured.desc}
+                      </p>
+                    </div>
+                    <div className="!pt-4">
+                      <Link
+                        href={aboutFeatured.buttonHref}
+                        onClick={() => setOpenDropdown(null)}
+                        className="!w-full !py-2.5 !rounded-xl !text-[13px] !font-family-semibold !font-semibold !text-white !bg-[#004a70] hover:!bg-[#003856] !flex !items-center !justify-center !transition-all !shadow-md hover:!shadow-lg !cursor-pointer !no-underline"
+                      >
+                        {aboutFeatured.buttonText}
+                      </Link>
+                    </div>
+                  </div>
+                </div>
+              )}
+            </div>
           </div>
 
           <div
@@ -244,19 +529,89 @@ const Header = () => {
 
           {/* Navigation Links */}
           <div className="p-4 flex flex-col gap-1.5 overflow-y-auto max-h-[calc(100vh-250px)] no-scrollbar">
-            {navLinks.map((link) => (
-              <MobileNavItem
-                key={link.id}
-                label={link.label}
-                active={isActive(link.id)}
-                onClick={() => handleNavClick(link.id)}
-              />
-            ))}
+            <MobileNavItem
+              label="Home"
+              active={isActive("/")}
+              onClick={() => handleNavItemClick({ href: "/" })}
+            />
+
+            {navCategories.map((category) => {
+              const open = openMobileMenu === category.id;
+              const active = category.hrefPrefixes.some((prefix) =>
+                pathname.startsWith(prefix)
+              );
+              return (
+                <div key={category.id}>
+                  <div
+                    onClick={() => setOpenMobileMenu(open ? null : category.id)}
+                    className={`flex items-center justify-between transition-all duration-150 font-family-medium cursor-pointer px-3 py-2.5 rounded-lg ${
+                      active
+                        ? "bg-brand-50 text-[#004a70] font-family-semibold"
+                        : "hover:bg-gray-100 text-gray-700"
+                    }`}
+                  >
+                    <span>{category.label}</span>
+                    <FiChevronDown
+                      size={14}
+                      className={`transition-transform duration-200 ${open ? "rotate-180" : ""}`}
+                    />
+                  </div>
+                  {open && (
+                    <div className="ml-3 mt-1 flex flex-col gap-1 border-l-2 border-slate-100 pl-3">
+                      {category.items.map((item) => (
+                        <div
+                          key={item.title}
+                          className="px-3 py-2 rounded-lg hover:bg-gray-50 transition-all cursor-pointer"
+                          onClick={() => handleNavItemClick(item)}
+                        >
+                          <p className="!m-0 text-[13px] font-family-semibold text-slate-800 group-hover:text-[#004a70]">
+                            {item.title}
+                          </p>
+                          <p className="!m-0 text-[11px] text-slate-500 font-family-regular leading-snug mt-0.5">
+                            {item.desc}
+                          </p>
+                        </div>
+                      ))}
+                    </div>
+                  )}
+                </div>
+              );
+            })}
+
+            {/* "More" Accordion for simple pages */}
+            <div>
+              <div
+                onClick={() => setOpenMobileMenu(openMobileMenu === "more" ? null : "more")}
+                className={`flex items-center justify-between transition-all duration-150 font-family-medium cursor-pointer px-3 py-2.5 rounded-lg ${
+                  openMobileMenu === "more" || aboutLinks.some((link) => isActive(link.href))
+                    ? "bg-brand-50 text-[#004a70] font-family-semibold"
+                    : "hover:bg-gray-100 text-gray-700"
+                }`}
+              >
+                <span>About Us</span>
+                <FiChevronDown
+                  size={14}
+                  className={`transition-transform duration-200 ${openMobileMenu === "more" ? "rotate-180" : ""}`}
+                />
+              </div>
+              {openMobileMenu === "more" && (
+                <div className="ml-3 mt-1 flex flex-col gap-1 border-l-2 border-slate-100 pl-3">
+                  {aboutLinks.map((link) => (
+                    <MobileNavItem
+                      key={link.href}
+                      label={link.title}
+                      active={isActive(link.href)}
+                      onClick={() => handleNavItemClick(link)}
+                    />
+                  ))}
+                </div>
+              )}
+            </div>
           </div>
         </div>
 
         {/* Dedicated Auth CTA Container at bottom (Distinct styling) */}
-        <div className="p-4 !border-t !border-slate-100 bg-slate-50/80 mt-auto flex flex-col gap-2.5">
+        <div className="px-4 pt-2 pb-3 !border-t !border-slate-100 bg-slate-50/80 mt-auto flex flex-col gap-1.5">
           <button
             onClick={() => {
               handleClose();

@@ -8,6 +8,7 @@ import "swiper/css/pagination";
 import "swiper/css/navigation";
 import { useRouter } from "next/navigation";
 import { useApi } from "../ApiFunction/ApiFunction";
+import { requireLogin } from "../ApiFunction/requireLogin";
 import {
   FiArrowRight,
   FiTag,
@@ -143,8 +144,9 @@ export default function HomeBannerSlider() {
         router.push("/tours");
         break;
       case "rides":
-        if (item?.location?.lat && item?.location?.lng) {
-          const params = new URLSearchParams({
+if (item?.location?.lat && item?.location?.lng) {
+            if (!requireLogin("Please log in to book this ride.")) return;
+            const params = new URLSearchParams({
             address: item?.location?.address || "",
             lat: String(item?.location?.lat),
             lng: String(item?.location?.lng),
@@ -186,7 +188,7 @@ export default function HomeBannerSlider() {
   if (!slides || slides.length === 0) return null;
 
   return (
-    <section className="!py-6 sm:!py-8 md:!py-10 !select-none !relative !overflow-hidden">
+    <section className="!pt-1 sm:!pt-2 !pb-6 sm:!pb-8 !select-none !relative !overflow-hidden">
       <div className="!w-full !max-w-6xl !mx-auto !px-4 sm:!px-6 lg:!px-8 !relative">
         <div className="!relative !group/slider">
           <Swiper

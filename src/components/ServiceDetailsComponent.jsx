@@ -46,6 +46,7 @@ import "swiper/css/thumbs";
 import "swiper/css/free-mode";
 
 import ApiFunction from "@/components/ApiFunction/ApiFunction";
+import { requireLogin } from "@/components/ApiFunction/requireLogin";
 import { message } from "antd";
 import mapboxgl from "mapbox-gl";
 import "mapbox-gl/dist/mapbox-gl.css";
@@ -387,6 +388,7 @@ export default function ServiceDetailsComponent() {
 
   // Handlers
   const handleBookNow = () => {
+    if (!requireLogin("Please log in to book this service.")) return;
     if (!service?._id) return;
     const query = new URLSearchParams({
       id: service._id,
